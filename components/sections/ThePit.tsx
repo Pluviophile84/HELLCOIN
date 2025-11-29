@@ -9,43 +9,55 @@ const PTSD_WORDS_SOURCE = [
   "PUMP", "DUMP", "EXIT", "PONZI", "VAPORWARE", "MINT"
 ];
 
-// TRIPLE the list to ensure we cover the entire screen height (72 words)
+// TRIPLE the list for density (72 words)
 const PTSD_WORDS = [...PTSD_WORDS_SOURCE, ...PTSD_WORDS_SOURCE, ...PTSD_WORDS_SOURCE];
 
 export const ThePit = () => {
   return (
     <section className="relative py-32 bg-hell-red overflow-hidden flex items-center justify-center min-h-[1000px]">
       
-      {/* --- BACKGROUND: THE DENSE GRID --- */}
-      {/* Mobile: grid-cols-3 (Forces horizontal spread) */}
-      {/* Desktop: grid-cols-8 (Fills the wide screen) */}
+      {/* --- BACKGROUND GRID --- */}
+      {/* Mobile: 3 Columns | Desktop: 8 Columns */}
       <div className="absolute inset-0 pointer-events-none select-none z-0 grid grid-cols-3 md:grid-cols-8 gap-1 p-2 h-full w-full content-between">
-        {PTSD_WORDS.map((word, i) => (
-          <div key={i} className="flex items-center justify-center w-full">
-            <motion.div
-              // SIZING:
-              // Mobile: text-2xl/3xl (Fits 3 in a row cleanly)
-              // Desktop: text-6xl (Big but allows more rows)
-              className="font-gothic font-bold text-black/30 whitespace-nowrap text-3xl md:text-6xl"
-              
-              // ANIMATION: Ghostly fade in/out
-              animate={{ 
-                opacity: [0, 0.4, 0], 
-                scale: [0.8, 1.1, 0.8], 
-              }}
-              
-              // SPEED: Varied
-              transition={{
-                duration: 3 + Math.random() * 5,
-                repeat: Infinity,
-                delay: Math.random() * 5,
-                ease: "easeInOut",
-              }}
-            >
-              {word}
-            </motion.div>
-          </div>
-        ))}
+        {PTSD_WORDS.map((word, i) => {
+          
+          // --- ZIG-ZAG ALIGNMENT LOGIC ---
+          // This prevents "Vertical Towers" by shifting alignment based on column position
+          let alignmentClass = "justify-center"; // Default (Middle columns)
+          
+          // Mobile Logic (3 Cols)
+          if (i % 3 === 0) alignmentClass = "justify-end pr-2"; // Left Col -> Push Right
+          if (i % 3 === 2) alignmentClass = "justify-start pl-2"; // Right Col -> Push Left
+          
+          return (
+            <div key={i} className={`flex items-center w-full ${alignmentClass}`}>
+              <motion.div
+                // SIZING:
+                // Mobile: text-2xl/3xl (Smaller to fit 3 cols comfortably)
+                // Desktop: text-5xl/6xl (Massive)
+                className="font-gothic font-bold text-black/30 whitespace-nowrap text-2xl md:text-6xl"
+                
+                // ANIMATION: Ghostly fade in/out
+                animate={{ 
+                  opacity: [0, 0.4, 0], 
+                  scale: [0.8, 1.1, 0.8], 
+                }}
+                
+                // TIMING: "Snake" Pattern
+                // i * 0.1 adds a slight sequential delay (Left->Right flow)
+                // Math.random() adds just enough chaos so it's not a robot scan
+                transition={{
+                  duration: 3 + Math.random() * 3, // Faster pulsing (3-6s)
+                  repeat: Infinity,
+                  delay: (i * 0.05) + (Math.random() * 2), 
+                  ease: "easeInOut",
+                }}
+              >
+                {word}
+              </motion.div>
+            </div>
+          );
+        })}
       </div>
 
       {/* --- FOREGROUND: CONTENT BOX --- */}
