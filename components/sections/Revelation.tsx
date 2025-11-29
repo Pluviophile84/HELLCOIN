@@ -4,14 +4,20 @@ import { motion } from "framer-motion";
 export const Revelation = () => {
   return (
     <section className="relative min-h-screen flex flex-col md:flex-row bg-hell-dark overflow-hidden">
-      {/* Left Side: The Market Reality (Blurred/Chaotic) */}
-      <div className="md:w-1/2 p-12 flex items-center justify-center border-r border-hell-red/20 relative group">
-        <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1621504450162-6667a3e943a9?q=80&w=1000&auto=format&fit=crop')] bg-cover opacity-10 grayscale group-hover:grayscale-0 transition-all duration-700"></div>
+      
+      {/* --- LEFT SIDE: THE DEVIL (GOAPE.png) --- */}
+      <div className="md:w-1/2 p-12 flex items-center justify-center border-r border-hell-red/20 relative group overflow-hidden">
+        {/* The Devil Image as a Background Cover */}
+        <div className="absolute inset-0 bg-[url('/GOAPE-Edited.png')] bg-cover bg-center opacity-40 grayscale group-hover:grayscale-0 transition-all duration-700 transform group-hover:scale-110"></div>
+        
+        {/* Overlay to make text readable */}
+        <div className="absolute inset-0 bg-black/50"></div>
+
         <div className="relative z-10 text-center">
           <motion.h3 
             initial={{ opacity: 0 }}
             whileInView={{ opacity: 1 }}
-            className="font-gothic text-6xl md:text-8xl text-hell-white/20 group-hover:text-hell-red transition-colors duration-500"
+            className="font-gothic text-6xl md:text-8xl text-hell-white/50 group-hover:text-hell-red transition-colors duration-500"
           >
             THE LIE
           </motion.h3>
@@ -19,7 +25,7 @@ export const Revelation = () => {
         </div>
       </div>
 
-      {/* Right Side: The Hellcoin Truth */}
+      {/* --- RIGHT SIDE: THE TRUTH --- */}
       <div className="md:w-1/2 p-12 bg-hell-black flex flex-col justify-center relative">
         <motion.div
           initial={{ x: 100, opacity: 0 }}
