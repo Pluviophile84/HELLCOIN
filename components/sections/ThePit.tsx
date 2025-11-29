@@ -1,59 +1,45 @@
 "use client";
 import { motion } from "framer-motion";
-import { useEffect, useState } from "react";
 
 // The words that haunt every degen's dreams
 const PTSD_WORDS = [
   "RUG", "DIP", "SCAM", "-99%", "LIQUIDATED", 
   "HONEYPOT", "HACKED", "PAUSED", "SOFT RUG", 
   "0", "NGMI", "COPE", "FUD", "GAS FEES", 
-  "TOP SIGNAL", "REKT", "BAGHOLDER", "DOWN BAD"
+  "TOP SIGNAL", "REKT", "BAGHOLDER", "DOWN BAD",
+  "PUMP", "DUMP", "EXIT", "PONZI", "VAPORWARE", "MINT"
 ];
 
-// Helper to generate random positions for the ghosts
-const generateGhosts = (count: number) => {
-  return Array.from({ length: count }).map((_, i) => ({
-    id: i,
-    text: PTSD_WORDS[i % PTSD_WORDS.length],
-    top: `${Math.random() * 90}%`,
-    left: `${Math.random() * 90}%`,
-    delay: Math.random() * 5,
-    duration: 3 + Math.random() * 4,
-    size: Math.random() > 0.5 ? "text-4xl" : "text-6xl", // Random sizes
-  }));
-};
-
 export const ThePit = () => {
-  // Use state to avoid hydration mismatch (random numbers on server vs client)
-  const [ghosts, setGhosts] = useState<any[]>([]);
-
-  useEffect(() => {
-    setGhosts(generateGhosts(30)); // Generate 30 haunting words
-  }, []);
-
   return (
-    <section className="relative py-32 bg-hell-red overflow-hidden flex items-center justify-center min-h-[800px]">
+    <section className="relative py-32 bg-hell-red overflow-hidden flex items-center justify-center min-h-[900px]">
       
-      {/* --- BACKGROUND: THE HAUNTING PATTERN --- */}
-      <div className="absolute inset-0 pointer-events-none select-none z-0">
-        {ghosts.map((ghost) => (
-          <motion.div
-            key={ghost.id}
-            className={`absolute font-gothic font-bold text-black/20 ${ghost.size}`}
-            style={{ top: ghost.top, left: ghost.left }}
-            animate={{ 
-              opacity: [0, 0.4, 0], // Fade in then out
-              scale: [0.8, 1.2, 0.8], // Pulse size
-            }}
-            transition={{
-              duration: ghost.duration,
-              repeat: Infinity,
-              delay: ghost.delay,
-              ease: "easeInOut",
-            }}
-          >
-            {ghost.text}
-          </motion.div>
+      {/* --- BACKGROUND: THE GRID SYSTEM --- */}
+      {/* We use CSS Grid to ensure words NEVER touch each other */}
+      <div className="absolute inset-0 pointer-events-none select-none z-0 grid grid-cols-4 md:grid-cols-6 grid-rows-6 gap-4 p-4">
+        {PTSD_WORDS.map((word, i) => (
+          <div key={i} className="flex items-center justify-center">
+            <motion.div
+              // SIZES: Increased to 6xl and 8xl
+              className={`font-gothic font-bold text-black/50 ${i % 3 === 0 ? "text-6xl md:text-8xl" : "text-4xl md:text-7xl"}`}
+              
+              // ANIMATION: Fade in/out, Scale up/down
+              animate={{ 
+                opacity: [0, 0.6, 0], // Higher opacity (up to 0.6)
+                scale: [0.9, 1.1, 0.9], 
+              }}
+              
+              // SPEED: Slower (duration 5s to 9s)
+              transition={{
+                duration: 5 + Math.random() * 4,
+                repeat: Infinity,
+                delay: Math.random() * 5,
+                ease: "easeInOut",
+              }}
+            >
+              {word}
+            </motion.div>
+          </div>
         ))}
       </div>
 
