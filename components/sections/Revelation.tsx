@@ -8,7 +8,7 @@ export const Revelation = () => {
       {/* --- LEFT SIDE: THE DEVIL (GOAPE.png) --- */}
       <div className="md:w-1/2 p-12 flex items-center justify-center border-r border-hell-red/20 relative group overflow-hidden">
         {/* The Devil Image as a Background Cover */}
-        <div className="absolute inset-0 bg-[url('/GOAPE-Edited.png')] bg-cover bg-center opacity-40 grayscale group-hover:grayscale-0 transition-all duration-700 transform group-hover:scale-110"></div>
+        <div className="absolute inset-0 bg-[url('/GOAPE-Edited.png')] bg-cover bg-center opacity-70 grayscale group-hover:grayscale-0 transition-all duration-700 transform group-hover:scale-110"></div>
         
         {/* Overlay to make text readable */}
         <div className="absolute inset-0 bg-black/50"></div>
