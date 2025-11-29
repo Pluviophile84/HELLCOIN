@@ -1,7 +1,6 @@
 "use client";
 import { motion } from "framer-motion";
 
-// The words that haunt every degen's dreams
 const PTSD_WORDS_SOURCE = [
   "RUG", "DIP", "SCAM", "-99%", "LIQUIDATED", 
   "HONEYPOT", "HACKED", "PAUSED", "SOFT RUG", 
@@ -10,30 +9,30 @@ const PTSD_WORDS_SOURCE = [
   "PUMP", "DUMP", "EXIT", "PONZI", "VAPORWARE", "MINT"
 ];
 
-// Duplicate the list to ensure we fill the entire grid (48 slots)
-// This ensures there are no empty spots at the bottom
 const PTSD_WORDS = [...PTSD_WORDS_SOURCE, ...PTSD_WORDS_SOURCE];
 
 export const ThePit = () => {
   return (
     <section className="relative py-32 bg-hell-red overflow-hidden flex items-center justify-center min-h-[900px]">
       
-      {/* --- BACKGROUND: THE GRID SYSTEM --- */}
-      {/* grid-rows-8 ensures we go all the way to the bottom */}
-      <div className="absolute inset-0 pointer-events-none select-none z-0 grid grid-cols-4 md:grid-cols-6 grid-rows-8 gap-4 p-4 h-full">
+      {/* --- GRID SYSTEM UPDATE --- */}
+      {/* Mobile: grid-cols-2 (More space) | Desktop: grid-cols-6 */}
+      <div className="absolute inset-0 pointer-events-none select-none z-0 grid grid-cols-2 md:grid-cols-6 grid-rows-8 gap-2 md:gap-4 p-4 h-full">
         {PTSD_WORDS.map((word, i) => (
-          <div key={i} className="flex items-center justify-center">
+          <div key={i} className="flex items-center justify-center overflow-hidden">
             <motion.div
-              // SIZES: Large and clear
-              className={`font-gothic font-bold text-black/50 ${i % 3 === 0 ? "text-6xl md:text-8xl" : "text-4xl md:text-7xl"}`}
+              // --- FONT SIZE UPDATE ---
+              // Mobile: text-3xl/4xl (Smaller to prevent overlap)
+              // Desktop: text-7xl/8xl (Massive)
+              className={`font-gothic font-bold text-black/50 whitespace-nowrap ${
+                i % 3 === 0 ? "text-4xl md:text-8xl" : "text-3xl md:text-7xl"
+              }`}
               
-              // ANIMATION: Fade in/out
               animate={{ 
                 opacity: [0, 0.5, 0], 
                 scale: [0.9, 1.1, 0.9], 
               }}
               
-              // SPEED: Slower (duration 5s to 9s)
               transition={{
                 duration: 5 + Math.random() * 4,
                 repeat: Infinity,
@@ -47,7 +46,6 @@ export const ThePit = () => {
         ))}
       </div>
 
-      {/* --- FOREGROUND: CONTENT BOX --- */}
       <div className="relative z-10 bg-hell-black border-4 border-black p-8 md:p-12 max-w-3xl mx-4 shadow-[20px_20px_0px_#000]">
         <h2 className="font-gothic text-5xl md:text-7xl text-hell-white mb-6 text-center">
           DO YOU QUALIFY?
