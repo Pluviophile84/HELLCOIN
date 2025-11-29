@@ -29,8 +29,8 @@ export const PaperHandsOverlay = ({ isActive, onClose }: PaperHandsProps) => {
         onClose();
         setShowReality(true);
         // Hide reality check snackbar after 4s
-        setTimeout(() => setShowReality(false), 4000);
-      }, 3500);
+        setTimeout(() => setShowReality(false), 5500);
+      }, 5000);
     } else {
       // Reset when closed so it's ready for next time
       setProgress(0);
