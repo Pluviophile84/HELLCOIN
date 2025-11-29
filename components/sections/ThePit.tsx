@@ -1,6 +1,7 @@
 "use client";
 import { motion } from "framer-motion";
 
+// The words that haunt every degen's dreams
 const PTSD_WORDS_SOURCE = [
   "RUG", "DIP", "SCAM", "-99%", "LIQUIDATED", 
   "HONEYPOT", "HACKED", "PAUSED", "SOFT RUG", 
@@ -9,65 +10,44 @@ const PTSD_WORDS_SOURCE = [
   "PUMP", "DUMP", "EXIT", "PONZI", "VAPORWARE", "MINT"
 ];
 
-// 5x List for maximum density
-const PTSD_WORDS = [...PTSD_WORDS_SOURCE, ...PTSD_WORDS_SOURCE, ...PTSD_WORDS_SOURCE, ...PTSD_WORDS_SOURCE, ...PTSD_WORDS_SOURCE];
+// Duplicate the list to ensure we fill the entire grid (48 slots)
+// This ensures there are no empty spots at the bottom
+const PTSD_WORDS = [...PTSD_WORDS_SOURCE, ...PTSD_WORDS_SOURCE];
 
 export const ThePit = () => {
   return (
-    <section className="relative py-32 bg-hell-red overflow-hidden flex items-center justify-center min-h-[1000px]">
+    <section className="relative py-32 bg-hell-red overflow-hidden flex items-center justify-center min-h-[900px]">
       
-      {/* --- BACKGROUND CONTAINER --- */}
-      <div className="absolute inset-0 z-0 overflow-hidden">
-        
-        {/* --- THE BRICK WALL GRID --- */}
-        {/* MOBILE: 4 Columns. 
-            DESKTOP: 8 Columns.
-            This defines how many words constitute a "Row".
-        */}
-        <div className="absolute top-0 h-full grid content-between p-4
-                        w-[160%] -left-[30%] grid-cols-4 gap-y-6 gap-x-0
-                        md:w-full md:left-0 md:grid-cols-8">
-          
-          {PTSD_WORDS.map((word, i) => {
-            
-            // --- BRICK WALL LOGIC ---
-            // 1. Determine how many columns we have (4 on mobile, 8 on desktop)
-            // Note: In React we can't easily detect screen size for logic, 
-            // so we assume the Mobile layout (4 cols) for the math since that's where the visual issue is.
-            const cols = 4; 
-            const currentRow = Math.floor(i / cols);
-            const isEvenRow = currentRow % 2 === 0;
-
-            // 2. If it's an even row, shift it to the right
-            // This breaks the vertical line looking like a column
-            const staggerClass = isEvenRow ? "translate-x-12" : "";
-
-            return (
-              <div key={i} className={`flex items-center justify-center w-full ${staggerClass}`}>
-                <motion.div
-                  className="font-gothic font-bold text-black/30 whitespace-nowrap text-5xl md:text-6xl"
-                  
-                  animate={{ 
-                    opacity: [0, 0.5, 0], 
-                    scale: [0.8, 1.2, 0.8], 
-                  }}
-                  
-                  transition={{
-                    duration: 3 + Math.random() * 4,
-                    repeat: Infinity,
-                    delay: Math.random() * 5,
-                    ease: "easeInOut",
-                  }}
-                >
-                  {word}
-                </motion.div>
-              </div>
-            );
-          })}
-        </div>
+      {/* --- BACKGROUND: THE GRID SYSTEM --- */}
+      {/* grid-rows-8 ensures we go all the way to the bottom */}
+      <div className="absolute inset-0 pointer-events-none select-none z-0 grid grid-cols-4 md:grid-cols-6 grid-rows-8 gap-4 p-4 h-full">
+        {PTSD_WORDS.map((word, i) => (
+          <div key={i} className="flex items-center justify-center">
+            <motion.div
+              // SIZES: Large and clear
+              className={`font-gothic font-bold text-black/50 ${i % 3 === 0 ? "text-6xl md:text-8xl" : "text-4xl md:text-7xl"}`}
+              
+              // ANIMATION: Fade in/out
+              animate={{ 
+                opacity: [0, 0.5, 0], 
+                scale: [0.9, 1.1, 0.9], 
+              }}
+              
+              // SPEED: Slower (duration 5s to 9s)
+              transition={{
+                duration: 5 + Math.random() * 4,
+                repeat: Infinity,
+                delay: Math.random() * 5,
+                ease: "easeInOut",
+              }}
+            >
+              {word}
+            </motion.div>
+          </div>
+        ))}
       </div>
 
-      {/* --- FOREGROUND --- */}
+      {/* --- FOREGROUND: CONTENT BOX --- */}
       <div className="relative z-10 bg-hell-black border-4 border-black p-8 md:p-12 max-w-3xl mx-4 shadow-[20px_20px_0px_#000]">
         <h2 className="font-gothic text-5xl md:text-7xl text-hell-white mb-6 text-center">
           DO YOU QUALIFY?
