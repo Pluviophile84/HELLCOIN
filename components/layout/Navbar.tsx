@@ -29,11 +29,10 @@ export const Navbar = ({ onTriggerPaperHands }: { onTriggerPaperHands: () => voi
       <div className="max-w-7xl mx-auto px-4 flex justify-between items-center">
         {/* Logo */}
         <div className="flex items-center gap-3 group cursor-pointer hover:animate-glitch">
-         <img 
-           src="/GOAPE.png" 
-           alt="Hellcoin" 
-           className="w-10 h-10 md:w-12 md:h-12 rounded-full border border-hell-orange object-cover" 
-        />
+         <div className="w-10 h-10 rounded-full border border-hell-orange bg-hell-dark flex items-center justify-center overflow-hidden">
+        {/* Replace with your image later */}
+        <span className="text-2xl">🐐</span>
+       </div>
 
         {/* Desktop Links */}
         <div className="hidden lg:flex gap-8">
