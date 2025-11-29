@@ -5,9 +5,9 @@ import { motion } from "framer-motion";
 const PTSD_WORDS_SOURCE = [
   "RUG", "BUY THE DIP", "SCAM", "-99%", "LIQUIDATED", 
   "HONEYPOT", "HACKED", "WAGMI", "SOFT RUG", 
-  "0", "NGMI", "COPE", "FUD", "GAS FEES", 
+  "LFG", "NGMI", "COPE", "FUD", "GAS FEES", 
   "TOP SIGNAL", "REKT", "BAGHOLDER", "DOWN BAD",
-  "PUMP", "DUMP", "EXIT", "PONZI", "TO THE MOON", "MINT"
+  "PUMP", "DUMP", "EXIT", "PONZI", "MOON", "BULLISH"
 ];
 
 // Duplicate the list to ensure we fill the entire grid (48 slots)
