@@ -1,0 +1,63 @@
+"use client";
+import { motion } from "framer-motion";
+
+const commandments = [
+  { id: "I", title: "BUY THE TOP", text: "Wait until the candle is vertical and green. Then go all in." },
+  { id: "II", title: "NEVER TAKE PROFITS", text: "Watch your $50 turn into $5,000, then ride it back to $0. This is the way." },
+  { id: "III", title: "USE 100X LEVERAGE", text: "Why lose money slowly over years when you can lose it in 3 seconds?" },
+  { id: "IV", title: "TRUST THE ANIME GIRL", text: "If the founder has a cute profile picture, you must trust them with your life savings." },
+  { id: "V", title: "CLICK EVERY LINK", text: "Security is for cowards. If it says 'Claim Airdrop', connect instantly." },
+  { id: "VI", title: "DO ZERO RESEARCH", text: "Reading is for nerds. Just look at the ticker and the memes." },
+  { id: "VII", title: "PANIC SELL BOTTOM", text: "Buy when you feel like a god. Sell when you are crying in the shower." },
+  { id: "VIII", title: "MARRY YOUR BAGS", text: "Emotional attachment is key. Never let go, even when the dev leaves." },
+  { id: "IX", title: "IGNORE GAS FEES", text: "Pay $80 in ETH fees to swap $15 worth of a shitcoin. Be a man." },
+  { id: "X", title: "ENVY THY NEIGHBOR", text: "Stare at other people's gains on Twitter until you feel physically ill." },
+];
+
+export const Commandments = () => {
+  return (
+    <section id="commandments" className="py-24 px-4 bg-hell-dark relative">
+      <div className="max-w-7xl mx-auto">
+        <div className="text-center mb-16">
+          <h2 className="font-gothic text-6xl md:text-8xl text-hell-white mb-4">THE TEN COMMANDMENTS</h2>
+          <p className="font-terminal text-hell-red text-xl">/// DO NOT OBEY AT YOUR OWN RISK ///</p>
+        </div>
+
+        <motion.div 
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true }}
+          variants={{
+            visible: { transition: { staggerChildren: 0.1 } }
+          }}
+          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6"
+        >
+          {commandments.map((c, i) => (
+            <motion.div
+              key={c.id}
+              variants={{
+                hidden: { opacity: 0, y: 50 },
+                visible: { opacity: 1, y: 0 }
+              }}
+              whileHover={{ scale: 1.02, backgroundColor: "#050505", borderColor: "#ff3300" }}
+              className={`
+                bg-hell-black border border-hell-red/20 p-6 relative group transition-colors duration-300
+                ${i === 0 || i === 9 ? 'md:col-span-2 bg-hell-black/50' : ''}
+              `}
+            >
+              <div className="absolute top-4 right-4 font-gothic text-4xl text-hell-white/10 group-hover:text-hell-red/50 transition-colors">
+                {c.id}
+              </div>
+              <h3 className="font-terminal text-2xl text-hell-gold mb-3 group-hover:text-hell-white uppercase font-bold">
+                {c.title}
+              </h3>
+              <p className="font-terminal text-xl text-gray-500 group-hover:text-gray-300">
+                {c.text}
+              </p>
+            </motion.div>
+          ))}
+        </motion.div>
+      </div>
+    </section>
+  );
+};
