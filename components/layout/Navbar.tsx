@@ -51,17 +51,16 @@ export const Navbar = ({ onTriggerPaperHands }: { onTriggerPaperHands: () => voi
         {/* --- RIGHT: ACTIONS --- */}
         <div className="flex items-center gap-2 md:gap-4">
           
-          {/* HEAVEN MODE BUTTON (Always Visible) */}
+          {/* HEAVEN MODE BUTTON (Original Style, New White/Pink Color) */}
           <button 
             onClick={onTriggerPaperHands}
-            className="flex items-center gap-2 px-3 py-1 md:px-4 md:py-2 bg-white text-pink-500 font-terminal font-bold text-sm md:text-base rounded-full shadow-[0_0_15px_rgba(255,255,255,0.8)] hover:bg-pink-100 hover:scale-105 transition-all border-2 border-pink-300 animate-pulse"
+            className="flex items-center gap-2 px-3 py-1 border border-pink-300 rounded text-pink-100 font-terminal text-sm md:text-base hover:bg-pink-500/20 hover:text-white transition-colors shadow-[0_0_10px_rgba(255,192,203,0.3)]"
           >
-            <span className="text-lg">😇</span>
-            <span className="hidden sm:inline">HEAVEN MODE</span>
-            <span className="sm:hidden">HEAVEN</span>
+            <span className="w-2 h-2 rounded-full bg-pink-200 animate-pulse shadow-[0_0_5px_#fff]"></span>
+            HEAVEN MODE
           </button>
           
-          {/* ACQUIRE BUTTON (Hidden on Mobile to save space) */}
+          {/* ACQUIRE BUTTON (Hidden on Mobile) */}
           <button className="hidden md:block bg-hell-red hover:bg-hell-orange text-hell-white font-gothic text-xl px-6 py-2 rounded shadow-[0_0_15px_rgba(204,0,0,0.5)] transition-all transform hover:scale-105 border border-hell-orange/50">
             ACQUIRE $666
           </button>
