@@ -24,7 +24,7 @@ export const Hero = () => {
         {/* The Actual Banner Image */}
         <img 
           src="/banner.png" 
-          className="absolute inset-0 w-full h-full object-cover opacity-50" 
+          className="absolute inset-0 w-full h-full object-cover opacity-70" 
           alt="Hellcoin Throne"
         />
         
