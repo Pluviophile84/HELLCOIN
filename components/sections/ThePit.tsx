@@ -3,11 +3,11 @@ import { motion } from "framer-motion";
 
 // The words that haunt every degen's dreams
 const PTSD_WORDS_SOURCE = [
-  "RUG", "DIP", "SCAM", "-99%", "LIQUIDATED", 
-  "HONEYPOT", "HACKED", "PAUSED", "SOFT RUG", 
+  "RUG", "BUY THE DIP", "SCAM", "-99%", "LIQUIDATED", 
+  "HONEYPOT", "HACKED", "WAGMI", "SOFT RUG", 
   "0", "NGMI", "COPE", "FUD", "GAS FEES", 
   "TOP SIGNAL", "REKT", "BAGHOLDER", "DOWN BAD",
-  "PUMP", "DUMP", "EXIT", "PONZI", "VAPORWARE", "MINT"
+  "PUMP", "DUMP", "EXIT", "PONZI", "TO THE MOON", "MINT"
 ];
 
 // Duplicate the list to ensure we fill the entire grid (48 slots)
