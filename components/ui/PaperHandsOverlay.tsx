@@ -1,7 +1,7 @@
 "use client";
 import { useEffect, useState } from "react";
 import { cn } from "../../lib/utils";
-import { TriangleAlert } from "lucide-react";
+import { AlertTriangle } from "lucide-react";
 
 interface PaperHandsProps {
   isActive: boolean;
@@ -52,7 +52,7 @@ export const PaperHandsOverlay = ({ isActive, onClose }: PaperHandsProps) => {
       {showReality && (
         <div className="fixed bottom-10 right-4 md:right-10 bg-hell-red text-hell-white font-terminal text-xl p-6 border-4 border-black shadow-[10px_10px_0px_#000] z-[101] animate-bounce">
           <div className="flex items-center gap-4">
-            <TriangleAlert size={32} className="text-yellow-400" />
+            <AlertTriangle size={32} className="text-yellow-400" />
             <div>
               <strong className="block text-2xl font-gothic">NICE TRY.</strong>
               You can't escape reality.
