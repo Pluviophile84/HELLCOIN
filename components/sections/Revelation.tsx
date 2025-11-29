@@ -5,12 +5,17 @@ export const Revelation = () => {
   return (
     <section className="relative min-h-screen flex flex-col md:flex-row bg-hell-dark overflow-hidden">
       
-      {/* --- LEFT SIDE: THE DEVIL (GOAPE.png) --- */}
+      {/* --- LEFT SIDE: THE DEVIL --- */}
       <div className="md:w-1/2 p-12 flex items-center justify-center border-r border-hell-red/20 relative group overflow-hidden">
-        {/* The Devil Image as a Background Cover */}
-        <div className="absolute inset-0 bg-[url('/GOAPE-Edited.png')] bg-cover bg-center opacity-70 grayscale group-hover:grayscale-0 transition-all duration-700 transform group-hover:scale-110"></div>
         
-        {/* Overlay to make text readable */}
+        {/* FIX: Using a real Image tag instead of CSS background */}
+        <img 
+          src="/GOAPE-Edited.png" 
+          alt="The Devil"
+          className="absolute inset-0 w-full h-full object-cover opacity-40 grayscale group-hover:grayscale-0 transition-all duration-700 transform group-hover:scale-110"
+        />
+        
+        {/* Overlay to ensure text is readable */}
         <div className="absolute inset-0 bg-black/50"></div>
 
         <div className="relative z-10 text-center">
