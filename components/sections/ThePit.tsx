@@ -9,55 +9,54 @@ const PTSD_WORDS_SOURCE = [
   "PUMP", "DUMP", "EXIT", "PONZI", "VAPORWARE", "MINT"
 ];
 
-// TRIPLE the list for density (72 words)
-const PTSD_WORDS = [...PTSD_WORDS_SOURCE, ...PTSD_WORDS_SOURCE, ...PTSD_WORDS_SOURCE];
+// 4x the list for maximum density
+const PTSD_WORDS = [...PTSD_WORDS_SOURCE, ...PTSD_WORDS_SOURCE, ...PTSD_WORDS_SOURCE, ...PTSD_WORDS_SOURCE];
 
 export const ThePit = () => {
   return (
     <section className="relative py-32 bg-hell-red overflow-hidden flex items-center justify-center min-h-[1000px]">
       
-      {/* --- BACKGROUND GRID --- */}
-      {/* Mobile: 2 Columns (Allows BIG text) | Desktop: 8 Columns */}
-      <div className="absolute inset-0 pointer-events-none select-none z-0 grid grid-cols-2 md:grid-cols-8 gap-1 p-2 h-full w-full content-between">
-        {PTSD_WORDS.map((word, i) => {
+      {/* --- BACKGROUND CONTAINER --- */}
+      {/* overflow-hidden clips the edges so we don't get horizontal scroll bars */}
+      <div className="absolute inset-0 z-0 overflow-hidden">
+        
+        {/* --- THE GRID (THE CANVAS) --- */}
+        {/* TRICK: w-[150%] on mobile + -left-[25%] 
+            This makes the grid wider than the phone screen and centers it.
+            It creates the "Cropped Canvas" effect you wanted.
+            No empty sides, just a wall of text.
+        */}
+        <div className="absolute top-0 h-full grid content-between p-4
+                        w-[160%] -left-[30%] grid-cols-4 gap-4 
+                        md:w-full md:left-0 md:grid-cols-8">
           
-          // --- ALIGNMENT LOGIC ---
-          // Mobile (2 Cols): Shift them towards the center to avoid "Edge Towers"
-          // Desktop (8 Cols): Randomize slightly to break lines
-          let alignmentClass = "justify-center";
-          
-          // Logic checks screen size via md: prefix
-          // Mobile Default: 
-          if (i % 2 === 0) alignmentClass = "justify-end pr-4 md:justify-center md:pr-0"; // Left Col pushes in
-          if (i % 2 === 1) alignmentClass = "justify-start pl-4 md:justify-center md:pl-0"; // Right Col pushes in
-          
-          return (
-            <div key={i} className={`flex items-center w-full ${alignmentClass}`}>
+          {PTSD_WORDS.map((word, i) => (
+            <div key={i} className="flex items-center justify-center">
               <motion.div
                 // SIZING:
-                // Mobile: text-5xl (HUGE & READABLE)
-                // Desktop: text-6xl (Balanced)
+                // Mobile: text-5xl (Massive, because we zoomed in)
+                // Desktop: text-6xl
                 className="font-gothic font-bold text-black/30 whitespace-nowrap text-5xl md:text-6xl"
                 
-                // ANIMATION: Ghostly fade in/out
+                // ANIMATION: Simple Fade In/Out
                 animate={{ 
-                  opacity: [0, 0.4, 0], 
-                  scale: [0.8, 1.1, 0.8], 
+                  opacity: [0, 0.5, 0], 
+                  scale: [0.8, 1.2, 0.8], 
                 }}
                 
-                // TIMING: "Snake" Pattern (Left -> Right flow)
+                // TIMING: Randomized loop
                 transition={{
-                  duration: 3 + Math.random() * 3, 
+                  duration: 3 + Math.random() * 4,
                   repeat: Infinity,
-                  delay: (i * 0.05) + (Math.random() * 2), 
+                  delay: Math.random() * 5,
                   ease: "easeInOut",
                 }}
               >
                 {word}
               </motion.div>
             </div>
-          );
-        })}
+          ))}
+        </div>
       </div>
 
       {/* --- FOREGROUND: CONTENT BOX --- */}
