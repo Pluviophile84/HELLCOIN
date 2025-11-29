@@ -1,7 +1,7 @@
 "use client";
 import { motion } from "framer-motion";
 
-// The words that haunt every degen's dreams
+// Your exact list (Preserved)
 const PTSD_WORDS_SOURCE = [
   "RUG", "BUY THE DIP", "SCAM", "-99%", "LIQUIDATED", 
   "HONEYPOT", "HACKED", "WAGMI", "SOFT RUG", 
@@ -10,44 +10,57 @@ const PTSD_WORDS_SOURCE = [
   "PUMP", "DUMP", "EXIT", "PONZI", "MOON", "BULLISH"
 ];
 
-// Duplicate the list to ensure we fill the entire grid (48 slots)
-// This ensures there are no empty spots at the bottom
+// Duplicate list (Preserved)
 const PTSD_WORDS = [...PTSD_WORDS_SOURCE, ...PTSD_WORDS_SOURCE];
 
 export const ThePit = () => {
   return (
     <section className="relative py-32 bg-hell-red overflow-hidden flex items-center justify-center min-h-[900px]">
       
-      {/* --- BACKGROUND: THE GRID SYSTEM --- */}
-      {/* grid-rows-8 ensures we go all the way to the bottom */}
-      <div className="absolute inset-0 pointer-events-none select-none z-0 grid grid-cols-4 md:grid-cols-6 grid-rows-8 gap-4 p-4 h-full">
-        {PTSD_WORDS.map((word, i) => (
-          <div key={i} className="flex items-center justify-center">
-            <motion.div
-              // SIZES: Large and clear
-              className={`font-gothic font-bold text-black/50 ${i % 3 === 0 ? "text-6xl md:text-8xl" : "text-4xl md:text-7xl"}`}
-              
-              // ANIMATION: Fade in/out
-              animate={{ 
-                opacity: [0, 0.5, 0], 
-                scale: [0.9, 1.1, 0.9], 
-              }}
-              
-              // SPEED: Slower (duration 5s to 9s)
-              transition={{
-                duration: 5 + Math.random() * 4,
-                repeat: Infinity,
-                delay: Math.random() * 5,
-                ease: "easeInOut",
-              }}
-            >
-              {word}
-            </motion.div>
-          </div>
-        ))}
+      {/* --- BACKGROUND: THE BRICK WALL GRID --- */}
+      {/* Added 'w-[120%] -left-[10%]' to create extra space for the shifting animation so edges don't get cut off hard */}
+      <div className="absolute inset-0 pointer-events-none select-none z-0 grid grid-cols-4 md:grid-cols-6 grid-rows-8 gap-4 p-4 h-full w-[120%] -left-[10%] content-center">
+        {PTSD_WORDS.map((word, i) => {
+          
+          // --- BRICK WALL LOGIC ---
+          // We assume a 4-column layout for the calculation logic
+          const rowNumber = Math.floor(i / 4);
+          const isEvenRow = rowNumber % 2 === 0;
+
+          // If it is an even row, shift it to the right. 
+          // This breaks the vertical line visual.
+          const shiftClass = isEvenRow ? "translate-x-12 md:translate-x-16" : "";
+
+          return (
+            <div key={i} className={`flex items-center justify-center ${shiftClass}`}>
+              <motion.div
+                // SIZES: Preserved your logic
+                className={`font-gothic font-bold text-black/50 whitespace-nowrap ${i % 3 === 0 ? "text-6xl md:text-8xl" : "text-4xl md:text-7xl"}`}
+                
+                // ANIMATION: Fade in/out + Slight Scale
+                animate={{ 
+                  opacity: [0, 0.5, 0], 
+                  scale: [0.9, 1.1, 0.9], 
+                }}
+                
+                // SPEED & TIMING:
+                // Added (i * 0.1) to 'delay'. 
+                // This makes them appear in a sequence (Left -> Right), forcing the eye to scan horizontally.
+                transition={{
+                  duration: 5 + Math.random() * 4,
+                  repeat: Infinity,
+                  delay: (i * 0.1) + (Math.random() * 2),
+                  ease: "easeInOut",
+                }}
+              >
+                {word}
+              </motion.div>
+            </div>
+          );
+        })}
       </div>
 
-      {/* --- FOREGROUND: CONTENT BOX --- */}
+      {/* --- FOREGROUND: CONTENT BOX (Preserved) --- */}
       <div className="relative z-10 bg-hell-black border-4 border-black p-8 md:p-12 max-w-3xl mx-4 shadow-[20px_20px_0px_#000]">
         <h2 className="font-gothic text-5xl md:text-7xl text-hell-white mb-6 text-center">
           DO YOU QUALIFY?
