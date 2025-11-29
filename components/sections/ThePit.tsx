@@ -9,57 +9,65 @@ const PTSD_WORDS_SOURCE = [
   "PUMP", "DUMP", "EXIT", "PONZI", "VAPORWARE", "MINT"
 ];
 
-// 4x the list for maximum density
-const PTSD_WORDS = [...PTSD_WORDS_SOURCE, ...PTSD_WORDS_SOURCE, ...PTSD_WORDS_SOURCE, ...PTSD_WORDS_SOURCE];
+// 5x List for maximum density
+const PTSD_WORDS = [...PTSD_WORDS_SOURCE, ...PTSD_WORDS_SOURCE, ...PTSD_WORDS_SOURCE, ...PTSD_WORDS_SOURCE, ...PTSD_WORDS_SOURCE];
 
 export const ThePit = () => {
   return (
     <section className="relative py-32 bg-hell-red overflow-hidden flex items-center justify-center min-h-[1000px]">
       
       {/* --- BACKGROUND CONTAINER --- */}
-      {/* overflow-hidden clips the edges so we don't get horizontal scroll bars */}
       <div className="absolute inset-0 z-0 overflow-hidden">
         
-        {/* --- THE GRID (THE CANVAS) --- */}
-        {/* TRICK: w-[150%] on mobile + -left-[25%] 
-            This makes the grid wider than the phone screen and centers it.
-            It creates the "Cropped Canvas" effect you wanted.
-            No empty sides, just a wall of text.
+        {/* --- THE BRICK WALL GRID --- */}
+        {/* MOBILE: 4 Columns. 
+            DESKTOP: 8 Columns.
+            This defines how many words constitute a "Row".
         */}
         <div className="absolute top-0 h-full grid content-between p-4
-                        w-[160%] -left-[30%] grid-cols-4 gap-4 
+                        w-[160%] -left-[30%] grid-cols-4 gap-y-6 gap-x-0
                         md:w-full md:left-0 md:grid-cols-8">
           
-          {PTSD_WORDS.map((word, i) => (
-            <div key={i} className="flex items-center justify-center">
-              <motion.div
-                // SIZING:
-                // Mobile: text-5xl (Massive, because we zoomed in)
-                // Desktop: text-6xl
-                className="font-gothic font-bold text-black/30 whitespace-nowrap text-5xl md:text-6xl"
-                
-                // ANIMATION: Simple Fade In/Out
-                animate={{ 
-                  opacity: [0, 0.5, 0], 
-                  scale: [0.8, 1.2, 0.8], 
-                }}
-                
-                // TIMING: Randomized loop
-                transition={{
-                  duration: 3 + Math.random() * 4,
-                  repeat: Infinity,
-                  delay: Math.random() * 5,
-                  ease: "easeInOut",
-                }}
-              >
-                {word}
-              </motion.div>
-            </div>
-          ))}
+          {PTSD_WORDS.map((word, i) => {
+            
+            // --- BRICK WALL LOGIC ---
+            // 1. Determine how many columns we have (4 on mobile, 8 on desktop)
+            // Note: In React we can't easily detect screen size for logic, 
+            // so we assume the Mobile layout (4 cols) for the math since that's where the visual issue is.
+            const cols = 4; 
+            const currentRow = Math.floor(i / cols);
+            const isEvenRow = currentRow % 2 === 0;
+
+            // 2. If it's an even row, shift it to the right
+            // This breaks the vertical line looking like a column
+            const staggerClass = isEvenRow ? "translate-x-12" : "";
+
+            return (
+              <div key={i} className={`flex items-center justify-center w-full ${staggerClass}`}>
+                <motion.div
+                  className="font-gothic font-bold text-black/30 whitespace-nowrap text-5xl md:text-6xl"
+                  
+                  animate={{ 
+                    opacity: [0, 0.5, 0], 
+                    scale: [0.8, 1.2, 0.8], 
+                  }}
+                  
+                  transition={{
+                    duration: 3 + Math.random() * 4,
+                    repeat: Infinity,
+                    delay: Math.random() * 5,
+                    ease: "easeInOut",
+                  }}
+                >
+                  {word}
+                </motion.div>
+              </div>
+            );
+          })}
         </div>
       </div>
 
-      {/* --- FOREGROUND: CONTENT BOX --- */}
+      {/* --- FOREGROUND --- */}
       <div className="relative z-10 bg-hell-black border-4 border-black p-8 md:p-12 max-w-3xl mx-4 shadow-[20px_20px_0px_#000]">
         <h2 className="font-gothic text-5xl md:text-7xl text-hell-white mb-6 text-center">
           DO YOU QUALIFY?
