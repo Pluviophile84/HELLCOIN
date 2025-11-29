@@ -2,7 +2,7 @@
 import { motion } from "framer-motion";
 
 // The words that haunt every degen's dreams
-const PTSD_WORDS = [
+const PTSD_WORDS_SOURCE = [
   "RUG", "DIP", "SCAM", "-99%", "LIQUIDATED", 
   "HONEYPOT", "HACKED", "PAUSED", "SOFT RUG", 
   "0", "NGMI", "COPE", "FUD", "GAS FEES", 
@@ -10,22 +10,26 @@ const PTSD_WORDS = [
   "PUMP", "DUMP", "EXIT", "PONZI", "VAPORWARE", "MINT"
 ];
 
+// Duplicate the list to ensure we fill the entire grid (48 slots)
+// This ensures there are no empty spots at the bottom
+const PTSD_WORDS = [...PTSD_WORDS_SOURCE, ...PTSD_WORDS_SOURCE];
+
 export const ThePit = () => {
   return (
     <section className="relative py-32 bg-hell-red overflow-hidden flex items-center justify-center min-h-[900px]">
       
       {/* --- BACKGROUND: THE GRID SYSTEM --- */}
-      {/* We use CSS Grid to ensure words NEVER touch each other */}
-      <div className="absolute inset-0 pointer-events-none select-none z-0 grid grid-cols-4 md:grid-cols-6 grid-rows-6 gap-4 p-4">
+      {/* grid-rows-8 ensures we go all the way to the bottom */}
+      <div className="absolute inset-0 pointer-events-none select-none z-0 grid grid-cols-4 md:grid-cols-6 grid-rows-8 gap-4 p-4 h-full">
         {PTSD_WORDS.map((word, i) => (
           <div key={i} className="flex items-center justify-center">
             <motion.div
-              // SIZES: Increased to 6xl and 8xl
+              // SIZES: Large and clear
               className={`font-gothic font-bold text-black/50 ${i % 3 === 0 ? "text-6xl md:text-8xl" : "text-4xl md:text-7xl"}`}
               
-              // ANIMATION: Fade in/out, Scale up/down
+              // ANIMATION: Fade in/out
               animate={{ 
-                opacity: [0, 0.6, 0], // Higher opacity (up to 0.6)
+                opacity: [0, 0.5, 0], 
                 scale: [0.9, 1.1, 0.9], 
               }}
               
