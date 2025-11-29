@@ -17,25 +17,27 @@ export const ThePit = () => {
     <section className="relative py-32 bg-hell-red overflow-hidden flex items-center justify-center min-h-[1000px]">
       
       {/* --- BACKGROUND GRID --- */}
-      {/* Mobile: 3 Columns | Desktop: 8 Columns */}
-      <div className="absolute inset-0 pointer-events-none select-none z-0 grid grid-cols-3 md:grid-cols-8 gap-1 p-2 h-full w-full content-between">
+      {/* Mobile: 2 Columns (Allows BIG text) | Desktop: 8 Columns */}
+      <div className="absolute inset-0 pointer-events-none select-none z-0 grid grid-cols-2 md:grid-cols-8 gap-1 p-2 h-full w-full content-between">
         {PTSD_WORDS.map((word, i) => {
           
-          // --- ZIG-ZAG ALIGNMENT LOGIC ---
-          // This prevents "Vertical Towers" by shifting alignment based on column position
-          let alignmentClass = "justify-center"; // Default (Middle columns)
+          // --- ALIGNMENT LOGIC ---
+          // Mobile (2 Cols): Shift them towards the center to avoid "Edge Towers"
+          // Desktop (8 Cols): Randomize slightly to break lines
+          let alignmentClass = "justify-center";
           
-          // Mobile Logic (3 Cols)
-          if (i % 3 === 0) alignmentClass = "justify-end pr-2"; // Left Col -> Push Right
-          if (i % 3 === 2) alignmentClass = "justify-start pl-2"; // Right Col -> Push Left
+          // Logic checks screen size via md: prefix
+          // Mobile Default: 
+          if (i % 2 === 0) alignmentClass = "justify-end pr-4 md:justify-center md:pr-0"; // Left Col pushes in
+          if (i % 2 === 1) alignmentClass = "justify-start pl-4 md:justify-center md:pl-0"; // Right Col pushes in
           
           return (
             <div key={i} className={`flex items-center w-full ${alignmentClass}`}>
               <motion.div
                 // SIZING:
-                // Mobile: text-2xl/3xl (Smaller to fit 3 cols comfortably)
-                // Desktop: text-5xl/6xl (Massive)
-                className="font-gothic font-bold text-black/30 whitespace-nowrap text-2xl md:text-6xl"
+                // Mobile: text-5xl (HUGE & READABLE)
+                // Desktop: text-6xl (Balanced)
+                className="font-gothic font-bold text-black/30 whitespace-nowrap text-5xl md:text-6xl"
                 
                 // ANIMATION: Ghostly fade in/out
                 animate={{ 
@@ -43,11 +45,9 @@ export const ThePit = () => {
                   scale: [0.8, 1.1, 0.8], 
                 }}
                 
-                // TIMING: "Snake" Pattern
-                // i * 0.1 adds a slight sequential delay (Left->Right flow)
-                // Math.random() adds just enough chaos so it's not a robot scan
+                // TIMING: "Snake" Pattern (Left -> Right flow)
                 transition={{
-                  duration: 3 + Math.random() * 3, // Faster pulsing (3-6s)
+                  duration: 3 + Math.random() * 3, 
                   repeat: Infinity,
                   delay: (i * 0.05) + (Math.random() * 2), 
                   ease: "easeInOut",
