@@ -1,0 +1,33 @@
+"use client";
+
+export const DevilsMath = () => {
+  return (
+    <section id="math" className="py-24 bg-black font-terminal border-y border-hell-red">
+      <div className="max-w-5xl mx-auto px-4">
+        <h2 className="font-gothic text-6xl text-hell-white mb-12 text-center">
+          THE DEVIL'S MATH
+        </h2>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-px bg-hell-red/30 border border-hell-red/30">
+          {[
+            { label: "MAX SUPPLY", value: "1 BILLION", sub: "TOTAL DAMNED // No Inflation. Just Pain." },
+            { label: "SIN TAX", value: "0% / 0%", sub: "The Devil takes no cuts. Only your soul." },
+            { label: "LIQUIDITY", value: "INCINERATED", sub: "LP STATUS // Keys thrown into the abyss." },
+            { label: "DEV ALLOCATION", value: "666 TOKENS", sub: "\"Enough to buy a cheeseburger in hell.\"" },
+          ].map((item, i) => (
+            <div key={i} className="bg-hell-black p-8 hover:bg-hell-dark transition-colors group">
+              <div className="flex justify-between items-start mb-4">
+                <span className="text-hell-red text-xl">./{item.label}</span>
+                <div className="w-2 h-2 bg-hell-red rounded-full opacity-0 group-hover:opacity-100 animate-pulse"></div>
+              </div>
+              <div className="text-5xl md:text-7xl text-hell-white mb-2 font-gothic">{item.value}</div>
+              <div className="text-gray-500 text-lg border-l-2 border-hell-gold pl-3">
+                {item.sub}
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+};
