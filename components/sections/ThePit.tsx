@@ -1,7 +1,7 @@
 "use client";
 import { motion } from "framer-motion";
 
-const PTSD_WORDS = [
+const PTSD_WORDS_SOURCE = [
   "RUG", "DIP", "SCAM", "-99%", "LIQUIDATED", 
   "HONEYPOT", "HACKED", "PAUSED", "SOFT RUG", 
   "0", "NGMI", "COPE", "FUD", "GAS FEES", 
@@ -9,31 +9,34 @@ const PTSD_WORDS = [
   "PUMP", "DUMP", "EXIT", "PONZI", "VAPORWARE", "MINT"
 ];
 
+// TRIPLE the list to ensure we cover the entire screen height (72 words)
+const PTSD_WORDS = [...PTSD_WORDS_SOURCE, ...PTSD_WORDS_SOURCE, ...PTSD_WORDS_SOURCE];
+
 export const ThePit = () => {
   return (
     <section className="relative py-32 bg-hell-red overflow-hidden flex items-center justify-center min-h-[1000px]">
       
-      {/* --- BACKGROUND: THE GRID SYSTEM --- */}
-      {/* Mobile: 2 Columns | Desktop: 6 Columns */}
-      {/* This ensures massive spacing so words never touch */}
-      <div className="absolute inset-0 pointer-events-none select-none z-0 grid grid-cols-2 md:grid-cols-6 grid-rows-6 place-items-center h-full w-full p-4">
+      {/* --- BACKGROUND: THE DENSE GRID --- */}
+      {/* Mobile: grid-cols-3 (Forces horizontal spread) */}
+      {/* Desktop: grid-cols-8 (Fills the wide screen) */}
+      <div className="absolute inset-0 pointer-events-none select-none z-0 grid grid-cols-3 md:grid-cols-8 gap-1 p-2 h-full w-full content-between">
         {PTSD_WORDS.map((word, i) => (
-          <div key={i} className="w-full h-full flex items-center justify-center">
+          <div key={i} className="flex items-center justify-center w-full">
             <motion.div
-              // UNIFORM LARGE SIZES
-              // Mobile: text-5xl (Big & Clear)
-              // Desktop: text-8xl (Massive)
-              className="font-gothic font-bold text-black/40 whitespace-nowrap text-5xl md:text-8xl"
+              // SIZING:
+              // Mobile: text-2xl/3xl (Fits 3 in a row cleanly)
+              // Desktop: text-6xl (Big but allows more rows)
+              className="font-gothic font-bold text-black/30 whitespace-nowrap text-3xl md:text-6xl"
               
-              // ANIMATION: Fade in/out, Scale up/down
+              // ANIMATION: Ghostly fade in/out
               animate={{ 
-                opacity: [0, 0.5, 0], 
-                scale: [0.8, 1.2, 0.8], 
+                opacity: [0, 0.4, 0], 
+                scale: [0.8, 1.1, 0.8], 
               }}
               
-              // SPEED: Randomized but generally slow
+              // SPEED: Varied
               transition={{
-                duration: 4 + Math.random() * 4, // 4s to 8s duration
+                duration: 3 + Math.random() * 5,
                 repeat: Infinity,
                 delay: Math.random() * 5,
                 ease: "easeInOut",
