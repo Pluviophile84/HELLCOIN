@@ -7,29 +7,26 @@ import { motion, AnimatePresence } from "framer-motion";
 export const Navbar = ({ onTriggerPaperHands }: { onTriggerPaperHands: () => void }) => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [hasLoaded, setHasLoaded] = useState(false); // New flag to prevent initial bounce
 
-  // --- CONFIG: PASTE YOUR BUY LINK HERE ---
   const BUY_LINK = "https://raydium.io/swap"; 
 
-  // 1. SCROLL LISTENER
   useEffect(() => {
     const handleScroll = () => {
-      // Check scroll position
-      if (window.scrollY > 50) {
-        setIsScrolled(true);
-      } else {
-        setIsScrolled(false);
-      }
+      setIsScrolled(window.scrollY > 50);
     };
 
-    // Run immediately on load to set correct state
+    // Run immediately
     handleScroll();
+    
+    // Set loaded flag after a tiny delay so the initial render is instant (no animation)
+    setTimeout(() => setHasLoaded(true), 100);
 
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  // 2. SCROLL LOCK
+  // Scroll Lock for Mobile Menu
   useEffect(() => {
     if (mobileMenuOpen) {
       document.body.style.overflow = "hidden";
@@ -55,16 +52,23 @@ export const Navbar = ({ onTriggerPaperHands }: { onTriggerPaperHands: () => voi
   ];
 
   return (
-    <nav className={cn(
-      "fixed top-0 w-full z-40 transition-all duration-300 border-b border-transparent",
-      // FIX: CONSTANT HEIGHT (py-4)
-      // We removed the height change logic. 
-      // It now only changes color (Transparent vs Black).
-      // This stops the "Bouncing/Shrinking" glitch on refresh.
-      isScrolled 
-        ? "bg-hell-black/90 backdrop-blur-md border-hell-red/30 py-4" 
-        : "bg-transparent py-4"
-    )}>
+    <nav 
+      className={cn(
+        "fixed top-0 w-full z-40 border-b border-transparent",
+        // ANIMATION LOGIC:
+        // 'transition-all duration-300': Makes the shrink smooth
+        // hasLoaded ? ... : 'duration-0': If it's the first load (refresh), do it INSTANTLY (0ms) so it doesn't bounce.
+        hasLoaded ? "transition-all duration-300" : "transition-none",
+        
+        // HEIGHT LOGIC:
+        // Scrolled: Black background, Thin (py-2)
+        // Top: Transparent, Thick (py-6)
+        // Mobile: Always py-4 (Standard size)
+        isScrolled 
+          ? "bg-hell-black/90 backdrop-blur-md border-hell-red/30 py-4 md:py-2" 
+          : "bg-transparent py-4 md:py-6"
+      )}
+    >
       <div className="max-w-7xl mx-auto px-4 flex justify-between items-center">
         
         {/* --- LOGO --- */}
@@ -92,8 +96,6 @@ export const Navbar = ({ onTriggerPaperHands }: { onTriggerPaperHands: () => voi
 
         {/* --- ACTIONS --- */}
         <div className="flex items-center gap-2 md:gap-4">
-          
-          {/* HEAVEN MODE BUTTON */}
           <button 
             onClick={onTriggerPaperHands}
             className="flex items-center gap-2 px-3 py-1 border border-pink-300 rounded text-pink-100 font-terminal text-sm md:text-base hover:bg-pink-500/20 hover:text-white transition-colors shadow-[0_0_10px_rgba(255,192,203,0.3)]"
@@ -102,7 +104,6 @@ export const Navbar = ({ onTriggerPaperHands }: { onTriggerPaperHands: () => voi
             HEAVEN MODE
           </button>
           
-          {/* ACQUIRE BUTTON (DESKTOP) */}
           <a 
             href={BUY_LINK}
             target="_blank" 
@@ -112,7 +113,6 @@ export const Navbar = ({ onTriggerPaperHands }: { onTriggerPaperHands: () => voi
             ACQUIRE $666
           </a>
 
-          {/* MOBILE MENU TOGGLE */}
           <button className="lg:hidden text-hell-white" onClick={() => setMobileMenuOpen(!mobileMenuOpen)}>
             {mobileMenuOpen ? <X size={28} /> : <Menu size={28} />}
           </button>
