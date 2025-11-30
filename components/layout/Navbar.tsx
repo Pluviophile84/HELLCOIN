@@ -8,9 +8,25 @@ export const Navbar = ({ onTriggerPaperHands }: { onTriggerPaperHands: () => voi
   const [isScrolled, setIsScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
-  // 1. SCROLL LISTENER
+  // --- CONFIG: PASTE YOUR BUY LINK HERE ---
+  const BUY_LINK = "https://raydium.io/swap"; 
+
+  // 1. SCROLL LISTENER (FIXED FOR REFRESH)
   useEffect(() => {
-    const handleScroll = () => setIsScrolled(window.scrollY > 50);
+    // Define the check function
+    const handleScroll = () => {
+      if (window.scrollY > 50) {
+        setIsScrolled(true);
+      } else {
+        setIsScrolled(false);
+      }
+    };
+
+    // FIX: Run this check IMMEDIATELY on load
+    // This ensures if you refresh at the bottom, the bar is already black
+    handleScroll();
+
+    // Then listen for future scrolls
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
@@ -40,12 +56,13 @@ export const Navbar = ({ onTriggerPaperHands }: { onTriggerPaperHands: () => voi
     { name: "THE PIT", href: "#the-pit" },
   ];
 
-  // --- CONFIG: PASTE YOUR BUY LINK HERE ---
-  const BUY_LINK = "https://raydium.io/swap"; 
-
   return (
     <nav className={cn(
       "fixed top-0 w-full z-40 transition-all duration-300 border-b border-transparent",
+      // STYLING LOGIC:
+      // If scrolled: Black background, thinner on desktop (py-2)
+      // If top: Transparent, thicker on desktop (py-6)
+      // Mobile always stays py-4 for touch target size
       isScrolled 
         ? "bg-hell-black/90 backdrop-blur-md border-hell-red/30 py-4 md:py-2" 
         : "bg-transparent py-4 md:py-6"
@@ -58,7 +75,7 @@ export const Navbar = ({ onTriggerPaperHands }: { onTriggerPaperHands: () => voi
           className="flex items-center gap-2 md:gap-3 group cursor-pointer shrink-0 transition-transform active:scale-95"
         >
           <img 
-            src="/Logo.png" 
+            src="/GOAPE.png" 
             alt="Hellcoin" 
             className="w-8 h-8 md:w-12 md:h-12 rounded-full border border-hell-orange object-cover" 
           />
@@ -87,7 +104,7 @@ export const Navbar = ({ onTriggerPaperHands }: { onTriggerPaperHands: () => voi
             HEAVEN MODE
           </button>
           
-          {/* ACQUIRE BUTTON (DESKTOP) - Now a Link */}
+          {/* ACQUIRE BUTTON (DESKTOP) */}
           <a 
             href={BUY_LINK}
             target="_blank" 
@@ -128,7 +145,7 @@ export const Navbar = ({ onTriggerPaperHands }: { onTriggerPaperHands: () => voi
               
               <div className="w-16 h-1 bg-hell-red/50 my-4"></div>
               
-              {/* ACQUIRE BUTTON (MOBILE) - Now a Link */}
+              {/* ACQUIRE BUTTON (MOBILE) */}
               <a 
                 href={BUY_LINK}
                 target="_blank" 
