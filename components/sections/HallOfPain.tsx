@@ -11,7 +11,7 @@ const sinners = [
 
 export const HallOfPain = () => {
   return (
-    <section className="py-24 bg-hell-dark border-t border-hell-red/20 overflow-hidden">
+    <section className="py-24 bg-hell-dark overflow-hidden">
       <div className="max-w-7xl mx-auto px-4 mb-12">
         <h2 className="font-gothic text-5xl text-hell-white">HALL OF PAIN <span className="text-hell-red text-2xl ml-4 font-terminal">/// PROOF OF SUFFERING</span></h2>
       </div>
