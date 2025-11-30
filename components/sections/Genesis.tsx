@@ -12,7 +12,7 @@ export const Genesis = () => {
   ];
 
   return (
-    <section id="genesis" className="py-32 px-4 bg-hell-black relative border-t border-hell-red/20">
+      <section id="genesis" className="py-32 px-4 bg-hell-black relative">
       <div className="max-w-5xl mx-auto">
         
         {/* --- NEW HEADER: "Chapter Marker" Style --- */}
