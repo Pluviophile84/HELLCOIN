@@ -25,7 +25,7 @@ export const Ritual = () => {
   return (
     // FIX 1: Reverted to standard 'py-32'. 
     // This restores the original negative space you liked on both Mobile & Desktop.
-    <section id="ritual" className="py-32 bg-hell-black overflow-hidden relative">
+    <section id="ritual" className="py-24 bg-hell-black overflow-hidden relative">
       
       {/* --- BACKGROUND: THE TRUE PENTAGRAM --- */}
       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 pointer-events-none select-none z-0">
