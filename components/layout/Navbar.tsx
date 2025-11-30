@@ -7,7 +7,7 @@ import { motion, AnimatePresence } from "framer-motion";
 export const Navbar = ({ onTriggerPaperHands }: { onTriggerPaperHands: () => void }) => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const [hasLoaded, setHasLoaded] = useState(false); // New flag to prevent initial bounce
+  const [hasLoaded, setHasLoaded] = useState(false);
 
   const BUY_LINK = "https://raydium.io/swap"; 
 
@@ -15,18 +15,12 @@ export const Navbar = ({ onTriggerPaperHands }: { onTriggerPaperHands: () => voi
     const handleScroll = () => {
       setIsScrolled(window.scrollY > 50);
     };
-
-    // Run immediately
     handleScroll();
-    
-    // Set loaded flag after a tiny delay so the initial render is instant (no animation)
     setTimeout(() => setHasLoaded(true), 100);
-
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  // Scroll Lock for Mobile Menu
   useEffect(() => {
     if (mobileMenuOpen) {
       document.body.style.overflow = "hidden";
@@ -39,6 +33,21 @@ export const Navbar = ({ onTriggerPaperHands }: { onTriggerPaperHands: () => voi
   const scrollToTop = () => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
     setMobileMenuOpen(false);
+  };
+
+  // --- NEW: SMART NAVIGATION HANDLER ---
+  // This prevents the "Back Button" bug by scrolling manually 
+  // instead of adding a hash (#) to the URL history.
+  const handleNavClick = (e: React.MouseEvent<HTMLAnchorElement>, href: string) => {
+    e.preventDefault(); // STOP the URL change
+    setMobileMenuOpen(false); // Close mobile menu if open
+
+    const targetId = href.replace("#", "");
+    const elem = document.getElementById(targetId);
+    
+    if (elem) {
+      elem.scrollIntoView({ behavior: "smooth" });
+    }
   };
 
   const navLinks = [
@@ -55,15 +64,7 @@ export const Navbar = ({ onTriggerPaperHands }: { onTriggerPaperHands: () => voi
     <nav 
       className={cn(
         "fixed top-0 w-full z-40 border-b border-transparent",
-        // ANIMATION LOGIC:
-        // 'transition-all duration-300': Makes the shrink smooth
-        // hasLoaded ? ... : 'duration-0': If it's the first load (refresh), do it INSTANTLY (0ms) so it doesn't bounce.
         hasLoaded ? "transition-all duration-300" : "transition-none",
-        
-        // HEIGHT LOGIC:
-        // Scrolled: Black background, Thin (py-2)
-        // Top: Transparent, Thick (py-6)
-        // Mobile: Always py-4 (Standard size)
         isScrolled 
           ? "bg-hell-black/90 backdrop-blur-md border-hell-red/30 py-4 md:py-2" 
           : "bg-transparent py-4 md:py-6"
@@ -87,7 +88,13 @@ export const Navbar = ({ onTriggerPaperHands }: { onTriggerPaperHands: () => voi
         {/* --- DESKTOP LINKS --- */}
         <div className="hidden lg:flex gap-8">
           {navLinks.map((link) => (
-            <a key={link.name} href={link.href} className="font-terminal text-xl text-hell-white hover:text-hell-gold transition-colors uppercase tracking-widest relative group">
+            <a 
+              key={link.name} 
+              href={link.href}
+              // USE THE NEW HANDLER HERE
+              onClick={(e) => handleNavClick(e, link.href)}
+              className="font-terminal text-xl text-hell-white hover:text-hell-gold transition-colors uppercase tracking-widest relative group cursor-pointer"
+            >
               {link.name}
               <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-hell-orange transition-all group-hover:w-full"></span>
             </a>
@@ -134,8 +141,9 @@ export const Navbar = ({ onTriggerPaperHands }: { onTriggerPaperHands: () => voi
                 <a 
                   key={link.name} 
                   href={link.href} 
-                  className="font-terminal text-3xl text-hell-white hover:text-hell-orange tracking-widest" 
-                  onClick={() => setMobileMenuOpen(false)}
+                  // USE THE NEW HANDLER HERE TOO
+                  onClick={(e) => handleNavClick(e, link.href)}
+                  className="font-terminal text-3xl text-hell-white hover:text-hell-orange tracking-widest cursor-pointer" 
                 >
                   {link.name}
                 </a>
