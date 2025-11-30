@@ -3,7 +3,7 @@ import { motion } from "framer-motion";
 
 export const Revelation = () => {
   return (
-    <section className="relative min-h-screen flex flex-col md:flex-row bg-hell-dark overflow-hidden">
+    <section id="revelation" className="relative min-h-screen flex flex-col md:flex-row bg-hell-dark overflow-hidden">
       
       {/* --- LEFT SIDE: THE DEVIL (GOAPE.png) --- */}
       <div className="md:w-1/2 p-12 flex items-center justify-center border-r border-hell-red/20 relative group overflow-hidden">
