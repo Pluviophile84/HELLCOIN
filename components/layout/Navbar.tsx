@@ -11,10 +11,10 @@ export const Navbar = ({ onTriggerPaperHands }: { onTriggerPaperHands: () => voi
   // --- CONFIG: PASTE YOUR BUY LINK HERE ---
   const BUY_LINK = "https://raydium.io/swap"; 
 
-  // 1. SCROLL LISTENER (FIXED FOR REFRESH)
+  // 1. SCROLL LISTENER
   useEffect(() => {
-    // Define the check function
     const handleScroll = () => {
+      // Check scroll position
       if (window.scrollY > 50) {
         setIsScrolled(true);
       } else {
@@ -22,11 +22,9 @@ export const Navbar = ({ onTriggerPaperHands }: { onTriggerPaperHands: () => voi
       }
     };
 
-    // FIX: Run this check IMMEDIATELY on load
-    // This ensures if you refresh at the bottom, the bar is already black
+    // Run immediately on load to set correct state
     handleScroll();
 
-    // Then listen for future scrolls
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
@@ -59,13 +57,13 @@ export const Navbar = ({ onTriggerPaperHands }: { onTriggerPaperHands: () => voi
   return (
     <nav className={cn(
       "fixed top-0 w-full z-40 transition-all duration-300 border-b border-transparent",
-      // STYLING LOGIC:
-      // If scrolled: Black background, thinner on desktop (py-2)
-      // If top: Transparent, thicker on desktop (py-6)
-      // Mobile always stays py-4 for touch target size
+      // FIX: CONSTANT HEIGHT (py-4)
+      // We removed the height change logic. 
+      // It now only changes color (Transparent vs Black).
+      // This stops the "Bouncing/Shrinking" glitch on refresh.
       isScrolled 
-        ? "bg-hell-black/90 backdrop-blur-md border-hell-red/30 py-4 md:py-2" 
-        : "bg-transparent py-4 md:py-6"
+        ? "bg-hell-black/90 backdrop-blur-md border-hell-red/30 py-4" 
+        : "bg-transparent py-4"
     )}>
       <div className="max-w-7xl mx-auto px-4 flex justify-between items-center">
         
@@ -145,7 +143,6 @@ export const Navbar = ({ onTriggerPaperHands }: { onTriggerPaperHands: () => voi
               
               <div className="w-16 h-1 bg-hell-red/50 my-4"></div>
               
-              {/* ACQUIRE BUTTON (MOBILE) */}
               <a 
                 href={BUY_LINK}
                 target="_blank" 
