@@ -3,7 +3,6 @@ import { motion } from "framer-motion";
 
 export const Genesis = () => {
   const paragraphs = [
-    // Removed "IN THE BEGINNING" from the list so we can make it a Header
     { text: "THERE WAS COPE.", highlight: true },
     { text: "When the first trader whispered, \"This time it’s different,\" Hell was born.", highlight: false },
     { text: "From the ashes of liquidated accounts, burned bridges, and failed presales rose a digital inferno powered by the only renewable energy source in crypto: Regret.", highlight: false },
@@ -12,10 +11,12 @@ export const Genesis = () => {
   ];
 
   return (
-      <section id="genesis" className="py-32 px-4 bg-hell-black relative">
+    // FIX: Changed background to 'bg-hell-dark' to contrast with the Hero section.
+    // Removed 'border-t' to keep it clean.
+    <section id="genesis" className="py-32 px-4 bg-hell-dark relative">
       <div className="max-w-5xl mx-auto">
         
-        {/* --- NEW HEADER: "Chapter Marker" Style --- */}
+        {/* Header */}
         <motion.div 
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -28,6 +29,7 @@ export const Genesis = () => {
           </h2>
         </motion.div>
 
+        {/* Content */}
         <div className="space-y-12 pl-0 md:pl-12">
           {paragraphs.map((para, i) => (
             <motion.div
