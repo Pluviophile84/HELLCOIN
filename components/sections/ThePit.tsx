@@ -14,7 +14,7 @@ const PTSD_WORDS = [...PTSD_WORDS_SOURCE, ...PTSD_WORDS_SOURCE, ...PTSD_WORDS_SO
 
 export const ThePit = () => {
   return (
-    <section className="relative py-32 bg-hell-red overflow-hidden flex items-center justify-center min-h-[1000px]">
+    <section id="the-pit" className="relative py-32 bg-hell-red overflow-hidden flex items-center justify-center min-h-[1000px]">
       
       {/* --- BACKGROUND CONTAINER --- */}
       <div className="absolute inset-0 z-0 overflow-hidden">
