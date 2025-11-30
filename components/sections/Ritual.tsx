@@ -23,10 +23,9 @@ export const Ritual = () => {
   ];
 
   return (
-    // FIX: 
-    // Mobile: py-16 (Less space, more compact)
-    // Desktop: md:py-48 (More space, premium feel)
-    <section id="ritual" className="py-16 md:py-48 bg-hell-black overflow-hidden relative">
+    // FIX 1: Reverted to standard 'py-32'. 
+    // This restores the original negative space you liked on both Mobile & Desktop.
+    <section id="ritual" className="py-32 bg-hell-black overflow-hidden relative">
       
       {/* --- BACKGROUND: THE TRUE PENTAGRAM --- */}
       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 pointer-events-none select-none z-0">
@@ -34,7 +33,7 @@ export const Ritual = () => {
           viewBox="0 0 100 100" 
           className="w-[600px] h-[600px] md:w-[900px] md:h-[900px] animate-spin-slow text-hell-red"
           style={{ 
-            opacity: 0.1, 
+            opacity: 0.05, // FIX 2: Lowered to 5% (Very subtle)
             animationDuration: '60s' 
           }}
         >
@@ -53,14 +52,12 @@ export const Ritual = () => {
       </div>
 
       <div className="max-w-6xl mx-auto px-4 relative z-10">
-        {/* Title Spacing: mb-10 on mobile (tighter), mb-24 on desktop (looser) */}
-        <h2 className="font-gothic text-6xl md:text-8xl text-center text-hell-white mb-10 md:mb-24 text-glow">
+        <h2 className="font-gothic text-6xl md:text-8xl text-center text-hell-white mb-20 text-glow">
           THE RITUAL
         </h2>
 
         {/* STEPS GRID */}
-        {/* Gap Spacing: gap-8 on mobile, gap-16 on desktop */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-16 mb-12 md:mb-24">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-12 mb-20">
           {steps.map((step, i) => (
             <motion.div 
               key={i}
@@ -68,16 +65,16 @@ export const Ritual = () => {
               whileInView={{ opacity: 1, x: 0 }}
               viewport={{ once: true }}
               transition={{ delay: i * 0.2 }}
-              className="flex gap-4 md:gap-6 items-start group"
+              className="flex gap-6 items-start group"
             >
-              <span className="font-gothic text-6xl md:text-8xl text-hell-red/20 group-hover:text-hell-red transition-colors leading-none shrink-0">
+              <span className="font-gothic text-8xl text-hell-red/20 group-hover:text-hell-red transition-colors leading-none shrink-0">
                 {step.num}
               </span>
               <div>
-                <h3 className="font-terminal text-2xl md:text-3xl text-hell-gold mb-2 uppercase border-b border-hell-red/30 pb-2 inline-block">
+                <h3 className="font-terminal text-3xl text-hell-gold mb-2 uppercase border-b border-hell-red/30 pb-2 inline-block">
                   {step.title}
                 </h3>
-                <p className="font-terminal text-lg md:text-xl text-gray-400 max-w-sm">
+                <p className="font-terminal text-xl text-gray-400 max-w-sm">
                   {step.text}
                 </p>
               </div>
@@ -106,7 +103,9 @@ export const Ritual = () => {
             {/* The Copy Button */}
             <button 
               onClick={handleCopy}
-              className="w-full md:w-auto bg-hell-red hover:bg-hell-orange text-white font-bold py-4 px-8 rounded flex items-center justify-center gap-2 transition-all active:scale-95"
+              // FIX 3: Added 'min-w-[180px]' to prevent jitter when text changes.
+              // Kept 'active:scale-95' for click feedback.
+              className="w-full md:w-auto min-w-[180px] bg-hell-red hover:bg-hell-orange text-white font-bold py-4 px-8 rounded flex items-center justify-center gap-2 transition-all active:scale-95"
             >
               {copied ? <Check size={24} /> : <Copy size={24} />}
               {copied ? "COPIED!" : "COPY CA"}
