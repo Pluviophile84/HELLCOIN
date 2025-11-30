@@ -2,7 +2,7 @@
 
 export const DevilsMath = () => {
   return (
-    <section id="math" className="py-24 bg-black font-terminal border-y border-hell-red">
+    <section id="math" className="py-24 bg-black font-terminal">
       <div className="max-w-5xl mx-auto px-4">
         <h2 className="font-gothic text-6xl text-hell-white mb-12 text-center">
           THE DEVIL'S MATH
