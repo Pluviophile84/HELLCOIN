@@ -2,7 +2,7 @@
 import { useState, useEffect } from "react";
 import { Menu, X } from "lucide-react";
 import { cn } from "../../lib/utils";
-import { motion, AnimatePresence } from "framer-motion"; // Added for animation
+import { motion, AnimatePresence } from "framer-motion";
 
 export const Navbar = ({ onTriggerPaperHands }: { onTriggerPaperHands: () => void }) => {
   const [isScrolled, setIsScrolled] = useState(false);
@@ -14,25 +14,41 @@ export const Navbar = ({ onTriggerPaperHands }: { onTriggerPaperHands: () => voi
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
+  // Function to scroll to top when Logo is clicked
+  const scrollToTop = () => {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+    setMobileMenuOpen(false);
+  };
+
+  // Updated Link List to include THE PIT and TRUTH (Revelation)
+  // NOTE: You must ensure your sections have these IDs (id="revelation", id="the-pit")
   const navLinks = [
     { name: "GENESIS", href: "#genesis" },
+    { name: "TRUTH", href: "#revelation" }, // Links to Revelation Section
     { name: "COMMANDMENTS", href: "#commandments" },
     { name: "MATH", href: "#math" },
     { name: "RITUAL", href: "#ritual" },
     { name: "HELLMAP", href: "#hellmap" },
+    { name: "THE PIT", href: "#the-pit" }, // Links to The Pit Section
   ];
 
   return (
     <nav className={cn(
       "fixed top-0 w-full z-40 transition-all duration-300 border-b border-transparent",
-      isScrolled ? "bg-hell-black/90 backdrop-blur-md border-hell-red/30 py-2" : "bg-transparent py-4"
+      // FIX 1: Mobile always keeps 'py-4' (thicker). Only Desktop shrinks to 'md:py-2'.
+      isScrolled 
+        ? "bg-hell-black/90 backdrop-blur-md border-hell-red/30 py-4 md:py-2" 
+        : "bg-transparent py-4 md:py-6"
     )}>
       <div className="max-w-7xl mx-auto px-4 flex justify-between items-center">
         
-        {/* --- LOGO --- */}
-        <div className="flex items-center gap-2 md:gap-3 group cursor-pointer hover:animate-glitch shrink-0">
+        {/* --- LOGO (Now Clickable -> Home) --- */}
+        <div 
+          onClick={scrollToTop}
+          className="flex items-center gap-2 md:gap-3 group cursor-pointer hover:animate-glitch shrink-0"
+        >
           <img 
-            src="/Logo.png" 
+            src="/GOAPE.png" 
             alt="Hellcoin" 
             className="w-8 h-8 md:w-12 md:h-12 rounded-full border border-hell-orange object-cover" 
           />
@@ -51,6 +67,8 @@ export const Navbar = ({ onTriggerPaperHands }: { onTriggerPaperHands: () => voi
 
         {/* --- ACTIONS --- */}
         <div className="flex items-center gap-2 md:gap-4">
+          
+          {/* HEAVEN MODE BUTTON */}
           <button 
             onClick={onTriggerPaperHands}
             className="flex items-center gap-2 px-3 py-1 border border-pink-300 rounded text-pink-100 font-terminal text-sm md:text-base hover:bg-pink-500/20 hover:text-white transition-colors shadow-[0_0_10px_rgba(255,192,203,0.3)]"
@@ -59,32 +77,40 @@ export const Navbar = ({ onTriggerPaperHands }: { onTriggerPaperHands: () => voi
             HEAVEN MODE
           </button>
           
+          {/* ACQUIRE BUTTON (Hidden on Mobile) */}
           <button className="hidden md:block bg-hell-red hover:bg-hell-orange text-hell-white font-gothic text-xl px-6 py-2 rounded shadow-[0_0_15px_rgba(204,0,0,0.5)] transition-all transform hover:scale-105 border border-hell-orange/50">
             ACQUIRE $666
           </button>
 
+          {/* MOBILE MENU TOGGLE */}
           <button className="lg:hidden text-hell-white" onClick={() => setMobileMenuOpen(!mobileMenuOpen)}>
             {mobileMenuOpen ? <X size={28} /> : <Menu size={28} />}
           </button>
         </div>
       </div>
 
-      {/* --- MOBILE MENU (With Animation) --- */}
+      {/* --- MOBILE MENU --- */}
       <AnimatePresence>
         {mobileMenuOpen && (
           <motion.div
             initial={{ opacity: 0, height: 0 }}
-            animate={{ opacity: 1, height: "auto" }}
+            animate={{ opacity: 1, height: "100vh" }} // Full screen height to ensure easy clicking
             exit={{ opacity: 0, height: 0 }}
-            className="lg:hidden bg-hell-black border-b border-hell-red/50 overflow-hidden shadow-2xl"
+            className="lg:hidden fixed top-[60px] left-0 w-full bg-hell-black/95 backdrop-blur-xl border-b border-hell-red/50 overflow-hidden shadow-2xl"
           >
-            <div className="p-4 flex flex-col gap-4">
+            <div className="p-6 flex flex-col gap-6 items-center justify-center h-full pb-32">
               {navLinks.map((link) => (
-                <a key={link.name} href={link.href} className="font-terminal text-2xl text-hell-white hover:text-hell-orange" onClick={() => setMobileMenuOpen(false)}>
+                <a 
+                  key={link.name} 
+                  href={link.href} 
+                  className="font-terminal text-3xl text-hell-white hover:text-hell-orange tracking-widest" 
+                  onClick={() => setMobileMenuOpen(false)}
+                >
                   {link.name}
                 </a>
               ))}
-              <button className="w-full bg-hell-red text-hell-white font-gothic text-xl py-3 rounded mt-2">
+              <div className="w-16 h-1 bg-hell-red/50 my-4"></div>
+              <button className="bg-hell-red text-hell-white font-gothic text-2xl py-3 px-12 rounded shadow-[0_0_20px_rgba(204,0,0,0.6)]">
                 ACQUIRE $666
               </button>
             </div>
