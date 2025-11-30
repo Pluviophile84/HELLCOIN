@@ -1,19 +1,48 @@
 "use client";
 import { motion } from "framer-motion";
+import { useState } from "react";
+import { Copy, Check } from "lucide-react";
 
 export const Ritual = () => {
+  const [copied, setCopied] = useState(false);
+  
+  // REPLACE THIS WITH YOUR REAL CONTRACT ADDRESS
+  const CONTRACT_ADDRESS = "0x666...INSERT_REAL_CA_HERE...666";
+
+  const handleCopy = () => {
+    navigator.clipboard.writeText(CONTRACT_ADDRESS);
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2000);
+  };
+
   const steps = [
     { num: "01", title: "PREPARE THE VESSEL", text: "Download Phantom or Metamask. This will be your wallet for the afterlife." },
     { num: "02", title: "GATHER THE OFFERING", text: "Acquire some SOL (or ETH). You cannot enter the pit empty-handed." },
     { num: "03", title: "ENTER THE ALTAR", text: "Go to Raydium or Uniswap. Connect your wallet. Do not look back." },
-    { num: "04", title: "ACCEPT YOUR FATE", text: "Paste the $666 Contract. Swap your boring coins for eternal glory." },
+    { num: "04", title: "ACCEPT YOUR FATE", text: "Paste the Contract Address below. Swap your boring coins for eternal glory." },
   ];
 
   return (
     <section id="ritual" className="py-32 bg-hell-black overflow-hidden relative">
-      {/* Background Symbol */}
-      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 opacity-10 pointer-events-none">
-        <div className="w-[800px] h-[800px] border-[50px] border-hell-red rounded-full animate-spin-slow dashed-border"></div>
+      
+      {/* --- BACKGROUND: THE SUMMONING PENTAGRAM --- */}
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 pointer-events-none select-none z-0">
+        {/* The SVG Pentagram */}
+        <svg 
+          viewBox="0 0 100 100" 
+          className="w-[600px] h-[600px] md:w-[900px] md:h-[900px] animate-spin-slow opacity-20 text-hell-red"
+        >
+          {/* Outer Circle (Optional, looks cool with the star) */}
+          <circle cx="50" cy="50" r="48" fill="none" stroke="currentColor" strokeWidth="0.5" strokeDasharray="4 2" />
+          
+          {/* The Star (Pentagram) */}
+          <polygon 
+            points="50,5 61,40 98,40 68,60 79,95 50,75 21,95 32,60 2,40 39,40" 
+            fill="none" 
+            stroke="currentColor" 
+            strokeWidth="0.8"
+          />
+        </svg>
       </div>
 
       <div className="max-w-6xl mx-auto px-4 relative z-10">
@@ -21,7 +50,8 @@ export const Ritual = () => {
           THE RITUAL
         </h2>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
+        {/* STEPS GRID */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-12 mb-20">
           {steps.map((step, i) => (
             <motion.div 
               key={i}
@@ -45,6 +75,36 @@ export const Ritual = () => {
             </motion.div>
           ))}
         </div>
+
+        {/* --- CONTRACT ADDRESS BOX --- */}
+        <motion.div 
+          initial={{ opacity: 0, y: 30 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          className="max-w-3xl mx-auto"
+        >
+          <div className="text-center mb-4">
+             <span className="font-terminal text-hell-red text-xl bg-hell-red/10 px-4 py-1 border border-hell-red/20 rounded">
+               /// CAUTION: DO NOT SEND FUNDS DIRECTLY ///
+             </span>
+          </div>
+
+          <div className="bg-black border-2 border-hell-red p-2 md:p-4 rounded flex flex-col md:flex-row items-center gap-4 shadow-[0_0_30px_rgba(204,0,0,0.2)]">
+            {/* The Address Display */}
+            <div className="flex-1 w-full bg-hell-dark/50 p-4 rounded border border-gray-800 font-terminal text-xl md:text-2xl text-gray-300 break-all text-center md:text-left">
+              {CONTRACT_ADDRESS}
+            </div>
+
+            {/* The Copy Button */}
+            <button 
+              onClick={handleCopy}
+              className="w-full md:w-auto bg-hell-red hover:bg-hell-orange text-white font-bold py-4 px-8 rounded flex items-center justify-center gap-2 transition-all active:scale-95"
+            >
+              {copied ? <Check size={24} /> : <Copy size={24} />}
+              {copied ? "COPIED!" : "COPY CA"}
+            </button>
+          </div>
+        </motion.div>
+
       </div>
     </section>
   );
