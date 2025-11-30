@@ -23,7 +23,10 @@ export const Ritual = () => {
   ];
 
   return (
-    <section id="ritual" className="py-32 bg-hell-black overflow-hidden relative">
+    // FIX: 
+    // Mobile: py-16 (Less space, more compact)
+    // Desktop: md:py-48 (More space, premium feel)
+    <section id="ritual" className="py-16 md:py-48 bg-hell-black overflow-hidden relative">
       
       {/* --- BACKGROUND: THE TRUE PENTAGRAM --- */}
       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 pointer-events-none select-none z-0">
@@ -31,24 +34,14 @@ export const Ritual = () => {
           viewBox="0 0 100 100" 
           className="w-[600px] h-[600px] md:w-[900px] md:h-[900px] animate-spin-slow text-hell-red"
           style={{ 
-            opacity: 0.1, // 10% Opacity (Lowered)
-            animationDuration: '60s' // Super Slow Rotation (60 seconds per loop)
+            opacity: 0.1, 
+            animationDuration: '60s' 
           }}
         >
-          {/* 1. THE OUTER CIRCLE (Thick & Solid) */}
-          <circle 
-            cx="50" 
-            cy="50" 
-            r="48" 
-            fill="none" 
-            stroke="currentColor" 
-            strokeWidth="2" 
-          />
+          {/* Outer Circle */}
+          <circle cx="50" cy="50" r="48" fill="none" stroke="currentColor" strokeWidth="2" />
           
-          {/* 2. THE PENTAGRAM (Intersecting Lines) */}
-          {/* This path connects vertices across the center to form the star:
-              Top(50,2) -> BottomRight(79,90) -> Left(2,35) -> Right(98,35) -> BottomLeft(21,90) -> Top
-          */}
+          {/* Pentagram Path */}
           <path 
             d="M50 2 L79 90 L2 35 L98 35 L21 90 Z" 
             fill="none" 
@@ -60,12 +53,14 @@ export const Ritual = () => {
       </div>
 
       <div className="max-w-6xl mx-auto px-4 relative z-10">
-        <h2 className="font-gothic text-6xl md:text-8xl text-center text-hell-white mb-20 text-glow">
+        {/* Title Spacing: mb-10 on mobile (tighter), mb-24 on desktop (looser) */}
+        <h2 className="font-gothic text-6xl md:text-8xl text-center text-hell-white mb-10 md:mb-24 text-glow">
           THE RITUAL
         </h2>
 
         {/* STEPS GRID */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-12 mb-20">
+        {/* Gap Spacing: gap-8 on mobile, gap-16 on desktop */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-16 mb-12 md:mb-24">
           {steps.map((step, i) => (
             <motion.div 
               key={i}
@@ -73,16 +68,16 @@ export const Ritual = () => {
               whileInView={{ opacity: 1, x: 0 }}
               viewport={{ once: true }}
               transition={{ delay: i * 0.2 }}
-              className="flex gap-6 items-start group"
+              className="flex gap-4 md:gap-6 items-start group"
             >
-              <span className="font-gothic text-8xl text-hell-red/20 group-hover:text-hell-red transition-colors leading-none">
+              <span className="font-gothic text-6xl md:text-8xl text-hell-red/20 group-hover:text-hell-red transition-colors leading-none shrink-0">
                 {step.num}
               </span>
               <div>
-                <h3 className="font-terminal text-3xl text-hell-gold mb-2 uppercase border-b border-hell-red/30 pb-2 inline-block">
+                <h3 className="font-terminal text-2xl md:text-3xl text-hell-gold mb-2 uppercase border-b border-hell-red/30 pb-2 inline-block">
                   {step.title}
                 </h3>
-                <p className="font-terminal text-xl text-gray-400 max-w-sm">
+                <p className="font-terminal text-lg md:text-xl text-gray-400 max-w-sm">
                   {step.text}
                 </p>
               </div>
