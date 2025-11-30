@@ -25,22 +25,36 @@ export const Ritual = () => {
   return (
     <section id="ritual" className="py-32 bg-hell-black overflow-hidden relative">
       
-      {/* --- BACKGROUND: THE SUMMONING PENTAGRAM --- */}
+      {/* --- BACKGROUND: THE TRUE PENTAGRAM --- */}
       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 pointer-events-none select-none z-0">
-        {/* The SVG Pentagram */}
         <svg 
           viewBox="0 0 100 100" 
-          className="w-[600px] h-[600px] md:w-[900px] md:h-[900px] animate-spin-slow opacity-20 text-hell-red"
+          className="w-[600px] h-[600px] md:w-[900px] md:h-[900px] animate-spin-slow text-hell-red"
+          style={{ 
+            opacity: 0.1, // 10% Opacity (Lowered)
+            animationDuration: '60s' // Super Slow Rotation (60 seconds per loop)
+          }}
         >
-          {/* Outer Circle (Optional, looks cool with the star) */}
-          <circle cx="50" cy="50" r="48" fill="none" stroke="currentColor" strokeWidth="0.5" strokeDasharray="4 2" />
-          
-          {/* The Star (Pentagram) */}
-          <polygon 
-            points="50,5 61,40 98,40 68,60 79,95 50,75 21,95 32,60 2,40 39,40" 
+          {/* 1. THE OUTER CIRCLE (Thick & Solid) */}
+          <circle 
+            cx="50" 
+            cy="50" 
+            r="48" 
             fill="none" 
             stroke="currentColor" 
-            strokeWidth="0.8"
+            strokeWidth="2" 
+          />
+          
+          {/* 2. THE PENTAGRAM (Intersecting Lines) */}
+          {/* This path connects vertices across the center to form the star:
+              Top(50,2) -> BottomRight(79,90) -> Left(2,35) -> Right(98,35) -> BottomLeft(21,90) -> Top
+          */}
+          <path 
+            d="M50 2 L79 90 L2 35 L98 35 L21 90 Z" 
+            fill="none" 
+            stroke="currentColor" 
+            strokeWidth="2"
+            strokeLinejoin="round"
           />
         </svg>
       </div>
