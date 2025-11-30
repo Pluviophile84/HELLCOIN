@@ -8,47 +8,57 @@ export const Navbar = ({ onTriggerPaperHands }: { onTriggerPaperHands: () => voi
   const [isScrolled, setIsScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
+  // 1. SCROLL LISTENER
   useEffect(() => {
     const handleScroll = () => setIsScrolled(window.scrollY > 50);
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  // Function to scroll to top when Logo is clicked
+  // 2. SCROLL LOCK (Freezes body when menu is open)
+  useEffect(() => {
+    if (mobileMenuOpen) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "unset";
+    }
+    // Cleanup function to ensure scroll returns if component unmounts
+    return () => { document.body.style.overflow = "unset"; };
+  }, [mobileMenuOpen]);
+
+  // Scroll to top function
   const scrollToTop = () => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
     setMobileMenuOpen(false);
   };
 
-  // Updated Link List to include THE PIT and TRUTH (Revelation)
-  // NOTE: You must ensure your sections have these IDs (id="revelation", id="the-pit")
   const navLinks = [
     { name: "GENESIS", href: "#genesis" },
-    { name: "TRUTH", href: "#revelation" }, // Links to Revelation Section
+    { name: "TRUTH", href: "#revelation" },
     { name: "COMMANDMENTS", href: "#commandments" },
     { name: "MATH", href: "#math" },
     { name: "RITUAL", href: "#ritual" },
     { name: "HELLMAP", href: "#hellmap" },
-    { name: "THE PIT", href: "#the-pit" }, // Links to The Pit Section
+    { name: "THE PIT", href: "#the-pit" },
   ];
 
   return (
     <nav className={cn(
       "fixed top-0 w-full z-40 transition-all duration-300 border-b border-transparent",
-      // FIX 1: Mobile always keeps 'py-4' (thicker). Only Desktop shrinks to 'md:py-2'.
+      // Keeps thickness on mobile (py-4), shrinks on desktop scroll (md:py-2)
       isScrolled 
         ? "bg-hell-black/90 backdrop-blur-md border-hell-red/30 py-4 md:py-2" 
         : "bg-transparent py-4 md:py-6"
     )}>
       <div className="max-w-7xl mx-auto px-4 flex justify-between items-center">
         
-        {/* --- LOGO (Now Clickable -> Home) --- */}
+        {/* --- LOGO (Home Button) --- */}
         <div 
           onClick={scrollToTop}
-          className="flex items-center gap-2 md:gap-3 group cursor-pointer hover:animate-glitch shrink-0"
+          className="flex items-center gap-2 md:gap-3 group cursor-pointer shrink-0 transition-transform active:scale-95"
         >
           <img 
-            src="/Logo.png" 
+            src="/GOAPE.png" 
             alt="Hellcoin" 
             className="w-8 h-8 md:w-12 md:h-12 rounded-full border border-hell-orange object-cover" 
           />
@@ -94,22 +104,33 @@ export const Navbar = ({ onTriggerPaperHands }: { onTriggerPaperHands: () => voi
         {mobileMenuOpen && (
           <motion.div
             initial={{ opacity: 0, height: 0 }}
-            animate={{ opacity: 1, height: "100vh" }} // Full screen height to ensure easy clicking
+            animate={{ opacity: 1, height: "100vh" }}
             exit={{ opacity: 0, height: 0 }}
+            // 3. CLICK OUTSIDE: Clicking this main wrapper closes the menu
+            onClick={() => setMobileMenuOpen(false)}
             className="lg:hidden fixed top-[60px] left-0 w-full bg-hell-black/95 backdrop-blur-xl border-b border-hell-red/50 overflow-hidden shadow-2xl"
           >
+            {/* We stop propagation on the inner container if you WANTED clicking empty space 
+               between links to stay open, but for a UX "Click Outside" feel on mobile, 
+               usually tapping anywhere that isn't a button should close it. 
+               The wrapper onClick handles everything here nicely.
+            */}
             <div className="p-6 flex flex-col gap-6 items-center justify-center h-full pb-32">
               {navLinks.map((link) => (
                 <a 
                   key={link.name} 
                   href={link.href} 
-                  className="font-terminal text-3xl text-hell-white hover:text-hell-orange tracking-widest" 
+                  className="font-terminal text-3xl text-hell-white hover:text-hell-orange tracking-widest"
+                  // Link click also closes menu (redundant but safe)
                   onClick={() => setMobileMenuOpen(false)}
                 >
                   {link.name}
                 </a>
               ))}
+              
+              {/* 1. RED DIVIDER RESTORED */}
               <div className="w-16 h-1 bg-hell-red/50 my-4"></div>
+              
               <button className="bg-hell-red text-hell-white font-gothic text-2xl py-3 px-12 rounded shadow-[0_0_20px_rgba(204,0,0,0.6)]">
                 ACQUIRE $666
               </button>
