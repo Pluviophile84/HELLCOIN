@@ -25,7 +25,9 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className="scroll-smooth">
+    // FIX: Removed "scroll-smooth" class.
+    // This allows the browser to instantly restore your scroll position on refresh without glitching.
+    <html lang="en">
       <body className={`${pirata.variable} ${vt323.variable} font-sans scanlines bg-hell-black`}>
         {children}
       </body>
