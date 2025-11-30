@@ -7,7 +7,8 @@ import { motion, AnimatePresence } from "framer-motion";
 export const Navbar = ({ onTriggerPaperHands }: { onTriggerPaperHands: () => void }) => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const [hasLoaded, setHasLoaded] = useState(false);
+  // This flag ensures animations are OFF until the initial check is done
+  const [isReady, setIsReady] = useState(false);
 
   const BUY_LINK = "https://raydium.io/swap"; 
 
@@ -15,12 +16,23 @@ export const Navbar = ({ onTriggerPaperHands }: { onTriggerPaperHands: () => voi
     const handleScroll = () => {
       setIsScrolled(window.scrollY > 50);
     };
+
+    // 1. Run check INSTANTLY (Snap to correct state)
     handleScroll();
-    setTimeout(() => setHasLoaded(true), 100);
+
+    // 2. Enable animations after a short delay (Prevents the "Bounce" on refresh)
+    const timeout = setTimeout(() => {
+      setIsReady(true);
+    }, 100);
+
     window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+      clearTimeout(timeout);
+    };
   }, []);
 
+  // Scroll Lock
   useEffect(() => {
     if (mobileMenuOpen) {
       document.body.style.overflow = "hidden";
@@ -35,16 +47,11 @@ export const Navbar = ({ onTriggerPaperHands }: { onTriggerPaperHands: () => voi
     setMobileMenuOpen(false);
   };
 
-  // --- NEW: SMART NAVIGATION HANDLER ---
-  // This prevents the "Back Button" bug by scrolling manually 
-  // instead of adding a hash (#) to the URL history.
   const handleNavClick = (e: React.MouseEvent<HTMLAnchorElement>, href: string) => {
-    e.preventDefault(); // STOP the URL change
-    setMobileMenuOpen(false); // Close mobile menu if open
-
+    e.preventDefault();
+    setMobileMenuOpen(false);
     const targetId = href.replace("#", "");
     const elem = document.getElementById(targetId);
-    
     if (elem) {
       elem.scrollIntoView({ behavior: "smooth" });
     }
@@ -64,7 +71,15 @@ export const Navbar = ({ onTriggerPaperHands }: { onTriggerPaperHands: () => voi
     <nav 
       className={cn(
         "fixed top-0 w-full z-40 border-b border-transparent",
-        hasLoaded ? "transition-all duration-300" : "transition-none",
+        
+        // FIX: TRANSITION LOGIC
+        // If 'isReady' is false (fresh load), use 'transition-none' (Instant Snap)
+        // If 'isReady' is true (user scrolling), use 'transition-all duration-300' (Smooth Glide)
+        isReady ? "transition-all duration-300 ease-in-out" : "transition-none",
+        
+        // STYLING:
+        // Desktop: Shrinks from py-6 (Tall) to py-2 (Thin)
+        // Mobile: Always py-4 (Consistent)
         isScrolled 
           ? "bg-hell-black/90 backdrop-blur-md border-hell-red/30 py-4 md:py-2" 
           : "bg-transparent py-4 md:py-6"
@@ -72,7 +87,7 @@ export const Navbar = ({ onTriggerPaperHands }: { onTriggerPaperHands: () => voi
     >
       <div className="max-w-7xl mx-auto px-4 flex justify-between items-center">
         
-        {/* --- LOGO --- */}
+        {/* LOGO */}
         <div 
           onClick={scrollToTop}
           className="flex items-center gap-2 md:gap-3 group cursor-pointer shrink-0 transition-transform active:scale-95"
@@ -85,13 +100,12 @@ export const Navbar = ({ onTriggerPaperHands }: { onTriggerPaperHands: () => voi
           <span className="font-gothic text-xl md:text-3xl text-hell-orange tracking-wide text-glow">HELLCOIN</span>
         </div>
 
-        {/* --- DESKTOP LINKS --- */}
+        {/* DESKTOP LINKS */}
         <div className="hidden lg:flex gap-8">
           {navLinks.map((link) => (
             <a 
               key={link.name} 
               href={link.href}
-              // USE THE NEW HANDLER HERE
               onClick={(e) => handleNavClick(e, link.href)}
               className="font-terminal text-xl text-hell-white hover:text-hell-gold transition-colors uppercase tracking-widest relative group cursor-pointer"
             >
@@ -101,7 +115,7 @@ export const Navbar = ({ onTriggerPaperHands }: { onTriggerPaperHands: () => voi
           ))}
         </div>
 
-        {/* --- ACTIONS --- */}
+        {/* ACTIONS */}
         <div className="flex items-center gap-2 md:gap-4">
           <button 
             onClick={onTriggerPaperHands}
@@ -126,7 +140,7 @@ export const Navbar = ({ onTriggerPaperHands }: { onTriggerPaperHands: () => voi
         </div>
       </div>
 
-      {/* --- MOBILE MENU --- */}
+      {/* MOBILE MENU */}
       <AnimatePresence>
         {mobileMenuOpen && (
           <motion.div
@@ -141,7 +155,6 @@ export const Navbar = ({ onTriggerPaperHands }: { onTriggerPaperHands: () => voi
                 <a 
                   key={link.name} 
                   href={link.href} 
-                  // USE THE NEW HANDLER HERE TOO
                   onClick={(e) => handleNavClick(e, link.href)}
                   className="font-terminal text-3xl text-hell-white hover:text-hell-orange tracking-widest cursor-pointer" 
                 >
