@@ -6,7 +6,6 @@ import { Copy, Check } from "lucide-react";
 export const Ritual = () => {
   const [copied, setCopied] = useState(false);
   
-  // REPLACE THIS WITH YOUR REAL CONTRACT ADDRESS
   const CONTRACT_ADDRESS = "0x666...INSERT_REAL_CA_HERE...666";
 
   const handleCopy = () => {
@@ -23,17 +22,19 @@ export const Ritual = () => {
   ];
 
   return (
-    // FIX 1: Reverted to standard 'py-32'. 
-    // This restores the original negative space you liked on both Mobile & Desktop.
+    // Updated padding to py-24 as you requested (matches Devil's Math)
     <section id="ritual" className="py-24 bg-hell-black overflow-hidden relative">
       
-      {/* --- BACKGROUND: THE TRUE PENTAGRAM --- */}
+      {/* --- BACKGROUND: THE GIANT RUNE --- */}
       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 pointer-events-none select-none z-0">
         <svg 
           viewBox="0 0 100 100" 
-          className="w-[600px] h-[600px] md:w-[900px] md:h-[900px] animate-spin-slow text-hell-red"
+          // FIX: 
+          // Mobile: w-[180vw] (1.8x Screen Width). This makes it HUGE and abstract on phone.
+          // Desktop: md:w-[1000px] (Fixed large size for wide screens).
+          className="w-[180vw] h-[180vw] md:w-[1000px] md:h-[1000px] animate-spin-slow text-hell-red"
           style={{ 
-            opacity: 0.05, // FIX 2: Lowered to 5% (Very subtle)
+            opacity: 0.05, 
             animationDuration: '60s' 
           }}
         >
@@ -95,16 +96,12 @@ export const Ritual = () => {
           </div>
 
           <div className="bg-black border-2 border-hell-red p-2 md:p-4 rounded flex flex-col md:flex-row items-center gap-4 shadow-[0_0_30px_rgba(204,0,0,0.2)]">
-            {/* The Address Display */}
             <div className="flex-1 w-full bg-hell-dark/50 p-4 rounded border border-gray-800 font-terminal text-xl md:text-2xl text-gray-300 break-all text-center md:text-left">
               {CONTRACT_ADDRESS}
             </div>
 
-            {/* The Copy Button */}
             <button 
               onClick={handleCopy}
-              // FIX 3: Added 'min-w-[180px]' to prevent jitter when text changes.
-              // Kept 'active:scale-95' for click feedback.
               className="w-full md:w-auto min-w-[180px] bg-hell-red hover:bg-hell-orange text-white font-bold py-4 px-8 rounded flex items-center justify-center gap-2 transition-all active:scale-95"
             >
               {copied ? <Check size={24} /> : <Copy size={24} />}
