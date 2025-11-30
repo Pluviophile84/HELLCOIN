@@ -3,7 +3,8 @@ import { motion } from "framer-motion";
 
 export const Genesis = () => {
   const paragraphs = [
-    { text: "IN THE BEGINNING, THERE WAS COPE.", highlight: true },
+    // Removed "IN THE BEGINNING" from the list so we can make it a Header
+    { text: "THERE WAS COPE.", highlight: true },
     { text: "When the first trader whispered, \"This time it’s different,\" Hell was born.", highlight: false },
     { text: "From the ashes of liquidated accounts, burned bridges, and failed presales rose a digital inferno powered by the only renewable energy source in crypto: Regret.", highlight: false },
     { text: "That inferno minted itself as HELLCOIN ($666).", highlight: true },
@@ -12,8 +13,22 @@ export const Genesis = () => {
 
   return (
     <section id="genesis" className="py-32 px-4 bg-hell-black relative border-t border-hell-red/20">
-      <div className="max-w-4xl mx-auto">
-        <div className="space-y-12">
+      <div className="max-w-5xl mx-auto">
+        
+        {/* --- NEW HEADER: "Chapter Marker" Style --- */}
+        <motion.div 
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          className="flex flex-col md:flex-row items-baseline gap-4 mb-12 border-b border-hell-red/30 pb-6"
+        >
+          <span className="font-terminal text-hell-red text-xl">/// GENESIS_BLOCK_001</span>
+          <h2 className="font-gothic text-6xl md:text-8xl text-hell-white leading-none">
+            IN THE <span className="text-hell-red">BEGINNING</span>
+          </h2>
+        </motion.div>
+
+        <div className="space-y-12 pl-0 md:pl-12">
           {paragraphs.map((para, i) => (
             <motion.div
               key={i}
