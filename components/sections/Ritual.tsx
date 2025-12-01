@@ -6,6 +6,7 @@ import { Copy, Check } from "lucide-react";
 export const Ritual = () => {
   const [copied, setCopied] = useState(false);
   
+  // REPLACE THIS WITH YOUR REAL CONTRACT ADDRESS
   const CONTRACT_ADDRESS = "0x666...INSERT_REAL_CA_HERE...666";
 
   const handleCopy = () => {
@@ -22,40 +23,33 @@ export const Ritual = () => {
   ];
 
   return (
-    // Updated padding to py-24 as you requested (matches Devil's Math)
-    <section id="ritual" className="py-24 bg-hell-black overflow-hidden relative">
+    <section id="ritual" className="py-32 bg-hell-black overflow-hidden relative">
       
-      {/* --- BACKGROUND: THE GIANT RUNE --- */}
+      {/* BACKGROUND: THE PENTAGRAM */}
       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 pointer-events-none select-none z-0">
         <svg 
           viewBox="0 0 100 100" 
-          // FIX: 
-          // Mobile: w-[180vw] (1.8x Screen Width). This makes it HUGE and abstract on phone.
-          // Desktop: md:w-[1000px] (Fixed large size for wide screens).
           className="w-[180vw] h-[180vw] md:w-[1000px] md:h-[1000px] animate-spin-slow text-hell-red"
-          style={{ 
-            opacity: 0.05, 
-            animationDuration: '60s' 
-          }}
+          style={{ opacity: 0.05, animationDuration: '60s' }}
         >
-          {/* Outer Circle */}
           <circle cx="50" cy="50" r="48" fill="none" stroke="currentColor" strokeWidth="2" />
-          
-          {/* Pentagram Path */}
-          <path 
-            d="M50 2 L79 90 L2 35 L98 35 L21 90 Z" 
-            fill="none" 
-            stroke="currentColor" 
-            strokeWidth="2"
-            strokeLinejoin="round"
-          />
+          <path d="M50 2 L79 90 L2 35 L98 35 L21 90 Z" fill="none" stroke="currentColor" strokeWidth="2" strokeLinejoin="round" />
         </svg>
       </div>
 
       <div className="max-w-6xl mx-auto px-4 relative z-10">
-        <h2 className="font-gothic text-6xl md:text-8xl text-center text-hell-white mb-20 text-glow">
-          THE RITUAL
-        </h2>
+        
+        {/* --- HEADER --- */}
+        <div className="text-center mb-24 flex flex-col items-center gap-2">
+          {/* FIX: Changed text to be more relevant to "How to Buy" */}
+          <span className="font-terminal text-[#ffae00] text-xl md:text-2xl tracking-widest uppercase">
+            /// INITIATION_SEQUENCE ///
+          </span>
+          
+          <h2 className="font-gothic text-6xl md:text-8xl text-center text-hell-white text-glow">
+            THE RITUAL
+          </h2>
+        </div>
 
         {/* STEPS GRID */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-12 mb-20">
@@ -83,33 +77,23 @@ export const Ritual = () => {
           ))}
         </div>
 
-        {/* --- CONTRACT ADDRESS BOX --- */}
-        <motion.div 
-          initial={{ opacity: 0, y: 30 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          className="max-w-3xl mx-auto"
-        >
+        {/* CONTRACT BOX */}
+        <motion.div initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }} className="max-w-3xl mx-auto">
           <div className="text-center mb-4">
              <span className="font-terminal text-hell-red text-xl bg-hell-red/10 px-4 py-1 border border-hell-red/20 rounded">
                /// CAUTION: DO NOT SEND FUNDS DIRECTLY ///
              </span>
           </div>
-
           <div className="bg-black border-2 border-hell-red p-2 md:p-4 rounded flex flex-col md:flex-row items-center gap-4 shadow-[0_0_30px_rgba(204,0,0,0.2)]">
             <div className="flex-1 w-full bg-hell-dark/50 p-4 rounded border border-gray-800 font-terminal text-xl md:text-2xl text-gray-300 break-all text-center md:text-left">
               {CONTRACT_ADDRESS}
             </div>
-
-            <button 
-              onClick={handleCopy}
-              className="w-full md:w-auto min-w-[180px] bg-hell-red hover:bg-hell-orange text-white font-bold py-4 px-8 rounded flex items-center justify-center gap-2 transition-all active:scale-95"
-            >
+            <button onClick={handleCopy} className="w-full md:w-auto min-w-[180px] bg-hell-red hover:bg-hell-orange text-white font-bold py-4 px-8 rounded flex items-center justify-center gap-2 transition-all active:scale-95">
               {copied ? <Check size={24} /> : <Copy size={24} />}
               {copied ? "COPIED!" : "COPY CA"}
             </button>
           </div>
         </motion.div>
-
       </div>
     </section>
   );
