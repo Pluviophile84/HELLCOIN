@@ -1,95 +1,42 @@
 "use client";
-import { motion } from "framer-motion";
-import { useState } from "react";
-import { Copy, Check } from "lucide-react";
 
-export const Ritual = () => {
-  const [copied, setCopied] = useState(false);
-  const CONTRACT_ADDRESS = "0x666...INSERT_REAL_CA_HERE...666";
-
-  const handleCopy = () => {
-    navigator.clipboard.writeText(CONTRACT_ADDRESS);
-    setCopied(true);
-    setTimeout(() => setCopied(false), 2000);
-  };
-
-  const steps = [
-    { num: "01", title: "PREPARE THE VESSEL", text: "Download Phantom or Metamask. This will be your wallet for the afterlife." },
-    { num: "02", title: "GATHER THE OFFERING", text: "Acquire some SOL (or ETH). You cannot enter the pit empty-handed." },
-    { num: "03", title: "ENTER THE ALTAR", text: "Go to Raydium or Uniswap. Connect your wallet. Do not look back." },
-    { num: "04", title: "ACCEPT YOUR FATE", text: "Paste the Contract Address below. Swap your boring coins for eternal glory." },
-  ];
-
+// FIX: The component MUST be named 'DevilsMath' to match your page.tsx import
+export const DevilsMath = () => {
   return (
-    <section id="ritual" className="py-32 bg-hell-black overflow-hidden relative">
-      
-      {/* --- BACKGROUND --- */}
-      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 pointer-events-none select-none z-0">
-        <svg 
-          viewBox="0 0 100 100" 
-          className="w-[180vw] h-[180vw] md:w-[1000px] md:h-[1000px] animate-spin-slow text-hell-red"
-          style={{ opacity: 0.05, animationDuration: '60s' }}
-        >
-          <circle cx="50" cy="50" r="48" fill="none" stroke="currentColor" strokeWidth="2" />
-          <path d="M50 2 L79 90 L2 35 L98 35 L21 90 Z" fill="none" stroke="currentColor" strokeWidth="2" strokeLinejoin="round" />
-        </svg>
-      </div>
-
-      <div className="max-w-6xl mx-auto px-4 relative z-10">
+    <section id="math" className="py-24 bg-black font-terminal">
+      <div className="max-w-5xl mx-auto px-4">
         
-        {/* --- HEADER --- */}
-        <div className="text-center mb-24 flex flex-col items-center gap-2">
-          <span className="font-terminal text-[#ffae00] text-xl md:text-2xl tracking-widest uppercase">
-            /// JOIN_THE_CULT ///
-          </span>
-          <h2 className="font-gothic text-6xl md:text-8xl text-hell-white text-glow">
-            THE RITUAL
+        {/* --- HEADER: HAZARD LABEL STYLE --- */}
+        <div className="text-center mb-16 flex flex-col items-center gap-6">
+          {/* THE LABEL */}
+          <div className="bg-[#ffae00] text-black font-terminal text-xl px-4 py-1 font-bold uppercase tracking-widest border-2 border-black shadow-[4px_4px_0px_#cc0000]">
+            ⚠ DANGER: SIN_NOMICS_DATA
+          </div>
+
+          <h2 className="font-gothic text-6xl md:text-8xl text-hell-white">
+            THE DEVIL'S MATH
           </h2>
         </div>
 
-        {/* STEPS GRID */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-12 mb-20">
-          {steps.map((step, i) => (
-            <motion.div 
-              key={i}
-              initial={{ opacity: 0, x: i % 2 === 0 ? -50 : 50 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              viewport={{ once: true }}
-              transition={{ delay: i * 0.2 }}
-              className="flex gap-6 items-start group"
-            >
-              <span className="font-gothic text-8xl text-hell-red/20 group-hover:text-hell-red transition-colors leading-none shrink-0">
-                {step.num}
-              </span>
-              <div>
-                <h3 className="font-terminal text-3xl text-hell-gold mb-2 uppercase border-b border-hell-red/30 pb-2 inline-block">
-                  {step.title}
-                </h3>
-                <p className="font-terminal text-xl text-gray-400 max-w-sm">
-                  {step.text}
-                </p>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-px bg-hell-red/30 border border-hell-red/30">
+          {[
+            { label: "MAX SUPPLY", value: "1 BILLION", sub: "TOTAL DAMNED // No Inflation. Just Pain." },
+            { label: "SIN TAX", value: "0% / 0%", sub: "The Devil takes no cuts. Only your soul." },
+            { label: "LIQUIDITY", value: "INCINERATED", sub: "LP STATUS // Keys thrown into the abyss." },
+            { label: "DEV ALLOCATION", value: "666 TOKENS", sub: "\"Enough to buy a cheeseburger in hell.\"" },
+          ].map((item, i) => (
+            <div key={i} className="bg-hell-black p-8 hover:bg-hell-dark transition-colors group">
+              <div className="flex justify-between items-start mb-4">
+                <span className="text-hell-red text-xl">./{item.label}</span>
+                <div className="w-2 h-2 bg-hell-red rounded-full opacity-0 group-hover:opacity-100 animate-pulse"></div>
               </div>
-            </motion.div>
+              <div className="text-5xl md:text-7xl text-hell-white mb-2 font-gothic">{item.value}</div>
+              <div className="text-gray-500 text-lg border-l-2 border-[#ffae00] pl-3">
+                {item.sub}
+              </div>
+            </div>
           ))}
         </div>
-
-        {/* --- CONTRACT BOX --- */}
-        <motion.div initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }} className="max-w-3xl mx-auto">
-          <div className="text-center mb-4">
-             <span className="font-terminal text-hell-red text-xl bg-hell-red/10 px-4 py-1 border border-hell-red/20 rounded">
-               /// CAUTION: DO NOT SEND FUNDS DIRECTLY ///
-             </span>
-          </div>
-          <div className="bg-black border-2 border-hell-red p-2 md:p-4 rounded flex flex-col md:flex-row items-center gap-4 shadow-[0_0_30px_rgba(204,0,0,0.2)]">
-            <div className="flex-1 w-full bg-hell-dark/50 p-4 rounded border border-gray-800 font-terminal text-xl md:text-2xl text-gray-300 break-all text-center md:text-left">
-              {CONTRACT_ADDRESS}
-            </div>
-            <button onClick={handleCopy} className="w-full md:w-auto min-w-[180px] bg-hell-red hover:bg-hell-orange text-white font-bold py-4 px-8 rounded flex items-center justify-center gap-2 transition-all active:scale-95">
-              {copied ? <Check size={24} /> : <Copy size={24} />}
-              {copied ? "COPIED!" : "COPY CA"}
-            </button>
-          </div>
-        </motion.div>
       </div>
     </section>
   );
