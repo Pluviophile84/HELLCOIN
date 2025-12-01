@@ -4,9 +4,16 @@ export const DevilsMath = () => {
   return (
     <section id="math" className="py-24 bg-black font-terminal">
       <div className="max-w-5xl mx-auto px-4">
-        <h2 className="font-gothic text-6xl text-hell-white mb-12 text-center">
-          THE DEVIL'S MATH
-        </h2>
+        
+        {/* --- HEADER --- */}
+        <div className="text-center mb-16 flex flex-col items-center gap-2">
+          <span className="font-terminal text-[#ffae00] text-xl md:text-2xl tracking-widest uppercase">
+            /// SIN_NOMICS_DATA ///
+          </span>
+          <h2 className="font-gothic text-6xl md:text-8xl text-hell-white">
+            THE DEVIL'S MATH
+          </h2>
+        </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-px bg-hell-red/30 border border-hell-red/30">
           {[
@@ -21,7 +28,7 @@ export const DevilsMath = () => {
                 <div className="w-2 h-2 bg-hell-red rounded-full opacity-0 group-hover:opacity-100 animate-pulse"></div>
               </div>
               <div className="text-5xl md:text-7xl text-hell-white mb-2 font-gothic">{item.value}</div>
-              <div className="text-gray-500 text-lg border-l-2 border-hell-gold pl-3">
+              <div className="text-gray-500 text-lg border-l-2 border-[#ffae00] pl-3">
                 {item.sub}
               </div>
             </div>
