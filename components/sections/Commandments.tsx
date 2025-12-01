@@ -45,11 +45,12 @@ export const Commandments = () => {
                 hidden: { opacity: 0, y: 50 },
                 visible: { opacity: 1, y: 0 }
               }}
-              // FIX: Pitch Black Background (bg-black) for high contrast against bg-hell-dark
+              // FIX: "Hot Obsidian" Gradient (Deep Red to Black)
               className={`
-                bg-black border border-hell-red/20 p-6 relative group 
+                bg-gradient-to-b from-[#1a0000] to-black 
+                border border-hell-red/20 p-6 relative group 
                 transition-all duration-75 ease-out
-                hover:border-hell-red hover:scale-[1.01]
+                hover:border-hell-red hover:from-[#2a0000] hover:to-black hover:scale-[1.01]
                 ${i === 0 || i === 9 ? 'md:col-span-2' : ''}
               `}
             >
@@ -58,12 +59,12 @@ export const Commandments = () => {
                 {c.id}
               </div>
               
-              {/* Title (Gold Default -> Red Hover) */}
+              {/* Title (Gold) */}
               <h3 className="font-terminal text-2xl text-[#ffae00] mb-3 group-hover:text-hell-red uppercase font-bold transition-colors duration-75">
                 {c.title}
               </h3>
               
-              {/* Text (Gray -> Bright Gray Hover) */}
+              {/* Text (Gray) */}
               <p className="font-terminal text-xl text-gray-400 group-hover:text-gray-200 transition-colors duration-75">
                 {c.text}
               </p>
