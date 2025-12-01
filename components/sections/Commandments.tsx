@@ -19,7 +19,7 @@ export const Commandments = () => {
     <section id="commandments" className="py-24 px-4 bg-hell-dark relative">
       <div className="max-w-7xl mx-auto">
         
-        {/* --- HEADER: STANDARD WARNING TAPE --- */}
+        {/* --- HEADER --- */}
         <div className="text-center mb-16 flex flex-col items-center gap-2">
           <span className="font-terminal text-[#ffae00] text-xl md:text-2xl tracking-widest uppercase">
             /// LAW_OF_THE_LAND ///
@@ -45,19 +45,24 @@ export const Commandments = () => {
                 hidden: { opacity: 0, y: 50 },
                 visible: { opacity: 1, y: 0 }
               }}
-              // FIX: duration-75 makes the hover feel INSTANT
+              // FIX: Reverted to 'hover:border-hell-red' (Red Border on Hover)
+              // Kept 'duration-75' for instant feedback
               className={`
-                bg-hell-black border border-hell-red/20 p-6 relative group transition-colors duration-75 ease-out
-                hover:border-[#ffae00] hover:bg-black hover:scale-[1.01]
+                bg-hell-black border border-hell-red/20 p-6 relative group 
+                transition-all duration-75 ease-out
+                hover:border-hell-red hover:bg-black hover:scale-[1.01]
                 ${i === 0 || i === 9 ? 'md:col-span-2 bg-hell-black/50' : ''}
               `}
             >
               <div className="absolute top-4 right-4 font-gothic text-4xl text-hell-white/10 group-hover:text-hell-red/50 transition-colors duration-75">
                 {c.id}
               </div>
-              <h3 className="font-terminal text-2xl text-[#ffae00] mb-3 group-hover:text-hell-white uppercase font-bold transition-colors duration-75">
+              
+              {/* Title also turns Red on hover now to match border */}
+              <h3 className="font-terminal text-2xl text-[#ffae00] mb-3 group-hover:text-hell-red uppercase font-bold transition-colors duration-75">
                 {c.title}
               </h3>
+              
               <p className="font-terminal text-xl text-gray-500 group-hover:text-gray-300 transition-colors duration-75">
                 {c.text}
               </p>
