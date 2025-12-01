@@ -1,18 +1,16 @@
 "use client";
 
-// FIX: The component MUST be named 'DevilsMath' to match your page.tsx import
 export const DevilsMath = () => {
   return (
     <section id="math" className="py-24 bg-black font-terminal">
       <div className="max-w-5xl mx-auto px-4">
         
-        {/* --- HEADER: HAZARD LABEL STYLE --- */}
-        <div className="text-center mb-16 flex flex-col items-center gap-6">
-          {/* THE LABEL */}
-          <div className="bg-[#ffae00] text-black font-terminal text-xl px-4 py-1 font-bold uppercase tracking-widest border-2 border-black shadow-[4px_4px_0px_#cc0000]">
-            ⚠ DANGER: SIN_NOMICS_DATA
-          </div>
-
+        {/* --- HEADER: WARNING TAPE STYLE (CORRECTED) --- */}
+        <div className="text-center mb-16 flex flex-col items-center gap-2">
+          {/* Gold Text, No Box, Triple Slashes */}
+          <span className="font-terminal text-[#ffae00] text-xl md:text-2xl tracking-widest uppercase">
+            /// SIN_NOMICS_DATA ///
+          </span>
           <h2 className="font-gothic text-6xl md:text-8xl text-hell-white">
             THE DEVIL'S MATH
           </h2>
