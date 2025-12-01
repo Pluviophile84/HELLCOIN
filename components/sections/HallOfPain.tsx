@@ -1,5 +1,4 @@
 "use client";
-import { useRef } from "react";
 import { Skull } from "lucide-react";
 
 const sinners = [
@@ -11,15 +10,30 @@ const sinners = [
 
 export const HallOfPain = () => {
   return (
-    <section className="py-24 bg-hell-dark overflow-hidden">
-      <div className="max-w-7xl mx-auto px-4 mb-12">
-        <h2 className="font-gothic text-5xl text-hell-white">HALL OF PAIN <span className="text-hell-red text-2xl ml-4 font-terminal">/// PROOF OF SUFFERING</span></h2>
+    <section id="hall-of-pain" className="py-32 bg-hell-dark overflow-hidden">
+      <div className="max-w-7xl mx-auto px-4 mb-16">
+        
+        {/* --- HEADER: WARNING TAPE STYLE (CORRECTED) --- */}
+        <div className="flex flex-col items-center text-center gap-2">
+          {/* Gold Text, No Box, Triple Slashes */}
+          <span className="font-terminal text-[#ffae00] text-xl md:text-2xl tracking-widest uppercase">
+            /// PROOF_OF_SUFFERING ///
+          </span>
+
+          <h2 className="font-gothic text-6xl md:text-8xl text-hell-white">
+            HALL OF PAIN
+          </h2>
+        </div>
+
       </div>
 
-      {/* Horizontal Scroll Container */}
-      <div className="flex gap-6 px-4 overflow-x-auto pb-8 snap-x">
+      {/* --- CARDS CONTAINER --- */}
+      <div className="flex gap-6 px-4 overflow-x-auto pb-8 snap-x md:justify-center">
         {sinners.map((sinner, i) => (
-          <div key={i} className="flex-none w-[350px] md:w-[450px] bg-hell-black border border-gray-800 p-8 snap-center hover:border-hell-red transition-colors group">
+          <div 
+            key={i} 
+            className="flex-none w-[350px] md:w-[450px] bg-hell-black border border-gray-800 p-8 snap-center hover:border-hell-red transition-colors group relative"
+          >
             <div className="flex justify-between items-center mb-6 border-b border-gray-800 pb-4">
               <span className="font-terminal text-hell-red text-xl">{sinner.id}</span>
               <span className="font-terminal text-gray-500">ID VERIFIED</span>
