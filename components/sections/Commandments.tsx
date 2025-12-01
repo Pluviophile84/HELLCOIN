@@ -45,11 +45,11 @@ export const Commandments = () => {
                 hidden: { opacity: 0, y: 50 },
                 visible: { opacity: 1, y: 0 }
               }}
-              // FIX: Deep Red Background + Contrast Fixes
+              // FIX: Pitch Black Background (bg-black) for high contrast against bg-hell-dark
               className={`
-                bg-[#1a0505] border border-hell-red/30 p-6 relative group 
+                bg-black border border-hell-red/20 p-6 relative group 
                 transition-all duration-75 ease-out
-                hover:border-hell-red hover:bg-[#2a0a0a] hover:scale-[1.01]
+                hover:border-hell-red hover:scale-[1.01]
                 ${i === 0 || i === 9 ? 'md:col-span-2' : ''}
               `}
             >
