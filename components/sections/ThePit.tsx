@@ -9,52 +9,24 @@ const PTSD_WORDS_SOURCE = [
   "PUMP", "DUMP", "EXIT", "PONZI", "MOON", "BULLISH"
 ];
 
-// 3x List to ensure coverage without overcrowding
+// 3x List
 const PTSD_WORDS = [...PTSD_WORDS_SOURCE, ...PTSD_WORDS_SOURCE, ...PTSD_WORDS_SOURCE];
 
 export const ThePit = () => {
   return (
     <section id="the-pit" className="relative py-32 bg-hell-red overflow-hidden flex items-center justify-center min-h-[1000px]">
       
-      {/* --- BACKGROUND CONTAINER --- */}
+      {/* BACKGROUND GRID */}
       <div className="absolute inset-0 z-0 overflow-hidden">
-        
-        {/* --- STRICT GRID SYSTEM (NO OVERLAP) --- */}
-        {/* MOBILE: 
-            - grid-cols-3: 3 Words per row.
-            - w-[140%] -left-[20%]: Zooms in, cropping the edges so text stays BIG.
-            
-            DESKTOP: 
-            - grid-cols-6: 6 Words per row.
-            - w-full left-0: Fits perfectly inside the screen.
-            
-            GAP: gap-8 ensures a safe zone between every word.
-        */}
         <div className="absolute top-0 h-full grid content-center p-4
                         w-[140%] -left-[20%] grid-cols-3 gap-8
                         md:w-full md:left-0 md:grid-cols-6 md:gap-12">
-          
           {PTSD_WORDS.map((word, i) => (
             <div key={i} className="flex items-center justify-center w-full h-20 md:h-32">
               <motion.div
-                // SIZING:
-                // Mobile: text-5xl (Big because of the zoom)
-                // Desktop: text-7xl (Huge but contained)
                 className="font-gothic font-bold text-black/30 whitespace-nowrap text-5xl md:text-7xl"
-                
-                // ANIMATION: Fade in/out + Scale
-                animate={{ 
-                  opacity: [0, 0.5, 0], 
-                  scale: [0.8, 1.1, 0.8], 
-                }}
-                
-                // TIMING:
-                transition={{
-                  duration: 4 + Math.random() * 4,
-                  repeat: Infinity,
-                  delay: Math.random() * 5,
-                  ease: "easeInOut",
-                }}
+                animate={{ opacity: [0, 0.5, 0], scale: [0.8, 1.1, 0.8] }}
+                transition={{ duration: 4 + Math.random() * 4, repeat: Infinity, delay: Math.random() * 5, ease: "easeInOut" }}
               >
                 {word}
               </motion.div>
@@ -63,17 +35,16 @@ export const ThePit = () => {
         </div>
       </div>
 
-      {/* --- FOREGROUND: CONTENT --- */}
+      {/* FOREGROUND CONTENT */}
       <div className="relative z-10 flex flex-col items-center">
         
-        {/* Floating Chapter Marker */}
+        {/* --- HEADER: REPLACED FLOATING BOX WITH TEXT --- */}
         <div className="mb-6">
-           <span className="bg-black text-hell-white font-terminal text-xl px-4 py-1 border border-hell-white/20 shadow-[4px_4px_0px_rgba(0,0,0,0.5)]">
-             /// THE FINAL CIRCLE
+           <span className="font-terminal text-[#ffae00] text-xl md:text-2xl tracking-widest uppercase bg-black px-2">
+             /// THE_FINAL_CIRCLE ///
            </span>
         </div>
 
-        {/* Content Box */}
         <div className="bg-hell-black border-4 border-black p-8 md:p-12 max-w-3xl mx-4 shadow-[20px_20px_0px_#000]">
           <h2 className="font-gothic text-5xl md:text-7xl text-hell-white mb-6 text-center">
             DO YOU QUALIFY?
