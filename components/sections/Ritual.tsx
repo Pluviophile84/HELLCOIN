@@ -5,8 +5,6 @@ import { Copy, Check } from "lucide-react";
 
 export const Ritual = () => {
   const [copied, setCopied] = useState(false);
-  
-  // REPLACE THIS WITH YOUR REAL CONTRACT ADDRESS
   const CONTRACT_ADDRESS = "0x666...INSERT_REAL_CA_HERE...666";
 
   const handleCopy = () => {
@@ -41,12 +39,12 @@ export const Ritual = () => {
         
         {/* --- HEADER --- */}
         <div className="text-center mb-24 flex flex-col items-center gap-2">
-          {/* FIX: Changed text to be more relevant to "How to Buy" */}
           <span className="font-terminal text-[#ffae00] text-xl md:text-2xl tracking-widest uppercase">
             /// INITIATION_SEQUENCE ///
           </span>
           
-          <h2 className="font-gothic text-6xl md:text-8xl text-center text-hell-white text-glow">
+          {/* FIX: Removed 'text-glow' so it is sharp white like the other sections */}
+          <h2 className="font-gothic text-6xl md:text-8xl text-center text-hell-white">
             THE RITUAL
           </h2>
         </div>
