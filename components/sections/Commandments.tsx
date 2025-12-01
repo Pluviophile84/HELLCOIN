@@ -18,9 +18,15 @@ export const Commandments = () => {
   return (
     <section id="commandments" className="py-24 px-4 bg-hell-dark relative">
       <div className="max-w-7xl mx-auto">
-        <div className="text-center mb-16">
-          <h2 className="font-gothic text-6xl md:text-8xl text-hell-white mb-4">THE TEN COMMANDMENTS</h2>
-          <p className="font-terminal text-hell-red text-xl">/// DO NOT OBEY AT YOUR OWN RISK ///</p>
+        
+        {/* --- HEADER --- */}
+        <div className="text-center mb-16 flex flex-col items-center gap-2">
+          <span className="font-terminal text-[#ffae00] text-xl md:text-2xl tracking-widest uppercase">
+            /// LAW_OF_THE_LAND ///
+          </span>
+          <h2 className="font-gothic text-6xl md:text-8xl text-hell-white">
+            THE TEN COMMANDMENTS
+          </h2>
         </div>
 
         <motion.div 
@@ -48,7 +54,7 @@ export const Commandments = () => {
               <div className="absolute top-4 right-4 font-gothic text-4xl text-hell-white/10 group-hover:text-hell-red/50 transition-colors">
                 {c.id}
               </div>
-              <h3 className="font-terminal text-2xl text-hell-gold mb-3 group-hover:text-hell-white uppercase font-bold">
+              <h3 className="font-terminal text-2xl text-[#ffae00] mb-3 group-hover:text-hell-white uppercase font-bold">
                 {c.title}
               </h3>
               <p className="font-terminal text-xl text-gray-500 group-hover:text-gray-300">
