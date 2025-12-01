@@ -9,7 +9,8 @@ export const Hellmap = () => {
   ];
 
   return (
-    <section id="hellmap" className="py-32 bg-hell-dark relative">
+    // FIX: Changed to 'bg-hell-black' to contrast with the previous 'bg-hell-dark' section
+    <section id="hellmap" className="py-32 bg-hell-black relative">
        <div className="max-w-4xl mx-auto px-4">
          
          {/* --- HEADER --- */}
@@ -32,6 +33,7 @@ export const Hellmap = () => {
                transition={{ delay: i * 0.2 }}
                className="relative pl-12 md:pl-24"
              >
+               {/* Dot Marker */}
                <div className="absolute left-[-10px] top-2 w-6 h-6 bg-hell-black border-4 border-hell-red rounded-full z-10"></div>
                
                <h3 className="font-gothic text-4xl md:text-5xl text-[#ffae00] mb-2">{phase.title}</h3>
