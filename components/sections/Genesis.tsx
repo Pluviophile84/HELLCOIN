@@ -14,25 +14,22 @@ export const Genesis = () => {
     <section id="genesis" className="py-32 px-4 bg-hell-dark relative">
       <div className="max-w-5xl mx-auto">
         
-        {/* --- HEADER: CENTERED & STACKED --- */}
+        {/* --- HEADER --- */}
         <motion.div 
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          className="flex flex-col items-center text-center gap-4 mb-16"
+          className="flex flex-col items-center text-center gap-2 mb-16"
         >
-          {/* Sub-line: Gold #ffae00, Top, Technical Font */}
-          <span className="font-terminal text-[#ffae00] text-xl md:text-2xl tracking-widest">
-            /// GENESIS_BLOCK_001
+          <span className="font-terminal text-[#ffae00] text-xl md:text-2xl tracking-widest uppercase">
+            /// GENESIS_BLOCK_001 ///
           </span>
-          
-          {/* Title: Big, White, Gothic */}
           <h2 className="font-gothic text-6xl md:text-8xl text-hell-white leading-none">
             IN THE <span className="text-hell-red">BEGINNING</span>
           </h2>
         </motion.div>
 
-        {/* --- CONTENT: LEFT ALIGNED (Scripture Style) --- */}
+        {/* Content */}
         <div className="space-y-12 pl-0 md:pl-12 max-w-4xl mx-auto">
           {paragraphs.map((para, i) => (
             <motion.div
