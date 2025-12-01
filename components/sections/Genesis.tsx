@@ -11,26 +11,29 @@ export const Genesis = () => {
   ];
 
   return (
-    // FIX: Changed background to 'bg-hell-dark' to contrast with the Hero section.
-    // Removed 'border-t' to keep it clean.
     <section id="genesis" className="py-32 px-4 bg-hell-dark relative">
       <div className="max-w-5xl mx-auto">
         
-        {/* Header */}
+        {/* --- HEADER: CENTERED & STACKED --- */}
         <motion.div 
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          className="flex flex-col md:flex-row items-baseline gap-4 mb-12 border-b border-hell-red/30 pb-6"
+          className="flex flex-col items-center text-center gap-4 mb-16"
         >
-          <span className="font-terminal text-hell-red text-xl">/// GENESIS_BLOCK_001</span>
+          {/* Sub-line: Gold #ffae00, Top, Technical Font */}
+          <span className="font-terminal text-[#ffae00] text-xl md:text-2xl tracking-widest">
+            /// GENESIS_BLOCK_001
+          </span>
+          
+          {/* Title: Big, White, Gothic */}
           <h2 className="font-gothic text-6xl md:text-8xl text-hell-white leading-none">
             IN THE <span className="text-hell-red">BEGINNING</span>
           </h2>
         </motion.div>
 
-        {/* Content */}
-        <div className="space-y-12 pl-0 md:pl-12">
+        {/* --- CONTENT: LEFT ALIGNED (Scripture Style) --- */}
+        <div className="space-y-12 pl-0 md:pl-12 max-w-4xl mx-auto">
           {paragraphs.map((para, i) => (
             <motion.div
               key={i}
