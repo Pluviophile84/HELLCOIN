@@ -45,25 +45,26 @@ export const Commandments = () => {
                 hidden: { opacity: 0, y: 50 },
                 visible: { opacity: 1, y: 0 }
               }}
-              // FIX: Reverted to 'hover:border-hell-red' (Red Border on Hover)
-              // Kept 'duration-75' for instant feedback
+              // FIX: Deep Red Background + Contrast Fixes
               className={`
-                bg-hell-black border border-hell-red/20 p-6 relative group 
+                bg-[#1a0505] border border-hell-red/30 p-6 relative group 
                 transition-all duration-75 ease-out
-                hover:border-hell-red hover:bg-black hover:scale-[1.01]
-                ${i === 0 || i === 9 ? 'md:col-span-2 bg-hell-black/50' : ''}
+                hover:border-hell-red hover:bg-[#2a0a0a] hover:scale-[1.01]
+                ${i === 0 || i === 9 ? 'md:col-span-2' : ''}
               `}
             >
-              <div className="absolute top-4 right-4 font-gothic text-4xl text-hell-white/10 group-hover:text-hell-red/50 transition-colors duration-75">
+              {/* ID Number */}
+              <div className="absolute top-4 right-4 font-gothic text-4xl text-hell-red/20 group-hover:text-hell-red/50 transition-colors duration-75">
                 {c.id}
               </div>
               
-              {/* Title also turns Red on hover now to match border */}
+              {/* Title (Gold Default -> Red Hover) */}
               <h3 className="font-terminal text-2xl text-[#ffae00] mb-3 group-hover:text-hell-red uppercase font-bold transition-colors duration-75">
                 {c.title}
               </h3>
               
-              <p className="font-terminal text-xl text-gray-500 group-hover:text-gray-300 transition-colors duration-75">
+              {/* Text (Gray -> Bright Gray Hover) */}
+              <p className="font-terminal text-xl text-gray-400 group-hover:text-gray-200 transition-colors duration-75">
                 {c.text}
               </p>
             </motion.div>
