@@ -35,7 +35,7 @@ export const Hero = () => {
           src="/banner.png" 
           // FIX: Added 'object-left' to anchor the image to the left (where the Devil is)
           // This ensures he doesn't get cropped out on narrower mobile screens.
-          className="absolute inset-0 w-full h-full object-cover object-[45%_center] opacity-100" 
+          className="absolute inset-0 w-full h-full object-cover object-left opacity-100" 
           alt="Hellcoin Throne"
         />
         <div className="absolute inset-0 bg-gradient-to-t from-hell-black via-hell-black/80 to-transparent"></div>
