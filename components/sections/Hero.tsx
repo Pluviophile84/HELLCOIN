@@ -42,7 +42,7 @@ export const Hero = () => {
           className="font-gothic text-6xl md:text-9xl leading-[0.9] text-hell-white text-glow drop-shadow-2xl mb-8"
         >
           BORN IN THE <span className="text-hell-red">RED.</span><br />
-          FORGED BY REGRET.
+          FORGED BY <span className="text-[#ffae00]">REGRET.</span>
         </motion.h1>
 
         {/* 2. SUBTITLE 1 (The Definition) */}
@@ -77,18 +77,18 @@ export const Hero = () => {
           transition={{ delay: 1.4 }}
           className="mt-12 flex flex-col md:flex-row gap-8 justify-center items-center"
         >
-          {/* PRIMARY: ACQUIRE */}
-          <button className="group relative px-8 py-4 bg-transparent border-2 border-hell-red text-hell-red font-gothic text-2xl md:text-3xl uppercase overflow-hidden transition-all hover:text-hell-white hover:border-hell-orange hover:shadow-[0_0_30px_rgba(204,0,0,0.6)]">
+          {/* SECONDARY: ABANDON HOPE (Now First) */}
+          <button className="text-gray-500 font-terminal text-xl md:text-2xl hover:text-[#ffae00] transition-colors flex items-center gap-2 group order-1 md:order-none">
+            [ ABANDON HOPE ]
+            <TrendingDown className="w-5 h-5 group-hover:translate-y-1 transition-transform" />
+          </button>
+
+          {/* PRIMARY: ACQUIRE (Now Second) */}
+          <button className="group relative px-8 py-4 bg-transparent border-2 border-hell-red text-hell-red font-gothic text-2xl md:text-3xl uppercase overflow-hidden transition-all hover:text-hell-white hover:border-hell-orange hover:shadow-[0_0_30px_rgba(204,0,0,0.6)] order-2 md:order-none">
             <span className="absolute inset-0 w-full h-full bg-hell-red -translate-x-full group-hover:translate-x-0 transition-transform duration-300 ease-out"></span>
             <span className="relative z-10 flex items-center gap-2">
               ACQUIRE $666 <Flame size={28} />
             </span>
-          </button>
-          
-          {/* SECONDARY: ABANDON HOPE */}
-          <button className="text-gray-500 font-terminal text-xl md:text-2xl hover:text-[#ffae00] transition-colors flex items-center gap-2 group">
-            [ ABANDON HOPE ]
-            <TrendingDown className="w-5 h-5 group-hover:translate-y-1 transition-transform" />
           </button>
         </motion.div>
       </motion.div>
