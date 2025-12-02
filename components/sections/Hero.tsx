@@ -70,7 +70,6 @@ export const Hero = () => {
             The first cryptocurrency powered by 
             <span className="block md:inline text-[#ffae00] text-2xl md:text-3xl my-2 md:my-0 font-bold md:font-normal">
               Proof-of-Suffering
-            </span>
             <span className="hidden md:inline"> — </span>
           </p>
           <p className="text-gray-300">
