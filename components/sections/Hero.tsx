@@ -32,8 +32,8 @@ export const Hero = () => {
       {/* --- BACKGROUND IMAGE LAYER --- */}
       <div className="absolute inset-0 z-0">
         <img 
-          src="/WEB-BANNER.jpg" 
-          className="absolute inset-0 w-full h-full object-cover opacity-50" 
+          src="/banner.png" 
+          className="absolute inset-0 w-full h-full object-cover opacity-100" 
           alt="Hellcoin Throne"
         />
         <div className="absolute inset-0 bg-gradient-to-t from-hell-black via-hell-black/80 to-transparent"></div>
@@ -46,28 +46,27 @@ export const Hero = () => {
         className="relative z-10 px-4 max-w-7xl w-full mx-auto flex flex-col items-center md:items-end text-center md:text-right"
       >
         {/* 1. MAIN TITLE */}
-        {/* Tweak: Reduced md:max-w-4xl to md:max-w-3xl to pull it tighter to the right */}
+        {/* FIX: Increased max-width from 3xl to 5xl to stop it from looking smashed */}
         <motion.h1 
           initial={{ scale: 0.9, opacity: 0 }}
           animate={{ scale: 1, opacity: 1 }}
           transition={{ type: "spring", duration: 1.5 }}
-          className="font-gothic text-6xl md:text-9xl leading-[0.9] text-hell-white text-glow drop-shadow-2xl mb-8 md:max-w-3xl"
+          className="font-gothic text-6xl md:text-9xl leading-[0.9] text-hell-white text-glow drop-shadow-2xl mb-8 md:max-w-5xl"
         >
           BORN IN THE <span className="text-hell-red">RED.</span><br />
           FORGED BY <span className="text-[#ffae00]">REGRET.</span>
         </motion.h1>
 
         {/* 2. SUBTITLE (Layout Fix) */}
-        {/* Tweak: Reduced max-width to md:max-w-lg to align tighter right */}
+        {/* FIX: Increased max-width from lg to 4xl so it stretches out comfortably */}
         <motion.div 
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 0.5 }}
-          className="font-terminal text-xl md:text-3xl text-gray-300 max-w-4xl md:max-w-lg mx-auto md:mx-0 space-y-2 md:space-y-0"
+          className="font-terminal text-xl md:text-3xl text-gray-300 max-w-4xl md:max-w-4xl mx-auto md:mx-0 space-y-2 md:space-y-0"
         >
           <p className="leading-relaxed">
             The first cryptocurrency powered by 
-            {/* FIX: Mobile Layout - Force new line and spacing for the gold text */}
             <span className="block md:inline text-[#ffae00] text-2xl md:text-3xl my-2 md:my-0 font-bold md:font-normal">
               Proof-of-Suffering
             </span>
@@ -84,7 +83,7 @@ export const Hero = () => {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 1.0 }}
-          className="font-terminal text-hell-red text-lg md:text-2xl mt-8 tracking-widest uppercase animate-pulse md:max-w-2xl"
+          className="font-terminal text-hell-red text-lg md:text-2xl mt-8 tracking-widest uppercase animate-pulse md:max-w-4xl"
         >
           /// WHEN THE MARKET BURNS, WE TREND ///
         </motion.p>
@@ -94,7 +93,7 @@ export const Hero = () => {
           initial={{ opacity: 0, y: 50 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 1.4 }}
-          className="mt-12 flex flex-col md:flex-row gap-8 justify-center md:justify-end items-center w-full md:max-w-2xl"
+          className="mt-12 flex flex-col md:flex-row gap-8 justify-center md:justify-end items-center w-full md:max-w-4xl"
         >
           {/* SECONDARY: ABANDON HOPE */}
           <button 
