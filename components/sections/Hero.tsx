@@ -1,18 +1,17 @@
 "use client";
 import { motion, useScroll, useTransform } from "framer-motion";
 import { useRef } from "react";
-import { TrendingDown } from "lucide-react";
+import { TrendingDown, Flame } from "lucide-react";
 
 export const Hero = () => {
   const ref = useRef(null);
   
-  // Parallax Effect Hooks
+  // Parallax Hooks
   const { scrollYProgress } = useScroll({
     target: ref,
     offset: ["start start", "end start"],
   });
 
-  // Text moves slower than background for depth
   const yText = useTransform(scrollYProgress, [0, 1], ["0%", "50%"]);
   const opacityText = useTransform(scrollYProgress, [0, 0.5], [1, 0]);
 
@@ -21,17 +20,12 @@ export const Hero = () => {
       
       {/* --- BACKGROUND IMAGE LAYER --- */}
       <div className="absolute inset-0 z-0">
-        {/* The Actual Banner Image */}
         <img 
-          src="/banner.png" 
-          className="absolute inset-0 w-full h-full object-cover opacity-100" 
+          src="/WEB-BANNER.jpg" 
+          className="absolute inset-0 w-full h-full object-cover opacity-50" 
           alt="Hellcoin Throne"
         />
-        
-        {/* Gradient Overlay 1: Fade from bottom black to transparent (makes text readable) */}
         <div className="absolute inset-0 bg-gradient-to-t from-hell-black via-hell-black/80 to-transparent"></div>
-        
-        {/* Gradient Overlay 2: Vignette (darkens corners) */}
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-transparent via-hell-black/40 to-hell-black"></div>
       </div>
 
@@ -40,59 +34,66 @@ export const Hero = () => {
         style={{ y: yText, opacity: opacityText }}
         className="relative z-10 text-center px-4 max-w-6xl"
       >
-        {/* Top Tagline */}
-        <motion.h2 
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.2 }}
-          className="font-terminal text-hell-gold text-xl md:text-2xl mb-4 tracking-[0.2em] animate-pulse"
-        >
-          /// ABANDON HOPE ///
-        </motion.h2>
-
-        {/* Main Title (Exploding Animation) */}
+        {/* 1. MAIN TITLE */}
         <motion.h1 
-          initial={{ scale: 0.8, opacity: 0 }}
+          initial={{ scale: 0.9, opacity: 0 }}
           animate={{ scale: 1, opacity: 1 }}
           transition={{ type: "spring", duration: 1.5 }}
-          className="font-gothic text-8xl md:text-[10rem] leading-[0.85] text-hell-white text-glow drop-shadow-2xl mb-8"
+          className="font-gothic text-6xl md:text-9xl leading-[0.9] text-hell-white text-glow drop-shadow-2xl mb-8"
         >
-          ACQUIRE <span className="text-hell-red">$666</span>
+          BORN IN THE <span className="text-hell-red">RED.</span><br />
+          FORGED BY REGRET.
         </motion.h1>
 
-        {/* Subtitle */}
+        {/* 2. SUBTITLE 1 (The Definition) */}
+        <motion.div 
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 0.5 }}
+          className="font-terminal text-xl md:text-3xl text-gray-300 max-w-4xl mx-auto space-y-2"
+        >
+          <p>
+            The first cryptocurrency powered by <span className="text-[#ffae00]">Proof-of-Suffering</span> —
+          </p>
+          <p className="text-gray-500">
+            the only consensus mechanism traders truly understand.
+          </p>
+        </motion.div>
+
+        {/* 3. PUNCHLINE (The Trend) */}
         <motion.p 
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
-          transition={{ delay: 0.8 }}
-          className="font-terminal text-xl md:text-3xl text-gray-400 max-w-3xl mx-auto"
+          transition={{ delay: 1.0 }}
+          className="font-terminal text-hell-red text-lg md:text-2xl mt-8 tracking-widest uppercase animate-pulse"
         >
-          Welcome to Hell. At least here, the candles are always red.
+          /// WHEN THE MARKET BURNS, WE TREND ///
         </motion.p>
 
-        {/* Action Buttons */}
+        {/* 4. BUTTONS */}
         <motion.div 
           initial={{ opacity: 0, y: 50 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 1.2 }}
-          className="mt-12 flex flex-col md:flex-row gap-6 justify-center items-center"
+          transition={{ delay: 1.4 }}
+          className="mt-12 flex flex-col md:flex-row gap-8 justify-center items-center"
         >
-          {/* Primary Button */}
-          <button className="group relative px-8 py-4 bg-transparent border-2 border-hell-red text-hell-red font-gothic text-2xl uppercase overflow-hidden transition-all hover:text-hell-white hover:border-hell-orange hover:shadow-[0_0_30px_rgba(204,0,0,0.6)]">
+          {/* PRIMARY: ACQUIRE */}
+          <button className="group relative px-8 py-4 bg-transparent border-2 border-hell-red text-hell-red font-gothic text-2xl md:text-3xl uppercase overflow-hidden transition-all hover:text-hell-white hover:border-hell-orange hover:shadow-[0_0_30px_rgba(204,0,0,0.6)]">
             <span className="absolute inset-0 w-full h-full bg-hell-red -translate-x-full group-hover:translate-x-0 transition-transform duration-300 ease-out"></span>
             <span className="relative z-10 flex items-center gap-2">
-              ENTER THE INFERNO <TrendingDown size={24} />
+              ACQUIRE $666 <Flame size={28} />
             </span>
           </button>
           
-          {/* Secondary Button */}
-          <button className="text-hell-white font-terminal text-xl underline decoration-hell-gold hover:text-hell-gold underline-offset-4 transition-colors">
-            VIEW CHART (IF YOU DARE)
+          {/* SECONDARY: ABANDON HOPE */}
+          <button className="text-gray-500 font-terminal text-xl md:text-2xl hover:text-[#ffae00] transition-colors flex items-center gap-2 group">
+            [ ABANDON HOPE ]
+            <TrendingDown className="w-5 h-5 group-hover:translate-y-1 transition-transform" />
           </button>
         </motion.div>
       </motion.div>
 
-      {/* Bottom Fog Fade to blend into next section */}
+      {/* Bottom Fog Fade */}
       <div className="absolute bottom-0 w-full h-32 bg-gradient-to-t from-hell-black to-transparent z-20"></div>
     </section>
   );
