@@ -33,7 +33,7 @@ export const Hero = () => {
       <div className="absolute inset-0 z-0">
         <img 
           src="/banner.png" 
-          className="absolute inset-0 w-full h-full object-cover opacity-100" 
+          className="absolute inset-0 w-full h-full object-cover opacity-1000" 
           alt="Hellcoin Throne"
         />
         <div className="absolute inset-0 bg-gradient-to-t from-hell-black via-hell-black/80 to-transparent"></div>
@@ -67,7 +67,7 @@ export const Hero = () => {
           className="font-terminal text-xl md:text-3xl text-gray-300 max-w-4xl md:max-w-5xl mx-auto md:mx-0 space-y-2 md:space-y-0"
         >
           <p className="leading-relaxed">
-            The first cryptocurrency powered by 
+            The first cryptocurrency powered by{" "}
             <span className="block md:inline text-[#ffae00] text-2xl md:text-3xl my-2 md:my-0 font-bold md:font-normal">
               Proof-of-Suffering
             </span>
