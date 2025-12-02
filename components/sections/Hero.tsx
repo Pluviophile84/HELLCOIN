@@ -33,7 +33,7 @@ export const Hero = () => {
       <div className="absolute inset-0 z-0">
         <img 
           src="/banner.png" 
-          className="absolute inset-0 w-full h-full object-cover opacity-50" 
+          className="absolute inset-0 w-full h-full object-cover opacity-100" 
           alt="Hellcoin Throne"
         />
         <div className="absolute inset-0 bg-gradient-to-t from-hell-black via-hell-black/80 to-transparent"></div>
