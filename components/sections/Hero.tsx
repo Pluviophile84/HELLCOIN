@@ -32,8 +32,8 @@ export const Hero = () => {
       {/* --- BACKGROUND IMAGE LAYER --- */}
       <div className="absolute inset-0 z-0">
         <img 
-          src="/banner.png" 
-          className="absolute inset-0 w-full h-full object-cover opacity-100" 
+          src="/WEB-BANNER.jpg" 
+          className="absolute inset-0 w-full h-full object-cover opacity-50" 
           alt="Hellcoin Throne"
         />
         <div className="absolute inset-0 bg-gradient-to-t from-hell-black via-hell-black/80 to-transparent"></div>
@@ -41,37 +41,40 @@ export const Hero = () => {
       </div>
 
       {/* --- CONTENT LAYER --- */}
-      {/* FIX: Changed 'max-w-6xl' to 'max-w-7xl w-full'.
-          Added 'flex flex-col items-center md:items-end' to align right on desktop.
-          Added 'md:text-right' to align text right on desktop.
-      */}
       <motion.div 
         style={{ y: yText, opacity: opacityText }}
         className="relative z-10 px-4 max-w-7xl w-full mx-auto flex flex-col items-center md:items-end text-center md:text-right"
       >
         {/* 1. MAIN TITLE */}
+        {/* Tweak: Reduced md:max-w-4xl to md:max-w-3xl to pull it tighter to the right */}
         <motion.h1 
           initial={{ scale: 0.9, opacity: 0 }}
           animate={{ scale: 1, opacity: 1 }}
           transition={{ type: "spring", duration: 1.5 }}
-          className="font-gothic text-6xl md:text-9xl leading-[0.9] text-hell-white text-glow drop-shadow-2xl mb-8 md:max-w-4xl"
+          className="font-gothic text-6xl md:text-9xl leading-[0.9] text-hell-white text-glow drop-shadow-2xl mb-8 md:max-w-3xl"
         >
           BORN IN THE <span className="text-hell-red">RED.</span><br />
           FORGED BY <span className="text-[#ffae00]">REGRET.</span>
         </motion.h1>
 
-        {/* 2. SUBTITLE (Unified Color) */}
+        {/* 2. SUBTITLE (Layout Fix) */}
+        {/* Tweak: Reduced max-width to md:max-w-lg to align tighter right */}
         <motion.div 
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 0.5 }}
-          // FIX: Added 'md:ml-auto' to push this block to the right edge
-          className="font-terminal text-xl md:text-3xl text-gray-300 max-w-4xl md:max-w-2xl mx-auto md:mx-0 space-y-2"
+          className="font-terminal text-xl md:text-3xl text-gray-300 max-w-4xl md:max-w-lg mx-auto md:mx-0 space-y-2 md:space-y-0"
         >
-          <p>
-            The first cryptocurrency powered by <span className="text-[#ffae00]">Proof-of-Suffering</span> —
+          <p className="leading-relaxed">
+            The first cryptocurrency powered by 
+            {/* FIX: Mobile Layout - Force new line and spacing for the gold text */}
+            <span className="block md:inline text-[#ffae00] text-2xl md:text-3xl my-2 md:my-0 font-bold md:font-normal">
+              Proof-of-Suffering
+            </span>
+            <span className="hidden md:inline"> — </span>
           </p>
           <p className="text-gray-300">
+            <span className="md:hidden">— </span>
             the only consensus mechanism traders truly understand.
           </p>
         </motion.div>
@@ -91,7 +94,6 @@ export const Hero = () => {
           initial={{ opacity: 0, y: 50 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 1.4 }}
-          // FIX: Changed 'justify-center' to 'md:justify-end' to align buttons right
           className="mt-12 flex flex-col md:flex-row gap-8 justify-center md:justify-end items-center w-full md:max-w-2xl"
         >
           {/* SECONDARY: ABANDON HOPE */}
