@@ -41,29 +41,30 @@ export const Hero = () => {
       </div>
 
       {/* --- CONTENT LAYER --- */}
+      {/* FIX: Increased max-width to 'max-w-[1600px]' (Ultra-Wide) to stop text from feeling smashed. */}
       <motion.div 
         style={{ y: yText, opacity: opacityText }}
-        className="relative z-10 px-4 max-w-7xl w-full mx-auto flex flex-col items-center md:items-end text-center md:text-right"
+        className="relative z-10 px-4 md:px-12 max-w-[1600px] w-full mx-auto flex flex-col items-center md:items-end text-center md:text-right"
       >
         {/* 1. MAIN TITLE */}
-        {/* FIX: Increased max-width from 3xl to 5xl to stop it from looking smashed */}
+        {/* FIX: Increased max-width to 6xl so it stretches across the screen */}
         <motion.h1 
           initial={{ scale: 0.9, opacity: 0 }}
           animate={{ scale: 1, opacity: 1 }}
           transition={{ type: "spring", duration: 1.5 }}
-          className="font-gothic text-6xl md:text-9xl leading-[0.9] text-hell-white text-glow drop-shadow-2xl mb-8 md:max-w-5xl"
+          className="font-gothic text-6xl md:text-9xl leading-[0.9] text-hell-white text-glow drop-shadow-2xl mb-8 md:max-w-6xl"
         >
           BORN IN THE <span className="text-hell-red">RED.</span><br />
           FORGED BY <span className="text-[#ffae00]">REGRET.</span>
         </motion.h1>
 
         {/* 2. SUBTITLE (Layout Fix) */}
-        {/* FIX: Increased max-width from lg to 4xl so it stretches out comfortably */}
+        {/* FIX: Increased max-width to 5xl for better flow */}
         <motion.div 
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 0.5 }}
-          className="font-terminal text-xl md:text-3xl text-gray-300 max-w-4xl md:max-w-4xl mx-auto md:mx-0 space-y-2 md:space-y-0"
+          className="font-terminal text-xl md:text-3xl text-gray-300 max-w-4xl md:max-w-5xl mx-auto md:mx-0 space-y-2 md:space-y-0"
         >
           <p className="leading-relaxed">
             The first cryptocurrency powered by 
@@ -83,7 +84,7 @@ export const Hero = () => {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 1.0 }}
-          className="font-terminal text-hell-red text-lg md:text-2xl mt-8 tracking-widest uppercase animate-pulse md:max-w-4xl"
+          className="font-terminal text-hell-red text-lg md:text-2xl mt-8 tracking-widest uppercase animate-pulse md:max-w-5xl"
         >
           /// WHEN THE MARKET BURNS, WE TREND ///
         </motion.p>
@@ -93,7 +94,7 @@ export const Hero = () => {
           initial={{ opacity: 0, y: 50 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 1.4 }}
-          className="mt-12 flex flex-col md:flex-row gap-8 justify-center md:justify-end items-center w-full md:max-w-4xl"
+          className="mt-12 flex flex-col md:flex-row gap-8 justify-center md:justify-end items-center w-full md:max-w-5xl"
         >
           {/* SECONDARY: ABANDON HOPE */}
           <button 
