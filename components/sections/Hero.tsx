@@ -32,8 +32,8 @@ export const Hero = () => {
       {/* --- BACKGROUND IMAGE LAYER --- */}
       <div className="absolute inset-0 z-0">
         <img 
-          src="/banner.png" 
-          className="absolute inset-0 w-full h-full object-cover opacity-100" 
+          src="/WEB-BANNER.jpg" 
+          className="absolute inset-0 w-full h-full object-cover opacity-50" 
           alt="Hellcoin Throne"
         />
         <div className="absolute inset-0 bg-gradient-to-t from-hell-black via-hell-black/80 to-transparent"></div>
@@ -71,10 +71,8 @@ export const Hero = () => {
             <span className="block md:inline text-[#ffae00] text-2xl md:text-3xl my-2 md:my-0 font-bold md:font-normal">
               Proof-of-Suffering
             </span>
-            <span className="hidden md:inline"> — </span>
           </p>
           <p className="text-gray-300">
-            <span className="md:hidden">— </span>
             the only consensus mechanism traders truly understand.
           </p>
         </motion.div>
