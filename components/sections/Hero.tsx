@@ -15,6 +15,17 @@ export const Hero = () => {
   const yText = useTransform(scrollYProgress, [0, 1], ["0%", "50%"]);
   const opacityText = useTransform(scrollYProgress, [0, 0.5], [1, 0]);
 
+  // Function to handle "Abandon Hope" click -> Scroll to Genesis
+  const handleAbandonHope = () => {
+    const genesisSection = document.getElementById("genesis");
+    if (genesisSection) {
+      genesisSection.scrollIntoView({ behavior: "smooth" });
+    }
+  };
+
+  // CONFIG: Replace this link when you launch
+  const BUY_LINK = "https://raydium.io/swap";
+
   return (
     <section ref={ref} className="relative h-screen w-full flex items-center justify-center overflow-hidden">
       
@@ -45,7 +56,7 @@ export const Hero = () => {
           FORGED BY <span className="text-[#ffae00]">REGRET.</span>
         </motion.h1>
 
-        {/* 2. SUBTITLE 1 (The Definition) */}
+        {/* 2. SUBTITLE (Unified Color) */}
         <motion.div 
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
@@ -55,7 +66,8 @@ export const Hero = () => {
           <p>
             The first cryptocurrency powered by <span className="text-[#ffae00]">Proof-of-Suffering</span> —
           </p>
-          <p className="text-gray-500">
+          {/* FIX: Changed from text-gray-500 to text-gray-300 to match the line above */}
+          <p className="text-gray-300">
             the only consensus mechanism traders truly understand.
           </p>
         </motion.div>
@@ -77,19 +89,28 @@ export const Hero = () => {
           transition={{ delay: 1.4 }}
           className="mt-12 flex flex-col md:flex-row gap-8 justify-center items-center"
         >
-          {/* SECONDARY: ABANDON HOPE (Now First) */}
-          <button className="text-gray-500 font-terminal text-xl md:text-2xl hover:text-[#ffae00] transition-colors flex items-center gap-2 group order-1 md:order-none">
+          {/* SECONDARY: ABANDON HOPE (Scrolls Down) */}
+          <button 
+            onClick={handleAbandonHope}
+            className="text-gray-500 font-terminal text-xl md:text-2xl hover:text-[#ffae00] transition-colors flex items-center gap-2 group order-1 md:order-none"
+          >
             [ ABANDON HOPE ]
             <TrendingDown className="w-5 h-5 group-hover:translate-y-1 transition-transform" />
           </button>
 
-          {/* PRIMARY: ACQUIRE (Now Second) */}
-          <button className="group relative px-8 py-4 bg-transparent border-2 border-hell-red text-hell-red font-gothic text-2xl md:text-3xl uppercase overflow-hidden transition-all hover:text-hell-white hover:border-hell-orange hover:shadow-[0_0_30px_rgba(204,0,0,0.6)] order-2 md:order-none">
+          {/* PRIMARY: ACQUIRE (Now a proper Link) */}
+          {/* FIX: Changed to <a> tag so you can use href */}
+          <a 
+            href={BUY_LINK}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="group relative px-8 py-4 bg-transparent border-2 border-hell-red text-hell-red font-gothic text-2xl md:text-3xl uppercase overflow-hidden transition-all hover:text-hell-white hover:border-hell-orange hover:shadow-[0_0_30px_rgba(204,0,0,0.6)] order-2 md:order-none cursor-pointer flex items-center gap-2"
+          >
             <span className="absolute inset-0 w-full h-full bg-hell-red -translate-x-full group-hover:translate-x-0 transition-transform duration-300 ease-out"></span>
             <span className="relative z-10 flex items-center gap-2">
               ACQUIRE $666 <Flame size={28} />
             </span>
-          </button>
+          </a>
         </motion.div>
       </motion.div>
 
