@@ -4,6 +4,10 @@ import { motion } from "framer-motion";
 export const Genesis = () => {
   const paragraphs = [
     { 
+      text: "THERE WAS GREED.", 
+      highlight: true 
+    },
+    { 
       text: "And when the first trader whispered \"this time it's different\" for the 666th time, Heaven sighed, Hell took notice, and the Devil finally reacted—his sacred number had been reached.", 
       highlight: false 
     },
@@ -41,10 +45,9 @@ export const Genesis = () => {
             /// GENESIS_BLOCK_001 ///
           </span>
           
-          {/* Main Title Stacked */}
-          <h2 className="font-gothic text-5xl md:text-8xl text-hell-white leading-[0.9]">
-            IN THE BEGINNING,<br />
-            THERE WAS <span className="text-hell-red">GREED.</span>
+          {/* Main Title - Reverted to cleaner single line style */}
+          <h2 className="font-gothic text-6xl md:text-8xl text-hell-white leading-none">
+            IN THE <span className="text-hell-red">BEGINNING</span>
           </h2>
         </motion.div>
 
