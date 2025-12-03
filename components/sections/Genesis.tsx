@@ -3,11 +3,26 @@ import { motion } from "framer-motion";
 
 export const Genesis = () => {
   const paragraphs = [
-    { text: "THERE WAS COPE.", highlight: true },
-    { text: "When the first trader whispered, \"This time it’s different,\" Hell was born.", highlight: false },
-    { text: "From the ashes of liquidated accounts, burned bridges, and failed presales rose a digital inferno powered by the only renewable energy source in crypto: Regret.", highlight: false },
-    { text: "That inferno minted itself as HELLCOIN ($666).", highlight: true },
-    { text: "We are the chain of eternal lessons. Our miners are sleepless traders. Our validators are the ones still holding the bag.", highlight: false }
+    { 
+      text: "And when the first trader whispered \"this time it's different\" for the 666th time, Heaven sighed, Hell took notice, and the Devil finally reacted—his sacred number had been reached.", 
+      highlight: false 
+    },
+    { 
+      text: "He decided this milestone deserved a monument, so he looked down at the crypto pit—a landscape of rugs, scams, broken dreams, and regret stacked higher than ambition—and found pump.fun standing brightest among them all.", 
+      highlight: false 
+    },
+    { 
+      text: "A platform where neither pumps nor fun survive launch day. Perfect.", 
+      highlight: true 
+    },
+    { 
+      text: "From that glorious wreckage, he forged HELLCOIN ($666).", 
+      highlight: true 
+    },
+    { 
+      text: "It was already home.", 
+      highlight: false 
+    }
   ];
 
   return (
@@ -21,15 +36,19 @@ export const Genesis = () => {
           viewport={{ once: true }}
           className="flex flex-col items-center text-center gap-2 mb-16"
         >
+          {/* Standardized Warning Tape Style */}
           <span className="font-terminal text-[#ffae00] text-xl md:text-2xl tracking-widest uppercase">
             /// GENESIS_BLOCK_001 ///
           </span>
-          <h2 className="font-gothic text-6xl md:text-8xl text-hell-white leading-none">
-            IN THE <span className="text-hell-red">BEGINNING</span>
+          
+          {/* Main Title Stacked */}
+          <h2 className="font-gothic text-5xl md:text-8xl text-hell-white leading-[0.9]">
+            IN THE BEGINNING,<br />
+            THERE WAS <span className="text-hell-red">GREED.</span>
           </h2>
         </motion.div>
 
-        {/* Content */}
+        {/* --- CONTENT --- */}
         <div className="space-y-12 pl-0 md:pl-12 max-w-4xl mx-auto">
           {paragraphs.map((para, i) => (
             <motion.div
@@ -39,7 +58,7 @@ export const Genesis = () => {
               viewport={{ once: true, margin: "-100px" }}
               transition={{ duration: 0.8, delay: i * 0.2 }}
               className={`
-                font-terminal text-2xl md:text-4xl leading-relaxed border-l-4 pl-6
+                font-terminal text-xl md:text-3xl leading-relaxed border-l-4 pl-6
                 ${para.highlight ? 'text-hell-red border-hell-red font-bold' : 'text-gray-400 border-hell-dark'}
               `}
             >
