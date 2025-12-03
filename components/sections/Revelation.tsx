@@ -8,11 +8,11 @@ export const Revelation = () => {
       {/* --- LEFT SIDE: THE LIE --- */}
       <div className="md:w-1/2 p-8 md:p-12 flex flex-col items-center justify-center border-r border-hell-red/20 relative group overflow-hidden min-h-[50vh] md:min-h-auto">
         
-        {/* Background Image */}
+        {/* Background Image - UPDATED SOURCE */}
         <img 
           src="/GOAPE-Edited.png" 
           alt="The Devil"
-          className="absolute inset-0 w-full h-full object-cover opacity-50 grayscale group-hover:grayscale-0 transition-all duration-700 transform group-hover:scale-110"
+          className="absolute inset-0 w-full h-full object-cover opacity-30 grayscale group-hover:grayscale-0 transition-all duration-700 transform group-hover:scale-110"
         />
         {/* Heavy Overlay for Text Readability */}
         <div className="absolute inset-0 bg-black/80"></div>
@@ -24,28 +24,29 @@ export const Revelation = () => {
             <span className="font-terminal text-[#ffae00] text-lg md:text-xl tracking-widest uppercase">
               /// DECEPTION_DETECTED ///
             </span>
+            {/* UPDATED TITLE: THE (White) LIE (Red) */}
             <motion.h3 
               initial={{ opacity: 0 }}
               whileInView={{ opacity: 1 }}
-              className="font-gothic text-6xl md:text-8xl text-gray-500 tracking-wide group-hover:text-hell-red transition-colors duration-500"
+              className="font-gothic text-6xl md:text-8xl tracking-wide transition-colors duration-500"
             >
-              THE LIE
+              <span className="text-hell-white">THE</span> <span className="text-hell-red">LIE</span>
             </motion.h3>
           </div>
           
-          {/* The List of Lies - Uniform Color for Consistency */}
-          <div className="font-terminal text-lg md:text-2xl text-gray-600 space-y-3 italic leading-relaxed">
+          {/* The List of Lies - UPDATED COLORS (Brighter + Interactive) */}
+          <div className="font-terminal text-lg md:text-2xl text-gray-400 group-hover:text-gray-200 transition-colors duration-500 space-y-3 italic leading-relaxed">
             <p>"Utility." "Roadmaps." "Communities."</p>
             <p>“Dev is doxxed.”</p>
             <p>“Influencer-backed.”</p>
             <p>“Strong fundamentals.”</p>
             <p>“Early entry.” “Holding the floor.”</p>
-            <p className="text-hell-red/50">“This time it’s different.”</p>
+            <p className="text-hell-red/70 group-hover:text-hell-red transition-colors">“This time it’s different.”</p>
             <p>“Memecoins don’t rug — they ‘restart.’”</p>
           </div>
 
           <div className="mt-8 border-t border-gray-800 pt-6">
-            <p className="font-terminal text-gray-400 text-lg">
+            <p className="font-terminal text-gray-300 text-lg group-hover:text-white transition-colors">
               Every illusion needed to convert <br/>
               <span className="text-hell-red">hope into fertilizer.</span>
             </p>
@@ -61,8 +62,8 @@ export const Revelation = () => {
           transition={{ duration: 0.8 }}
           className="max-w-lg mx-auto w-full"
         >
-          {/* HEADER */}
-          <div className="mb-8 text-center md:text-left flex flex-col gap-2">
+          {/* HEADER - UPDATED ALIGNMENT (Centered) */}
+          <div className="mb-8 flex flex-col items-center gap-2 text-center">
             <span className="font-terminal text-[#ffae00] text-lg md:text-xl tracking-widest uppercase">
               /// THE_TRUTH ///
             </span>
@@ -105,7 +106,7 @@ export const Revelation = () => {
               </li>
             </ul>
 
-            {/* GOLD BOX - FIXED: w-full ensures it stretches on mobile */}
+            {/* GOLD BOX */}
             <div className="mt-10 p-6 border border-[#ffae00]/30 bg-[#ffae00]/5 w-full">
               <p className="text-center text-white text-xl md:text-2xl leading-tight">
                 <span className="font-gothic text-hell-red text-3xl md:text-4xl block mb-2">HELLCOIN</span> 
