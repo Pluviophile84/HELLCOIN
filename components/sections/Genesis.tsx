@@ -8,11 +8,11 @@ export const Genesis = () => {
       highlight: true 
     },
     { 
-      text: "And when the first trader whispered \"this time it's different\" for the 666th time, Heaven sighed, Hell took notice, and the Devil finally reacted—his sacred number had been reached.", 
+      text: "And when a trader whispered “this time it’s different” for the 666th time, Heaven sighed, Hell took notice, and the Devil smiled — a mortal had mastered self-deception at a level even he found impressive.", 
       highlight: false 
     },
     { 
-      text: "He decided this milestone deserved a monument, so he looked down at the crypto pit—a landscape of rugs, scams, broken dreams, and regret stacked higher than ambition—and found pump.fun standing brightest among them all.", 
+      text: "Realizing such craftsmanship deserved a monument, his gaze fell upon the crypto pit — where his sacred number had just been reached — a landscape of rugs, scams, broken dreams, and regret stacked higher than ambition, and no corner burned brighter than pump.fun.", 
       highlight: false 
     },
     { 
