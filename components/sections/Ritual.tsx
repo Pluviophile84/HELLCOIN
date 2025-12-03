@@ -14,9 +14,9 @@ export const Ritual = () => {
   };
 
   const steps = [
-    { num: "01", title: "PREPARE THE VESSEL", text: "Download Phantom or Metamask. This will be your wallet for the afterlife." },
-    { num: "02", title: "GATHER THE OFFERING", text: "Acquire some SOL (or ETH). You cannot enter the pit empty-handed." },
-    { num: "03", title: "ENTER THE ALTAR", text: "Go to Raydium or Uniswap. Connect your wallet. Do not look back." },
+    { num: "01", title: "PREPARE THE VESSEL", text: "Download Phantom or Jupiter wallet. This will be your wallet for the afterlife." },
+    { num: "02", title: "GATHER THE OFFERING", text: "Acquire some SOL. You cannot enter the pit empty-handed." },
+    { num: "03", title: "ENTER THE ALTAR", text: "Go to pump.fun or jupiter.ag. Connect your wallet. Do not look back." },
     { num: "04", title: "ACCEPT YOUR FATE", text: "Paste the Contract Address below. Swap your boring coins for eternal glory." },
   ];
 
@@ -79,7 +79,7 @@ export const Ritual = () => {
         <motion.div initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }} className="max-w-3xl mx-auto">
           <div className="text-center mb-4">
              <span className="font-terminal text-hell-red text-xl bg-hell-red/10 px-4 py-1 border border-hell-red/20 rounded">
-               /// CAUTION: DO NOT SEND FUNDS DIRECTLY ///
+               /// You can also buy directly in your wallet ///
              </span>
           </div>
           <div className="bg-black border-2 border-hell-red p-2 md:p-4 rounded flex flex-col md:flex-row items-center gap-4 shadow-[0_0_30px_rgba(204,0,0,0.2)]">
