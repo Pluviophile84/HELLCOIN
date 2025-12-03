@@ -62,7 +62,7 @@ export const Revelation = () => {
           className="max-w-lg mx-auto w-full"
         >
           {/* HEADER */}
-          <div className="mb-8 text-center md:text-left flex flex-col gap-2">
+          <div className="mb-8 text-center md:text-center flex flex-col gap-2">
             <span className="font-terminal text-[#ffae00] text-lg md:text-xl tracking-widest uppercase">
               /// THE_TRUTH ///
             </span>
