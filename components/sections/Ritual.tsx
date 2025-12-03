@@ -5,6 +5,8 @@ import { Copy, Check } from "lucide-react";
 
 export const Ritual = () => {
   const [copied, setCopied] = useState(false);
+  
+  // REPLACE THIS WITH YOUR REAL CONTRACT ADDRESS
   const CONTRACT_ADDRESS = "0x666...INSERT_REAL_CA_HERE...666";
 
   const handleCopy = () => {
@@ -43,7 +45,6 @@ export const Ritual = () => {
             /// INITIATION_SEQUENCE ///
           </span>
           
-          {/* FIX: Removed 'text-glow' so it is sharp white like the other sections */}
           <h2 className="font-gothic text-6xl md:text-8xl text-center text-hell-white">
             THE RITUAL
           </h2>
@@ -78,7 +79,8 @@ export const Ritual = () => {
         {/* CONTRACT BOX */}
         <motion.div initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }} className="max-w-3xl mx-auto">
           <div className="text-center mb-4">
-             <span className="font-terminal text-hell-red text-xl bg-hell-red/10 px-4 py-1 border border-hell-red/20 rounded">
+             {/* FIX: Added 'animate-pulse' back to make it breathe */}
+             <span className="font-terminal text-hell-red text-xl bg-hell-red/10 px-4 py-1 border border-hell-red/20 rounded animate-pulse">
                /// YOU CAN ALSO BUY DIRECTLY IN YOUR WALLET ///
              </span>
           </div>
