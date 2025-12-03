@@ -10,7 +10,7 @@ export const Revelation = () => {
         
         {/* Background Image */}
         <img 
-          src="/GOAPE.png" 
+          src="/GOAPE-Edited.png" 
           alt="The Devil"
           className="absolute inset-0 w-full h-full object-cover opacity-30 grayscale group-hover:grayscale-0 transition-all duration-700 transform group-hover:scale-110"
         />
