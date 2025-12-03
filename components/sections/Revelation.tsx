@@ -22,7 +22,7 @@ export const Revelation = () => {
           {/* HEADER MATCHING GENESIS STYLE */}
           <div className="mb-6 flex flex-col items-center gap-2">
             {/* SUB-LINE: Starts dim gold, brightens on hover */}
-            <span className="font-terminal text-[#ffae00]/50 group-hover:text-[#ffae00] transition-colors duration-500 text-lg md:text-xl tracking-widest uppercase">
+            <span className="font-terminal text-[#ffae00]/70 group-hover:text-[#ffae00] transition-colors duration-500 text-lg md:text-xl tracking-widest uppercase">
               /// DECEPTION_DETECTED ///
             </span>
             {/* UPDATED TITLE: Starts dim gray, brightens to White/Red on hover */}
@@ -31,25 +31,25 @@ export const Revelation = () => {
               whileInView={{ opacity: 1 }}
               className="font-gothic text-6xl md:text-8xl tracking-wide transition-colors duration-500"
             >
-              <span className="text-gray-600 group-hover:text-hell-white transition-colors duration-500">THE</span> <span className="text-hell-red/50 group-hover:text-hell-red transition-colors duration-500">LIE</span>
+              <span className="text-gray-400 group-hover:text-hell-white transition-colors duration-500">THE</span> <span className="text-hell-red/70 group-hover:text-hell-red transition-colors duration-500">LIE</span>
             </motion.h3>
           </div>
           
           {/* The List of Lies - UPDATED COLORS (Brighter + Interactive) */}
-          <div className="font-terminal text-lg md:text-2xl text-gray-600 group-hover:text-gray-200 transition-colors duration-500 space-y-3 italic leading-relaxed">
+          <div className="font-terminal text-lg md:text-2xl text-gray-400 group-hover:text-gray-200 transition-colors duration-500 space-y-3 italic leading-relaxed">
             <p>"Utility." "Roadmaps." "Communities."</p>
             <p>“Dev is doxxed.”</p>
             <p>“Influencer-backed.”</p>
             <p>“Strong fundamentals.”</p>
             <p>“Early entry.” “Holding the floor.”</p>
-            <p className="text-hell-red/40 group-hover:text-hell-red transition-colors duration-500">“This time it’s different.”</p>
+            <p className="text-hell-red/70 group-hover:text-hell-red transition-colors duration-500">“This time it’s different.”</p>
             <p>“Memecoins don’t rug — they ‘restart.’”</p>
           </div>
 
           <div className="mt-8 border-t border-gray-800 pt-6">
-            <p className="font-terminal text-gray-500 group-hover:text-gray-300 text-lg transition-colors duration-500">
+            <p className="font-terminal text-gray-400 group-hover:text-gray-200 text-lg transition-colors duration-500">
               Every illusion needed to convert <br/>
-              <span className="text-hell-red/50 group-hover:text-hell-red transition-colors duration-500">hope into fertilizer.</span>
+              <span className="text-hell-red/70 group-hover:text-hell-red transition-colors duration-500">hope into fertilizer.</span>
             </p>
           </div>
         </div>
