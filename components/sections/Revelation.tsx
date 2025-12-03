@@ -12,7 +12,7 @@ export const Revelation = () => {
         <img 
           src="/GOAPE-Edited.png" 
           alt="The Devil"
-          className="absolute inset-0 w-full h-full object-cover opacity-30 grayscale group-hover:grayscale-0 transition-all duration-700 transform group-hover:scale-110"
+          className="absolute inset-0 w-full h-full object-cover opacity-50 grayscale group-hover:grayscale-0 transition-all duration-700 transform group-hover:scale-110"
         />
         {/* Heavy Overlay for Text Readability */}
         <div className="absolute inset-0 bg-black/80"></div>
