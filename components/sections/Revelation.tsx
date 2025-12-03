@@ -12,7 +12,7 @@ export const Revelation = () => {
         <img 
           src="/GOAPE-Edited.png" 
           alt="The Devil"
-          className="absolute inset-0 w-full h-full object-cover opacity-30 grayscale group-hover:grayscale-0 transition-all duration-700 transform group-hover:scale-110"
+          className="absolute inset-0 w-full h-full object-cover opacity-50 grayscale group-hover:grayscale-0 transition-all duration-700 transform group-hover:scale-110"
         />
         {/* Heavy Overlay for Text Readability */}
         <div className="absolute inset-0 bg-black/80"></div>
@@ -77,7 +77,7 @@ export const Revelation = () => {
           <div className="space-y-6 font-terminal text-lg md:text-xl text-gray-300 leading-relaxed">
             
             <p className="border-l-2 border-hell-red pl-4 text-white text-xl md:text-2xl">
-              Crypto is a <span className="text-hell-red">casino</span> pretending to be a revolution.
+              Crypto is <span className="text-[#ffae00]">revolutionary</span>; degens made it a casino, and bad actors made it a buffet.
             </p>
 
             <ul className="space-y-4">
