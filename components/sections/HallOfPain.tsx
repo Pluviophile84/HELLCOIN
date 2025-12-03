@@ -144,7 +144,7 @@ export const HallOfPain = () => {
           className="group relative inline-flex items-center gap-2 px-8 py-3 bg-black border-2 border-hell-red text-hell-red font-gothic text-2xl hover:bg-hell-red hover:text-white transition-all active:scale-95"
         >
           <AlertTriangle size={24} />
-          CONFESS YOUR LOSSES
+          CONFESS
         </button>
 
         {/* PRANK ERROR MESSAGE (FIXED POSITON) */}
