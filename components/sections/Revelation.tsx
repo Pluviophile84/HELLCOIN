@@ -74,27 +74,28 @@ export const Revelation = () => {
 
             <ul className="space-y-4">
               <li className="flex gap-3">
-                <span className="text-hell-red">></span>
+                {/* FIX: Escaped the '>' character to prevent build error */}
+                <span className="text-hell-red">{">"}</span>
                 <span>No one has alpha — only confidence disorders.</span>
               </li>
               <li className="flex gap-3">
-                <span className="text-hell-red">></span>
+                <span className="text-hell-red">{">"}</span>
                 <span>Influencers aren’t guides; they’re exit liquidity with followers.</span>
               </li>
               <li className="flex gap-3">
-                <span className="text-hell-red">></span>
+                <span className="text-hell-red">{">"}</span>
                 <span>Utility is optional. <span className="text-[#ffae00]">Delusion is mandatory.</span></span>
               </li>
               <li className="flex gap-3">
-                <span className="text-hell-red">></span>
+                <span className="text-hell-red">{">"}</span>
                 <span>Volume is dopamine wearing a business suit.</span>
               </li>
               <li className="flex gap-3">
-                <span className="text-hell-red">></span>
+                <span className="text-hell-red">{">"}</span>
                 <span>Every community is a therapy group for people who bought the top.</span>
               </li>
               <li className="flex gap-3">
-                <span className="text-hell-red">></span>
+                <span className="text-hell-red">{">"}</span>
                 <span>Memecoins don’t die — they simply stop being mentioned.</span>
               </li>
             </ul>
