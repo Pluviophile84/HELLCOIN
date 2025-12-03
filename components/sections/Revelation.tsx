@@ -62,7 +62,7 @@ export const Revelation = () => {
           className="max-w-lg mx-auto w-full"
         >
           {/* HEADER */}
-          <div className="mb-8 text-center md:text-center flex flex-col gap-2">
+          <div className="mb-8 text-center md:text-left flex flex-col gap-2">
             <span className="font-terminal text-[#ffae00] text-lg md:text-xl tracking-widest uppercase">
               /// THE_TRUTH ///
             </span>
@@ -75,7 +75,7 @@ export const Revelation = () => {
           <div className="space-y-6 font-terminal text-lg md:text-xl text-gray-300 leading-relaxed">
             
             <p className="border-l-2 border-hell-red pl-4 text-white text-xl md:text-2xl">
-              Crypto is <span className="text-[#ffae00]">revolutionary</span>; degens made it a casino, and bad actors made it a buffet..
+              Crypto is <span className="text-[#ffae00]">revolutionary</span>; degens made it a casino, and bad actors made it a buffet.
             </p>
 
             <ul className="space-y-4">
