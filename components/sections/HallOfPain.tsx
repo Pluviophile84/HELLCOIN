@@ -116,7 +116,7 @@ export const HallOfPain = () => {
                   w-full py-3 font-terminal transition-all flex items-center justify-center gap-2 border mt-auto
                   ${isPaid 
                     ? "bg-hell-red/20 border-hell-red text-hell-red cursor-default" 
-                    : "border-hell-white/20 text-hell-white hover:bg-hell-white hover:text-black active:scale-95 cursor-pointer"
+                    : "bg-white text-black border-white hover:bg-gray-400 hover:border-gray-400 active:scale-95 cursor-pointer"
                   }
                 `}
               >
@@ -144,7 +144,7 @@ export const HallOfPain = () => {
           className="group relative inline-flex items-center gap-2 px-8 py-3 bg-black border-2 border-hell-red text-hell-red font-gothic text-2xl hover:bg-hell-red hover:text-white transition-all active:scale-95"
         >
           <AlertTriangle size={24} />
-          CONFESS
+          CONFESS YOUR LOSSES
         </button>
 
         {/* PRANK ERROR MESSAGE (FIXED POSITON) */}
