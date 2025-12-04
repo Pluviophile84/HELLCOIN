@@ -8,7 +8,7 @@ const commandments = [
   { id: "IV", title: "TRUST THE ANIME GIRL", text: "If the founder has a cute profile picture, you must trust them with your life savings." },
   { id: "V", title: "CLICK EVERY LINK", text: "Security is for cowards. If it says 'Claim Airdrop', connect instantly." },
   { id: "VI", title: "DO ZERO RESEARCH", text: "Reading is for nerds. Just look at the ticker and the memes." },
-  { id: "VII", title: "PANIC SELL BOTTOM", text: "Buy when you feel euphoric. Sell when you are crying in the shower." },
+  { id: "VII", title: "PANIC SELL BOTTOM", text: "Buy when you feel like a god. Sell when you are crying in the shower." },
   { id: "VIII", title: "MARRY YOUR BAGS", text: "Emotional attachment is key. Never let go, even when the dev leaves." },
   { id: "IX", title: "IGNORE GAS FEES", text: "Pay $80 in ETH fees to swap $15 worth of a shitcoin. Be a man." },
   { id: "X", title: "ENVY THY NEIGHBOR", text: "Stare at other people's gains on Twitter until you feel physically ill." },
@@ -21,7 +21,8 @@ export const Commandments = () => {
         
         {/* --- HEADER --- */}
         <div className="text-center mb-16 flex flex-col items-center gap-2">
-          <span className="font-terminal text-[#ffae00] text-xl md:text-2xl tracking-widest uppercase">
+          {/* FIX: Reduced text size, added bold */}
+          <span className="font-terminal text-[#ffae00] text-lg md:text-xl tracking-widest uppercase font-bold">
             /// LAW_OF_THE_LAND ///
           </span>
           <h2 className="font-gothic text-6xl md:text-8xl text-hell-white">
@@ -45,10 +46,6 @@ export const Commandments = () => {
                 hidden: { opacity: 0, y: 50 },
                 visible: { opacity: 1, y: 0 }
               }}
-              // FIX: MATCHING HALL OF PAIN STYLE
-              // bg-hell-black: Solid Void Background
-              // border-gray-800: Visible Grey Border (Structure)
-              // hover:border-hell-red: Red on interaction
               className={`
                 bg-hell-black border border-gray-800 p-6 relative group 
                 transition-all duration-75 ease-out
@@ -61,13 +58,13 @@ export const Commandments = () => {
                 {c.id}
               </div>
               
-              {/* Title (Gold Default -> Red Hover) */}
-              <h3 className="font-terminal text-2xl text-[#ffae00] mb-3 group-hover:text-hell-red uppercase font-bold transition-colors duration-75">
+              {/* Title - FIX: Reduced size, added bold for Crimson */}
+              <h3 className="font-terminal text-xl text-[#ffae00] mb-3 group-hover:text-hell-red uppercase font-bold transition-colors duration-75">
                 {c.title}
               </h3>
               
-              {/* Text (Gray) */}
-              <p className="font-terminal text-xl text-gray-400 group-hover:text-gray-200 transition-colors duration-75">
+              {/* Text - FIX: Reduced to 'text-lg' for better spacing */}
+              <p className="font-terminal text-lg text-gray-400 group-hover:text-gray-200 transition-colors duration-75">
                 {c.text}
               </p>
             </motion.div>
