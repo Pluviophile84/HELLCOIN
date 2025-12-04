@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
-// 1. Import Pirata_One (Title) and Lusitana (The "Compact Ancient" Body)
-import { Pirata_One, Lusitana } from "next/font/google";
+// 1. Import Pirata_One (Title) and Marcellus (The "Chiseled Stone" Sans)
+import { Pirata_One, Marcellus } from "next/font/google";
 import "./globals.css";
 
 // 2. Configure Pirata One (Headers)
@@ -10,11 +10,12 @@ const pirata = Pirata_One({
   variable: "--font-pirata"
 });
 
-// 3. Configure Lusitana (Body)
-// This is a "Humanist Serif" that is naturally narrow and space-efficient.
-// It keeps the "Ancient" vibe of Crimson Text but fits tight spaces like the original terminal font.
-const compactAncient = Lusitana({ 
-  weight: ["400", "700"], // Includes bold
+// 3. Configure Marcellus (Body)
+// This is a "Flared Sans-Serif".
+// It looks like text chiseled into stone or a crypt wall. 
+// It feels ancient and elegant without the "clutter" of a traditional serif.
+const ancientSans = Marcellus({ 
+  weight: "400", 
   subsets: ["latin"],
   variable: "--font-vt323" // Maps to 'font-terminal' in Tailwind
 });
@@ -32,7 +33,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       {/* 4. Inject variables */}
-      <body className={`${pirata.variable} ${compactAncient.variable} font-sans scanlines bg-hell-black`}>
+      <body className={`${pirata.variable} ${ancientSans.variable} font-sans scanlines bg-hell-black`}>
         {children}
       </body>
     </html>
