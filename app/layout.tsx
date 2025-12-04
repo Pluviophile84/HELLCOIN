@@ -1,21 +1,23 @@
 import type { Metadata } from "next";
-// 1. Import Pirata and Crimson Text (Google Fonts)
-import { Pirata_One, Crimson_Text } from "next/font/google";
+// 1. Import Pirata_One (Title) and Cutive_Mono (The "Ancient Typewriter" Body)
+import { Pirata_One, Cutive_Mono } from "next/font/google";
 import "./globals.css";
 
-// 2. Title Font: Pirata One
+// 2. Configure Pirata One (Headers)
 const pirata = Pirata_One({ 
   weight: "400", 
   subsets: ["latin"],
   variable: "--font-pirata"
 });
 
-// 3. Body Font: Crimson Text (The "Ancient" Look)
-const crimson = Crimson_Text({ 
-  weight: ["400", "600", "700"], 
-  style: ["normal", "italic"],
+// 3. Configure Cutive Mono (Body)
+// This is a "Classic Typewriter" font.
+// It feels ancient and bureaucratic (like a Hell contract), 
+// but keeps the narrow, compact structure of the original terminal font.
+const ancientTypewriter = Cutive_Mono({ 
+  weight: "400", 
   subsets: ["latin"],
-  variable: "--font-vt323" // Mapped to 'font-terminal' for Tailwind compatibility
+  variable: "--font-vt323" // Maps to 'font-terminal' in Tailwind
 });
 
 export const metadata: Metadata = {
@@ -30,7 +32,8 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={`${pirata.variable} ${crimson.variable} font-sans scanlines bg-hell-black`}>
+      {/* 4. Inject variables */}
+      <body className={`${pirata.variable} ${ancientTypewriter.variable} font-sans scanlines bg-hell-black`}>
         {children}
       </body>
     </html>
