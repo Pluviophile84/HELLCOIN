@@ -8,6 +8,10 @@ const sinners = [
   { id: "#0002", name: "BagHolder_666", pnl: "Divorced", quote: "My wife thinks we are saving for a house. I am actually 50x leveraged long on a token called 'ElonSperm'.", initialRespects: 666 },
   { id: "#0003", name: "Wagie_007", pnl: "-$12,000", quote: "I market-bought the top. It immediately tanked 40%. I panic-sold the bottom. It immediately pumped 80%.", initialRespects: 1337 },
   { id: "#0004", name: "SafeMoon_Vet", pnl: "Soul Sold", quote: "My cousin bought 'HarryPotterObamaSonic' yesterday and just bought a Porsche. I hate this simulation.", initialRespects: 999 },
+  { id: "#0005", name: "Alpha_Hunter", pnl: "-$45,000", quote: "I joined a 'VIP Alpha Group' for 2 ETH. They told me to buy a coin named after a bacterial infection. It went to zero in 4 minutes.", initialRespects: 777 },
+  { id: "#0006", name: "Leverage_King", pnl: "Liqui-dated", quote: "I saw a green candle on a 1-minute chart and felt invincible. I went 100x long on a stablecoin. I don't want to talk about it.", initialRespects: 69 },
+  { id: "#0007", name: "NFT_Collector", pnl: "Jpeg'd", quote: "I sold my car to buy a picture of a monkey wearing a hat. The floor price is now 0.01 ETH and the monkey looks like it's judging me.", initialRespects: 8008 },
+  { id: "#0008", name: "Seed_Phrase_Guy", pnl: "Hacked", quote: "A 'Support Agent' DM'd me to sync my wallet. He seemed very polite. Now my wallet is synced to his bank account.", initialRespects: 0 },
 ];
 
 export const HallOfPain = () => {
@@ -113,10 +117,10 @@ export const HallOfPain = () => {
                 onClick={() => handlePayRespect(sinner.id)}
                 disabled={isPaid}
                 className={`
-                  w-full py-3 font-terminal transition-all flex items-center justify-center gap-2 border mt-auto
+                  w-full py-3 font-terminal transition-all duration-300 flex items-center justify-center gap-2 border mt-auto
                   ${isPaid 
                     ? "bg-hell-red/20 border-hell-red text-hell-red cursor-default" 
-                    : "bg-white text-black border-white hover:bg-gray-400 hover:border-gray-400 active:scale-95 cursor-pointer"
+                    : "bg-white text-black border-white hover:bg-black hover:text-white hover:border-white active:scale-95 cursor-pointer"
                   }
                 `}
               >
@@ -144,7 +148,7 @@ export const HallOfPain = () => {
           className="group relative inline-flex items-center gap-2 px-8 py-3 bg-black border-2 border-hell-red text-hell-red font-gothic text-2xl hover:bg-hell-red hover:text-white transition-all active:scale-95"
         >
           <AlertTriangle size={24} />
-          CONFESS YOUR LOSSES
+          CONFESS HERE
         </button>
 
         {/* PRANK ERROR MESSAGE (FIXED POSITON) */}
