@@ -1,23 +1,23 @@
 import type { Metadata } from "next";
-// 1. Import Pirata_One (Title) and Marcellus (The "Chiseled Stone" Sans)
-import { Pirata_One, Marcellus } from "next/font/google";
+import localFont from "next/font/local";
+import { Crimson_Text } from "next/font/google";
 import "./globals.css";
 
-// 2. Configure Pirata One (Headers)
-const pirata = Pirata_One({ 
-  weight: "400", 
-  subsets: ["latin"],
-  variable: "--font-pirata"
+// 1. Custom Title Font (myfonts8.woff2)
+// Maps to 'font-gothic' in Tailwind
+const customTitle = localFont({
+  src: "./fonts/myfonts8.woff2",
+  variable: "--font-pirata", 
+  display: "swap",
 });
 
-// 3. Configure Marcellus (Body)
-// This is a "Flared Sans-Serif".
-// It looks like text chiseled into stone or a crypt wall. 
-// It feels ancient and elegant without the "clutter" of a traditional serif.
-const ancientSans = Marcellus({ 
-  weight: "400", 
+// 2. Body Font: Crimson Text
+// Maps to 'font-terminal' in Tailwind
+const crimson = Crimson_Text({ 
+  weight: ["400", "600", "700"], 
+  style: ["normal", "italic"],
   subsets: ["latin"],
-  variable: "--font-vt323" // Maps to 'font-terminal' in Tailwind
+  variable: "--font-vt323" 
 });
 
 export const metadata: Metadata = {
@@ -32,8 +32,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      {/* 4. Inject variables */}
-      <body className={`${pirata.variable} ${ancientSans.variable} font-sans scanlines bg-hell-black`}>
+      <body className={`${customTitle.variable} ${crimson.variable} font-sans scanlines bg-hell-black`}>
         {children}
       </body>
     </html>
