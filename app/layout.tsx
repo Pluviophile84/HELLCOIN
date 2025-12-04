@@ -1,23 +1,20 @@
 import type { Metadata } from "next";
-import localFont from "next/font/local";
-import { Crimson_Text } from "next/font/google";
+import { Pirata_One, Crimson_Text } from "next/font/google";
 import "./globals.css";
 
-// 1. Custom Title Font (myfonts8.woff2)
-// Maps to 'font-gothic' in Tailwind
-const customTitle = localFont({
-  src: "./fonts/myfonts9.woff2",
-  variable: "--font-pirata", 
-  display: "swap",
+// 1. Title Font: Pirata One (Gothic/Ancient)
+const pirata = Pirata_One({ 
+  weight: "400", 
+  subsets: ["latin"],
+  variable: "--font-pirata"
 });
 
-// 2. Body Font: Crimson Text
-// Maps to 'font-terminal' in Tailwind
+// 2. Body Font: Crimson Text (The "Scripture" Look)
 const crimson = Crimson_Text({ 
   weight: ["400", "600", "700"], 
   style: ["normal", "italic"],
   subsets: ["latin"],
-  variable: "--font-vt323" 
+  variable: "--font-vt323" // Maps toA 'font-terminal' for Tailwind compatibility
 });
 
 export const metadata: Metadata = {
@@ -32,7 +29,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={`${customTitle.variable} ${crimson.variable} font-sans scanlines bg-hell-black`}>
+      <body className={`${pirata.variable} ${crimson.variable} font-sans scanlines bg-hell-black`}>
         {children}
       </body>
     </html>
