@@ -1,5 +1,5 @@
 "use client";
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect } from "react";
 import { Skull, AlertTriangle, XCircle } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 
@@ -21,12 +21,6 @@ export const HallOfPain = () => {
   const [respectCounts, setRespectCounts] = useState<Record<string, number>>({});
   // State for the Prank Message
   const [prankError, setPrankError] = useState<string | null>(null);
-
-  // --- DRAG TO SCROLL LOGIC (Desktop Swipe) ---
-  const sliderRef = useRef<HTMLDivElement>(null);
-  const [isDown, setIsDown] = useState(false);
-  const [startX, setStartX] = useState(0);
-  const [scrollLeft, setScrollLeft] = useState(0);
 
   // Initialize counts and check local storage
   useEffect(() => {
@@ -73,30 +67,6 @@ export const HallOfPain = () => {
     setTimeout(() => setPrankError(null), 4000);
   };
 
-  // --- MOUSE EVENT HANDLERS FOR DESKTOP SWIPE ---
-  const handleMouseDown = (e: React.MouseEvent) => {
-    if (!sliderRef.current) return;
-    setIsDown(true);
-    setStartX(e.pageX - sliderRef.current.offsetLeft);
-    setScrollLeft(sliderRef.current.scrollLeft);
-  };
-
-  const handleMouseLeave = () => {
-    setIsDown(false);
-  };
-
-  const handleMouseUp = () => {
-    setIsDown(false);
-  };
-
-  const handleMouseMove = (e: React.MouseEvent) => {
-    if (!isDown || !sliderRef.current) return;
-    e.preventDefault();
-    const x = e.pageX - sliderRef.current.offsetLeft;
-    const walk = (x - startX) * 2; // Scroll speed multiplier
-    sliderRef.current.scrollLeft = scrollLeft - walk;
-  };
-
   return (
     <section id="hall-of-pain" className="py-32 bg-hell-dark overflow-hidden relative">
       <div className="max-w-7xl mx-auto px-4 mb-16">
@@ -116,14 +86,8 @@ export const HallOfPain = () => {
 
       {/* --- CARDS CONTAINER (Scrollable) --- */}
       <div 
-        ref={sliderRef}
-        onMouseDown={handleMouseDown}
-        onMouseLeave={handleMouseLeave}
-        onMouseUp={handleMouseUp}
-        onMouseMove={handleMouseMove}
-        // FIX 1: Removed 'md:justify-center' to prevent clipping of first items
-        // FIX 2: Added cursor styles for drag interaction
-        className="flex gap-6 px-4 overflow-x-auto pb-8 snap-x cursor-grab active:cursor-grabbing scrollbar-hide"
+        // FIX: Removed Drag Logic and cursor-grab styles
+        className="flex gap-6 px-4 overflow-x-auto pb-8 snap-x scrollbar-hide"
       >
         {sinners.map((sinner, i) => {
           const isPaid = respectsPaid[sinner.id];
