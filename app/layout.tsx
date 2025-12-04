@@ -1,22 +1,22 @@
 import type { Metadata } from "next";
-// 1. Import Crimson_Text (The "Ancient Scripture" Font)
-import { Pirata_One, Crimson_Text } from "next/font/google";
+// 1. Import Eagle_Lake (New Title Font) and Crimson_Text (Body Font)
+import { Eagle_Lake, Crimson_Text } from "next/font/google";
 import "./globals.css";
 
-const pirata = Pirata_One({ 
+// 2. Configure Eagle Lake for HEADINGS
+// We map it to '--font-pirata' so it replaces the Gothic font everywhere automatically.
+const eagleLake = Eagle_Lake({ 
   weight: "400", 
   subsets: ["latin"],
-  variable: "--font-pirata"
+  variable: "--font-pirata" // <--- The Switch
 });
 
-// 2. Configure Crimson Text
-// This font looks like an old manuscript/bible. 
-// It is very readable, compact, and fits the "Medieval/Hell" theme perfectly.
+// 3. Configure Crimson Text for BODY
+// The readable "Ancient Scripture" look.
 const ancientBody = Crimson_Text({ 
-  weight: ["400", "600", "700"], // Includes bold for emphasis
-  style: ["normal", "italic"],   // FIX: Load BOTH Regular and Italic so you can mix them
+  weight: ["400", "600", "700"], 
+  style: ["normal", "italic"],
   subsets: ["latin"],
-  // 3. TRICK: Map it to the old variable name so Tailwind applies it automatically everywhere
   variable: "--font-vt323" 
 });
 
@@ -32,8 +32,8 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      {/* 4. Inject the new font variables */}
-      <body className={`${pirata.variable} ${ancientBody.variable} font-sans scanlines bg-hell-black`}>
+      {/* 4. Inject variables */}
+      <body className={`${eagleLake.variable} ${ancientBody.variable} font-sans scanlines bg-hell-black`}>
         {children}
       </body>
     </html>
