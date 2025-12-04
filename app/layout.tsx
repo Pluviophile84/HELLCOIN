@@ -14,6 +14,7 @@ const pirata = Pirata_One({
 // It is very readable, compact, and fits the "Medieval/Hell" theme perfectly.
 const ancientBody = Crimson_Text({ 
   weight: ["400", "600", "700"], // Includes bold for emphasis
+  style: ["normal", "italic"],   // FIX: Load BOTH Regular and Italic so you can mix them
   subsets: ["latin"],
   // 3. TRICK: Map it to the old variable name so Tailwind applies it automatically everywhere
   variable: "--font-vt323" 
