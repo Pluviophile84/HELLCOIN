@@ -6,7 +6,7 @@ import "./globals.css";
 // 1. YOUR CUSTOM UPLOADED FONT (For Headings)
 // Maps to 'font-gothic' (Pirata replacement)
 const customHeadingFont = localFont({
-  src: "./fonts/myfonts3.woff2", // <--- Your file
+  src: "./fonts/myfonts4.woff2", // <--- Your file
   variable: "--font-pirata",
   display: "swap",
 });
