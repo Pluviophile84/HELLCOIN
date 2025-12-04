@@ -7,32 +7,22 @@ import { motion, AnimatePresence } from "framer-motion";
 export const Navbar = ({ onTriggerPaperHands }: { onTriggerPaperHands: () => void }) => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  // This flag ensures animations are OFF until the initial check is done
-  const [isReady, setIsReady] = useState(false);
 
   const BUY_LINK = "https://raydium.io/swap"; 
 
   useEffect(() => {
     const handleScroll = () => {
-      setIsScrolled(window.scrollY > 50);
+      if (window.scrollY > 50) {
+        setIsScrolled(true);
+      } else {
+        setIsScrolled(false);
+      }
     };
-
-    // 1. Run check INSTANTLY (Snap to correct state)
     handleScroll();
-
-    // 2. Enable animations after a short delay (Prevents the "Bounce" on refresh)
-    const timeout = setTimeout(() => {
-      setIsReady(true);
-    }, 100);
-
     window.addEventListener("scroll", handleScroll);
-    return () => {
-      window.removeEventListener("scroll", handleScroll);
-      clearTimeout(timeout);
-    };
+    return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  // Scroll Lock
   useEffect(() => {
     if (mobileMenuOpen) {
       document.body.style.overflow = "hidden";
@@ -70,19 +60,10 @@ export const Navbar = ({ onTriggerPaperHands }: { onTriggerPaperHands: () => voi
   return (
     <nav 
       className={cn(
-        "fixed top-0 w-full z-40 border-b border-transparent",
-        
-        // FIX: TRANSITION LOGIC
-        // If 'isReady' is false (fresh load), use 'transition-none' (Instant Snap)
-        // If 'isReady' is true (user scrolling), use 'transition-all duration-300' (Smooth Glide)
-        isReady ? "transition-all duration-300 ease-in-out" : "transition-none",
-        
-        // STYLING:
-        // Desktop: Shrinks from py-6 (Tall) to py-2 (Thin)
-        // Mobile: Always py-4 (Consistent)
+        "fixed top-0 w-full z-40 border-b transition-colors duration-300 py-4",
         isScrolled 
-          ? "bg-hell-black/90 backdrop-blur-md border-hell-red/30 py-4 md:py-2" 
-          : "bg-transparent py-4 md:py-6"
+          ? "bg-hell-black/90 backdrop-blur-md border-hell-red/30" 
+          : "bg-transparent border-transparent"
       )}
     >
       <div className="max-w-7xl mx-auto px-4 flex justify-between items-center">
@@ -100,14 +81,15 @@ export const Navbar = ({ onTriggerPaperHands }: { onTriggerPaperHands: () => voi
           <span className="font-gothic text-xl md:text-3xl text-hell-orange tracking-wide text-glow">HELLCOIN</span>
         </div>
 
-        {/* DESKTOP LINKS */}
+        {/* DESKTOP LINKS - RESIZED */}
         <div className="hidden lg:flex gap-8">
           {navLinks.map((link) => (
             <a 
               key={link.name} 
               href={link.href}
               onClick={(e) => handleNavClick(e, link.href)}
-              className="font-terminal text-xl text-hell-white hover:text-hell-gold transition-colors uppercase tracking-widest relative group cursor-pointer"
+              // FIX: Reduced to 'text-lg' (was xl) because Crimson Text is wider
+              className="font-terminal text-lg text-hell-white hover:text-hell-gold transition-colors uppercase tracking-widest relative group cursor-pointer font-bold"
             >
               {link.name}
               <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-hell-orange transition-all group-hover:w-full"></span>
@@ -119,7 +101,7 @@ export const Navbar = ({ onTriggerPaperHands }: { onTriggerPaperHands: () => voi
         <div className="flex items-center gap-2 md:gap-4">
           <button 
             onClick={onTriggerPaperHands}
-            className="flex items-center gap-2 px-3 py-1 border border-pink-300 rounded text-pink-100 font-terminal text-sm md:text-base hover:bg-pink-500/20 hover:text-white transition-colors shadow-[0_0_10px_rgba(255,192,203,0.3)]"
+            className="flex items-center gap-2 px-3 py-1 border border-pink-300 rounded text-pink-100 font-terminal text-xs md:text-sm font-bold hover:bg-pink-500/20 hover:text-white transition-colors shadow-[0_0_10px_rgba(255,192,203,0.3)]"
           >
             <span className="w-2 h-2 rounded-full bg-pink-200 animate-pulse shadow-[0_0_5px_#fff]"></span>
             HEAVEN MODE
@@ -129,7 +111,7 @@ export const Navbar = ({ onTriggerPaperHands }: { onTriggerPaperHands: () => voi
             href={BUY_LINK}
             target="_blank" 
             rel="noopener noreferrer"
-            className="hidden md:block bg-hell-red hover:bg-hell-orange text-hell-white font-gothic text-xl px-6 py-2 rounded shadow-[0_0_15px_rgba(204,0,0,0.5)] transition-all transform hover:scale-105 border border-hell-orange/50 text-center"
+            className="hidden md:block bg-hell-red hover:bg-hell-orange text-hell-white font-gothic text-lg px-6 py-2 rounded shadow-[0_0_15px_rgba(204,0,0,0.5)] transition-all transform hover:scale-105 border border-hell-orange/50 text-center"
           >
             ACQUIRE $666
           </a>
@@ -156,7 +138,8 @@ export const Navbar = ({ onTriggerPaperHands }: { onTriggerPaperHands: () => voi
                   key={link.name} 
                   href={link.href} 
                   onClick={(e) => handleNavClick(e, link.href)}
-                  className="font-terminal text-3xl text-hell-white hover:text-hell-orange tracking-widest cursor-pointer" 
+                  // FIX: Reduced to 'text-2xl' (was 3xl)
+                  className="font-terminal text-2xl text-hell-white hover:text-hell-orange tracking-widest cursor-pointer font-bold" 
                 >
                   {link.name}
                 </a>
@@ -168,7 +151,7 @@ export const Navbar = ({ onTriggerPaperHands }: { onTriggerPaperHands: () => voi
                 href={BUY_LINK}
                 target="_blank" 
                 rel="noopener noreferrer"
-                className="bg-hell-red text-hell-white font-gothic text-2xl py-3 px-12 rounded shadow-[0_0_20px_rgba(204,0,0,0.6)]"
+                className="bg-hell-red text-hell-white font-gothic text-xl py-3 px-12 rounded shadow-[0_0_20px_rgba(204,0,0,0.6)]"
               >
                 ACQUIRE $666
               </a>
