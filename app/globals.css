@@ -4,8 +4,6 @@
 
 :root {
   --foreground-rgb: 229, 229, 229;
-  --background-start-rgb: 5, 5, 5;
-  --background-end-rgb: 0, 0, 0;
 }
 
 body {
@@ -15,36 +13,18 @@ body {
 }
 
 /* Custom Scrollbar */
-::-webkit-scrollbar {
-  width: 8px;
-}
-::-webkit-scrollbar-track {
-  background: #0a0a0a;
-}
-::-webkit-scrollbar-thumb {
-  background: #cc0000;
-  border-radius: 4px;
-}
-::-webkit-scrollbar-thumb:hover {
-  background: #ff3300;
-}
+::-webkit-scrollbar { width: 8px; }
+::-webkit-scrollbar-track { background: #0a0a0a; }
+::-webkit-scrollbar-thumb { background: #cc0000; border-radius: 4px; }
+::-webkit-scrollbar-thumb:hover { background: #ff3300; }
 
-/* CRT Scanline Effect Overlay */
-.scanlines::before {
-  content: " ";
-  display: block;
-  position: fixed;
-  top: 0;
-  left: 0;
-  bottom: 0;
-  right: 0;
-  background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), 
-              linear-gradient(90deg, rgba(255, 0, 0, 0.06), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.06));
-  z-index: 9999;
-  background-size: 100% 2px, 3px 100%;
-  pointer-events: none;
-}
+.text-glow { text-shadow: 0 0 10px rgba(255, 51, 0, 0.7); }
 
-.text-glow {
-  text-shadow: 0 0 10px rgba(255, 51, 0, 0.7);
+/* Hide Scrollbar for horizontal scrolling areas */
+.scrollbar-hide::-webkit-scrollbar {
+    display: none;
+}
+.scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
 }
