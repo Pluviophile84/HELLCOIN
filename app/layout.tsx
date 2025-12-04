@@ -1,14 +1,14 @@
 import type { Metadata } from "next";
-// 1. Import Trade_Winds (New Title Font) and Crimson_Text (Body Font)
-import { Trade_Winds, Crimson_Text } from "next/font/google";
+// 1. Import Pirata_One (Back to Original Title Font) and Crimson_Text (Body Font)
+import { Pirata_One, Crimson_Text } from "next/font/google";
 import "./globals.css";
 
-// 2. Configure Trade Winds for HEADINGS
-// A distressed, rough font that looks like a worn map or ancient warning.
-const tradeWinds = Trade_Winds({ 
+// 2. Configure Pirata One for HEADINGS
+// The original gothic/pirate font.
+const pirata = Pirata_One({ 
   weight: "400", 
   subsets: ["latin"],
-  variable: "--font-pirata" // <--- The Switch
+  variable: "--font-pirata"
 });
 
 // 3. Configure Crimson Text for BODY
@@ -33,7 +33,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       {/* 4. Inject variables */}
-      <body className={`${tradeWinds.variable} ${ancientBody.variable} font-sans scanlines bg-hell-black`}>
+      <body className={`${pirata.variable} ${ancientBody.variable} font-sans scanlines bg-hell-black`}>
         {children}
       </body>
     </html>
