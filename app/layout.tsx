@@ -1,11 +1,11 @@
 import type { Metadata } from "next";
-// 1. Import Eagle_Lake (New Title Font) and Crimson_Text (Body Font)
-import { Eagle_Lake, Crimson_Text } from "next/font/google";
+// 1. Import Trade_Winds (New Title Font) and Crimson_Text (Body Font)
+import { Trade_Winds, Crimson_Text } from "next/font/google";
 import "./globals.css";
 
-// 2. Configure Eagle Lake for HEADINGS
-// We map it to '--font-pirata' so it replaces the Gothic font everywhere automatically.
-const eagleLake = Eagle_Lake({ 
+// 2. Configure Trade Winds for HEADINGS
+// A distressed, rough font that looks like a worn map or ancient warning.
+const tradeWinds = Trade_Winds({ 
   weight: "400", 
   subsets: ["latin"],
   variable: "--font-pirata" // <--- The Switch
@@ -33,7 +33,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       {/* 4. Inject variables */}
-      <body className={`${eagleLake.variable} ${ancientBody.variable} font-sans scanlines bg-hell-black`}>
+      <body className={`${tradeWinds.variable} ${ancientBody.variable} font-sans scanlines bg-hell-black`}>
         {children}
       </body>
     </html>
