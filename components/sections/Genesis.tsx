@@ -15,8 +15,13 @@ export const Genesis = () => {
     <section id="genesis" className="py-32 px-4 bg-hell-dark relative">
       <div className="max-w-5xl mx-auto">
         <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="flex flex-col items-center text-center gap-2 mb-16">
-          <span className="font-terminal text-[#ffae00] text-xl tracking-widest uppercase font-bold">GENESIS BLOCK 001</span>
-          <h2 className="font-gothic text-6xl md:text-8xl text-hell-white leading-none">IN THE <span className="text-hell-red">BEGINNING</span></h2>
+          {/* FIX: Removed font-bold, set size to text-xl md:text-2xl */}
+          <span className="font-terminal text-[#ffae00] texts-xl md:text-2xl tracking-widest uppercase">
+            GENESIS BLOCK 001
+          </span>
+          <h2 className="font-gothic text-6xl md:text-8xl text-hell-white leading-none">
+            IN THE <span className="text-hell-red">BEGINNING</span>
+          </h2>
         </motion.div>
         <div className="space-y-12 pl-0 md:pl-12 max-w-4xl mx-auto">
           {paragraphs.map((para, i) => (
