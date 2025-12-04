@@ -81,15 +81,14 @@ export const Navbar = ({ onTriggerPaperHands }: { onTriggerPaperHands: () => voi
           <span className="font-gothic text-xl md:text-3xl text-hell-orange tracking-wide text-glow">HELLCOIN</span>
         </div>
 
-        {/* DESKTOP LINKS - RESIZED */}
+        {/* DESKTOP LINKS - RESIZED for Crimson Text */}
         <div className="hidden lg:flex gap-8">
           {navLinks.map((link) => (
             <a 
               key={link.name} 
               href={link.href}
               onClick={(e) => handleNavClick(e, link.href)}
-              // FIX: Reduced to 'text-lg' (was xl) because Crimson Text is wider
-              className="font-terminal text-lg text-hell-white hover:text-hell-gold transition-colors uppercase tracking-widest relative group cursor-pointer font-bold"
+              className="font-terminal text-base text-hell-white hover:text-hell-gold transition-colors uppercase tracking-widest relative group cursor-pointer font-bold"
             >
               {link.name}
               <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-hell-orange transition-all group-hover:w-full"></span>
@@ -138,8 +137,7 @@ export const Navbar = ({ onTriggerPaperHands }: { onTriggerPaperHands: () => voi
                   key={link.name} 
                   href={link.href} 
                   onClick={(e) => handleNavClick(e, link.href)}
-                  // FIX: Reduced to 'text-2xl' (was 3xl)
-                  className="font-terminal text-2xl text-hell-white hover:text-hell-orange tracking-widest cursor-pointer font-bold" 
+                  className="font-terminal text-xl text-hell-white hover:text-hell-orange tracking-widest cursor-pointer font-bold" 
                 >
                   {link.name}
                 </a>
