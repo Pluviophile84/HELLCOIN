@@ -81,7 +81,7 @@ export const Navbar = ({ onTriggerPaperHands }: { onTriggerPaperHands: () => voi
           <span className="font-gothic text-xl md:text-3xl text-hell-orange tracking-wide text-glow">HELLCOIN</span>
         </div>
 
-        {/* DESKTOP LINKS - RESIZED for Crimson Text */}
+        {/* DESKTOP LINKS */}
         <div className="hidden lg:flex gap-8">
           {navLinks.map((link) => (
             <a 
