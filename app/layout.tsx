@@ -6,7 +6,7 @@ import "./globals.css";
 // 1. Custom Title Font (myfonts8.woff2)
 // Maps to 'font-gothic' in Tailwind
 const customTitle = localFont({
-  src: "./fonts/myfonts2.woff2",
+  src: "./fonts/myfonts3.woff2",
   variable: "--font-pirata", 
   display: "swap",
 });
