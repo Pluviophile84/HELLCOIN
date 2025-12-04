@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
-import { Pirata_One, VT323 } from "next/font/google";
+// 1. Import Space_Mono instead of VT323
+import { Pirata_One, Space_Mono } from "next/font/google";
 import "./globals.css";
 
 const pirata = Pirata_One({ 
@@ -8,10 +9,12 @@ const pirata = Pirata_One({
   variable: "--font-pirata"
 });
 
-const vt323 = VT323({ 
-  weight: "400", 
-  subsets: ["latin"], 
-  variable: "--font-vt323"
+// 2. Configure Space Mono (The "High-Def Terminal" look)
+const spaceMono = Space_Mono({ 
+  weight: ["400", "700"], // Includes bold for emphasis
+  subsets: ["latin"],
+  // 3. TRICK: Map it to the old variable name so Tailwind applies it automatically everywhere
+  variable: "--font-vt323" 
 });
 
 export const metadata: Metadata = {
@@ -25,8 +28,9 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className="scroll-smooth">
-      <body className={`${pirata.variable} ${vt323.variable} font-sans scanlines bg-hell-black`}>
+    <html lang="en">
+      {/* 4. Inject the new font variables */}
+      <body className={`${pirata.variable} ${spaceMono.variable} font-sans scanlines bg-hell-black`}>
         {children}
       </body>
     </html>
