@@ -1,23 +1,23 @@
 import type { Metadata } from "next";
-// 1. Import Pirata_One (Back to Original Title Font) and Crimson_Text (Body Font)
-import { Pirata_One, Crimson_Text } from "next/font/google";
+import localFont from "next/font/local"; 
+import { Crimson_Text } from "next/font/google"; // Keeping Google font for body to be safe
 import "./globals.css";
 
-// 2. Configure Pirata One for HEADINGS
-// The original gothic/pirate font.
-const pirata = Pirata_One({ 
-  weight: "400", 
-  subsets: ["latin"],
-  variable: "--font-pirata"
+// 1. YOUR CUSTOM UPLOADED FONT (For Headings)
+// Maps to 'font-gothic' (Pirata replacement)
+const customHeadingFont = localFont({
+  src: "./fonts/myfonts.woff2", // <--- Your file
+  variable: "--font-pirata",
+  display: "swap",
 });
 
-// 3. Configure Crimson Text for BODY
-// The readable "Ancient Scripture" look.
-const ancientBody = Crimson_Text({ 
+// 2. SAFE BODY FONT (Crimson Text)
+// We use this for the body text so the site doesn't break if you didn't upload a second file.
+const googleBodyFont = Crimson_Text({ 
   weight: ["400", "600", "700"], 
   style: ["normal", "italic"],
   subsets: ["latin"],
-  variable: "--font-vt323" 
+  variable: "--font-vt323" // Maps to 'font-terminal'
 });
 
 export const metadata: Metadata = {
@@ -32,8 +32,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      {/* 4. Inject variables */}
-      <body className={`${pirata.variable} ${ancientBody.variable} font-sans scanlines bg-hell-black`}>
+      <body className={`${customHeadingFont.variable} ${googleBodyFont.variable} font-sans scanlines bg-hell-black`}>
         {children}
       </body>
     </html>
