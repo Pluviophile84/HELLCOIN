@@ -1,23 +1,21 @@
 import type { Metadata } from "next";
-import localFont from "next/font/local"; 
-import { Crimson_Text } from "next/font/google"; // Keeping Google font for body to be safe
+// 1. Import Pirata and Crimson Text (Google Fonts)
+import { Pirata_One, Crimson_Text } from "next/font/google";
 import "./globals.css";
 
-// 1. YOUR CUSTOM UPLOADED FONT (For Headings)
-// Maps to 'font-gothic' (Pirata replacement)
-const customHeadingFont = localFont({
-  src: "./fonts/myfonts7.woff2", // <--- Your file
-  variable: "--font-pirata",
-  display: "swap",
+// 2. Title Font: Pirata One
+const pirata = Pirata_One({ 
+  weight: "400", 
+  subsets: ["latin"],
+  variable: "--font-pirata"
 });
 
-// 2. SAFE BODY FONT (Crimson Text)
-// We use this for the body text so the site doesn't break if you didn't upload a second file.
-const googleBodyFont = Crimson_Text({ 
+// 3. Body Font: Crimson Text (The "Ancient" Look)
+const crimson = Crimson_Text({ 
   weight: ["400", "600", "700"], 
   style: ["normal", "italic"],
   subsets: ["latin"],
-  variable: "--font-vt323" // Maps to 'font-terminal'
+  variable: "--font-vt323" // Mapped to 'font-terminal' for Tailwind compatibility
 });
 
 export const metadata: Metadata = {
@@ -32,7 +30,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={`${customHeadingFont.variable} ${googleBodyFont.variable} font-sans scanlines bg-hell-black`}>
+      <body className={`${pirata.variable} ${crimson.variable} font-sans scanlines bg-hell-black`}>
         {children}
       </body>
     </html>
