@@ -1,5 +1,5 @@
 "use client";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { Skull, AlertTriangle, XCircle } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 
@@ -21,6 +21,12 @@ export const HallOfPain = () => {
   const [respectCounts, setRespectCounts] = useState<Record<string, number>>({});
   // State for the Prank Message
   const [prankError, setPrankError] = useState<string | null>(null);
+
+  // --- DRAG TO SCROLL LOGIC ---
+  const sliderRef = useRef<HTMLDivElement>(null);
+  const [isDown, setIsDown] = useState(false);
+  const [startX, setStartX] = useState(0);
+  const [scrollLeft, setScrollLeft] = useState(0);
 
   // Initialize counts and check local storage
   useEffect(() => {
@@ -67,6 +73,30 @@ export const HallOfPain = () => {
     setTimeout(() => setPrankError(null), 4000);
   };
 
+  // --- MOUSE EVENT HANDLERS FOR DESKTOP SWIPE ---
+  const handleMouseDown = (e: React.MouseEvent) => {
+    if (!sliderRef.current) return;
+    setIsDown(true);
+    setStartX(e.pageX - sliderRef.current.offsetLeft);
+    setScrollLeft(sliderRef.current.scrollLeft);
+  };
+
+  const handleMouseLeave = () => {
+    setIsDown(false);
+  };
+
+  const handleMouseUp = () => {
+    setIsDown(false);
+  };
+
+  const handleMouseMove = (e: React.MouseEvent) => {
+    if (!isDown || !sliderRef.current) return;
+    e.preventDefault();
+    const x = e.pageX - sliderRef.current.offsetLeft;
+    const walk = (x - startX) * 2; // Scroll speed multiplier
+    sliderRef.current.scrollLeft = scrollLeft - walk;
+  };
+
   return (
     <section id="hall-of-pain" className="py-32 bg-hell-dark overflow-hidden relative">
       <div className="max-w-7xl mx-auto px-4 mb-16">
@@ -84,8 +114,17 @@ export const HallOfPain = () => {
 
       </div>
 
-      {/* --- CARDS CONTAINER --- */}
-      <div className="flex gap-6 px-4 overflow-x-auto pb-8 snap-x md:justify-center">
+      {/* --- CARDS CONTAINER (Scrollable) --- */}
+      <div 
+        ref={sliderRef}
+        onMouseDown={handleMouseDown}
+        onMouseLeave={handleMouseLeave}
+        onMouseUp={handleMouseUp}
+        onMouseMove={handleMouseMove}
+        // FIX: Added cursor styles for drag interaction
+        // Removed 'md:justify-center' to allow proper scrolling on desktop
+        className="flex gap-6 px-4 overflow-x-auto pb-8 snap-x cursor-grab active:cursor-grabbing scrollbar-hide"
+      >
         {sinners.map((sinner, i) => {
           const isPaid = respectsPaid[sinner.id];
           const count = respectCounts[sinner.id] || sinner.initialRespects;
@@ -93,7 +132,7 @@ export const HallOfPain = () => {
           return (
             <div 
               key={i} 
-              className="flex-none w-[350px] md:w-[450px] bg-hell-black border border-gray-800 p-8 snap-center hover:border-hell-red transition-colors group relative flex flex-col"
+              className="flex-none w-[350px] md:w-[450px] bg-hell-black border border-gray-800 p-8 snap-center hover:border-hell-red transition-colors group relative flex flex-col select-none"
             >
               {/* Card Header */}
               <div className="flex justify-between items-center mb-6 border-b border-gray-800 pb-4">
@@ -148,7 +187,7 @@ export const HallOfPain = () => {
           className="group relative inline-flex items-center gap-2 px-8 py-3 bg-black border-2 border-hell-red text-hell-red font-gothic text-2xl hover:bg-hell-red hover:text-white transition-all active:scale-95"
         >
           <AlertTriangle size={24} />
-          CONFESS HERE
+          CONFESS YOUR LOSSES
         </button>
 
         {/* PRANK ERROR MESSAGE (FIXED POSITON) */}
