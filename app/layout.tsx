@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
-// 1. Import Space_Mono instead of VT323
-import { Pirata_One, Space_Mono } from "next/font/google";
+// 1. Import Crimson_Text (The "Ancient Scripture" Font)
+import { Pirata_One, Crimson_Text } from "next/font/google";
 import "./globals.css";
 
 const pirata = Pirata_One({ 
@@ -9,9 +9,11 @@ const pirata = Pirata_One({
   variable: "--font-pirata"
 });
 
-// 2. Configure Space Mono (The "High-Def Terminal" look)
-const spaceMono = Space_Mono({ 
-  weight: ["400", "700"], // Includes bold for emphasis
+// 2. Configure Crimson Text
+// This font looks like an old manuscript/bible. 
+// It is very readable, compact, and fits the "Medieval/Hell" theme perfectly.
+const ancientBody = Crimson_Text({ 
+  weight: ["400", "600", "700"], // Includes bold for emphasis
   subsets: ["latin"],
   // 3. TRICK: Map it to the old variable name so Tailwind applies it automatically everywhere
   variable: "--font-vt323" 
@@ -30,7 +32,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       {/* 4. Inject the new font variables */}
-      <body className={`${pirata.variable} ${spaceMono.variable} font-sans scanlines bg-hell-black`}>
+      <body className={`${pirata.variable} ${ancientBody.variable} font-sans scanlines bg-hell-black`}>
         {children}
       </body>
     </html>
