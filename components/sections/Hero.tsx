@@ -40,7 +40,7 @@ export const Hero = () => {
         </motion.div>
 
         <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 1.0 }} className="font-terminal text-hell-red text-lg md:text-2xl mt-8 tracking-widest uppercase animate-pulse md:max-w-5xl">
-          /// WHEN THE MARKET BURNS, WE TREND ///
+          WHEN THE MARKET BURNS, WE TREND
         </motion.p>
 
         <motion.div initial={{ opacity: 0, y: 50 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 1.4 }} className="mt-12 flex flex-col md:flex-row gap-8 justify-center md:justify-end items-center w-full md:max-w-5xl">
