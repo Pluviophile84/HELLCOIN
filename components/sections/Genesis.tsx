@@ -8,7 +8,7 @@ export const Genesis = () => {
     { text: "Realizing such craftsmanship deserved a monument, his gaze fell upon the crypto pit — where his sacred number had just been reached — a landscape of rugs, scams, broken dreams, and regret stacked higher than ambition, and no corner burned brighter than pump.fun.", highlight: false },
     { text: "A platform where neither pumps nor fun survive launch day. Perfect.", highlight: true },
     { text: "From that glorious wreckage, he forged <span className="text-hell-red">HELLCOIN $666.</span>", highlight: false },
-    { text: "It was already home.", highlight: false }
+    { text: "It was already home.", highlight: false },
   ];
 
   return (
