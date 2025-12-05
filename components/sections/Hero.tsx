@@ -21,7 +21,7 @@ export const Hero = () => {
   return (
     <section ref={ref} className="relative h-screen w-full flex items-center justify-center overflow-hidden">
       <div className="absolute inset-0 z-0">
-        <img src="/WEB-BANNER.jpg" className="absolute inset-0 w-full h-full object-cover object-left opacity-50" alt="Hellcoin Throne" />
+        <img src="/banner.png" className="absolute inset-0 w-full h-full object-cover object-left opacity-50" alt="Hellcoin Throne" />
         <div className="absolute inset-0 bg-gradient-to-t from-hell-black via-hell-black/80 to-transparent"></div>
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-transparent via-hell-black/40 to-hell-black"></div>
       </div>
