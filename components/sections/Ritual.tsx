@@ -42,7 +42,7 @@ export const Ritual = () => {
         {/* --- HEADER --- */}
         <div className="text-center mb-24 flex flex-col items-center gap-2">
           <span className="font-terminal text-[#ffae00] text-xl md:text-2xl tracking-widest uppercase">
-            /// INITIATION_SEQUENCE ///
+            INITIATION SEQUENCE
           </span>
           
           <h2 className="font-gothic text-6xl md:text-8xl text-center text-hell-white">
@@ -61,11 +61,13 @@ export const Ritual = () => {
               transition={{ delay: i * 0.2 }}
               className="flex gap-6 items-start group"
             >
-              <span className="font-gothic text-8xl text-hell-red/20 group-hover:text-hell-red transition-colors leading-none shrink-0">
+              {/* FIX: Number is now always bright red (text-hell-red) */}
+              <span className="font-gothic text-8xl text-hell-red transition-colors leading-none shrink-0">
                 {step.num}
               </span>
               <div>
-                <h3 className="font-terminal text-3xl text-hell-gold mb-2 uppercase border-b border-hell-red/30 pb-2 inline-block">
+                {/* FIX: Reduced title size (text-xl md:text-2xl) and added group-hover border brightness */}
+                <h3 className="font-terminal text-xl md:text-2xl text-hell-gold mb-2 uppercase border-b border-hell-red/30 group-hover:border-hell-red pb-2 inline-block transition-colors duration-300">
                   {step.title}
                 </h3>
                 <p className="font-terminal text-xl text-gray-400 max-w-sm">
@@ -79,7 +81,6 @@ export const Ritual = () => {
         {/* CONTRACT BOX */}
         <motion.div initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }} className="max-w-3xl mx-auto">
           <div className="text-center mb-4">
-             {/* FIX: Added 'animate-pulse' back to make it breathe */}
              <span className="font-terminal text-hell-red text-xl bg-hell-red/10 px-4 py-1 border border-hell-red/20 rounded animate-pulse">
                /// YOU CAN ALSO BUY DIRECTLY IN YOUR WALLET ///
              </span>
