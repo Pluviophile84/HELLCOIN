@@ -15,13 +15,13 @@ export const PaperHandsOverlay = ({ isActive, onClose }: PaperHandsProps) => {
   const [phase, setPhase] = useState<Phase>("idle");
   const [progress, setProgress] = useState(0);
 
-  // Generate flame particles for the burning effect
-  const flames = Array.from({ length: 20 }).map((_, i) => ({
+  // Generate MORE flame particles for intensity (50 flames)
+  const flames = Array.from({ length: 50 }).map((_, i) => ({
     id: i,
     left: `${Math.random() * 100}%`,
-    delay: Math.random() * 0.5,
-    duration: 1 + Math.random(),
-    size: 20 + Math.random() * 40,
+    delay: Math.random() * 0.5, // Start quickly
+    duration: 0.5 + Math.random() * 1.5, // Faster movement
+    size: 40 + Math.random() * 60, // Bigger flames
   }));
 
   useEffect(() => {
@@ -31,28 +31,34 @@ export const PaperHandsOverlay = ({ isActive, onClose }: PaperHandsProps) => {
 
     if (isActive) {
       setPhase("heaven");
+      // 1. Reset progress instantly
+      setProgress(0);
       
-      // Start Progress Bar
-      setTimeout(() => setProgress(100), 100);
+      // 2. Start animation after tiny delay to ensure browser sees the 0
+      setTimeout(() => setProgress(100), 50);
 
       // STEP 1: TRANSITION TO BURNING (After 3.5s)
       timer1 = setTimeout(() => {
         setPhase("burning");
       }, 3500);
 
-      // STEP 2: CLOSE OVERLAY & SHOW REALITY CHECK (After another 3s)
+      // STEP 2: CLOSE OVERLAY & SHOW REALITY CHECK (After another 4s - Extended duration)
       timer2 = setTimeout(() => {
-        onClose(); // Close the main overlay logic
-        setPhase("reality"); // Show the toast
-      }, 6500); // 3.5s + 3s
+        onClose(); 
+        setPhase("reality"); 
+      }, 7500); // 3.5s + 4.0s
 
       // STEP 3: RESET EVERYTHING (After toast duration)
       timer3 = setTimeout(() => {
         setPhase("idle");
         setProgress(0);
-      }, 10500);
-    } else if (phase === "idle") {
-      setProgress(0);
+      }, 11500);
+    } else {
+      // Reset when inactive
+      if (phase !== "reality") {
+        setPhase("idle");
+        setProgress(0);
+      }
     }
 
     return () => {
@@ -74,22 +80,23 @@ export const PaperHandsOverlay = ({ isActive, onClose }: PaperHandsProps) => {
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             className={cn(
-              "fixed inset-0 z-[100] flex flex-col items-center justify-center text-center p-4 transition-colors duration-1000",
-              // Background Color Transition: Pink -> Deep Red/Black
-              phase === "burning" ? "bg-hell-red text-white" : "bg-pink-100 text-pink-500"
+              "fixed inset-0 z-[100] flex flex-col items-center justify-center text-center p-4 transition-colors duration-200",
+              // Instant red flash when burning starts
+              phase === "burning" ? "bg-red-600 text-white" : "bg-pink-100 text-pink-500"
             )}
           >
             {/* --- PHASE 1: HEAVEN CONTENT --- */}
             {phase === "heaven" && (
               <motion.div
                 key="heaven-content"
-                exit={{ opacity: 0, y: -50, filter: "blur(10px)" }}
-                className="flex flex-col items-center"
+                exit={{ opacity: 0, scale: 1.5, filter: "blur(20px)" }} // Explodes out
+                transition={{ duration: 0.5 }}
+                className="flex flex-col items-center relative z-20"
               >
-                {/* FIX: Reduced sizes (text-9xl -> text-7xl, text-6xl -> text-5xl) */}
                 <div className="animate-bounce mb-6 text-7xl md:text-8xl">🦄</div>
-                <h1 className="font-sans font-bold text-4xl md:text-5xl mb-4">EVERYTHING IS FINE!</h1>
-                <p className="font-sans text-xl md:text-2xl text-pink-400 mb-8 max-w-lg">
+                {/* Using standard font-sans (Arial/Helvetica) for generic look */}
+                <h1 className="font-sans font-black text-4xl md:text-5xl mb-4">EVERYTHING IS FINE!</h1>
+                <p className="font-sans font-bold text-xl md:text-2xl text-pink-400 mb-8 max-w-lg">
                   Welcome to the Safe Space! No red candles here! Only vibes! 🚀✨🌈
                 </p>
                 
@@ -98,11 +105,11 @@ export const PaperHandsOverlay = ({ isActive, onClose }: PaperHandsProps) => {
                     className="h-full bg-pink-500 transition-all ease-linear"
                     style={{ 
                       width: `${progress}%`, 
-                      transitionDuration: '3500ms' 
+                      transitionDuration: progress === 0 ? '0ms' : '3500ms' 
                     }}
                   ></div>
                 </div>
-                <p className="text-pink-300 text-sm font-mono">Ignoring reality in 3...</p>
+                <p className="text-pink-300 text-sm font-bold font-sans">Ignoring reality in 3...</p>
               </motion.div>
             )}
 
@@ -110,18 +117,19 @@ export const PaperHandsOverlay = ({ isActive, onClose }: PaperHandsProps) => {
             {phase === "burning" && (
               <motion.div
                 key="burning-content"
-                initial={{ opacity: 0, scale: 0.9 }}
-                animate={{ opacity: 1, scale: 1 }}
-                className="relative z-20 flex flex-col items-center"
+                initial={{ opacity: 0, scale: 0.8 }}
+                animate={{ opacity: 1, scale: 1.1 }}
+                className="relative z-30 flex flex-col items-center"
               >
-                <div className="mb-6">
-                  <Flame size={80} className="text-yellow-400 animate-pulse" />
+                <div className="mb-4">
+                  <Flame size={100} className="text-yellow-300 animate-pulse drop-shadow-lg" />
                 </div>
-                <h1 className="font-gothic text-6xl md:text-8xl text-black mb-2 animate-glitch">
+                {/* Generic Impact Font / Sans Serif Bold */}
+                <h1 className="font-sans font-black text-6xl md:text-9xl text-white mb-4 drop-shadow-[0_5px_5px_rgba(0,0,0,0.8)] tracking-tighter">
                   REALITY CHECK
                 </h1>
-                <p className="font-terminal text-2xl md:text-3xl text-yellow-400 bg-black/50 px-4 py-1">
-                  /// THE CHART IS STILL RED ///
+                <p className="font-mono font-bold text-2xl md:text-4xl text-yellow-300 bg-black px-6 py-2 uppercase border-4 border-yellow-300 -rotate-2">
+                  THE CHART IS STILL RED
                 </p>
               </motion.div>
             )}
@@ -130,23 +138,24 @@ export const PaperHandsOverlay = ({ isActive, onClose }: PaperHandsProps) => {
             {phase === "burning" && (
               <div className="absolute inset-0 overflow-hidden pointer-events-none z-10">
                 {/* Red Overlay Gradient */}
-                <div className="absolute inset-0 bg-gradient-to-t from-black via-hell-red/50 to-transparent"></div>
+                <div className="absolute inset-0 bg-gradient-to-t from-red-900 via-red-600 to-orange-500 opacity-90"></div>
                 
-                {/* Rising Flame Emojis */}
+                {/* Intense Rising Flame Emojis */}
                 {flames.map((flame) => (
                   <motion.div
                     key={flame.id}
                     initial={{ y: "110vh", x: "-50%", opacity: 0 }}
-                    animate={{ y: "-20vh", opacity: [0, 1, 0] }}
+                    animate={{ y: "-10vh", opacity: [0, 1, 0], scale: [1, 2] }}
                     transition={{ 
                       duration: flame.duration, 
                       delay: flame.delay, 
                       repeat: Infinity,
-                      ease: "easeIn"
+                      ease: "linear"
                     }}
                     style={{ 
                       left: flame.left, 
-                      fontSize: flame.size 
+                      fontSize: flame.size,
+                      filter: "blur(1px)"
                     }}
                     className="absolute"
                   >
