@@ -19,7 +19,7 @@ export const Hellmap = () => {
              ROADMAP TO RUIN
            </span>
            <h2 className="font-gothic text-6xl md:text-8xl text-center text-hell-white">
-             THE HELLMAP
+             THE <span className="text-hell-red">HELLMAP</span>
            </h2>
          </div>
          
