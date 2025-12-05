@@ -20,6 +20,9 @@ export const HallOfPain = () => {
   const [prankError, setPrankError] = useState<string | null>(null);
   const [expandedId, setExpandedId] = useState<string | null>(null);
   const [filter, setFilter] = useState<'latest' | 'top'>('latest');
+  
+  // FIX: State to control scroll locking
+  const [isScrollable, setIsScrollable] = useState(false);
 
   useEffect(() => {
     const initialCounts: Record<string, number> = {};
@@ -114,7 +117,12 @@ export const HallOfPain = () => {
           </div>
 
           {/* --- SCROLLABLE LIST --- */}
-          <div className="h-[400px] overflow-y-auto scrollbar-thin scrollbar-thumb-hell-red/30 scrollbar-track-black">
+          {/* FIX: Added scroll lock logic. 'overflow-hidden' by default, 'overflow-y-auto' on click. */}
+          <div 
+            className={`h-[400px] scrollbar-thin scrollbar-thumb-hell-red/30 scrollbar-track-black transition-all ${isScrollable ? 'overflow-y-auto' : 'overflow-hidden'}`}
+            onClick={() => setIsScrollable(true)} // Unlock on click
+            onMouseLeave={() => setIsScrollable(false)} // Re-lock on mouse leave (Desktop UX)
+          >
             {sortedSinners.map((sinner) => {
               const isPaid = respectsPaid[sinner.id];
               const count = respectCounts[sinner.id] || sinner.initialRespects;
