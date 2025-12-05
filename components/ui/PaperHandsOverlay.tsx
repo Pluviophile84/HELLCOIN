@@ -1,7 +1,7 @@
 "use client";
 import { useEffect, useState } from "react";
 import { cn } from "../../lib/utils";
-import { AlertTriangle, Flame } from "lucide-react";
+import { AlertTriangle } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 
 interface PaperHandsProps {
@@ -37,22 +37,22 @@ export const PaperHandsOverlay = ({ isActive, onClose }: PaperHandsProps) => {
       // 2. Start animation after tiny delay to ensure browser sees the 0
       setTimeout(() => setProgress(100), 50);
 
-      // STEP 1: TRANSITION TO BURNING (After 3.5s)
+      // STEP 1: TRANSITION TO BURNING (After 5s - Increased duration)
       timer1 = setTimeout(() => {
         setPhase("burning");
-      }, 3500);
+      }, 5000);
 
-      // STEP 2: CLOSE OVERLAY & SHOW REALITY CHECK (After another 4s - Extended duration)
+      // STEP 2: CLOSE OVERLAY & SHOW REALITY CHECK (After another 4s)
       timer2 = setTimeout(() => {
         onClose(); 
         setPhase("reality"); 
-      }, 7500); // 3.5s + 4.0s
+      }, 9000); // 5s + 4s
 
       // STEP 3: RESET EVERYTHING (After toast duration)
       timer3 = setTimeout(() => {
         setPhase("idle");
         setProgress(0);
-      }, 11500);
+      }, 13000);
     } else {
       // Reset when inactive
       if (phase !== "reality") {
@@ -105,7 +105,7 @@ export const PaperHandsOverlay = ({ isActive, onClose }: PaperHandsProps) => {
                     className="h-full bg-pink-500 transition-all ease-linear"
                     style={{ 
                       width: `${progress}%`, 
-                      transitionDuration: progress === 0 ? '0ms' : '3500ms' 
+                      transitionDuration: progress === 0 ? '0ms' : '5000ms' // Updated to 5s
                     }}
                   ></div>
                 </div>
@@ -119,16 +119,17 @@ export const PaperHandsOverlay = ({ isActive, onClose }: PaperHandsProps) => {
                 key="burning-content"
                 initial={{ opacity: 0, scale: 0.8 }}
                 animate={{ opacity: 1, scale: 1.1 }}
-                className="relative z-30 flex flex-col items-center"
+                className="relative z-30 flex flex-col items-center w-full px-4"
               >
-                <div className="mb-4">
-                  <Flame size={100} className="text-yellow-300 animate-pulse drop-shadow-lg" />
-                </div>
+                {/* Removed Flame Icon as requested */}
+                
                 {/* Generic Impact Font / Sans Serif Bold */}
-                <h1 className="font-sans font-black text-6xl md:text-9xl text-white mb-4 drop-shadow-[0_5px_5px_rgba(0,0,0,0.8)] tracking-tighter">
+                <h1 className="font-sans font-black text-5xl md:text-9xl text-white mb-8 drop-shadow-[0_5px_5px_rgba(0,0,0,0.8)] tracking-tighter">
                   REALITY CHECK
                 </h1>
-                <p className="font-mono font-bold text-2xl md:text-4xl text-yellow-300 bg-black px-6 py-2 uppercase border-4 border-yellow-300 -rotate-2">
+                
+                {/* Responsive Card Fix: max-w-[90vw] and adjusted text sizing */}
+                <p className="font-mono font-bold text-xl md:text-4xl text-yellow-300 bg-black px-4 py-2 md:px-6 uppercase border-4 border-yellow-300 -rotate-2 max-w-[90vw] text-center break-words shadow-xl">
                   THE CHART IS STILL RED
                 </p>
               </motion.div>
@@ -155,7 +156,8 @@ export const PaperHandsOverlay = ({ isActive, onClose }: PaperHandsProps) => {
                     style={{ 
                       left: flame.left, 
                       fontSize: flame.size,
-                      filter: "blur(1px)"
+                      filter: "blur(1px)",
+                      willChange: "transform" // FIX: Performance optimization for mobile
                     }}
                     className="absolute"
                   >
