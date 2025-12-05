@@ -102,7 +102,7 @@ export const PaperHandsOverlay = ({ isActive, onClose }: PaperHandsProps) => {
                 {/* Using standard font-sans (Arial/Helvetica) for generic look */}
                 <h1 className="font-sans font-black text-4xl md:text-5xl mb-4">EVERYTHING IS FINE!</h1>
                 <p className="font-sans font-bold text-xl md:text-2xl text-pink-400 mb-8 max-w-lg">
-                  Welcome to the Safe Space! No red candles here! Only vibes! 🚀✨🌈
+                  Welcome to the Safe Space! No red candles here! To the Moon! 🚀✨🌈
                 </p>
                 
                 <div className="w-full max-w-md bg-white h-4 rounded-full overflow-hidden mb-4 border border-pink-300 shadow-sm">
