@@ -133,7 +133,7 @@ export const PaperHandsOverlay = ({ isActive, onClose }: PaperHandsProps) => {
                 
                 {/* Responsive Card Fix: max-w-[90vw] and adjusted text sizing */}
                 <p className="font-mono font-bold text-xl md:text-4xl text-yellow-300 bg-black px-4 py-2 md:px-6 uppercase border-4 border-yellow-300 -rotate-2 max-w-[90vw] text-center break-words shadow-xl">
-                  THE CHART IS STILL RED
+                  WENDY'S IS STILL HIRING
                 </p>
               </motion.div>
             )}
