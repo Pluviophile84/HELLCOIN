@@ -9,14 +9,14 @@ export const Hellmap = () => {
   ];
 
   return (
-    // FIX: Changed to 'bg-hell-black' to contrast with the previous 'bg-hell-dark' section
     <section id="hellmap" className="py-32 bg-hell-black relative">
        <div className="max-w-4xl mx-auto px-4">
          
          {/* --- HEADER --- */}
          <div className="flex flex-col items-center gap-2 mb-20">
+           {/* FIX: Removed slashes and bold to match the new elegant style */}
            <span className="font-terminal text-[#ffae00] text-xl md:text-2xl tracking-widest uppercase">
-             /// ROADMAP_TO_RUIN ///
+             ROADMAP TO RUIN
            </span>
            <h2 className="font-gothic text-6xl md:text-8xl text-center text-hell-white">
              THE HELLMAP
@@ -33,7 +33,7 @@ export const Hellmap = () => {
                transition={{ delay: i * 0.2 }}
                className="relative pl-12 md:pl-24"
              >
-               {/* Dot Marker */}
+               {/* Timeline Marker */}
                <div className="absolute left-[-10px] top-2 w-6 h-6 bg-hell-black border-4 border-hell-red rounded-full z-10"></div>
                
                <h3 className="font-gothic text-4xl md:text-5xl text-[#ffae00] mb-2">{phase.title}</h3>
@@ -41,8 +41,10 @@ export const Hellmap = () => {
                
                <ul className="space-y-3">
                  {phase.details.map((d, idx) => (
-                   <li key={idx} className="font-terminal text-xl text-gray-400 flex items-center gap-3">
-                     <span className="text-hell-red">///</span> {d}
+                   <li key={idx} className="font-terminal text-xl text-gray-400 flex items-start gap-3">
+                     {/* FIX: Replaced '///' with a simple red dot */}
+                     <div className="w-2 h-2 bg-hell-red rounded-full mt-2.5 shrink-0"></div>
+                     <span>{d}</span>
                    </li>
                  ))}
                </ul>
