@@ -11,7 +11,7 @@ const commandments = [
   { id: "VII", title: "PANIC SELL BOTTOM", text: "Buy when you feel euphoric. Sell when you are crying in the shower." },
   { id: "VIII", title: "MARRY YOUR BAGS", text: "Even if the dev leaves, love never dies. Your portfolio does." },
   { id: "IX", title: "IGNORE GAS FEES", text: "Pay $80 in ETH fees to swap $15 worth of a shitcoin. Be a man." },
-  { id: "X", title: "ENVY THY NEIGHBOR", text: "Stare at other people's gains on Twitter until you feel physically ill." },
+  { id: "X", title: "TRUST EVERY INFLUENCER", text: "Nothing screams financial wisdom like a man filming price predictions from inside his car at 3AM." },
 ];
 
 export const Commandments = () => {
