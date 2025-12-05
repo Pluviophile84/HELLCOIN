@@ -5,6 +5,7 @@ import { PaperHandsOverlay } from "../components/ui/PaperHandsOverlay";
 import { Hero } from "../components/sections/Hero";
 import { Genesis } from "../components/sections/Genesis";
 import { Commandments } from "../components/sections/Commandments";
+import { NineTypes } from "../components/sections/NineTypes";
 import { DevilsMath } from "../components/sections/Math";
 import { Ritual } from "../components/sections/Ritual";
 import { HallOfPain } from "../components/sections/HallOfPain";
@@ -24,6 +25,7 @@ export default function Home() {
       <Hero />
       <Genesis />
       <Commandments />
+      <NineTypes />
       <DevilsMath />
       <Ritual />
       <HallOfPain />
