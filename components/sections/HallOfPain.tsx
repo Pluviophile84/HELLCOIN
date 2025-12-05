@@ -200,11 +200,8 @@ export const HallOfPain = () => {
       </div>
 
       {/* --- CONFESS PRANK SECTION --- */}
-      <div className="max-w-2xl mx-auto mt-24 px-4 text-center">
-        <p className="font-terminal text-gray-500 mb-6 text-xl">
-          Do you have sins to confess?
-        </p>
-        
+      {/* FIX: Removed <p> question and reduced margin to mt-6 to bring it closer */}
+      <div className="max-w-2xl mx-auto mt-6 px-4 text-center">
         <button 
           onClick={handleConfess}
           className="group relative inline-flex items-center gap-2 px-8 py-3 bg-black border-2 border-hell-red text-hell-red font-gothic text-2xl hover:bg-hell-red hover:text-white transition-all active:scale-95"
