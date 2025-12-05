@@ -54,11 +54,12 @@ export const HallOfPain = () => {
 
   const handleConfess = () => {
     const errors = [
-      "NICE TRY. YOUR SINS ARE PERMANENT.",
-      "ERROR: CONFESSION REJECTED. HOLD HARDER.",
-      "SYSTEM MESSAGE: YOU CANNOT ESCAPE REALITY.",
-      "ACCESS DENIED: YOUR BAGS ARE TOO HEAVY.",
-      "FATAL ERROR: IRREVERSIBLE STUPIDITY DETECTED."
+      "ERROR 404: SAVINGS ACCOUNT NOT FOUND.",
+      "TRANSACTION FAILED: INSUFFICIENT DIGNITY DETECTED.",
+      "SYSTEM ALERT: WENDY'S IS HIRING. APPLY NOW.",
+      "ACCESS DENIED: YOUR BAGS ARE HEAVIER THAN YOUR SINS.",
+      "FATAL ERROR: LEVERAGE TOO HIGH, IQ TOO LOW.",
+      "CONFESSION REJECTED: JUST BUY THE DIP AGAIN."
     ];
     const randomError = errors[Math.floor(Math.random() * errors.length)];
     setPrankError(randomError);
