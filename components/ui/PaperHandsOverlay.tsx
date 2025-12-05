@@ -180,7 +180,8 @@ export const PaperHandsOverlay = ({ isActive, onClose }: PaperHandsProps) => {
             initial={{ opacity: 0, y: 100 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: 100 }}
-            className="fixed bottom-10 right-4 md:right-10 bg-hell-red text-hell-white font-terminal text-xl p-6 border-4 border-black shadow-[10px_10px_0px_#000] z-[101]"
+            // Added animate-bounce back for the jumping effect
+            className="fixed bottom-10 right-4 md:right-10 bg-hell-red text-hell-white font-terminal text-xl p-6 border-4 border-black shadow-[10px_10px_0px_#000] z-[101] animate-bounce"
           >
             <div className="flex items-center gap-4">
               <AlertTriangle size={32} className="text-yellow-400" />
