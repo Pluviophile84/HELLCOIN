@@ -111,7 +111,7 @@ export const Revelation = () => {
             <div className="mt-10 p-6 border border-[#ffae00]/30 bg-[#ffae00]/5 w-full">
               <p className="text-center text-white text-xl md:text-2xl leading-tight">
                 <span className="font-gothic text-hell-red text-3xl md:text-4xl block mb-2">HELLCOIN</span> 
-                is the only project that won’t lie about it.
+                is the only project honest enough to admit it — and bold enough to expose it.
               </p>
             </div>
 
