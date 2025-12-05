@@ -2,14 +2,14 @@
 import { motion } from "framer-motion";
 
 const commandments = [
-  { id: "I", title: "BUY THE TOP", text: "Wait until the candle is vertical and green. Then go all in." },
-  { id: "II", title: "NEVER TAKE PROFITS", text: "Watch your $50 turn into $5,000, then ride it back to $0. This is the way." },
-  { id: "III", title: "USE 100X LEVERAGE", text: "Why lose money slowly over years when you can lose it in 3 seconds?" },
+  { id: "I", title: "BUY THE TOP", text: "Wait for the candle to touch heaven. Then enter hell." },
+  { id: "II", title: "NEVER TAKE PROFITS", text: "Watch $50 become $5,000. Then watch $5,000 become a funny story." },
+  { id: "III", title: "USE 100X LEVERAGE", text: "Why lose over years when you can lose in a single heartbeat?" },
   { id: "IV", title: "TRUST THE ANIME GIRL", text: "If the founder has a cute profile picture, you must trust them with your life savings." },
   { id: "V", title: "CLICK EVERY LINK", text: "Security is for cowards. If it says 'Claim Airdrop', connect instantly." },
-  { id: "VI", title: "DO ZERO RESEARCH", text: "Reading is for nerds. Just look at the ticker and the memes." },
-  { id: "VII", title: "PANIC SELL BOTTOM", text: "Buy when you feel like a god. Sell when you are crying in the shower." },
-  { id: "VIII", title: "MARRY YOUR BAGS", text: "Emotional attachment is key. Never let go, even when the dev leaves." },
+  { id: "VI", title: "DO ZERO RESEARCH", text: "DYOR is for scholars. You follow vibes." },
+  { id: "VII", title: "PANIC SELL BOTTOM", text: "Buy when you feel euphoric. Sell when you are crying in the shower." },
+  { id: "VIII", title: "MARRY YOUR BAGS", text: "Even if the dev leaves, love never dies. Your portfolio does." },
   { id: "IX", title: "IGNORE GAS FEES", text: "Pay $80 in ETH fees to swap $15 worth of a shitcoin. Be a man." },
   { id: "X", title: "ENVY THY NEIGHBOR", text: "Stare at other people's gains on Twitter until you feel physically ill." },
 ];
