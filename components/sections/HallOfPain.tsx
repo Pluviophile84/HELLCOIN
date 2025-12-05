@@ -15,21 +15,15 @@ const sinners = [
 ];
 
 export const HallOfPain = () => {
-  // State to track which cards have been clicked
   const [respectsPaid, setRespectsPaid] = useState<Record<string, boolean>>({});
-  // State to track the counts (simulated live data)
   const [respectCounts, setRespectCounts] = useState<Record<string, number>>({});
-  // State for the Prank Message
   const [prankError, setPrankError] = useState<string | null>(null);
 
-  // Initialize counts and check local storage
   useEffect(() => {
-    // 1. Initialize Counts
     const initialCounts: Record<string, number> = {};
     sinners.forEach(s => initialCounts[s.id] = s.initialRespects);
     setRespectCounts(initialCounts);
 
-    // 2. Check if user already paid respect
     const saved = localStorage.getItem("hellcoin_respects");
     if (saved) {
       setRespectsPaid(JSON.parse(saved));
@@ -37,14 +31,12 @@ export const HallOfPain = () => {
   }, []);
 
   const handlePayRespect = (id: string) => {
-    if (respectsPaid[id]) return; // Prevent double clicking
+    if (respectsPaid[id]) return; 
 
-    // Mark as paid
     const newState = { ...respectsPaid, [id]: true };
     setRespectsPaid(newState);
     localStorage.setItem("hellcoin_respects", JSON.stringify(newState));
 
-    // Increment count visually
     setRespectCounts(prev => ({
       ...prev,
       [id]: prev[id] + 1
@@ -59,89 +51,98 @@ export const HallOfPain = () => {
       "ACCESS DENIED: YOUR BAGS ARE TOO HEAVY.",
       "FATAL ERROR: IRREVERSIBLE STUPIDITY DETECTED."
     ];
-    // Pick a random insult
     const randomError = errors[Math.floor(Math.random() * errors.length)];
     setPrankError(randomError);
-    
-    // Hide after 4 seconds
     setTimeout(() => setPrankError(null), 4000);
   };
 
   return (
     <section id="hall-of-pain" className="py-32 bg-hell-dark overflow-hidden relative">
-      <div className="max-w-7xl mx-auto px-4 mb-16">
+      <div className="max-w-6xl mx-auto px-4 mb-16">
         
         {/* --- HEADER --- */}
-        <div className="flex flex-col items-center text-center gap-2">
-          <span className="font-terminal text-[#ffae00] text-xl md:text-2xl tracking-widest uppercase">
-            /// PROOF_OF_SUFFERING ///
+        <div className="flex flex-col items-center text-center gap-2 mb-12">
+          <span className="font-terminal text-[#ffae00] text-xl tracking-widest uppercase">
+            PROOF OF SUFFERING
           </span>
-
           <h2 className="font-gothic text-6xl md:text-8xl text-hell-white">
             HALL OF PAIN
           </h2>
         </div>
 
-      </div>
+        {/* --- THE LEDGER (Vertical List) --- */}
+        <div className="flex flex-col gap-4">
+          
+          {/* Table Headers (Desktop Only) */}
+          <div className="hidden md:grid grid-cols-12 gap-4 px-6 pb-2 text-[#ffae00] font-terminal text-sm tracking-widest uppercase border-b border-gray-800 opacity-50">
+            <div className="col-span-2">Sinner ID</div>
+            <div className="col-span-6">The Confession</div>
+            <div className="col-span-2 text-right">Loss</div>
+            <div className="col-span-2 text-center">Action</div>
+          </div>
 
-      {/* --- CARDS CONTAINER (Scrollable) --- */}
-      <div 
-        // FIX: Removed Drag Logic and cursor-grab styles
-        className="flex gap-6 px-4 overflow-x-auto pb-8 snap-x scrollbar-hide"
-      >
-        {sinners.map((sinner, i) => {
-          const isPaid = respectsPaid[sinner.id];
-          const count = respectCounts[sinner.id] || sinner.initialRespects;
+          {/* Rows */}
+          {sinners.map((sinner, i) => {
+            const isPaid = respectsPaid[sinner.id];
+            const count = respectCounts[sinner.id] || sinner.initialRespects;
 
-          return (
-            <div 
-              key={i} 
-              className="flex-none w-[350px] md:w-[450px] bg-hell-black border border-gray-800 p-8 snap-center hover:border-hell-red transition-colors group relative flex flex-col select-none"
-            >
-              {/* Card Header */}
-              <div className="flex justify-between items-center mb-6 border-b border-gray-800 pb-4">
-                <span className="font-terminal text-hell-red text-xl">{sinner.id}</span>
-                <span className="font-terminal text-gray-500">ID VERIFIED</span>
-              </div>
-              
-              {/* Stats */}
-              <div className="mb-6">
-                 <h4 className="font-gothic text-3xl text-hell-white">{sinner.name}</h4>
-                 <p className="font-terminal text-red-500 text-xl mt-1">REALIZED PNL: {sinner.pnl}</p>
-              </div>
-
-              {/* Quote */}
-              <p className="font-terminal text-lg text-gray-400 italic mb-8 flex-grow">
-                "{sinner.quote}"
-              </p>
-
-              {/* Action Button */}
-              <button 
-                onClick={() => handlePayRespect(sinner.id)}
-                disabled={isPaid}
-                className={`
-                  w-full py-3 font-terminal transition-all duration-300 flex items-center justify-center gap-2 border mt-auto
-                  ${isPaid 
-                    ? "bg-hell-red/20 border-hell-red text-hell-red cursor-default" 
-                    : "bg-white text-black border-white hover:bg-black hover:text-white hover:border-white active:scale-95 cursor-pointer"
-                  }
-                `}
+            return (
+              <motion.div 
+                key={i}
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                transition={{ delay: i * 0.05 }}
+                viewport={{ once: true }}
+                // FIX: Desktop = Grid, Mobile = Flex Column
+                className="bg-hell-black border border-gray-800 p-6 md:p-4 rounded-none hover:border-hell-red transition-all duration-300 group grid grid-cols-1 md:grid-cols-12 gap-4 md:items-center"
               >
-                {isPaid ? (
-                  <span className="animate-pulse">RESPECT PAID ({count})</span>
-                ) : (
-                  <>
-                    <Skull size={18} /> PAY RESPECTS ({count})
-                  </>
-                )}
-              </button>
-            </div>
-          );
-        })}
+                
+                {/* 1. ID & Name */}
+                <div className="md:col-span-2 flex flex-row md:flex-col justify-between md:justify-center items-center md:items-start border-b md:border-b-0 border-gray-800 pb-4 md:pb-0 mb-2 md:mb-0">
+                  <span className="font-terminal text-hell-red text-xl font-bold">{sinner.id}</span>
+                  <span className="font-gothic text-xl text-gray-500 md:text-sm md:mt-1">{sinner.name}</span>
+                </div>
+
+                {/* 2. The Quote */}
+                <div className="md:col-span-6">
+                  <p className="font-terminal text-lg text-gray-300 italic leading-relaxed">
+                    "{sinner.quote}"
+                  </p>
+                </div>
+
+                {/* 3. PNL (Loss) */}
+                <div className="md:col-span-2 flex items-center justify-between md:justify-end">
+                  <span className="md:hidden font-terminal text-gray-600 text-sm">TOTAL LOSS:</span>
+                  <span className="font-terminal text-hell-red text-xl font-bold">{sinner.pnl}</span>
+                </div>
+
+                {/* 4. Action Button */}
+                <div className="md:col-span-2 mt-4 md:mt-0">
+                  <button 
+                    onClick={() => handlePayRespect(sinner.id)}
+                    disabled={isPaid}
+                    className={`
+                      w-full py-2 px-4 font-terminal text-sm font-bold border transition-all active:scale-95 flex items-center justify-center gap-2
+                      ${isPaid 
+                        ? "bg-hell-red/10 border-hell-red text-hell-red cursor-default" 
+                        : "bg-transparent border-gray-600 text-gray-400 hover:border-white hover:text-white"
+                      }
+                    `}
+                  >
+                    {isPaid ? "RESPECT PAID" : "PAY RESPECTS"}
+                    <span className="opacity-50 font-normal">({count})</span>
+                  </button>
+                </div>
+
+              </motion.div>
+            );
+          })}
+        </div>
+
       </div>
 
       {/* --- CONFESS PRANK SECTION --- */}
-      <div className="max-w-2xl mx-auto mt-20 px-4 text-center">
+      <div className="max-w-2xl mx-auto mt-24 px-4 text-center">
         <p className="font-terminal text-gray-500 mb-6 text-xl">
           Do you have sins to confess?
         </p>
@@ -154,7 +155,7 @@ export const HallOfPain = () => {
           CONFESS YOUR LOSSES
         </button>
 
-        {/* PRANK ERROR MESSAGE (FIXED POSITON) */}
+        {/* PRANK ERROR MESSAGE */}
         <AnimatePresence>
           {prankError && (
             <motion.div
