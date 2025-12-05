@@ -1,8 +1,10 @@
-/** @type {import('tailwindcss').Config} */
-module.exports = {
+import type { Config } from "tailwindcss";
+
+const config: Config = {
   content: [
-    "./app/**/*.{js,ts,jsx,tsx,mdx}",
+    "./pages/**/*.{js,ts,jsx,tsx,mdx}",
     "./components/**/*.{js,ts,jsx,tsx,mdx}",
+    "./app/**/*.{js,ts,jsx,tsx,mdx}",
   ],
   theme: {
     extend: {
@@ -13,7 +15,10 @@ module.exports = {
           red: '#cc0000',   // Blood
           orange: '#ff3300',// Magma
           gold: '#ffae00',  // Ember
-          white: '#e5e5e5', // Bone
+          
+          // FIX: Changed from '#e5e5e5' (too bright) to '#d4d4d4' (Ash/Stone)
+          // This removes the "digital" feel and makes it look like ancient stone.
+          white: '#d4d4d4', 
         },
       },
       fontFamily: {
@@ -21,7 +26,7 @@ module.exports = {
         terminal: ['var(--font-vt323)'],
       },
       animation: {
-        'spin-slow': 'spin 12s linear infinite',
+        'spin-slow': 'spin 60s linear infinite',
         'pulse-fast': 'pulse 1.5s cubic-bezier(0.4, 0, 0.6, 1) infinite',
         'marquee': 'marquee 25s linear infinite',
         'glitch': 'glitch 1s linear infinite',
@@ -41,3 +46,4 @@ module.exports = {
   },
   plugins: [],
 };
+export default config;
