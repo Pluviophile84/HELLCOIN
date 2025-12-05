@@ -46,7 +46,7 @@ export const Ritual = () => {
           </span>
           
           <h2 className="font-gothic text-6xl md:text-8xl text-center text-hell-white">
-            THE RITUAL
+            THE <span className="text-hell-red">RITUAL</span>
           </h2>
         </div>
 
@@ -82,7 +82,7 @@ export const Ritual = () => {
         <motion.div initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }} className="max-w-3xl mx-auto">
           <div className="text-center mb-4">
              <span className="font-terminal text-hell-red text-xl bg-hell-red/10 px-4 py-1 border border-hell-red/20 rounded animate-pulse">
-               /// YOU CAN ALSO BUY DIRECTLY IN YOUR WALLET ///
+              YOU CAN ALSO BUY DIRECTLY IN YOUR WALLET
              </span>
           </div>
           <div className="bg-black border-2 border-hell-red p-2 md:p-4 rounded flex flex-col md:flex-row items-center gap-4 shadow-[0_0_30px_rgba(204,0,0,0.2)]">
