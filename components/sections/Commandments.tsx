@@ -24,7 +24,7 @@ export const Commandments = () => {
             LAW OF THE LAND
           </span>
           <h2 className="font-gothic text-6xl md:text-8xl text-hell-white">
-            THE TEN COMMANDMENTS
+            THE TEN <span className="text-hell-red">COMMANDMENTS</span>
           </h2>
         </div>
         <motion.div initial="hidden" whileInView="visible" viewport={{ once: true }} variants={{ visible: { transition: { staggerChildren: 0.1 } } }} className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
