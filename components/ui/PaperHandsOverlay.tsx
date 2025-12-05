@@ -1,7 +1,7 @@
 "use client";
 import { useEffect, useState } from "react";
 import { cn } from "../../lib/utils";
-import { AlertTriangle } from "lucide-react";
+import { AlertTriangle, Flame } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 
 interface PaperHandsProps {
@@ -24,10 +24,10 @@ export const PaperHandsOverlay = ({ isActive, onClose }: PaperHandsProps) => {
     size: 40 + Math.random() * 60, // Bigger flames
   }));
 
+  // Handle the main sequence (Heaven -> Burning -> Reality)
   useEffect(() => {
     let timer1: NodeJS.Timeout;
     let timer2: NodeJS.Timeout;
-    let timer3: NodeJS.Timeout;
 
     if (isActive) {
       setPhase("heaven");
@@ -47,14 +47,8 @@ export const PaperHandsOverlay = ({ isActive, onClose }: PaperHandsProps) => {
         onClose(); 
         setPhase("reality"); 
       }, 9000); // 5s + 4s
-
-      // STEP 3: RESET EVERYTHING (After toast duration)
-      timer3 = setTimeout(() => {
-        setPhase("idle");
-        setProgress(0);
-      }, 13000);
     } else {
-      // Reset when inactive
+      // Reset when inactive, but preserve 'reality' phase so the separate effect handles it
       if (phase !== "reality") {
         setPhase("idle");
         setProgress(0);
@@ -64,9 +58,20 @@ export const PaperHandsOverlay = ({ isActive, onClose }: PaperHandsProps) => {
     return () => {
       clearTimeout(timer1);
       clearTimeout(timer2);
-      clearTimeout(timer3);
     };
   }, [isActive, onClose]);
+
+  // Separate effect to handle the "Nice Try" toast lifespan
+  // This prevents the cleanup of the main effect from killing the toast timer
+  useEffect(() => {
+    if (phase === "reality") {
+      const timer = setTimeout(() => {
+        setPhase("idle");
+        setProgress(0);
+      }, 4000);
+      return () => clearTimeout(timer);
+    }
+  }, [phase]);
 
   // If completely idle, render nothing
   if (phase === "idle" && !isActive) return null;
@@ -109,7 +114,7 @@ export const PaperHandsOverlay = ({ isActive, onClose }: PaperHandsProps) => {
                     }}
                   ></div>
                 </div>
-                <p className="text-pink-300 text-sm font-bold font-sans">Ignoring reality in 3...</p>
+                <p className="text-pink-300 text-sm font-bold font-sans">Ignoring reality in 5...</p>
               </motion.div>
             )}
 
@@ -121,8 +126,6 @@ export const PaperHandsOverlay = ({ isActive, onClose }: PaperHandsProps) => {
                 animate={{ opacity: 1, scale: 1.1 }}
                 className="relative z-30 flex flex-col items-center w-full px-4"
               >
-                {/* Removed Flame Icon as requested */}
-                
                 {/* Generic Impact Font / Sans Serif Bold */}
                 <h1 className="font-sans font-black text-5xl md:text-9xl text-white mb-8 drop-shadow-[0_5px_5px_rgba(0,0,0,0.8)] tracking-tighter">
                   REALITY CHECK
