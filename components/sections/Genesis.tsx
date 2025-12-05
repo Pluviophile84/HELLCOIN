@@ -3,11 +3,11 @@ import { motion } from "framer-motion";
 
 export const Genesis = () => {
   const paragraphs = [
-    { text: "THERE WAS GREED.", highlight: true },
+    { text: "There was Greed.", highlight: true },
     { text: "And when a trader whispered “this time it’s different” for the 666th time, Heaven sighed, Hell took notice, and the Devil smiled — a mortal had mastered self-deception at a level even he found impressive.", highlight: false },
     { text: "Realizing such craftsmanship deserved a monument, his gaze fell upon the crypto pit — where his sacred number had just been reached — a landscape of rugs, scams, broken dreams, and regret stacked higher than ambition, and no corner burned brighter than pump.fun.", highlight: false },
     { text: "A platform where neither pumps nor fun survive launch day. Perfect.", highlight: true },
-    { text: "From that glorious wreckage, he forged HELLCOIN ($666).", highlight: true },
+    { text: "From that glorious wreckage, he forged <span className="text-hell-red">HELLCOIN $666</span>", highlight: false },
     { text: "It was already home.", highlight: false }
   ];
 
