@@ -1,6 +1,6 @@
 "use client";
 import { useState, useEffect } from "react";
-import { Skull, AlertTriangle, XCircle } from "lucide-react";
+import { Skull, AlertTriangle, XCircle, ChevronDown, ChevronUp } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 
 const sinners = [
@@ -18,6 +18,8 @@ export const HallOfPain = () => {
   const [respectsPaid, setRespectsPaid] = useState<Record<string, boolean>>({});
   const [respectCounts, setRespectCounts] = useState<Record<string, number>>({});
   const [prankError, setPrankError] = useState<string | null>(null);
+  // Track which row is currently expanded
+  const [expandedId, setExpandedId] = useState<string | null>(null);
 
   useEffect(() => {
     const initialCounts: Record<string, number> = {};
@@ -43,6 +45,10 @@ export const HallOfPain = () => {
     }));
   };
 
+  const toggleRow = (id: string) => {
+    setExpandedId(expandedId === id ? null : id);
+  };
+
   const handleConfess = () => {
     const errors = [
       "NICE TRY. YOUR SINS ARE PERMANENT.",
@@ -62,7 +68,7 @@ export const HallOfPain = () => {
         
         {/* --- HEADER --- */}
         <div className="flex flex-col items-center text-center gap-2 mb-12">
-          <span className="font-terminal text-[#ffae00] text-xl tracking-widest uppercase">
+          <span className="font-terminal text-[#ffae00] text-xl md:text-2xl tracking-widest uppercase">
             PROOF OF SUFFERING
           </span>
           <h2 className="font-gothic text-6xl md:text-8xl text-hell-white">
@@ -70,71 +76,94 @@ export const HallOfPain = () => {
           </h2>
         </div>
 
-        {/* --- THE LEDGER (Vertical List) --- */}
-        <div className="flex flex-col gap-4">
+        {/* --- THE ARCHIVES (Compact Accordion) --- */}
+        <div className="flex flex-col gap-2">
           
           {/* Table Headers (Desktop Only) */}
-          <div className="hidden md:grid grid-cols-12 gap-4 px-6 pb-2 text-[#ffae00] font-terminal text-sm tracking-widest uppercase border-b border-gray-800 opacity-50">
-            <div className="col-span-2">Sinner ID</div>
-            <div className="col-span-6">The Confession</div>
+          <div className="hidden md:grid grid-cols-12 gap-4 px-6 pb-2 text-[#ffae00] font-terminal text-sm tracking-widest uppercase border-b border-gray-800 opacity-50 mb-2">
+            <div className="col-span-3">Sinner ID</div>
+            <div className="col-span-7">Identity</div>
             <div className="col-span-2 text-right">Loss</div>
-            <div className="col-span-2 text-center">Action</div>
           </div>
 
-          {/* Rows */}
+          {/* Accordion Rows */}
           {sinners.map((sinner, i) => {
             const isPaid = respectsPaid[sinner.id];
             const count = respectCounts[sinner.id] || sinner.initialRespects;
+            const isOpen = expandedId === sinner.id;
 
             return (
-              <motion.div 
+              <div 
                 key={i}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                transition={{ delay: i * 0.05 }}
-                viewport={{ once: true }}
-                // FIX: Desktop = Grid, Mobile = Flex Column
-                className="bg-hell-black border border-gray-800 p-6 md:p-4 rounded-none hover:border-hell-red transition-all duration-300 group grid grid-cols-1 md:grid-cols-12 gap-4 md:items-center"
+                onClick={() => toggleRow(sinner.id)}
+                className={`
+                  border transition-all duration-300 cursor-pointer relative overflow-hidden
+                  ${isOpen 
+                    ? "bg-hell-red/5 border-hell-red" 
+                    : "bg-hell-black border-gray-800 hover:border-gray-600"
+                  }
+                `}
               >
-                
-                {/* 1. ID & Name */}
-                <div className="md:col-span-2 flex flex-row md:flex-col justify-between md:justify-center items-center md:items-start border-b md:border-b-0 border-gray-800 pb-4 md:pb-0 mb-2 md:mb-0">
-                  <span className="font-terminal text-hell-red text-xl font-bold">{sinner.id}</span>
-                  <span className="font-gothic text-xl text-gray-500 md:text-sm md:mt-1">{sinner.name}</span>
+                {/* SUMMARY ROW (Always Visible) */}
+                <div className="p-4 grid grid-cols-12 gap-4 items-center">
+                   {/* ID */}
+                   <div className="col-span-4 md:col-span-3 font-terminal text-hell-red text-lg md:text-xl font-bold">
+                     {sinner.id}
+                   </div>
+                   
+                   {/* Name */}
+                   <div className="col-span-5 md:col-span-7 font-gothic text-xl md:text-2xl text-gray-300 truncate">
+                     {sinner.name}
+                   </div>
+                   
+                   {/* PnL */}
+                   <div className="col-span-3 md:col-span-2 text-right font-terminal text-gray-400">
+                     {sinner.pnl}
+                   </div>
                 </div>
 
-                {/* 2. The Quote */}
-                <div className="md:col-span-6">
-                  <p className="font-terminal text-lg text-gray-300 italic leading-relaxed">
-                    "{sinner.quote}"
-                  </p>
-                </div>
-
-                {/* 3. PNL (Loss) */}
-                <div className="md:col-span-2 flex items-center justify-between md:justify-end">
-                  <span className="md:hidden font-terminal text-gray-600 text-sm">TOTAL LOSS:</span>
-                  <span className="font-terminal text-hell-red text-xl font-bold">{sinner.pnl}</span>
-                </div>
-
-                {/* 4. Action Button */}
-                <div className="md:col-span-2 mt-4 md:mt-0">
-                  <button 
-                    onClick={() => handlePayRespect(sinner.id)}
-                    disabled={isPaid}
-                    className={`
-                      w-full py-2 px-4 font-terminal text-sm font-bold border transition-all active:scale-95 flex items-center justify-center gap-2
-                      ${isPaid 
-                        ? "bg-hell-red/10 border-hell-red text-hell-red cursor-default" 
-                        : "bg-transparent border-gray-600 text-gray-400 hover:border-white hover:text-white"
-                      }
-                    `}
-                  >
-                    {isPaid ? "RESPECT PAID" : "PAY RESPECTS"}
-                    <span className="opacity-50 font-normal">({count})</span>
-                  </button>
-                </div>
-
-              </motion.div>
+                {/* EXPANDED DETAILS */}
+                <AnimatePresence>
+                  {isOpen && (
+                    <motion.div
+                      initial={{ height: 0, opacity: 0 }}
+                      animate={{ height: "auto", opacity: 1 }}
+                      exit={{ height: 0, opacity: 0 }}
+                      className="px-4 pb-6 md:px-6 md:pb-6"
+                    >
+                      <div className="border-t border-hell-red/20 pt-4 mt-2 grid grid-cols-1 md:grid-cols-12 gap-6">
+                         {/* Quote */}
+                         <div className="md:col-span-9">
+                           <p className="font-terminal text-lg text-gray-400 italic leading-relaxed">
+                             "{sinner.quote}"
+                           </p>
+                         </div>
+                         
+                         {/* Action Button */}
+                         <div className="md:col-span-3 flex items-end">
+                           <button 
+                             onClick={(e) => {
+                               e.stopPropagation(); // Prevent toggling row when clicking button
+                               handlePayRespect(sinner.id);
+                             }}
+                             disabled={isPaid}
+                             className={`
+                               w-full py-2 px-4 font-terminal text-sm font-bold border transition-all active:scale-95 flex items-center justify-center gap-2
+                               ${isPaid 
+                                 ? "bg-hell-red/10 border-hell-red text-hell-red cursor-default" 
+                                 : "bg-white text-black border-white hover:bg-black hover:text-white hover:border-white"
+                               }
+                             `}
+                           >
+                             {isPaid ? "RESPECT PAID" : "PAY RESPECTS"}
+                             <span className="opacity-50 font-normal">({count})</span>
+                           </button>
+                         </div>
+                      </div>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+              </div>
             );
           })}
         </div>
