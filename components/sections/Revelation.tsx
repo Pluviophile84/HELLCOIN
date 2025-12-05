@@ -23,7 +23,7 @@ export const Revelation = () => {
           <div className="mb-6 flex flex-col items-center gap-2">
             {/* SUB-LINE: Full Brightness Gold */}
             <span className="font-terminal text-[#ffae00] text-lg md:text-xl tracking-widest uppercase">
-              /// DECEPTION_DETECTED ///
+              DECEPTION DETECTED
             </span>
             {/* TITLE: Full Brightness White/Red */}
             <motion.h3 
@@ -66,7 +66,7 @@ export const Revelation = () => {
           {/* HEADER - UPDATED ALIGNMENT (Centered) */}
           <div className="mb-8 flex flex-col items-center gap-2 text-center">
             <span className="font-terminal text-[#ffae00] text-lg md:text-xl tracking-widest uppercase">
-              /// THE_TRUTH ///
+               THE TRUTH
             </span>
             <h2 className="font-gothic text-5xl md:text-8xl text-hell-white leading-none">
               REALITY <span className="text-hell-red">CHECK.</span>
