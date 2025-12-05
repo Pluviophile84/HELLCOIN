@@ -1,21 +1,20 @@
 import type { Metadata } from "next";
-import localFont from "next/font/local";
-import { Crimson_Text } from "next/font/google";
+import { Pirata_One, Crimson_Text } from "next/font/google";
 import "./globals.css";
 
-// 1. Custom Title Font
-const customTitle = localFont({
-  src: "./fonts/myfonts8.woff2",
-  variable: "--font-pirata", 
-  display: "swap",
+// 1. Title Font: Pirata One (Gothic/Ancient)
+const pirata = Pirata_One({ 
+  weight: "400", 
+  subsets: ["latin"],
+  variable: "--font-pirata"
 });
 
-// 2. Body Font
+// 2. Body Font: Crimson Text (The "Scripture" Look)
 const crimson = Crimson_Text({ 
   weight: ["400", "600", "700"], 
   style: ["normal", "italic"],
   subsets: ["latin"],
-  variable: "--font-vt323" 
+  variable: "--font-vt323" // Maps to 'font-terminal' for Tailwind compatibility
 });
 
 export const metadata: Metadata = {
@@ -29,17 +28,10 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
-      <body className={`${customTitle.variable} ${crimson.variable} font-sans scanlines bg-hell-black`}>
-        
-        {/* FIX: FORCE SCROLL TO TOP ON REFRESH */}
-        {/* This prevents the "Bouncing Navbar" bug by ensuring every visit starts at the Hero section */}
-        <script
-          dangerouslySetInnerHTML={{
-            __html: `history.scrollRestoration = "manual"`,
-          }}
-        />
-
+    // FIX: Added 'scroll-smooth' back here. 
+    // This makes the mouse wheel glide instead of step.
+    <html lang="en" className="scroll-smooth">
+      <body className={`${pirata.variable} ${crimson.variable} font-sans scanlines bg-hell-black`}>
         {children}
       </body>
     </html>
