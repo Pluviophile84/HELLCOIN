@@ -8,21 +8,27 @@ export const Navbar = ({ onTriggerPaperHands }: { onTriggerPaperHands: () => voi
   const [isScrolled, setIsScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
+  // CONFIG: Paste your launch link here
   const BUY_LINK = "https://raydium.io/swap"; 
 
   useEffect(() => {
     const handleScroll = () => {
+      // Check scroll position for background color & size
       if (window.scrollY > 50) {
         setIsScrolled(true);
       } else {
         setIsScrolled(false);
       }
     };
+
+    // Run immediately on load
     handleScroll();
+
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
+  // Scroll Lock for Mobile Menu
   useEffect(() => {
     if (mobileMenuOpen) {
       document.body.style.overflow = "hidden";
@@ -60,15 +66,20 @@ export const Navbar = ({ onTriggerPaperHands }: { onTriggerPaperHands: () => voi
   return (
     <nav 
       className={cn(
-        "fixed top-0 w-full z-40 border-b transition-colors duration-300 py-4",
+        "fixed top-0 w-full z-40 border-b transition-all duration-300",
+        
+        // STYLE LOGIC:
+        // Desktop Scrolled: Black, Thin (md:py-2)
+        // Desktop Top: Transparent, Tall (md:py-6)
+        // Mobile: Always standard size (py-4)
         isScrolled 
-          ? "bg-hell-black/90 backdrop-blur-md border-hell-red/30" 
-          : "bg-transparent border-transparent"
+          ? "bg-hell-black/90 backdrop-blur-md border-hell-red/30 py-4 md:py-2" 
+          : "bg-transparent border-transparent py-4 md:py-6"
       )}
     >
       <div className="max-w-7xl mx-auto px-4 flex justify-between items-center">
         
-        {/* LOGO */}
+        {/* --- LOGO --- */}
         <div 
           onClick={scrollToTop}
           className="flex items-center gap-2 md:gap-3 group cursor-pointer shrink-0 transition-transform active:scale-95"
@@ -81,7 +92,7 @@ export const Navbar = ({ onTriggerPaperHands }: { onTriggerPaperHands: () => voi
           <span className="font-gothic text-xl md:text-3xl text-hell-orange tracking-wide text-glow">HELLCOIN</span>
         </div>
 
-        {/* DESKTOP LINKS */}
+        {/* --- DESKTOP LINKS --- */}
         <div className="hidden lg:flex gap-8">
           {navLinks.map((link) => (
             <a 
@@ -96,8 +107,10 @@ export const Navbar = ({ onTriggerPaperHands }: { onTriggerPaperHands: () => voi
           ))}
         </div>
 
-        {/* ACTIONS */}
+        {/* --- ACTIONS --- */}
         <div className="flex items-center gap-2 md:gap-4">
+          
+          {/* HEAVEN MODE BUTTON */}
           <button 
             onClick={onTriggerPaperHands}
             className="flex items-center gap-2 px-3 py-1 border border-pink-300 rounded text-pink-100 font-terminal text-xs md:text-sm font-bold hover:bg-pink-500/20 hover:text-white transition-colors shadow-[0_0_10px_rgba(255,192,203,0.3)]"
@@ -106,6 +119,7 @@ export const Navbar = ({ onTriggerPaperHands }: { onTriggerPaperHands: () => voi
             HEAVEN MODE
           </button>
           
+          {/* ACQUIRE BUTTON (DESKTOP) */}
           <a 
             href={BUY_LINK}
             target="_blank" 
@@ -115,13 +129,14 @@ export const Navbar = ({ onTriggerPaperHands }: { onTriggerPaperHands: () => voi
             ACQUIRE $666
           </a>
 
+          {/* MOBILE TOGGLE */}
           <button className="lg:hidden text-hell-white" onClick={() => setMobileMenuOpen(!mobileMenuOpen)}>
             {mobileMenuOpen ? <X size={28} /> : <Menu size={28} />}
           </button>
         </div>
       </div>
 
-      {/* MOBILE MENU */}
+      {/* --- MOBILE MENU --- */}
       <AnimatePresence>
         {mobileMenuOpen && (
           <motion.div
@@ -145,6 +160,7 @@ export const Navbar = ({ onTriggerPaperHands }: { onTriggerPaperHands: () => voi
               
               <div className="w-16 h-1 bg-hell-red/50 my-4"></div>
               
+              {/* ACQUIRE BUTTON (MOBILE) */}
               <a 
                 href={BUY_LINK}
                 target="_blank" 
