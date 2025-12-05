@@ -1,6 +1,6 @@
 "use client";
 import { useState, useEffect } from "react";
-import { Skull, AlertTriangle, XCircle, ChevronDown, ChevronUp } from "lucide-react";
+import { Skull, AlertTriangle, XCircle, Filter, ArrowUpDown } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 
 const sinners = [
@@ -18,8 +18,8 @@ export const HallOfPain = () => {
   const [respectsPaid, setRespectsPaid] = useState<Record<string, boolean>>({});
   const [respectCounts, setRespectCounts] = useState<Record<string, number>>({});
   const [prankError, setPrankError] = useState<string | null>(null);
-  // Track which row is currently expanded
   const [expandedId, setExpandedId] = useState<string | null>(null);
+  const [filter, setFilter] = useState<'latest' | 'top'>('latest');
 
   useEffect(() => {
     const initialCounts: Record<string, number> = {};
@@ -62,9 +62,20 @@ export const HallOfPain = () => {
     setTimeout(() => setPrankError(null), 4000);
   };
 
+  // --- SORTING LOGIC ---
+  const sortedSinners = [...sinners].sort((a, b) => {
+    if (filter === 'top') {
+      const countA = respectCounts[a.id] || a.initialRespects;
+      const countB = respectCounts[b.id] || b.initialRespects;
+      return countB - countA; // Descending order
+    }
+    // Default: Latest (Sort by ID descending assumes higher ID is newer)
+    return b.id.localeCompare(a.id);
+  });
+
   return (
     <section id="hall-of-pain" className="py-32 bg-hell-dark overflow-hidden relative">
-      <div className="max-w-6xl mx-auto px-4 mb-16">
+      <div className="max-w-6xl mx-auto px-4 mb-12">
         
         {/* --- HEADER --- */}
         <div className="flex flex-col items-center text-center gap-2 mb-12">
@@ -76,96 +87,106 @@ export const HallOfPain = () => {
           </h2>
         </div>
 
-        {/* --- THE ARCHIVES (Compact Accordion) --- */}
-        <div className="flex flex-col gap-2">
+        {/* --- FILTERS --- */}
+        <div className="flex justify-end gap-4 mb-4 font-terminal text-sm md:text-base">
+          <button 
+            onClick={() => setFilter('latest')}
+            className={`flex items-center gap-2 px-4 py-2 border ${filter === 'latest' ? 'border-hell-red text-hell-red bg-hell-red/10' : 'border-gray-800 text-gray-500 hover:text-gray-300'}`}
+          >
+            <ArrowUpDown size={16} /> LATEST
+          </button>
+          <button 
+            onClick={() => setFilter('top')}
+            className={`flex items-center gap-2 px-4 py-2 border ${filter === 'top' ? 'border-hell-red text-hell-red bg-hell-red/10' : 'border-gray-800 text-gray-500 hover:text-gray-300'}`}
+          >
+            <Filter size={16} /> MOST RESPECTS
+          </button>
+        </div>
+
+        {/* --- THE ARCHIVES BOX --- */}
+        <div className="border border-gray-800 bg-hell-black">
           
-          {/* Table Headers (Desktop Only) */}
-          <div className="hidden md:grid grid-cols-12 gap-4 px-6 pb-2 text-[#ffae00] font-terminal text-sm tracking-widest uppercase border-b border-gray-800 opacity-50 mb-2">
-            <div className="col-span-3">Sinner ID</div>
-            <div className="col-span-7">Identity</div>
-            <div className="col-span-2 text-right">Loss</div>
+          {/* Table Headers */}
+          <div className="grid grid-cols-12 gap-4 px-6 py-3 text-[#ffae00] font-terminal text-sm tracking-widest uppercase border-b border-gray-800 bg-[#0a0a0a]">
+            <div className="col-span-3 md:col-span-2">ID</div>
+            <div className="col-span-6 md:col-span-8">Identity</div>
+            <div className="col-span-3 md:col-span-2 text-right">Loss</div>
           </div>
 
-          {/* Accordion Rows */}
-          {sinners.map((sinner, i) => {
-            const isPaid = respectsPaid[sinner.id];
-            const count = respectCounts[sinner.id] || sinner.initialRespects;
-            const isOpen = expandedId === sinner.id;
+          {/* --- SCROLLABLE LIST --- */}
+          <div className="h-[400px] overflow-y-auto scrollbar-thin scrollbar-thumb-hell-red/30 scrollbar-track-black">
+            {sortedSinners.map((sinner) => {
+              const isPaid = respectsPaid[sinner.id];
+              const count = respectCounts[sinner.id] || sinner.initialRespects;
+              const isOpen = expandedId === sinner.id;
 
-            return (
-              <div 
-                key={i}
-                onClick={() => toggleRow(sinner.id)}
-                className={`
-                  border transition-all duration-300 cursor-pointer relative overflow-hidden
-                  ${isOpen 
-                    ? "bg-hell-red/5 border-hell-red" 
-                    : "bg-hell-black border-gray-800 hover:border-gray-600"
-                  }
-                `}
-              >
-                {/* SUMMARY ROW (Always Visible) */}
-                <div className="p-4 grid grid-cols-12 gap-4 items-center">
-                   {/* ID */}
-                   <div className="col-span-4 md:col-span-3 font-terminal text-hell-red text-lg md:text-xl font-bold">
-                     {sinner.id}
-                   </div>
-                   
-                   {/* Name */}
-                   <div className="col-span-5 md:col-span-7 font-gothic text-xl md:text-2xl text-gray-300 truncate">
-                     {sinner.name}
-                   </div>
-                   
-                   {/* PnL */}
-                   <div className="col-span-3 md:col-span-2 text-right font-terminal text-gray-400">
-                     {sinner.pnl}
-                   </div>
+              return (
+                <div 
+                  key={sinner.id}
+                  className={`border-b border-gray-900 transition-colors duration-200 ${isOpen ? 'bg-[#1a0505]' : 'hover:bg-gray-900/30'}`}
+                >
+                  {/* Clickable Header Row */}
+                  <div 
+                    onClick={() => toggleRow(sinner.id)}
+                    className="p-4 md:px-6 grid grid-cols-12 gap-4 items-center cursor-pointer group"
+                  >
+                     <div className="col-span-3 md:col-span-2 font-terminal text-hell-red text-lg font-bold">
+                       {sinner.id}
+                     </div>
+                     <div className="col-span-6 md:col-span-8 font-gothic text-xl md:text-2xl text-gray-300 truncate group-hover:text-white transition-colors">
+                       {sinner.name}
+                     </div>
+                     <div className="col-span-3 md:col-span-2 text-right font-terminal text-gray-400">
+                       {sinner.pnl}
+                     </div>
+                  </div>
+
+                  {/* Expandable Content (Smoother Animation) */}
+                  <AnimatePresence>
+                    {isOpen && (
+                      <motion.div
+                        initial={{ height: 0, opacity: 0 }}
+                        animate={{ height: "auto", opacity: 1 }}
+                        exit={{ height: 0, opacity: 0 }}
+                        transition={{ duration: 0.3, ease: "easeInOut" }}
+                        className="overflow-hidden"
+                      >
+                        <div className="px-4 pb-6 md:px-6 md:pb-6">
+                          <div className="border-t border-hell-red/10 pt-4 mt-2 grid grid-cols-1 md:grid-cols-12 gap-6">
+                             <div className="md:col-span-9">
+                               <p className="font-terminal text-lg text-gray-400 italic leading-relaxed">
+                                 "{sinner.quote}"
+                               </p>
+                             </div>
+                             
+                             <div className="md:col-span-3 flex items-end justify-end">
+                               <button 
+                                 onClick={(e) => {
+                                   e.stopPropagation();
+                                   handlePayRespect(sinner.id);
+                                 }}
+                                 disabled={isPaid}
+                                 className={`
+                                   w-full md:w-auto py-2 px-6 font-terminal text-sm font-bold border transition-all active:scale-95 flex items-center justify-center gap-2
+                                   ${isPaid 
+                                     ? "bg-hell-red/10 border-hell-red text-hell-red cursor-default" 
+                                     : "bg-white text-black border-white hover:bg-gray-300"
+                                   }
+                                 `}
+                               >
+                                 {isPaid ? "RESPECT PAID" : "PAY RESPECTS"}
+                                 <span className="opacity-60 font-normal ml-1">({count})</span>
+                               </button>
+                             </div>
+                          </div>
+                        </div>
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
                 </div>
-
-                {/* EXPANDED DETAILS */}
-                <AnimatePresence>
-                  {isOpen && (
-                    <motion.div
-                      initial={{ height: 0, opacity: 0 }}
-                      animate={{ height: "auto", opacity: 1 }}
-                      exit={{ height: 0, opacity: 0 }}
-                      className="px-4 pb-6 md:px-6 md:pb-6"
-                    >
-                      <div className="border-t border-hell-red/20 pt-4 mt-2 grid grid-cols-1 md:grid-cols-12 gap-6">
-                         {/* Quote */}
-                         <div className="md:col-span-9">
-                           <p className="font-terminal text-lg text-gray-400 italic leading-relaxed">
-                             "{sinner.quote}"
-                           </p>
-                         </div>
-                         
-                         {/* Action Button */}
-                         <div className="md:col-span-3 flex items-end">
-                           <button 
-                             onClick={(e) => {
-                               e.stopPropagation(); // Prevent toggling row when clicking button
-                               handlePayRespect(sinner.id);
-                             }}
-                             disabled={isPaid}
-                             className={`
-                               w-full py-2 px-4 font-terminal text-sm font-bold border transition-all active:scale-95 flex items-center justify-center gap-2
-                               ${isPaid 
-                                 ? "bg-hell-red/10 border-hell-red text-hell-red cursor-default" 
-                                 : "bg-white text-black border-white hover:bg-black hover:text-white hover:border-white"
-                               }
-                             `}
-                           >
-                             {isPaid ? "RESPECT PAID" : "PAY RESPECTS"}
-                             <span className="opacity-50 font-normal">({count})</span>
-                           </button>
-                         </div>
-                      </div>
-                    </motion.div>
-                  )}
-                </AnimatePresence>
-              </div>
-            );
-          })}
+              );
+            })}
+          </div>
         </div>
 
       </div>
