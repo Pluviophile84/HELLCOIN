@@ -100,7 +100,7 @@ export const NineTypes = () => {
                 <type.icon className="w-8 h-8 text-hell-red" />
               </div>
 
-              <h3 className="font-terminal font-bold text-2xl text-[#ffae00] mb-3 tracking-wide uppercase">
+              <h3 className="font-terminal font-semibold text-2xl text-[#ffae00] mb-3 tracking-wide uppercase">
                 {type.title}
               </h3>
               
