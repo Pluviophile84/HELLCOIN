@@ -1,24 +1,93 @@
 "use client";
 import { Zap } from "lucide-react";
 import { cn } from "../../lib/utils";
+import { useState, useRef, useEffect } from "react";
 
 export const HeavenBubble = ({ onTriggerPaperHands }: { onTriggerPaperHands: () => void }) => {
+  const bubbleRef = useRef<HTMLButtonElement>(null);
+  const [isDragging, setIsDragging] = useState(false);
+  // Initial position in the center-left
+  const [position, setPosition] = useState({ x: 20, y: window.innerHeight / 2 - 50 });
+  const [offset, setOffset] = useState({ x: 0, y: 0 });
+
+  // Use passive layout effect for performance in drag operations
+  useEffect(() => {
+    const handleMouseMove = (e: MouseEvent) => {
+      if (!isDragging || !bubbleRef.current) return;
+
+      const newX = e.clientX - offset.x;
+      const newY = e.clientY - offset.y;
+      
+      // Calculate boundaries
+      const screenWidth = window.innerWidth;
+      const screenHeight = window.innerHeight;
+      const bubbleSize = 100; // Approx size of the button (w-24 h-24)
+      
+      // Lock position within screen boundaries
+      const finalX = Math.min(Math.max(newX, 0), screenWidth - bubbleSize);
+      const finalY = Math.min(Math.max(newY, 0), screenHeight - bubbleSize);
+
+      setPosition({ x: finalX, y: finalY });
+    };
+
+    const handleMouseUp = () => {
+      setIsDragging(false);
+    };
+
+    if (isDragging) {
+      document.addEventListener('mousemove', handleMouseMove);
+      document.addEventListener('mouseup', handleMouseUp);
+    }
+
+    return () => {
+      document.removeEventListener('mousemove', handleMouseMove);
+      document.removeEventListener('mouseup', handleMouseUp);
+    };
+  }, [isDragging, offset]);
+
+  const handleMouseDown = (e: React.MouseEvent) => {
+    if (!bubbleRef.current) return;
+    
+    // Check if the target is the button itself (not just the icon)
+    const rect = bubbleRef.current.getBoundingClientRect();
+    setOffset({ 
+      x: e.clientX - rect.left, 
+      y: e.clientY - rect.top 
+    });
+    setIsDragging(true);
+  };
+
+  const handleClick = (e: React.MouseEvent) => {
+    if (!isDragging) {
+      onTriggerPaperHands();
+    }
+    // Prevent the drag end from triggering a click
+    e.stopPropagation(); 
+  };
+
   return (
-    // FIXED POSITION: Bottom Left, Z-50 to float above content
-    <div className="fixed bottom-6 left-4 md:left-6 z-50">
-      <button 
-        onClick={onTriggerPaperHands}
-        // STYLE: Pink gradient/solid, rounded, pulsing effect
-        className={cn(
-          "flex items-center gap-2 md:gap-3 px-4 py-2 rounded-full font-terminal text-sm md:text-base font-bold transition-all duration-300 shadow-xl",
-          "bg-pink-500 text-pink-100 border border-pink-300 hover:scale-105 hover:bg-pink-400 active:scale-95",
-          "animate-pulse" // Subtle pulse effect
-        )}
-      >
-        <Zap size={18} className="text-white fill-white" />
-        <span className="hidden sm:inline">HEAVEN MODE</span>
-        <span className="sm:hidden">SAFE</span>
-      </button>
-    </div>
+    <motion.button 
+      ref={bubbleRef}
+      onMouseDown={handleMouseDown}
+      onClick={handleClick}
+      // Set initial and dynamic positions using CSS transform
+      style={{ 
+        left: 0, 
+        top: 0, 
+        transform: `translate(${position.x}px, ${position.y}px)`,
+        cursor: isDragging ? 'grabbing' : 'grab',
+      }}
+      // z-39 ensures it is hidden behind the z-40 Navbar and z-50 Mobile Menu
+      className={cn(
+        "fixed w-24 h-24 p-2 rounded-full font-terminal shadow-lg z-39 select-none",
+        "bg-white/95 text-pink-600 border border-pink-300",
+        "shadow-[0_0_15px_rgba(255,192,203,0.8)] hover:scale-110 transition-transform duration-100",
+        "flex flex-col items-center justify-center text-xs md:text-sm font-bold",
+        isDragging ? 'transition-none' : 'transition-transform' // Disable transition when dragging
+      )}
+    >
+      <Zap size={24} className="text-pink-600 fill-pink-600 mb-1 animate-pulse" />
+      HEAVEN
+    </motion.button>
   );
 };
