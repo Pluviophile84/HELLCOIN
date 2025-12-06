@@ -54,17 +54,18 @@ export const Navbar = ({ onTriggerPaperHands }: { onTriggerPaperHands: () => voi
   const navLinks = [
     { name: "GENESIS", href: "#genesis", primary: true },
     { name: "COMMANDMENTS", href: "#commandments", primary: true },
-    { name: "NINE TYPES", href: "#nine-types", primary: true }, // NEW VISIBLE LINK
-    { name: "MATH", href: "#math", primary: false },
-    { name: "RITUAL", href: "#ritual", primary: false },
-    { name: "HELLMAP", href: "#hellmap", primary: false },
-    { name: "HALL OF PAIN", href: "#hall-of-pain", primary: false }, // NEW COLLAPSED LINK
-    { name: "REVELATION", href: "#revelation", primary: false }, // COLLAPSED LINK
-    { name: "THE PIT", href: "#the-pit", primary: false }, // COLLAPSED LINK
+    { name: "NINE TYPES", href: "#nine-types", primary: true },
+    // FIX: Moved MATH and RITUAL to primary
+    { name: "MATH", href: "#math", primary: true },
+    { name: "RITUAL", href: "#ritual", primary: true }, 
+    { name: "HELLMAP", href: "#hellmap", primary: false }, 
+    { name: "HALL OF PAIN", href: "#hall-of-pain", primary: false },
+    { name: "REVELATION", href: "#revelation", primary: false },
+    { name: "THE PIT", href: "#the-pit", primary: false },
   ];
 
-  const primaryLinks = navLinks.filter(link => link.primary); // 3 visible links
-  const secondaryLinks = navLinks.filter(link => !link.primary); // 6 collapsed links
+  const primaryLinks = navLinks.filter(link => link.primary); // 5 visible links
+  const secondaryLinks = navLinks.filter(link => !link.primary); // 4 collapsed links
 
   return (
     <nav 
@@ -93,14 +94,15 @@ export const Navbar = ({ onTriggerPaperHands }: { onTriggerPaperHands: () => voi
         {/* --- NAVIGATION LINKS --- */}
         <div className="relative hidden lg:flex items-center gap-6">
 
-          {/* 1. PRIMARY VISIBLE LINKS (Always visible on desktop/laptop) */}
+          {/* 1. PRIMARY VISIBLE LINKS (5 Links) */}
           <div className="flex gap-6">
             {primaryLinks.map((link) => (
               <a 
                 key={link.name} 
                 href={link.href}
                 onClick={(e) => handleNavClick(e, link.href)}
-                className="font-terminal text-base text-hell-white hover:text-hell-gold transition-colors uppercase tracking-widest relative group cursor-pointer font-bold"
+                // FIX: Changed default link color to Gold for visibility
+                className="font-terminal text-base text-[#ffae00] hover:text-hell-red transition-colors uppercase tracking-widest relative group cursor-pointer font-bold"
               >
                 {link.name}
                 <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-hell-orange transition-all group-hover:w-full"></span>
