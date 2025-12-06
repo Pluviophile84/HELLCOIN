@@ -50,6 +50,7 @@ export const Navbar = ({ onTriggerPaperHands }: { onTriggerPaperHands: () => voi
     }
   };
 
+  // --- UPDATED: 9 TOTAL NAVIGATION LINKS ---
   const navLinks = [
     { name: "GENESIS", href: "#genesis", primary: true },
     { name: "COMMANDMENTS", href: "#commandments", primary: true },
@@ -62,8 +63,8 @@ export const Navbar = ({ onTriggerPaperHands }: { onTriggerPaperHands: () => voi
     { name: "THE PIT", href: "#the-pit", primary: false },
   ];
 
-  const primaryLinks = navLinks.filter(link => link.primary); 
-  const secondaryLinks = navLinks.filter(link => !link.primary); 
+  const primaryLinks = navLinks.filter(link => link.primary); // 5 visible links
+  const secondaryLinks = navLinks.filter(link => !link.primary); // 4 collapsed links
 
   return (
     <nav 
@@ -133,8 +134,8 @@ export const Navbar = ({ onTriggerPaperHands }: { onTriggerPaperHands: () => voi
                   initial={{ opacity: 0, y: 10 }}
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, y: 10 }}
-                  // Added padding-top to bridge the gap so mouse doesn't lose focus
-                  className="absolute top-full right-0 pt-4 w-56 z-50"
+                  // FIX: Changed right-0 to left-0 to make the menu open to the right side of the button
+                  className="absolute top-full left-0 pt-4 w-56 z-50" 
                 >
                   <div className="bg-hell-black border border-hell-red/50 shadow-xl p-5 flex flex-col gap-4">
                     {secondaryLinks.map((link) => (
