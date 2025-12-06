@@ -24,13 +24,18 @@ export const Navbar = ({ onTriggerPaperHands }: { onTriggerPaperHands: () => voi
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
+  // --- FINAL SCROLL LOCK FIX (Eliminates the Red Flash) ---
   useEffect(() => {
     if (mobileMenuOpen) {
+      // Hide scrollbar, do NOT apply paddingRight compensation on mobile
       document.body.style.overflow = "hidden";
     } else {
+      // Restore scroll
       document.body.style.overflow = "unset";
     }
-    return () => { document.body.style.overflow = "unset"; };
+    return () => { 
+      document.body.style.overflow = "unset"; 
+    };
   }, [mobileMenuOpen]);
 
   const scrollToTop = () => {
@@ -42,7 +47,7 @@ export const Navbar = ({ onTriggerPaperHands }: { onTriggerPaperHands: () => voi
   const handleNavClick = (e: React.MouseEvent<HTMLAnchorElement>, href: string) => {
     e.preventDefault();
     setMobileMenuOpen(false);
-    setMoreMenuOpen(false); // Close dropdown on click
+    setMoreMenuOpen(false); 
     const targetId = href.replace("#", "");
     const elem = document.getElementById(targetId);
     if (elem) {
@@ -50,7 +55,6 @@ export const Navbar = ({ onTriggerPaperHands }: { onTriggerPaperHands: () => voi
     }
   };
 
-  // --- UPDATED: 9 TOTAL NAVIGATION LINKS ---
   const navLinks = [
     { name: "GENESIS", href: "#genesis", primary: true },
     { name: "COMMANDMENTS", href: "#commandments", primary: true },
@@ -63,20 +67,16 @@ export const Navbar = ({ onTriggerPaperHands }: { onTriggerPaperHands: () => voi
     { name: "THE PIT", href: "#the-pit", primary: false },
   ];
 
-  const primaryLinks = navLinks.filter(link => link.primary); // 5 visible links
-  const secondaryLinks = navLinks.filter(link => !link.primary); // 4 collapsed links
+  const primaryLinks = navLinks.filter(link => link.primary); 
+  const secondaryLinks = navLinks.filter(link => !link.primary); 
 
   return (
     <nav 
       className={cn(
-        "fixed top-0 w-full z-40 border-b transition-all duration-300",
-        
-        // STYLE LOGIC:
-        // isScrolled = Black, Thin (md:py-2)
-        // !isScrolled = Transparent, Tall (md:py-6)
+        "fixed top-0 w-full z-40 border-b transition-all duration-300 py-4",
         isScrolled 
-          ? "bg-hell-black/90 backdrop-blur-md border-hell-red/30 py-4 md:py-2" 
-          : "bg-transparent border-transparent py-4 md:py-6"
+          ? "bg-hell-black/90 backdrop-blur-md border-hell-red/30" 
+          : "bg-transparent border-transparent"
       )}
     >
       <div className="max-w-7xl mx-auto px-4 flex justify-between items-center">
@@ -121,7 +121,6 @@ export const Navbar = ({ onTriggerPaperHands }: { onTriggerPaperHands: () => voi
             <button 
               className={cn(
                 "flex items-center gap-1 font-terminal text-base transition-colors uppercase cursor-pointer border px-2 py-1",
-                // Logic: If open, stay Red. If closed, be Gold -> Red on hover.
                 moreMenuOpen 
                   ? "text-hell-red border-hell-red" 
                   : "text-[#ffae00] border-hell-red/50 hover:text-hell-red"
@@ -138,7 +137,6 @@ export const Navbar = ({ onTriggerPaperHands }: { onTriggerPaperHands: () => voi
                   initial={{ opacity: 0, y: 10 }}
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, y: 10 }}
-                  // FIX: Changed right-0 to left-0 to make the menu open to the right side of the button
                   className="absolute top-full left-0 pt-4 w-56 z-50" 
                 >
                   <div className="bg-hell-black border border-hell-red/50 shadow-xl p-5 flex flex-col gap-4">
@@ -147,11 +145,9 @@ export const Navbar = ({ onTriggerPaperHands }: { onTriggerPaperHands: () => voi
                         key={link.name} 
                         href={link.href}
                         onClick={(e) => handleNavClick(e, link.href)}
-                        // Matching exact style of primary links
                         className="font-terminal text-base text-hell-white hover:text-[#ffae00] transition-colors uppercase tracking-widest relative group cursor-pointer font-bold w-fit"
                       >
                         {link.name}
-                        {/* Red Line Animation */}
                         <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-hell-orange transition-all group-hover:w-full"></span>
                       </a>
                     ))}
