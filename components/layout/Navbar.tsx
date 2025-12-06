@@ -69,10 +69,14 @@ export const Navbar = ({ onTriggerPaperHands }: { onTriggerPaperHands: () => voi
   return (
     <nav 
       className={cn(
-        "fixed top-0 w-full z-40 border-b transition-all duration-300 py-4",
+        "fixed top-0 w-full z-40 border-b transition-all duration-300",
+        
+        // STYLE LOGIC:
+        // isScrolled = Black, Thin (md:py-2)
+        // !isScrolled = Transparent, Tall (md:py-6)
         isScrolled 
-          ? "bg-hell-black/90 backdrop-blur-md border-hell-red/30" 
-          : "bg-transparent border-transparent"
+          ? "bg-hell-black/90 backdrop-blur-md border-hell-red/30 py-4 md:py-2" 
+          : "bg-transparent border-transparent py-4 md:py-6"
       )}
     >
       <div className="max-w-7xl mx-auto px-4 flex justify-between items-center">
@@ -134,6 +138,7 @@ export const Navbar = ({ onTriggerPaperHands }: { onTriggerPaperHands: () => voi
                   initial={{ opacity: 0, y: 10 }}
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, y: 10 }}
+                  // FIX: Changed right-0 to left-0 to make the menu open to the right side of the button
                   className="absolute top-full left-0 pt-4 w-56 z-50" 
                 >
                   <div className="bg-hell-black border border-hell-red/50 shadow-xl p-5 flex flex-col gap-4">
@@ -142,6 +147,7 @@ export const Navbar = ({ onTriggerPaperHands }: { onTriggerPaperHands: () => voi
                         key={link.name} 
                         href={link.href}
                         onClick={(e) => handleNavClick(e, link.href)}
+                        // Matching exact style of primary links
                         className="font-terminal text-base text-hell-white hover:text-[#ffae00] transition-colors uppercase tracking-widest relative group cursor-pointer font-bold w-fit"
                       >
                         {link.name}
@@ -160,7 +166,14 @@ export const Navbar = ({ onTriggerPaperHands }: { onTriggerPaperHands: () => voi
         {/* --- ACTIONS --- */}
         <div className="flex items-center gap-2 md:gap-4">
           
-          {/* REMOVED: HEAVEN MODE BUTTON */}
+          {/* HEAVEN MODE BUTTON */}
+          <button 
+            onClick={onTriggerPaperHands}
+            className="flex items-center gap-2 px-3 py-1 border border-pink-300 rounded text-pink-100 font-terminal text-xs md:text-sm font-bold hover:bg-pink-500/20 hover:text-white transition-colors shadow-[0_0_10px_rgba(255,192,203,0.3)]"
+          >
+            <span className="w-2 h-2 rounded-full bg-pink-200 animate-pulse shadow-[0_0_5px_#fff]"></span>
+            HEAVEN MODE
+          </button>
           
           {/* ACQUIRE BUTTON (DESKTOP/LAPTOP) */}
           <a 
