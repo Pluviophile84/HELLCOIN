@@ -2,16 +2,25 @@
 import { Zap } from "lucide-react";
 import { cn } from "../../lib/utils";
 import { useState, useRef, useEffect } from "react";
-import { motion } from "framer-motion"; // FIX: Added missing import
+import { motion } from "framer-motion";
 
 export const HeavenBubble = ({ onTriggerPaperHands }: { onTriggerPaperHands: () => void }) => {
   const bubbleRef = useRef<HTMLButtonElement>(null);
   const [isDragging, setIsDragging] = useState(false);
-  // Initial position in the center-left
-  const [position, setPosition] = useState({ x: 20, y: window.innerHeight / 2 - 50 });
+  
+  // FIX 1: Initialize position with generic values (e.g., 0, 0)
+  const [position, setPosition] = useState({ x: 0, y: 0 });
   const [offset, setOffset] = useState({ x: 0, y: 0 });
 
-  // Use passive layout effect for performance in drag operations
+  // FIX 2: Calculate initial Y position ONLY in the browser
+  useEffect(() => {
+    // This code only runs after the component is mounted on the client
+    if (typeof window !== 'undefined' && position.y === 0) {
+      setPosition({ x: 20, y: window.innerHeight / 2 - 50 });
+    }
+  }, [position.y]);
+
+  // Use passive layout effect for drag operations
   useEffect(() => {
     const handleMouseMove = (e: MouseEvent) => {
       if (!isDragging || !bubbleRef.current) return;
