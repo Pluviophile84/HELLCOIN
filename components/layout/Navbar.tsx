@@ -1,34 +1,29 @@
 "use client";
 import { useState, useEffect } from "react";
-import { Menu, X } from "lucide-react";
+import { Menu, X, ChevronDown, ChevronUp } from "lucide-react";
 import { cn } from "../../lib/utils";
 import { motion, AnimatePresence } from "framer-motion";
 
 export const Navbar = ({ onTriggerPaperHands }: { onTriggerPaperHands: () => void }) => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [moreMenuOpen, setMoreMenuOpen] = useState(false); // State for the new MORE dropdown
 
-  // CONFIG: Paste your launch link here
   const BUY_LINK = "https://raydium.io/swap"; 
 
   useEffect(() => {
     const handleScroll = () => {
-      // Check scroll position for background color & size
       if (window.scrollY > 50) {
         setIsScrolled(true);
       } else {
         setIsScrolled(false);
       }
     };
-
-    // Run immediately on load
     handleScroll();
-
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  // Scroll Lock for Mobile Menu
   useEffect(() => {
     if (mobileMenuOpen) {
       document.body.style.overflow = "hidden";
@@ -41,11 +36,13 @@ export const Navbar = ({ onTriggerPaperHands }: { onTriggerPaperHands: () => voi
   const scrollToTop = () => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
     setMobileMenuOpen(false);
+    setMoreMenuOpen(false);
   };
 
   const handleNavClick = (e: React.MouseEvent<HTMLAnchorElement>, href: string) => {
     e.preventDefault();
     setMobileMenuOpen(false);
+    setMoreMenuOpen(false);
     const targetId = href.replace("#", "");
     const elem = document.getElementById(targetId);
     if (elem) {
@@ -53,59 +50,100 @@ export const Navbar = ({ onTriggerPaperHands }: { onTriggerPaperHands: () => voi
     }
   };
 
+  // --- UPDATED: 9 TOTAL NAVIGATION LINKS ---
   const navLinks = [
-    { name: "GENESIS", href: "#genesis" },
-    { name: "COMMANDMENTS", href: "#commandments" },
-    { name: "MATH", href: "#math" },
-    { name: "RITUAL", href: "#ritual" },
-    { name: "HELLMAP", href: "#hellmap" },
-    { name: "TRUTH", href: "#revelation" },
-    { name: "THE PIT", href: "#the-pit" },
+    { name: "GENESIS", href: "#genesis", primary: true },
+    { name: "COMMANDMENTS", href: "#commandments", primary: true },
+    { name: "NINE TYPES", href: "#nine-types", primary: true }, // NEW VISIBLE LINK
+    { name: "MATH", href: "#math", primary: false },
+    { name: "RITUAL", href: "#ritual", primary: false },
+    { name: "HELLMAP", href: "#hellmap", primary: false },
+    { name: "HALL OF PAIN", href: "#hall-of-pain", primary: false }, // NEW COLLAPSED LINK
+    { name: "REVELATION", href: "#revelation", primary: false }, // COLLAPSED LINK
+    { name: "THE PIT", href: "#the-pit", primary: false }, // COLLAPSED LINK
   ];
+
+  const primaryLinks = navLinks.filter(link => link.primary); // 3 visible links
+  const secondaryLinks = navLinks.filter(link => !link.primary); // 6 collapsed links
 
   return (
     <nav 
       className={cn(
-        "fixed top-0 w-full z-40 border-b transition-all duration-300",
-        
-        // STYLE LOGIC:
-        // Desktop Scrolled: Black, Thin (md:py-2)
-        // Desktop Top: Transparent, Tall (md:py-6)
-        // Mobile: Always standard size (py-4)
+        "fixed top-0 w-full z-40 border-b transition-all duration-300 py-4",
         isScrolled 
-          ? "bg-hell-black/90 backdrop-blur-md border-hell-red/30 py-4 md:py-2" 
-          : "bg-transparent border-transparent py-4 md:py-6"
+          ? "bg-hell-black/90 backdrop-blur-md border-hell-red/30" 
+          : "bg-transparent border-transparent"
       )}
     >
       <div className="max-w-7xl mx-auto px-4 flex justify-between items-center">
         
-        {/* --- LOGO --- */}
+        {/* LOGO */}
         <div 
           onClick={scrollToTop}
           className="flex items-center gap-2 md:gap-3 group cursor-pointer shrink-0 transition-transform active:scale-95"
         >
           <img 
-            src="/Logo.png" 
+            src="/GOAPE.png" 
             alt="Hellcoin" 
             className="w-8 h-8 md:w-12 md:h-12 rounded-full border border-hell-orange object-cover" 
           />
           <span className="font-gothic text-xl md:text-3xl text-hell-orange tracking-wide text-glow">HELLCOIN</span>
         </div>
 
-        {/* --- DESKTOP LINKS --- */}
-        <div className="hidden lg:flex gap-8">
-          {navLinks.map((link) => (
-            <a 
-              key={link.name} 
-              href={link.href}
-              onClick={(e) => handleNavClick(e, link.href)}
-              className="font-terminal text-base text-hell-white hover:text-hell-gold transition-colors uppercase tracking-widest relative group cursor-pointer font-bold"
+        {/* --- NAVIGATION LINKS --- */}
+        <div className="relative hidden lg:flex items-center gap-6">
+
+          {/* 1. PRIMARY VISIBLE LINKS (Always visible on desktop/laptop) */}
+          <div className="flex gap-6">
+            {primaryLinks.map((link) => (
+              <a 
+                key={link.name} 
+                href={link.href}
+                onClick={(e) => handleNavClick(e, link.href)}
+                className="font-terminal text-base text-hell-white hover:text-hell-gold transition-colors uppercase tracking-widest relative group cursor-pointer font-bold"
+              >
+                {link.name}
+                <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-hell-orange transition-all group-hover:w-full"></span>
+              </a>
+            ))}
+          </div>
+          
+          {/* 2. MORE BUTTON (Collapses Secondary Links) */}
+          <div className="relative">
+            <button 
+              onClick={() => setMoreMenuOpen(!moreMenuOpen)}
+              className="flex items-center gap-1 font-terminal text-base text-hell-red hover:text-hell-gold transition-colors uppercase cursor-pointer border border-hell-red/50 px-2 py-1"
             >
-              {link.name}
-              <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-hell-orange transition-all group-hover:w-full"></span>
-            </a>
-          ))}
+              MORE
+              {moreMenuOpen ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
+            </button>
+
+            {/* MORE DROPDOWN MENU */}
+            <AnimatePresence>
+              {moreMenuOpen && (
+                <motion.div
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: 10 }}
+                  className="absolute right-0 mt-3 w-48 bg-hell-black border border-hell-red/50 shadow-lg z-50 p-3 flex flex-col gap-1"
+                  onMouseLeave={() => setMoreMenuOpen(false)} // Closes if mouse leaves box
+                >
+                  {secondaryLinks.map((link) => (
+                    <a 
+                      key={link.name} 
+                      href={link.href}
+                      onClick={(e) => handleNavClick(e, link.href)}
+                      className="font-terminal text-sm text-gray-400 hover:text-hell-red transition-colors uppercase py-1"
+                    >
+                      {link.name}
+                    </a>
+                  ))}
+                </motion.div>
+              )}
+            </AnimatePresence>
+          </div>
         </div>
+        
 
         {/* --- ACTIONS --- */}
         <div className="flex items-center gap-2 md:gap-4">
@@ -119,7 +157,7 @@ export const Navbar = ({ onTriggerPaperHands }: { onTriggerPaperHands: () => voi
             HEAVEN MODE
           </button>
           
-          {/* ACQUIRE BUTTON (DESKTOP) */}
+          {/* ACQUIRE BUTTON (DESKTOP/LAPTOP) */}
           <a 
             href={BUY_LINK}
             target="_blank" 
@@ -129,14 +167,14 @@ export const Navbar = ({ onTriggerPaperHands }: { onTriggerPaperHands: () => voi
             ACQUIRE $666
           </a>
 
-          {/* MOBILE TOGGLE */}
+          {/* MOBILE TOGGLE (Remains the same) */}
           <button className="lg:hidden text-hell-white" onClick={() => setMobileMenuOpen(!mobileMenuOpen)}>
             {mobileMenuOpen ? <X size={28} /> : <Menu size={28} />}
           </button>
         </div>
       </div>
 
-      {/* --- MOBILE MENU --- */}
+      {/* --- MOBILE/VERTICAL MENU (Remains the same) --- */}
       <AnimatePresence>
         {mobileMenuOpen && (
           <motion.div
@@ -147,6 +185,7 @@ export const Navbar = ({ onTriggerPaperHands }: { onTriggerPaperHands: () => voi
             className="lg:hidden fixed top-[60px] left-0 w-full bg-hell-black/95 backdrop-blur-xl border-b border-hell-red/50 overflow-hidden shadow-2xl"
           >
             <div className="p-6 flex flex-col gap-6 items-center justify-center h-full pb-32">
+              {/* Full list of 9 links for mobile menu */}
               {navLinks.map((link) => (
                 <a 
                   key={link.name} 
@@ -160,7 +199,7 @@ export const Navbar = ({ onTriggerPaperHands }: { onTriggerPaperHands: () => voi
               
               <div className="w-16 h-1 bg-hell-red/50 my-4"></div>
               
-              {/* ACQUIRE BUTTON (MOBILE) */}
+              {/* ACQUIRE LINK (Mobile) */}
               <a 
                 href={BUY_LINK}
                 target="_blank" 
