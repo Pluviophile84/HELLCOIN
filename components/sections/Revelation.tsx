@@ -36,7 +36,7 @@ export const Revelation = () => {
           </div>
           
           {/* The List of Lies - High Visibility (Gray-300) */}
-          <div className="font-terminal text-lg md:text-2xl text-gray-300 space-y-3 italic leading-relaxed">
+          <div className="font-terminal text-lg md:text-2xl text-gray-300 space-y-3 leading-relaxed">
             <p>"Utility." "Roadmaps." "Communities."</p>
             <p>“Dev is doxxed.”</p>
             <p>“Influencer-backed.”</p>
