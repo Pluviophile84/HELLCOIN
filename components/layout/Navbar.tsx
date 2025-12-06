@@ -201,13 +201,15 @@ export const Navbar = ({ onTriggerPaperHands }: { onTriggerPaperHands: () => voi
             <div className="p-6 h-full flex flex-col justify-between items-center overflow-hidden">
               
               {/* 1. LINKS - Scrollable Area (Fills remaining space) */}
-              <div className="flex flex-col gap-6 items-center w-full overflow-y-auto pt-6 pb-6 scrollbar-hide">
+              {/* FIX: Changed justify-around/gap-y-0 to maximize space utilization */}
+              <div className="flex flex-col flex-grow justify-around items-center w-full overflow-y-auto pb-4 pt-4 scrollbar-hide">
                 {navLinks.map((link) => (
                   <a 
                     key={link.name} 
                     href={link.href} 
                     onClick={(e) => handleNavClick(e, link.href)}
-                    className="font-terminal text-2xl text-hell-white hover:text-hell-orange tracking-widest cursor-pointer font-bold shrink-0" 
+                    // Adapt link size slightly to fit the smallest screens
+                    className="font-terminal text-xl text-hell-white hover:text-hell-orange tracking-widest cursor-pointer font-bold shrink-0" 
                   >
                     {link.name}
                   </a>
