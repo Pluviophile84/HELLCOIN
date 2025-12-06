@@ -4,13 +4,18 @@ import { Menu, X, ChevronDown, ChevronUp } from "lucide-react";
 import { cn } from "../../lib/utils";
 import { motion, AnimatePresence } from "framer-motion";
 
-export const Navbar = ({ onTriggerPaperHands }: { onTriggerPaperHands: () => void }) => {
+export const Navbar = ({
+  onTriggerPaperHands,
+}: {
+  onTriggerPaperHands: () => void;
+}) => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const [moreMenuOpen, setMoreMenuOpen] = useState(false); 
+  const [moreMenuOpen, setMoreMenuOpen] = useState(false);
 
-  const BUY_LINK = "https://raydium.io/swap"; 
+  const BUY_LINK = "https://raydium.io/swap";
 
+  // Scroll style
   useEffect(() => {
     const handleScroll = () => {
       if (window.scrollY > 50) {
@@ -24,28 +29,32 @@ export const Navbar = ({ onTriggerPaperHands }: { onTriggerPaperHands: () => voi
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  // --- SCROLL LOCK LOGIC (Prevents Scroll on Mobile Menu Open) ---
+  // BODY SCROLL LOCK (only when mobile menu is open)
   useEffect(() => {
+    const original = document.body.style.overflow;
     if (mobileMenuOpen) {
       document.body.style.overflow = "hidden";
     } else {
-      document.body.style.overflow = "unset";
+      document.body.style.overflow = original;
     }
-    return () => { 
-      document.body.style.overflow = "unset"; 
+    return () => {
+      document.body.style.overflow = original;
     };
   }, [mobileMenuOpen]);
 
   const scrollToTop = () => {
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    window.scrollTo({ top: 0, behavior: "smooth" });
     setMobileMenuOpen(false);
     setMoreMenuOpen(false);
   };
 
-  const handleNavClick = (e: React.MouseEvent<HTMLAnchorElement>, href: string) => {
+  const handleNavClick = (
+    e: React.MouseEvent<HTMLAnchorElement>,
+    href: string
+  ) => {
     e.preventDefault();
     setMobileMenuOpen(false);
-    setMoreMenuOpen(false); 
+    setMoreMenuOpen(false);
     const targetId = href.replace("#", "");
     const elem = document.getElementById(targetId);
     if (elem) {
@@ -58,48 +67,48 @@ export const Navbar = ({ onTriggerPaperHands }: { onTriggerPaperHands: () => voi
     { name: "COMMANDMENTS", href: "#commandments", primary: true },
     { name: "NINE TYPES", href: "#nine-types", primary: true },
     { name: "MATH", href: "#math", primary: true },
-    { name: "RITUAL", href: "#ritual", primary: true }, 
-    { name: "HELLMAP", href: "#hellmap", primary: false }, 
+    { name: "RITUAL", href: "#ritual", primary: true },
+    { name: "HELLMAP", href: "#hellmap", primary: false },
     { name: "HALL OF PAIN", href: "#hall-of-pain", primary: false },
     { name: "REVELATION", href: "#revelation", primary: false },
     { name: "THE PIT", href: "#the-pit", primary: false },
   ];
 
-  const primaryLinks = navLinks.filter(link => link.primary); 
-  const secondaryLinks = navLinks.filter(link => !link.primary); 
+  const primaryLinks = navLinks.filter((link) => link.primary);
+  const secondaryLinks = navLinks.filter((link) => !link.primary);
 
   return (
-    <nav 
+    <nav
       className={cn(
         "fixed top-0 w-full z-40 border-b transition-all duration-300 py-4",
-        isScrolled 
-          ? "bg-hell-black/90 backdrop-blur-md border-hell-red/30" 
+        isScrolled
+          ? "bg-hell-black/90 backdrop-blur-md border-hell-red/30"
           : "bg-transparent border-transparent"
       )}
     >
       <div className="max-w-7xl mx-auto px-4 flex justify-between items-center">
-        
         {/* LOGO */}
-        <div 
+        <div
           onClick={scrollToTop}
           className="flex items-center gap-2 md:gap-3 group cursor-pointer shrink-0 transition-transform active:scale-95"
         >
-          <img 
-            src="/GOAPE.png" 
-            alt="Hellcoin" 
-            className="w-8 h-8 md:w-12 md:h-12 rounded-full border border-hell-orange object-cover" 
+          <img
+            src="/GOAPE.png"
+            alt="Hellcoin"
+            className="w-8 h-8 md:w-12 md:h-12 rounded-full border border-hell-orange object-cover"
           />
-          <span className="font-gothic text-xl md:text-3xl text-hell-orange tracking-wide text-glow">HELLCOIN</span>
+          <span className="font-gothic text-xl md:text-3xl text-hell-orange tracking-wide text-glow">
+            HELLCOIN
+          </span>
         </div>
 
-        {/* --- NAVIGATION LINKS --- */}
+        {/* DESKTOP NAV LINKS */}
         <div className="relative hidden lg:flex items-center gap-6">
-
-          {/* 1. PRIMARY VISIBLE LINKS */}
+          {/* Primary visible links */}
           <div className="flex gap-6">
             {primaryLinks.map((link) => (
-              <a 
-                key={link.name} 
+              <a
+                key={link.name}
                 href={link.href}
                 onClick={(e) => handleNavClick(e, link.href)}
                 className="font-terminal text-base text-hell-white hover:text-[#ffae00] transition-colors uppercase tracking-widest relative group cursor-pointer font-bold"
@@ -109,18 +118,18 @@ export const Navbar = ({ onTriggerPaperHands }: { onTriggerPaperHands: () => voi
               </a>
             ))}
           </div>
-          
-          {/* 2. MORE DROPDOWN (Hover Activated) */}
-          <div 
+
+          {/* More dropdown */}
+          <div
             className="relative h-full flex items-center"
             onMouseEnter={() => setMoreMenuOpen(true)}
             onMouseLeave={() => setMoreMenuOpen(false)}
           >
-            <button 
+            <button
               className={cn(
                 "flex items-center gap-1 font-terminal text-base transition-colors uppercase cursor-pointer border px-2 py-1",
-                moreMenuOpen 
-                  ? "text-hell-red border-hell-red" 
+                moreMenuOpen
+                  ? "text-hell-red border-hell-red"
                   : "text-[#ffae00] border-hell-red/50 hover:text-hell-red"
               )}
             >
@@ -128,19 +137,18 @@ export const Navbar = ({ onTriggerPaperHands }: { onTriggerPaperHands: () => voi
               {moreMenuOpen ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
             </button>
 
-            {/* DROPDOWN MENU */}
             <AnimatePresence>
               {moreMenuOpen && (
                 <motion.div
                   initial={{ opacity: 0, y: 10 }}
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, y: 10 }}
-                  className="absolute top-full left-0 pt-4 w-56 z-50" 
+                  className="absolute top-full left-0 pt-4 w-56 z-50"
                 >
                   <div className="bg-hell-black border border-hell-red/50 shadow-xl p-5 flex flex-col gap-4">
                     {secondaryLinks.map((link) => (
-                      <a 
-                        key={link.name} 
+                      <a
+                        key={link.name}
                         href={link.href}
                         onClick={(e) => handleNavClick(e, link.href)}
                         className="font-terminal text-base text-hell-white hover:text-[#ffae00] transition-colors uppercase tracking-widest relative group cursor-pointer font-bold w-fit"
@@ -155,24 +163,22 @@ export const Navbar = ({ onTriggerPaperHands }: { onTriggerPaperHands: () => voi
             </AnimatePresence>
           </div>
         </div>
-        
 
-        {/* --- ACTIONS --- */}
+        {/* ACTIONS */}
         <div className="flex items-center gap-2 md:gap-4">
-          
           {/* HEAVEN MODE BUTTON */}
-          <button 
+          <button
             onClick={onTriggerPaperHands}
             className="flex items-center gap-2 px-3 py-1 border border-pink-300 rounded text-pink-100 font-terminal text-xs md:text-sm font-bold hover:bg-pink-500/20 hover:text-white transition-colors shadow-[0_0_10px_rgba(255,192,203,0.3)]"
           >
             <span className="w-2 h-2 rounded-full bg-pink-200 animate-pulse shadow-[0_0_5px_#fff]"></span>
             HEAVEN MODE
           </button>
-          
-          {/* ACQUIRE BUTTON (DESKTOP/LAPTOP) */}
-          <a 
+
+          {/* ACQUIRE BUTTON (DESKTOP) */}
+          <a
             href={BUY_LINK}
-            target="_blank" 
+            target="_blank"
             rel="noopener noreferrer"
             className="hidden md:block bg-hell-red hover:bg-hell-orange text-hell-white font-gothic text-lg px-6 py-2 rounded shadow-[0_0_15px_rgba(204,0,0,0.5)] transition-all transform hover:scale-105 border border-hell-orange/50 text-center"
           >
@@ -180,55 +186,55 @@ export const Navbar = ({ onTriggerPaperHands }: { onTriggerPaperHands: () => voi
           </a>
 
           {/* MOBILE TOGGLE */}
-          <button className="lg:hidden text-hell-white" onClick={() => setMobileMenuOpen(!mobileMenuOpen)}>
+          <button
+            className="lg:hidden text-hell-white"
+            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+          >
             {mobileMenuOpen ? <X size={28} /> : <Menu size={28} />}
           </button>
         </div>
       </div>
 
-      {/* --- MOBILE/VERTICAL MENU (FULL VIEWPORT TAKEOVER) --- */}
+      {/* MOBILE FULLSCREEN MENU */}
       <AnimatePresence>
         {mobileMenuOpen && (
           <motion.div
-            initial={{ opacity: 0, height: 0 }}
-            animate={{ opacity: 1, height: "100vh" }} // Ensure it takes full viewport height
-            exit={{ opacity: 0, height: 0 }}
-            onClick={() => setMobileMenuOpen(false)}
-            // Fixed position, takes up space not covered by navbar (top-[60px])
-            className="lg:hidden fixed top-[60px] left-0 w-full h-[calc(100vh-60px)] bg-hell-black/95 backdrop-blur-xl border-b border-hell-red/50 overflow-hidden shadow-2xl"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="lg:hidden fixed inset-0 z-50 bg-hell-black/95 backdrop-blur-xl shadow-2xl"
           >
-            {/* Inner Container: Uses Flexbox to push content to Top/Bottom */}
-            <div className="p-6 h-full flex flex-col justify-between items-center overflow-hidden">
-              
-              {/* 1. LINKS - Scrollable Area (Fills remaining space) */}
-              {/* FIX: Changed justify-around/gap-y-0 to maximize space utilization */}
-              <div className="flex flex-col flex-grow justify-around items-center w-full overflow-y-auto pb-4 pt-4 scrollbar-hide">
+            {/* Inner container – NO SCROLL, everything fits */}
+            <div
+              className="h-full w-full px-6 pt-[4.5rem] pb-6 flex flex-col justify-between items-center overflow-hidden"
+              onClick={(e) => e.stopPropagation()}
+            >
+              {/* Links block */}
+              <div className="flex flex-col flex-1 justify-center items-center w-full gap-[clamp(0.25rem,1.1vh,0.7rem)]">
                 {navLinks.map((link) => (
-                  <a 
-                    key={link.name} 
-                    href={link.href} 
+                  <a
+                    key={link.name}
+                    href={link.href}
                     onClick={(e) => handleNavClick(e, link.href)}
-                    // Adapt link size slightly to fit the smallest screens
-                    className="font-terminal text-xl text-hell-white hover:text-hell-orange tracking-widest cursor-pointer font-bold shrink-0" 
+                    className="font-terminal text-[clamp(0.9rem,2.1vh,1.1rem)] text-hell-white hover:text-hell-orange tracking-[0.2em] cursor-pointer font-bold text-center"
                   >
                     {link.name}
                   </a>
                 ))}
               </div>
-              
-              {/* 2. ACQUIRE BUTTON (Fixed at the bottom) */}
+
+              {/* Bottom CTA */}
               <div className="w-full flex flex-col items-center shrink-0 pt-4 border-t border-gray-900">
-                <div className="w-16 h-1 bg-hell-red/50 mb-4"></div>
-                <a 
+                <div className="w-16 h-1 bg-hell-red/50 mb-4" />
+                <a
                   href={BUY_LINK}
-                  target="_blank" 
+                  target="_blank"
                   rel="noopener noreferrer"
-                  className="bg-hell-red text-hell-white font-gothic text-xl py-3 px-12 rounded shadow-[0_0_20px_rgba(204,0,0,0.6)]"
+                  className="bg-hell-red text-hell-white font-gothic text-[clamp(1rem,2.2vh,1.3rem)] py-[clamp(0.6rem,1.8vh,0.9rem)] px-10 rounded shadow-[0_0_20px_rgba(204,0,0,0.6)] text-center"
                 >
                   ACQUIRE $666
                 </a>
               </div>
-              
             </div>
           </motion.div>
         )}
