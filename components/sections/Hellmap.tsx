@@ -35,8 +35,8 @@ export const Hellmap = () => {
                {/* Timeline Marker */}
                <div className="absolute left-[-10px] top-2 w-6 h-6 bg-hell-black border-4 border-hell-red rounded-full z-10"></div>
                
-               {/* FIX 1: Reduced Title Size (text-3xl md:text-4xl) */}
-               <h3 className="font-terminal font-semibold text-3xl md:text-4xl text-[#ffae00] mb-2">
+               {/* FIX: Standardized Title Size (text-xl md:text-2xl) */}
+               <h3 className="font-terminal font-semibold text-xl md:text-2xl text-[#ffae00] mb-2">
                  {phase.title}
                </h3>
                
@@ -45,7 +45,7 @@ export const Hellmap = () => {
                <ul className="space-y-3">
                  {phase.details.map((d, idx) => (
                    <li key={idx} className="font-terminal text-xl text-gray-400 flex items-start gap-3">
-                     {/* FIX 2: Replaced '///' with clean red dot */}
+                     {/* List marker (Red Dot) */}
                      <div className="w-2 h-2 bg-hell-red rounded-full mt-2.5 shrink-0"></div>
                      <span>{d}</span>
                    </li>
