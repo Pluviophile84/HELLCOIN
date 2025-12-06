@@ -101,8 +101,8 @@ export const Navbar = ({ onTriggerPaperHands }: { onTriggerPaperHands: () => voi
                 key={link.name} 
                 href={link.href}
                 onClick={(e) => handleNavClick(e, link.href)}
-                // FIX: Changed default link color to Gold for visibility
-                className="font-terminal text-base text-[#ffae00] hover:text-hell-red transition-colors uppercase tracking-widest relative group cursor-pointer font-bold"
+                // FIX: Reverted to Ash White text (text-hell-white)
+                className="font-terminal text-base text-hell-white hover:text-[#ffae00] transition-colors uppercase tracking-widest relative group cursor-pointer font-bold"
               >
                 {link.name}
                 <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-hell-orange transition-all group-hover:w-full"></span>
@@ -114,7 +114,8 @@ export const Navbar = ({ onTriggerPaperHands }: { onTriggerPaperHands: () => voi
           <div className="relative">
             <button 
               onClick={() => setMoreMenuOpen(!moreMenuOpen)}
-              className="flex items-center gap-1 font-terminal text-base text-hell-red hover:text-hell-gold transition-colors uppercase cursor-pointer border border-hell-red/50 px-2 py-1"
+              // FIX: Changed default color to Bright Gold for visibility
+              className="flex items-center gap-1 font-terminal text-base text-[#ffae00] hover:text-hell-red transition-colors uppercase cursor-pointer border border-hell-red/50 px-2 py-1"
             >
               MORE
               {moreMenuOpen ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
