@@ -41,7 +41,7 @@ export const ThePit = () => {
         
         {/* Header Label */}
         <div className="mb-12">
-           <span className="font-terminal text-[#ffae00] text-xl md:text-2xl tracking-widest uppercase bg-black px-4 py-1 border border-[#ffae00]/30 shadow-[4px_4px_0px_rgba(0,0,0,0.5)] font-bold">
+           <span className="font-terminal text-[#ffae00] text-xl md:text-2xl tracking-widest uppercase bg-black px-4 py-1 border border-[#ffae00]/30 shadow-[4px_4px_0px_rgba(0,0,0,0.5)]">
              THE FINAL CIRCLE
            </span>
         </div>
