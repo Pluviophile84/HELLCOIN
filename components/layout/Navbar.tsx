@@ -69,10 +69,14 @@ export const Navbar = ({ onTriggerPaperHands }: { onTriggerPaperHands: () => voi
   return (
     <nav 
       className={cn(
-        "fixed top-0 w-full z-40 border-b transition-all duration-300 py-4",
+        "fixed top-0 w-full z-40 border-b transition-all duration-300",
+        
+        // STYLE LOGIC:
+        // isScrolled = Black, Thin (md:py-2)
+        // !isScrolled = Transparent, Tall (md:py-6)
         isScrolled 
-          ? "bg-hell-black/90 backdrop-blur-md border-hell-red/30" 
-          : "bg-transparent border-transparent"
+          ? "bg-hell-black/90 backdrop-blur-md border-hell-red/30 py-4 md:py-2" 
+          : "bg-transparent border-transparent py-4 md:py-6"
       )}
     >
       <div className="max-w-7xl mx-auto px-4 flex justify-between items-center">
