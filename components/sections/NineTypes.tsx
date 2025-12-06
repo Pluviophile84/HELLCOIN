@@ -67,7 +67,7 @@ export const NineTypes = () => {
         
         {/* --- HEADER --- */}
         <div className="flex flex-col items-center text-center gap-4 mb-20">
-          <span className="font-terminal text-[#ffae00] text-xl tracking-widest uppercase font-bold">
+          <span className="font-terminal text-[#ffae00] text-xl tracking-widest uppercase">
             CHOOSE YOUR FIGHTER
           </span>
           <h2 className="font-gothic text-5xl md:text-8xl text-hell-white tracking-wide">
