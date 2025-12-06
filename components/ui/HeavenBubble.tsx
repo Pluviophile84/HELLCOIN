@@ -2,6 +2,7 @@
 import { Zap } from "lucide-react";
 import { cn } from "../../lib/utils";
 import { useState, useRef, useEffect } from "react";
+import { motion } from "framer-motion"; // FIX: Added missing import
 
 export const HeavenBubble = ({ onTriggerPaperHands }: { onTriggerPaperHands: () => void }) => {
   const bubbleRef = useRef<HTMLButtonElement>(null);
