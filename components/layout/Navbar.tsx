@@ -7,7 +7,7 @@ import { motion, AnimatePresence } from "framer-motion";
 export const Navbar = ({ onTriggerPaperHands }: { onTriggerPaperHands: () => void }) => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const [moreMenuOpen, setMoreMenuOpen] = useState(false); // State for the new MORE dropdown
+  const [moreMenuOpen, setMoreMenuOpen] = useState(false); 
 
   const BUY_LINK = "https://raydium.io/swap"; 
 
@@ -42,7 +42,7 @@ export const Navbar = ({ onTriggerPaperHands }: { onTriggerPaperHands: () => voi
   const handleNavClick = (e: React.MouseEvent<HTMLAnchorElement>, href: string) => {
     e.preventDefault();
     setMobileMenuOpen(false);
-    setMoreMenuOpen(false);
+    setMoreMenuOpen(false); // Close dropdown on click
     const targetId = href.replace("#", "");
     const elem = document.getElementById(targetId);
     if (elem) {
@@ -50,12 +50,10 @@ export const Navbar = ({ onTriggerPaperHands }: { onTriggerPaperHands: () => voi
     }
   };
 
-  // --- UPDATED: 9 TOTAL NAVIGATION LINKS ---
   const navLinks = [
     { name: "GENESIS", href: "#genesis", primary: true },
     { name: "COMMANDMENTS", href: "#commandments", primary: true },
     { name: "NINE TYPES", href: "#nine-types", primary: true },
-    // FIX: Moved MATH and RITUAL to primary
     { name: "MATH", href: "#math", primary: true },
     { name: "RITUAL", href: "#ritual", primary: true }, 
     { name: "HELLMAP", href: "#hellmap", primary: false }, 
@@ -64,8 +62,8 @@ export const Navbar = ({ onTriggerPaperHands }: { onTriggerPaperHands: () => voi
     { name: "THE PIT", href: "#the-pit", primary: false },
   ];
 
-  const primaryLinks = navLinks.filter(link => link.primary); // 5 visible links
-  const secondaryLinks = navLinks.filter(link => !link.primary); // 4 collapsed links
+  const primaryLinks = navLinks.filter(link => link.primary); 
+  const secondaryLinks = navLinks.filter(link => !link.primary); 
 
   return (
     <nav 
@@ -94,14 +92,13 @@ export const Navbar = ({ onTriggerPaperHands }: { onTriggerPaperHands: () => voi
         {/* --- NAVIGATION LINKS --- */}
         <div className="relative hidden lg:flex items-center gap-6">
 
-          {/* 1. PRIMARY VISIBLE LINKS (5 Links) */}
+          {/* 1. PRIMARY VISIBLE LINKS */}
           <div className="flex gap-6">
             {primaryLinks.map((link) => (
               <a 
                 key={link.name} 
                 href={link.href}
                 onClick={(e) => handleNavClick(e, link.href)}
-                // FIX: Reverted to Ash White text (text-hell-white)
                 className="font-terminal text-base text-hell-white hover:text-[#ffae00] transition-colors uppercase tracking-widest relative group cursor-pointer font-bold"
               >
                 {link.name}
@@ -110,37 +107,50 @@ export const Navbar = ({ onTriggerPaperHands }: { onTriggerPaperHands: () => voi
             ))}
           </div>
           
-          {/* 2. MORE BUTTON (Collapses Secondary Links) */}
-          <div className="relative">
+          {/* 2. MORE DROPDOWN (Hover Activated) */}
+          <div 
+            className="relative h-full flex items-center"
+            onMouseEnter={() => setMoreMenuOpen(true)}
+            onMouseLeave={() => setMoreMenuOpen(false)}
+          >
             <button 
-              onClick={() => setMoreMenuOpen(!moreMenuOpen)}
-              // FIX: Changed default color to Bright Gold for visibility
-              className="flex items-center gap-1 font-terminal text-base text-[#ffae00] hover:text-hell-red transition-colors uppercase cursor-pointer border border-hell-red/50 px-2 py-1"
+              className={cn(
+                "flex items-center gap-1 font-terminal text-base transition-colors uppercase cursor-pointer border px-2 py-1",
+                // Logic: If open, stay Red. If closed, be Gold -> Red on hover.
+                moreMenuOpen 
+                  ? "text-hell-red border-hell-red" 
+                  : "text-[#ffae00] border-hell-red/50 hover:text-hell-red"
+              )}
             >
               MORE
               {moreMenuOpen ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
             </button>
 
-            {/* MORE DROPDOWN MENU */}
+            {/* DROPDOWN MENU */}
             <AnimatePresence>
               {moreMenuOpen && (
                 <motion.div
                   initial={{ opacity: 0, y: 10 }}
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, y: 10 }}
-                  className="absolute right-0 mt-3 w-48 bg-hell-black border border-hell-red/50 shadow-lg z-50 p-3 flex flex-col gap-1"
-                  onMouseLeave={() => setMoreMenuOpen(false)} // Closes if mouse leaves box
+                  // Added padding-top to bridge the gap so mouse doesn't lose focus
+                  className="absolute top-full right-0 pt-4 w-56 z-50"
                 >
-                  {secondaryLinks.map((link) => (
-                    <a 
-                      key={link.name} 
-                      href={link.href}
-                      onClick={(e) => handleNavClick(e, link.href)}
-                      className="font-terminal text-sm text-gray-400 hover:text-hell-red transition-colors uppercase py-1"
-                    >
-                      {link.name}
-                    </a>
-                  ))}
+                  <div className="bg-hell-black border border-hell-red/50 shadow-xl p-5 flex flex-col gap-4">
+                    {secondaryLinks.map((link) => (
+                      <a 
+                        key={link.name} 
+                        href={link.href}
+                        onClick={(e) => handleNavClick(e, link.href)}
+                        // Matching exact style of primary links
+                        className="font-terminal text-base text-hell-white hover:text-[#ffae00] transition-colors uppercase tracking-widest relative group cursor-pointer font-bold w-fit"
+                      >
+                        {link.name}
+                        {/* Red Line Animation */}
+                        <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-hell-orange transition-all group-hover:w-full"></span>
+                      </a>
+                    ))}
+                  </div>
                 </motion.div>
               )}
             </AnimatePresence>
@@ -170,14 +180,14 @@ export const Navbar = ({ onTriggerPaperHands }: { onTriggerPaperHands: () => voi
             ACQUIRE $666
           </a>
 
-          {/* MOBILE TOGGLE (Remains the same) */}
+          {/* MOBILE TOGGLE */}
           <button className="lg:hidden text-hell-white" onClick={() => setMobileMenuOpen(!mobileMenuOpen)}>
             {mobileMenuOpen ? <X size={28} /> : <Menu size={28} />}
           </button>
         </div>
       </div>
 
-      {/* --- MOBILE/VERTICAL MENU (Remains the same) --- */}
+      {/* --- MOBILE/VERTICAL MENU --- */}
       <AnimatePresence>
         {mobileMenuOpen && (
           <motion.div
@@ -187,7 +197,7 @@ export const Navbar = ({ onTriggerPaperHands }: { onTriggerPaperHands: () => voi
             onClick={() => setMobileMenuOpen(false)}
             className="lg:hidden fixed top-[60px] left-0 w-full bg-hell-black/95 backdrop-blur-xl border-b border-hell-red/50 overflow-hidden shadow-2xl"
           >
-            <div className="p-6 flex flex-col gap-6 items-center justify-center h-full pb-32">
+            <div className="p-6 flex flex-col gap-6 items-center justify-center h-full pb-32 overflow-y-auto">
               {/* Full list of 9 links for mobile menu */}
               {navLinks.map((link) => (
                 <a 
@@ -200,14 +210,14 @@ export const Navbar = ({ onTriggerPaperHands }: { onTriggerPaperHands: () => voi
                 </a>
               ))}
               
-              <div className="w-16 h-1 bg-hell-red/50 my-4"></div>
+              <div className="w-16 h-1 bg-hell-red/50 my-4 shrink-0"></div>
               
               {/* ACQUIRE LINK (Mobile) */}
               <a 
                 href={BUY_LINK}
                 target="_blank" 
                 rel="noopener noreferrer"
-                className="bg-hell-red text-hell-white font-gothic text-xl py-3 px-12 rounded shadow-[0_0_20px_rgba(204,0,0,0.6)]"
+                className="bg-hell-red text-hell-white font-gothic text-xl py-3 px-12 rounded shadow-[0_0_20px_rgba(204,0,0,0.6)] shrink-0"
               >
                 ACQUIRE $666
               </a>
