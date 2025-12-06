@@ -8,17 +8,20 @@ export const HeavenBubble = ({ onTriggerPaperHands }: { onTriggerPaperHands: () 
   const bubbleRef = useRef<HTMLButtonElement>(null);
   const [isDragging, setIsDragging] = useState(false);
   
-  // FIX 1: Initialize position with generic values (e.g., 0, 0)
-  const [position, setPosition] = useState({ x: 0, y: 0 });
+  // FIX 1: Set initial position safely outside of useEffect.
+  // We use the client-side height if available, otherwise set a safe default (200px)
+  const initialY = typeof window !== 'undefined' ? (window.innerHeight / 2 - 50) : 200;
+  const [position, setPosition] = useState({ x: 20, y: initialY });
   const [offset, setOffset] = useState({ x: 0, y: 0 });
 
-  // FIX 2: Calculate initial Y position ONLY in the browser
+  // FIX 2: Removed problematic useEffect that recalculated Y position (no longer needed)
+  /* Removed useEffect to calculate initial Y:
   useEffect(() => {
-    // This code only runs after the component is mounted on the client
     if (typeof window !== 'undefined' && position.y === 0) {
       setPosition({ x: 20, y: window.innerHeight / 2 - 50 });
     }
   }, [position.y]);
+  */
 
   // Use passive layout effect for drag operations
   useEffect(() => {
