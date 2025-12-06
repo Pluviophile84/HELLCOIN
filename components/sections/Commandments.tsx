@@ -21,7 +21,7 @@ export const Commandments = () => {
         
         {/* --- HEADER --- */}
         <div className="text-center mb-16 flex flex-col items-center gap-2">
-          <span className="font-terminal text-[#ffae00] text-lg md:text-xl tracking-widest uppercase font-bold">
+          <span className="font-terminal text-[#ffae00] text-lg md:text-xl tracking-widest uppercase">
           LAW OF THE LAND
           </span>
           <h2 className="font-gothic text-6xl md:text-8xl text-hell-white">
