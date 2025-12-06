@@ -31,7 +31,7 @@ export default function Home() {
       {/* 2. The Navbar (Now without the Heaven button) */}
       <Navbar onTriggerPaperHands={triggerHeavenMode} /> 
       
-      {/* 3. The Sticky Bubble (Always Visible) */}
+      {/* 3. The Sticky Bubble (Draggable and always visible, z-39) */}
       <HeavenBubble onTriggerPaperHands={triggerHeavenMode} />
 
       {/* --- PAGE SECTIONS --- */}
