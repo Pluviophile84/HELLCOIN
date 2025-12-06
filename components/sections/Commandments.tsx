@@ -58,7 +58,7 @@ export const Commandments = () => {
               </div>
               
               {/* Title */}
-              <h3 className="font-terminal text-xl text-[#ffae00] mb-3 group-hover:text-hell-red uppercase font-bold transition-colors duration-75">
+              <h3 className="font-terminal text-xl text-[#ffae00] mb-3 group-hover:text-hell-red uppercase font-semibold transition-colors duration-75">
                 {c.title}
               </h3>
               
