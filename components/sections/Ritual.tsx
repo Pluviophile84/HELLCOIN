@@ -67,7 +67,7 @@ export const Ritual = () => {
               </span>
               <div>
                 {/* FIX: Reduced title size (text-xl md:text-2xl) and added group-hover border brightness */}
-                <h3 className="font-terminal text-xl md:text-2xl text-hell-gold mb-2 uppercase font-bold border-b border-hell-red/30 group-hover:border-hell-red pb-2 inline-block transition-colors duration-300">
+                <h3 className="font-terminal text-xl md:text-2xl text-hell-gold mb-2 uppercase font-medium border-b border-hell-red/30 group-hover:border-hell-red pb-2 inline-block transition-colors duration-300">
                   {step.title}
                 </h3>
                 <p className="font-terminal text-xl text-gray-400 max-w-sm">
