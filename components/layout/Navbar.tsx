@@ -1,11 +1,10 @@
 "use client";
 import { useState, useEffect } from "react";
 import { Menu, X, ChevronDown, ChevronUp } from "lucide-react";
+import { cn } from "../../lib/utils";
 import { motion, AnimatePresence } from "framer-motion";
 
-const cn = (...classes) => classes.filter(Boolean).join(" ");
-
-export default function Navbar() {
+export const Navbar = ({ onTriggerPaperHands }: { onTriggerPaperHands: () => void }) => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [moreMenuOpen, setMoreMenuOpen] = useState(false);
@@ -21,7 +20,7 @@ export default function Navbar() {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  // Scroll lock with proper cleanup
+  // Enhanced scroll lock with scrollbar compensation
   useEffect(() => {
     if (mobileMenuOpen) {
       const scrollbarWidth = window.innerWidth - document.documentElement.clientWidth;
@@ -43,7 +42,7 @@ export default function Navbar() {
     setMoreMenuOpen(false);
   };
 
-  const handleNavClick = (e, href) => {
+  const handleNavClick = (e: React.MouseEvent<HTMLAnchorElement>, href: string) => {
     e.preventDefault();
     setMobileMenuOpen(false);
     setMoreMenuOpen(false);
@@ -74,7 +73,7 @@ export default function Navbar() {
       className={cn(
         "fixed top-0 w-full z-40 border-b transition-all duration-300 py-4",
         isScrolled
-          ? "bg-black/90 backdrop-blur-md border-red-600/30"
+          ? "bg-hell-black/90 backdrop-blur-md border-hell-red/30"
           : "bg-transparent border-transparent"
       )}
     >
@@ -84,10 +83,12 @@ export default function Navbar() {
           onClick={scrollToTop}
           className="flex items-center gap-2 md:gap-3 group cursor-pointer shrink-0 transition-transform active:scale-95"
         >
-          <div className="w-8 h-8 md:w-12 md:h-12 rounded-full border border-orange-500 bg-gradient-to-br from-red-600 to-orange-500 flex items-center justify-center text-white font-bold text-xs md:text-sm">
-            666
-          </div>
-          <span className="font-bold text-xl md:text-3xl text-orange-500 tracking-wide">
+          <img
+            src="/GOAPE.png"
+            alt="Hellcoin"
+            className="w-8 h-8 md:w-12 md:h-12 rounded-full border border-hell-orange object-cover"
+          />
+          <span className="font-gothic text-xl md:text-3xl text-hell-orange tracking-wide text-glow">
             HELLCOIN
           </span>
         </div>
@@ -100,10 +101,10 @@ export default function Navbar() {
                 key={link.name}
                 href={link.href}
                 onClick={(e) => handleNavClick(e, link.href)}
-                className="text-base text-white hover:text-orange-400 transition-colors uppercase tracking-widest relative group cursor-pointer font-bold"
+                className="font-terminal text-base text-hell-white hover:text-[#ffae00] transition-colors uppercase tracking-widest relative group cursor-pointer font-bold"
               >
                 {link.name}
-                <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-orange-500 transition-all group-hover:w-full"></span>
+                <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-hell-orange transition-all group-hover:w-full"></span>
               </a>
             ))}
           </div>
@@ -116,10 +117,10 @@ export default function Navbar() {
           >
             <button
               className={cn(
-                "flex items-center gap-1 text-base transition-colors uppercase cursor-pointer border px-2 py-1",
+                "flex items-center gap-1 font-terminal text-base transition-colors uppercase cursor-pointer border px-2 py-1",
                 moreMenuOpen
-                  ? "text-red-500 border-red-500"
-                  : "text-orange-400 border-red-500/50 hover:text-red-500"
+                  ? "text-hell-red border-hell-red"
+                  : "text-[#ffae00] border-hell-red/50 hover:text-hell-red"
               )}
             >
               MORE
@@ -134,16 +135,16 @@ export default function Navbar() {
                   exit={{ opacity: 0, y: 10 }}
                   className="absolute top-full left-0 pt-4 w-56 z-50"
                 >
-                  <div className="bg-black border border-red-500/50 shadow-xl p-5 flex flex-col gap-4">
+                  <div className="bg-hell-black border border-hell-red/50 shadow-xl p-5 flex flex-col gap-4">
                     {secondaryLinks.map((link) => (
                       <a
                         key={link.name}
                         href={link.href}
                         onClick={(e) => handleNavClick(e, link.href)}
-                        className="text-base text-white hover:text-orange-400 transition-colors uppercase tracking-widest relative group cursor-pointer font-bold w-fit"
+                        className="font-terminal text-base text-hell-white hover:text-[#ffae00] transition-colors uppercase tracking-widest relative group cursor-pointer font-bold w-fit"
                       >
                         {link.name}
-                        <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-orange-500 transition-all group-hover:w-full"></span>
+                        <span className="absolute -bottom-1 left-0 h-0.5 bg-hell-orange transition-all group-hover:w-full"></span>
                       </a>
                     ))}
                   </div>
@@ -157,8 +158,8 @@ export default function Navbar() {
         <div className="flex items-center gap-2 md:gap-4">
           {/* HEAVEN MODE BUTTON */}
           <button
-            onClick={() => alert("Heaven Mode Activated!")}
-            className="flex items-center gap-2 px-3 py-1 border border-pink-300 rounded text-pink-100 text-xs md:text-sm font-bold hover:bg-pink-500/20 hover:text-white transition-colors shadow-[0_0_10px_rgba(255,192,203,0.3)]"
+            onClick={onTriggerPaperHands}
+            className="flex items-center gap-2 px-3 py-1 border border-pink-300 rounded text-pink-100 font-terminal text-xs md:text-sm font-bold hover:bg-pink-500/20 hover:text-white transition-colors shadow-[0_0_10px_rgba(255,192,203,0.3)]"
           >
             <span className="w-2 h-2 rounded-full bg-pink-200 animate-pulse shadow-[0_0_5px_#fff]"></span>
             HEAVEN MODE
@@ -169,14 +170,14 @@ export default function Navbar() {
             href={BUY_LINK}
             target="_blank"
             rel="noopener noreferrer"
-            className="hidden md:block bg-red-600 hover:bg-orange-500 text-white font-bold text-lg px-6 py-2 rounded shadow-[0_0_15px_rgba(204,0,0,0.5)] transition-all transform hover:scale-105 border border-orange-500/50 text-center"
+            className="hidden md:block bg-hell-red hover:bg-hell-orange text-hell-white font-gothic text-lg px-6 py-2 rounded shadow-[0_0_15px_rgba(204,0,0,0.5)] transition-all transform hover:scale-105 border border-hell-orange/50 text-center"
           >
             ACQUIRE $666
           </a>
 
           {/* MOBILE TOGGLE */}
           <button
-            className="lg:hidden text-white"
+            className="lg:hidden text-hell-white"
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
           >
             {mobileMenuOpen ? <X size={28} /> : <Menu size={28} />}
@@ -184,7 +185,7 @@ export default function Navbar() {
         </div>
       </div>
 
-      {/* MOBILE MENU - FULL SCREEN WITH DYNAMIC SCALING */}
+      {/* MOBILE MENU - FULL SCREEN WITH DYNAMIC SCALING - NO SCROLLING */}
       <AnimatePresence>
         {mobileMenuOpen && (
           <motion.div
@@ -192,14 +193,14 @@ export default function Navbar() {
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 0.2 }}
-            className="lg:hidden fixed inset-0 top-[72px] bg-black/98 backdrop-blur-xl z-50"
+            className="lg:hidden fixed inset-0 top-[72px] bg-hell-black/98 backdrop-blur-xl z-50"
             style={{ height: "calc(100vh - 72px)" }}
           >
             {/* Container with dynamic spacing - NO SCROLLING */}
             <div className="h-full flex flex-col justify-between items-center p-4 overflow-hidden">
               {/* Links Container - Dynamically scaled spacing */}
               <div className="flex-1 flex flex-col justify-evenly items-center w-full min-h-0">
-                {navLinks.map((link, index) => (
+                {navLinks.map((link) => (
                   <a
                     key={link.name}
                     href={link.href}
@@ -209,7 +210,7 @@ export default function Navbar() {
                       fontSize: `clamp(0.875rem, ${100 / (navLinks.length + 3)}vh, 1.5rem)`,
                       lineHeight: "1.2",
                     }}
-                    className="text-white hover:text-orange-500 tracking-widest cursor-pointer font-bold uppercase transition-colors text-center"
+                    className="font-terminal text-hell-white hover:text-hell-orange tracking-widest cursor-pointer font-bold uppercase transition-colors text-center"
                   >
                     {link.name}
                   </a>
@@ -217,8 +218,8 @@ export default function Navbar() {
               </div>
 
               {/* Button Container - Fixed at bottom with dynamic sizing */}
-              <div className="w-full flex flex-col items-center pt-4 border-t border-gray-800 shrink-0">
-                <div className="w-16 h-1 bg-red-600/50 mb-3"></div>
+              <div className="w-full flex flex-col items-center pt-4 border-t border-gray-900 shrink-0">
+                <div className="w-16 h-1 bg-hell-red/50 mb-3"></div>
                 <a
                   href={BUY_LINK}
                   target="_blank"
@@ -227,7 +228,7 @@ export default function Navbar() {
                     fontSize: `clamp(1rem, 4vh, 1.5rem)`,
                     padding: `clamp(0.5rem, 2vh, 1rem) clamp(2rem, 8vw, 3rem)`,
                   }}
-                  className="bg-red-600 hover:bg-orange-500 text-white font-bold rounded shadow-[0_0_20px_rgba(204,0,0,0.6)] transition-all active:scale-95"
+                  className="bg-hell-red hover:bg-hell-orange text-hell-white font-gothic rounded shadow-[0_0_20px_rgba(204,0,0,0.6)] transition-all active:scale-95"
                 >
                   ACQUIRE $666
                 </a>
@@ -238,4 +239,4 @@ export default function Navbar() {
       </AnimatePresence>
     </nav>
   );
-}
+};
