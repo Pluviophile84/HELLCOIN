@@ -55,11 +55,11 @@ export const Navbar = ({ onTriggerPaperHands }: { onTriggerPaperHands: () => voi
 
   const navLinks = [
     { name: "GENESIS", href: "#genesis" },
-    { name: "TRUTH", href: "#revelation" },
     { name: "COMMANDMENTS", href: "#commandments" },
     { name: "MATH", href: "#math" },
     { name: "RITUAL", href: "#ritual" },
     { name: "HELLMAP", href: "#hellmap" },
+    { name: "TRUTH", href: "#revelation" },
     { name: "THE PIT", href: "#the-pit" },
   ];
 
@@ -85,7 +85,7 @@ export const Navbar = ({ onTriggerPaperHands }: { onTriggerPaperHands: () => voi
           className="flex items-center gap-2 md:gap-3 group cursor-pointer shrink-0 transition-transform active:scale-95"
         >
           <img 
-            src="/GOAPE.png" 
+            src="/Logo.png" 
             alt="Hellcoin" 
             className="w-8 h-8 md:w-12 md:h-12 rounded-full border border-hell-orange object-cover" 
           />
