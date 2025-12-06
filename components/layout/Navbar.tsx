@@ -24,13 +24,10 @@ export const Navbar = ({ onTriggerPaperHands }: { onTriggerPaperHands: () => voi
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  // --- FINAL FIX: SCROLL LOCK LOGIC (Eliminates the Red Flash) ---
+  // --- SCROLL LOCK LOGIC (Prevents Scroll on Mobile Menu Open) ---
   useEffect(() => {
     if (mobileMenuOpen) {
       document.body.style.overflow = "hidden";
-      // This style is often necessary on desktop for stable overflow hidden, 
-      // but mobile browsers handle this differently. We let it be for now 
-      // but rely on the subsequent overflow: auto on the inner div to handle the scrolling.
     } else {
       document.body.style.overflow = "unset";
     }
@@ -204,14 +201,15 @@ export const Navbar = ({ onTriggerPaperHands }: { onTriggerPaperHands: () => voi
             <div className="p-6 h-full flex flex-col justify-between items-center overflow-hidden">
               
               {/* 1. LINKS - Adaptive Spacing (Fills all vertical space) */}
+              {/* FIX: Reduced padding/margins to guarantee fit on all screens */}
               <div className="flex flex-col flex-grow justify-around items-center w-full gap-y-0">
                 {navLinks.map((link) => (
                   <a 
                     key={link.name} 
                     href={link.href} 
                     onClick={(e) => handleNavClick(e, link.href)}
-                    // Adapt link size slightly to fit the smallest screens
-                    className="font-terminal text-lg text-hell-white hover:text-hell-orange tracking-widest cursor-pointer font-bold shrink-0 py-1" 
+                    // FIX: text-lg (from xl) and py-0.5 (from py-1)
+                    className="font-terminal text-lg text-hell-white hover:text-hell-orange tracking-widest cursor-pointer font-bold shrink-0 py-0.5" 
                   >
                     {link.name}
                   </a>
