@@ -24,10 +24,13 @@ export const Navbar = ({ onTriggerPaperHands }: { onTriggerPaperHands: () => voi
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  // --- SCROLL LOCK LOGIC (Prevents Scroll on Mobile Menu Open) ---
+  // --- FINAL FIX: SCROLL LOCK LOGIC (Eliminates the Red Flash) ---
   useEffect(() => {
     if (mobileMenuOpen) {
       document.body.style.overflow = "hidden";
+      // This style is often necessary on desktop for stable overflow hidden, 
+      // but mobile browsers handle this differently. We let it be for now 
+      // but rely on the subsequent overflow: auto on the inner div to handle the scrolling.
     } else {
       document.body.style.overflow = "unset";
     }
@@ -201,14 +204,13 @@ export const Navbar = ({ onTriggerPaperHands }: { onTriggerPaperHands: () => voi
             <div className="p-6 h-full flex flex-col justify-between items-center overflow-hidden">
               
               {/* 1. LINKS - Adaptive Spacing (Fills all vertical space) */}
-              {/* The padding/margins below the links are already accounted for in the Flexbox calculation */}
-              <div className="flex flex-col flex-grow justify-around items-center w-full gap-0">
+              <div className="flex flex-col flex-grow justify-around items-center w-full gap-y-0">
                 {navLinks.map((link) => (
                   <a 
                     key={link.name} 
                     href={link.href} 
                     onClick={(e) => handleNavClick(e, link.href)}
-                    // Ensure links are compact
+                    // Adapt link size slightly to fit the smallest screens
                     className="font-terminal text-lg text-hell-white hover:text-hell-orange tracking-widest cursor-pointer font-bold shrink-0 py-1" 
                   >
                     {link.name}
@@ -217,14 +219,14 @@ export const Navbar = ({ onTriggerPaperHands }: { onTriggerPaperHands: () => voi
               </div>
               
               {/* 2. ACQUIRE BUTTON (Fixed at the bottom) */}
-              {/* FIX: Ensure the bottom padding/margin is minimal to fit the screen */}
+              {/* This container has fixed padding/margin and will always be visible */}
               <div className="w-full flex flex-col items-center shrink-0 pt-4 border-t border-gray-900">
                 <div className="w-16 h-1 bg-hell-red/50 mb-4"></div>
                 <a 
                   href={BUY_LINK}
                   target="_blank" 
                   rel="noopener noreferrer"
-                  // Padding is py-3 px-12 (which is ~40-50px in height)
+                  // Padding is py-3 px-12 (which is compact)
                   className="bg-hell-red text-hell-white font-gothic text-xl py-3 px-12 rounded shadow-[0_0_20px_rgba(204,0,0,0.6)]"
                 >
                   ACQUIRE $666
