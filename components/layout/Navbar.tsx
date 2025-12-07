@@ -26,6 +26,8 @@ export const Navbar = ({ onTriggerPaperHands }: { onTriggerPaperHands: () => voi
   // --- ADAPTIVE MENU STATES ---
   const [moreMenuOpen, setMoreMenuOpen] = useState(false);
   const [visibleCount, setVisibleCount] = useState(NAV_LINKS_DATA.length);
+  // FIX: isReady prevents the "glitch" by hiding links until calculation is done
+  const [isReady, setIsReady] = useState(false); 
   
   // Refs for measuring width
   const navRef = useRef<HTMLDivElement>(null);
@@ -56,7 +58,7 @@ export const Navbar = ({ onTriggerPaperHands }: { onTriggerPaperHands: () => voi
 
     const containerWidth = navRef.current.offsetWidth;
     const moreButtonWidth = 100; // Space reserved for "MORE" button
-    const safetyBuffer = 120; // Increased buffer to force "More" button earlier
+    const safetyBuffer = 80; // Buffer to ensure comfortable spacing
     let usedWidth = 0;
     let newVisibleCount = 0;
 
@@ -66,7 +68,6 @@ export const Navbar = ({ onTriggerPaperHands }: { onTriggerPaperHands: () => voi
         // Link width + gap (24px for gap-6)
         const itemWidth = item.getBoundingClientRect().width + 24; 
         
-        // Check if adding this link exceeds the available space (minus buffer)
         if (usedWidth + itemWidth + moreButtonWidth + safetyBuffer < containerWidth) {
           usedWidth += itemWidth;
           newVisibleCount++;
@@ -76,15 +77,16 @@ export const Navbar = ({ onTriggerPaperHands }: { onTriggerPaperHands: () => voi
       }
     }
     
-    // Ensure at least 0 links visible if screen is extremely tight, max is all links
     setVisibleCount(Math.min(newVisibleCount, NAV_LINKS_DATA.length));
+    setIsReady(true); // FIX: Mark calculation as complete to reveal links
   }, []);
 
   useEffect(() => {
-    // Initial calculation
-    updateVisibleLinks();
+    // We need a small delay to ensure fonts/layout are stable before measuring
+    const timeout = setTimeout(() => {
+      updateVisibleLinks();
+    }, 50);
 
-    // Re-calculate on resize
     const observer = new ResizeObserver(() => {
       updateVisibleLinks();
     });
@@ -96,6 +98,7 @@ export const Navbar = ({ onTriggerPaperHands }: { onTriggerPaperHands: () => voi
     window.addEventListener('resize', updateVisibleLinks);
 
     return () => {
+      clearTimeout(timeout);
       observer.disconnect();
       window.removeEventListener('resize', updateVisibleLinks);
     };
@@ -118,7 +121,6 @@ export const Navbar = ({ onTriggerPaperHands }: { onTriggerPaperHands: () => voi
     }
   };
 
-  // Split links based on calculation
   const visibleLinks = NAV_LINKS_DATA.slice(0, visibleCount);
   const hiddenLinks = NAV_LINKS_DATA.slice(visibleCount);
 
@@ -131,7 +133,9 @@ export const Navbar = ({ onTriggerPaperHands }: { onTriggerPaperHands: () => voi
           : "bg-transparent border-transparent"
       )}
     >
-      <div className="max-w-7xl mx-auto px-4 flex justify-between items-center h-full">
+      {/* FIX: Changed max-w-7xl to w-[95%] max-w-[2400px].
+          This ensures it scales nicely on 27"/32" screens while keeping margins. */}
+      <div className="w-[95%] max-w-[2400px] mx-auto px-4 flex justify-between items-center h-full">
         
         {/* --- LEFT: LOGO --- */}
         <div 
@@ -149,11 +153,14 @@ export const Navbar = ({ onTriggerPaperHands }: { onTriggerPaperHands: () => voi
         {/* --- CENTER: ADAPTIVE LINKS (Hidden on Mobile) --- */}
         <div 
           ref={navRef} 
-          // FIX: Added 'max-w-4xl w-full' to constrain the container width. 
-          // This forces the checkOverflow logic to trigger the "MORE" button instead of expanding indefinitely.
-          className="hidden lg:flex items-center justify-center px-8 h-full relative max-w-4xl w-full mx-auto"
+          // FIX: Added 'opacity-0' initially to prevent the "expand/shrink" glitch. 
+          // It fades in only after calculation is done.
+          className={cn(
+            "hidden lg:flex items-center justify-center px-8 h-full relative max-w-7xl w-full mx-auto transition-opacity duration-300",
+            isReady ? "opacity-100" : "opacity-0"
+          )}
         >
-          {/* This hidden rendering helps us measure widths even if they aren't 'visible' yet */}
+          {/* Hidden measurement container */}
           <div className="flex gap-6 invisible absolute pointer-events-none top-0 left-0">
              {NAV_LINKS_DATA.map((link, i) => (
                 <a 
@@ -181,7 +188,7 @@ export const Navbar = ({ onTriggerPaperHands }: { onTriggerPaperHands: () => voi
               </a>
             ))}
 
-            {/* MORE BUTTON - AUTOMATIC DROPDOWN ON HOVER */}
+            {/* MORE BUTTON */}
             {hiddenLinks.length > 0 && (
                <div 
                  className="relative h-full flex items-center"
@@ -247,14 +254,14 @@ export const Navbar = ({ onTriggerPaperHands }: { onTriggerPaperHands: () => voi
             ACQUIRE $666
           </a>
 
-          {/* MOBILE TOGGLE (Visible lg:hidden) */}
+          {/* MOBILE TOGGLE */}
           <button className="lg:hidden text-hell-white" onClick={() => setMobileMenuOpen(!mobileMenuOpen)}>
             {mobileMenuOpen ? <X size={28} /> : <Menu size={28} />}
           </button>
         </div>
       </div>
 
-      {/* --- MOBILE MENU (Stable Full Screen) --- */}
+      {/* --- MOBILE MENU --- */}
       <AnimatePresence>
         {mobileMenuOpen && (
           <motion.div
