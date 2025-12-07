@@ -25,9 +25,11 @@ export const PaperHandsOverlay = ({ isActive, onClose }: PaperHandsProps) => {
   }));
 
   // --- SCROLL LOCK EFFECT ---
-  // Prevents the background website from scrolling while overlay is open
+  // Prevents the background website from scrolling ONLY during the immersive phases
   useEffect(() => {
-    if (isActive || phase !== "idle") {
+    // FIX: Only lock scroll if active OR if we are in 'heaven'/'burning'. 
+    // Unlock immediately when we hit 'reality' (toast only) or 'idle'.
+    if (isActive || (phase === "heaven" || phase === "burning")) {
       document.body.style.overflow = "hidden";
     } else {
       document.body.style.overflow = "unset";
