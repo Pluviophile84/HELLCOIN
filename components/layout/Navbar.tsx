@@ -134,7 +134,7 @@ export const Navbar = ({ onTriggerPaperHands }: { onTriggerPaperHands: () => voi
       )}
     >
       {/* FIX: Reduced max-width to 80% on large screens to pull logo and buttons closer to center */}
-      <div className="w-full max-w-7xl xl:max-w-[85%] 2xl:max-w-[80%] mx-auto px-4 flex justify-between items-center h-full">
+      <div className="w-full max-w-7xl xl:max-w-[85%] 2xl:max-w-[85%] mx-auto px-4 flex justify-between items-center h-full">
         
         {/* --- LEFT: LOGO --- */}
         <div 
