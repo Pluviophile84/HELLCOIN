@@ -149,7 +149,8 @@ export const Navbar = ({ onTriggerPaperHands }: { onTriggerPaperHands: () => voi
         {/* --- CENTER: ADAPTIVE LINKS (Hidden on Mobile) --- */}
         <div 
           ref={navRef} 
-          className="hidden lg:flex items-center flex-1 justify-center px-8 h-full overflow-hidden"
+          // FIX: Removed 'overflow-hidden' so the dropdown can be seen
+          className="hidden lg:flex items-center flex-1 justify-center px-8 h-full relative"
         >
           {/* This hidden rendering helps us measure widths even if they aren't 'visible' yet */}
           <div className="flex gap-6 invisible absolute pointer-events-none top-0 left-0">
