@@ -24,6 +24,17 @@ export const PaperHandsOverlay = ({ isActive, onClose }: PaperHandsProps) => {
     size: 40 + Math.random() * 60, // Bigger flames
   }));
 
+  // --- SCROLL LOCK EFFECT ---
+  // Prevents the background website from scrolling while overlay is open
+  useEffect(() => {
+    if (isActive || phase !== "idle") {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "unset";
+    }
+    return () => { document.body.style.overflow = "unset"; };
+  }, [isActive, phase]);
+
   // Handle the main sequence (Heaven -> Burning -> Reality)
   useEffect(() => {
     let timer1: NodeJS.Timeout;
@@ -37,7 +48,7 @@ export const PaperHandsOverlay = ({ isActive, onClose }: PaperHandsProps) => {
       // 2. Start animation after tiny delay to ensure browser sees the 0
       setTimeout(() => setProgress(100), 50);
 
-      // STEP 1: TRANSITION TO BURNING (After 5s - Increased duration)
+      // STEP 1: TRANSITION TO BURNING (After 5s)
       timer1 = setTimeout(() => {
         setPhase("burning");
       }, 5000);
@@ -62,7 +73,6 @@ export const PaperHandsOverlay = ({ isActive, onClose }: PaperHandsProps) => {
   }, [isActive, onClose]);
 
   // Separate effect to handle the "Nice Try" toast lifespan
-  // This prevents the cleanup of the main effect from killing the toast timer
   useEffect(() => {
     if (phase === "reality") {
       const timer = setTimeout(() => {
@@ -85,7 +95,7 @@ export const PaperHandsOverlay = ({ isActive, onClose }: PaperHandsProps) => {
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             className={cn(
-              "fixed inset-0 z-[100] flex flex-col items-center justify-center text-center p-4 transition-colors duration-200",
+              "fixed inset-0 z-[100] flex flex-col items-center justify-center text-center p-4 transition-colors duration-200 overflow-hidden",
               // Instant red flash when burning starts
               phase === "burning" ? "bg-red-600 text-white" : "bg-pink-100 text-pink-500"
             )}
@@ -96,21 +106,27 @@ export const PaperHandsOverlay = ({ isActive, onClose }: PaperHandsProps) => {
                 key="heaven-content"
                 exit={{ opacity: 0, scale: 1.5, filter: "blur(20px)" }} // Explodes out
                 transition={{ duration: 0.5 }}
-                className="flex flex-col items-center relative z-20"
+                className="flex flex-col items-center relative z-20 w-full max-w-lg"
               >
-                <div className="animate-bounce mb-6 text-7xl md:text-8xl">🦄</div>
-                {/* Using standard font-sans (Arial/Helvetica) for generic look */}
-                <h1 className="font-sans font-black text-4xl md:text-5xl mb-4">EVERYTHING IS FINE!</h1>
-                <p className="font-sans font-bold text-xl md:text-2xl text-pink-400 mb-8 max-w-lg">
-                  Welcome to the Safe Space! No red candles here! To the Moon! 🚀✨🌈
+                {/* FIX: Smaller Emoji size for mobile (5xl vs 8xl) */}
+                <div className="animate-bounce mb-6 text-5xl md:text-8xl">🦄</div>
+                
+                {/* FIX: Smaller Title (2xl vs 5xl) */}
+                <h1 className="font-sans font-black text-2xl md:text-5xl mb-4 leading-tight">
+                  EVERYTHING IS FINE!
+                </h1>
+                
+                {/* FIX: Smaller Body Text (lg vs 2xl) */}
+                <p className="font-sans font-bold text-lg md:text-2xl text-pink-400 mb-8 px-4">
+                  Welcome to the Safe Space! No red candles here! Only vibes! 🚀✨🌈
                 </p>
                 
-                <div className="w-full max-w-md bg-white h-4 rounded-full overflow-hidden mb-4 border border-pink-300 shadow-sm">
+                <div className="w-full bg-white h-4 rounded-full overflow-hidden mb-4 border border-pink-300 shadow-sm">
                   <div 
                     className="h-full bg-pink-500 transition-all ease-linear"
                     style={{ 
                       width: `${progress}%`, 
-                      transitionDuration: progress === 0 ? '0ms' : '5000ms' // Updated to 5s
+                      transitionDuration: progress === 0 ? '0ms' : '5000ms'
                     }}
                   ></div>
                 </div>
@@ -124,16 +140,16 @@ export const PaperHandsOverlay = ({ isActive, onClose }: PaperHandsProps) => {
                 key="burning-content"
                 initial={{ opacity: 0, scale: 0.8 }}
                 animate={{ opacity: 1, scale: 1.1 }}
-                className="relative z-30 flex flex-col items-center w-full px-4"
+                className="relative z-30 flex flex-col items-center w-full px-2"
               >
-                {/* Generic Impact Font / Sans Serif Bold */}
-                <h1 className="font-sans font-black text-5xl md:text-9xl text-white mb-8 drop-shadow-[0_5px_5px_rgba(0,0,0,0.8)] tracking-tighter">
+                {/* FIX: Smaller Title on Mobile (4xl vs 9xl) */}
+                <h1 className="font-sans font-black text-4xl md:text-9xl text-white mb-8 drop-shadow-[0_5px_5px_rgba(0,0,0,0.8)] tracking-tighter leading-none">
                   REALITY CHECK
                 </h1>
                 
-                {/* Responsive Card Fix: max-w-[90vw] and adjusted text sizing */}
-                <p className="font-mono font-bold text-xl md:text-4xl text-yellow-300 bg-black px-4 py-2 md:px-6 uppercase border-4 border-yellow-300 -rotate-2 max-w-[90vw] text-center break-words shadow-xl">
-                  WENDY'S IS STILL HIRING
+                {/* FIX: Responsive Card Sizing (text-lg vs text-4xl) */}
+                <p className="font-mono font-bold text-lg md:text-4xl text-yellow-300 bg-black px-4 py-2 md:px-6 uppercase border-4 border-yellow-300 -rotate-2 max-w-full md:max-w-[90vw] text-center break-words shadow-xl">
+                  WENDY&apos;S IS STILL HIRING
                 </p>
               </motion.div>
             )}
@@ -141,10 +157,8 @@ export const PaperHandsOverlay = ({ isActive, onClose }: PaperHandsProps) => {
             {/* --- FIRE ANIMATION LAYER --- */}
             {phase === "burning" && (
               <div className="absolute inset-0 overflow-hidden pointer-events-none z-10">
-                {/* Red Overlay Gradient */}
                 <div className="absolute inset-0 bg-gradient-to-t from-red-900 via-red-600 to-orange-500 opacity-90"></div>
                 
-                {/* Intense Rising Flame Emojis */}
                 {flames.map((flame) => (
                   <motion.div
                     key={flame.id}
@@ -160,7 +174,7 @@ export const PaperHandsOverlay = ({ isActive, onClose }: PaperHandsProps) => {
                       left: flame.left, 
                       fontSize: flame.size,
                       filter: "blur(1px)",
-                      willChange: "transform" // FIX: Performance optimization for mobile
+                      willChange: "transform"
                     }}
                     className="absolute"
                   >
@@ -180,7 +194,6 @@ export const PaperHandsOverlay = ({ isActive, onClose }: PaperHandsProps) => {
             initial={{ opacity: 0, y: 100 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: 100 }}
-            // Added animate-bounce back for the jumping effect
             className="fixed bottom-10 right-4 md:right-10 bg-hell-red text-hell-white font-terminal text-xl p-6 border-4 border-black shadow-[10px_10px_0px_#000] z-[101] animate-bounce"
           >
             <div className="flex items-center gap-4">
