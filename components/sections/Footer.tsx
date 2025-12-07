@@ -38,17 +38,17 @@ export const Footer = () => {
             {/* Column 1 */}
             <div className="flex flex-col gap-4">
               <span className="text-[#ffae00] text-sm uppercase font-semibold tracking-widest mb-2">DIRECTORY</span>
-              <a href="#genesis" className="text-gray-300 hover:text-hell-red transition-colors">GENESIS</a>
-              <a href="#revelation" className="text-gray-300 hover:text-hell-red transition-colors">TRUTH</a>
-              <a href="#the-pit" className="text-gray-300 hover:text-hell-red transition-colors">THE PIT</a>
+              <a href="#genesis" className="text-gray-200 hover:text-hell-red transition-colors">GENESIS</a>
+              <a href="#revelation" className="text-gray-200 hover:text-hell-red transition-colors">TRUTH</a>
+              <a href="#the-pit" className="text-gray-200 hover:text-hell-red transition-colors">THE PIT</a>
             </div>
 
             {/* Column 2 */}
             <div className="flex flex-col gap-4">
               <span className="text-[#ffae00] text-sm uppercase font-semibold tracking-widest mb-2">PROTOCOL</span>
-              <a href="https://x.com" target="_blank" className="text-gray-300 hover:text-hell-red transition-colors">TWITTER (X)</a>
-              <a href="#" className="text-gray-300 hover:text-hell-red transition-colors">DEXSCREENER</a>
-              <a href="#" className="text-gray-300 hover:text-hell-red transition-colors">CONTRACT</a>
+              <a href="https://x.com" target="_blank" className="text-gray-200 hover:text-hell-red transition-colors">TWITTER (X)</a>
+              <a href="#" className="text-gray-200 hover:text-hell-red transition-colors">DEXSCREENER</a>
+              <a href="#" className="text-gray-200 hover:text-hell-red transition-colors">CONTRACT</a>
             </div>
 
           </div>
