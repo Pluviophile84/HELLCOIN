@@ -6,12 +6,10 @@
   --foreground-rgb: 229, 229, 229;
 }
 
-/* FIX: Globally prevent horizontal scrolling */
-html, body {
-  max-width: 100vw;
-  overflow-x: hidden;
+body {
   color: rgb(var(--foreground-rgb));
   background: #050505;
+  /* Removed 'overflow-x: hidden' as it's no longer needed */
 }
 
 /* Custom Scrollbar */
