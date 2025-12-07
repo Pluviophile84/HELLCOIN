@@ -1,6 +1,6 @@
 "use client";
 import { useState, useEffect } from "react";
-import { Menu } from "lucide-react";
+import { Menu, X } from "lucide-react";
 import { cn } from "../../lib/utils";
 import { motion, AnimatePresence } from "framer-motion";
 
@@ -19,7 +19,6 @@ const NAV_LINKS_DATA = [
   { name: "THE PIT", href: "#the-pit" },
 ];
 
-// FIX: Added mobileMenuOpen to the component definition props
 export const Navbar = ({ onTriggerPaperHands, onToggleMenu, mobileMenuOpen }) => {
   const [isScrolled, setIsScrolled] = useState(false); 
 
@@ -33,7 +32,6 @@ export const Navbar = ({ onTriggerPaperHands, onToggleMenu, mobileMenuOpen }) =>
   }, []);
 
   // SCROLL LOCK: Hides body scroll when mobile menu is open
-  // Now uses the prop passed from app/page.tsx
   useEffect(() => {
     if (mobileMenuOpen) {
       document.body.style.overflow = "hidden";
@@ -46,8 +44,7 @@ export const Navbar = ({ onTriggerPaperHands, onToggleMenu, mobileMenuOpen }) =>
   // --- NAVIGATION HANDLERS ---
   const handleNavClick = (e: React.MouseEvent<HTMLAnchorElement>, href: string) => {
     e.preventDefault();
-    // Since the menu state is now controlled by app/page.tsx, 
-    // we assume the parent component will close the menu after navigation.
+    // Assuming the parent component will close the menu after navigation.
     const targetId = href.replace("#", "");
     const elem = document.getElementById(targetId);
     if (elem) {
@@ -59,16 +56,15 @@ export const Navbar = ({ onTriggerPaperHands, onToggleMenu, mobileMenuOpen }) =>
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
   
-  // Note: The logic for handling the sliding panel is removed from here
-  // because that logic should now reside in app/page.tsx or the sliding menu component.
-
+  // NOTE: The entire Navbar structure is simplified to remove center bar and links.
   return (
     <nav 
       className={cn(
+        // Transparent base, only backdrop-blur on scroll
         "fixed top-0 w-full z-40 transition-all duration-300 py-4",
         isScrolled 
-          ? "bg-hell-black/90 backdrop-blur-md border-b border-hell-red/30" 
-          : "bg-transparent border-transparent"
+          ? "bg-hell-black/90 backdrop-blur-md" // Dark transparent strip on scroll
+          : "bg-transparent" // Fully transparent when at the top
       )}
     >
       <div className="max-w-7xl mx-auto px-4 flex justify-between items-center">
@@ -76,10 +72,13 @@ export const Navbar = ({ onTriggerPaperHands, onToggleMenu, mobileMenuOpen }) =>
         {/* --- LEFT: MENU TOGGLE + LOGO --- */}
         <div className="flex items-center gap-4">
             
-            {/* 1. MENU BUTTON (Rectangular Shape) */}
-            {/* onToggleMenu is the function passed from app/page.tsx to control the state */}
-            <button className="text-hell-white hover:text-hell-red transition-colors p-2 md:p-3 border border-transparent hover:border-hell-red" onClick={onToggleMenu}>
-                <Menu size={24} />
+            {/* 1. MENU BUTTON (Rectangular Shape, Replaces HELLCOIN name) */}
+            <button 
+              className="text-hell-white hover:text-hell-red transition-colors p-2 border border-hell-red/50 uppercase font-terminal text-sm md:text-base font-bold" 
+              onClick={onToggleMenu}
+              style={{ borderRadius: 0 }} // Force rectangular
+            >
+                MENU
             </button>
 
             {/* 2. LOGO (Square Shape) */}
@@ -93,7 +92,7 @@ export const Navbar = ({ onTriggerPaperHands, onToggleMenu, mobileMenuOpen }) =>
                 className="w-12 h-12 md:w-14 md:h-14 border border-hell-orange object-cover shadow-lg" 
                 style={{ borderRadius: 0 }} // Force square corners
               />
-              <span className="font-gothic text-xl md:text-3xl text-hell-orange tracking-wide text-glow hidden sm:inline">HELLCOIN</span>
+              {/* HELLCOIN name removed from here */}
             </div>
         </div>
 
@@ -121,6 +120,74 @@ export const Navbar = ({ onTriggerPaperHands, onToggleMenu, mobileMenuOpen }) =>
           </a>
         </div>
       </div>
+      
+      {/* --- SLIDING COCKPIT MENU (The Drawer) --- */}
+      <AnimatePresence>
+          {mobileMenuOpen && (
+              <motion.div
+                  // Backdrop: Fixed, full screen, z-50
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  exit={{ opacity: 0 }}
+                  onClick={handleBackdropClick}
+                  className="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm"
+              >
+                  {/* Sliding Panel: Uses the fixed top-left bar space */}
+                  <motion.div
+                      initial={{ x: '-100%' }}
+                      animate={{ x: 0 }}
+                      exit={{ x: '-100%' }}
+                      transition={{ type: 'spring', stiffness: 250, damping: 30 }}
+                      className="absolute top-0 left-0 h-full w-full md:w-96 bg-hell-black border-r border-hell-red/50 shadow-2xl p-6"
+                  >
+                      {/* Close Button */}
+                      <button 
+                          onClick={() => setMobileMenuOpen(false)}
+                          className="absolute top-4 right-4 text-hell-white hover:text-hell-red"
+                      >
+                          <X size={28} />
+                      </button>
+
+                      {/* --- MENU LINKS CONTAINER --- */}
+                      <div className="flex flex-col h-full justify-between pt-12 pb-6">
+                          
+                          {/* 1. HEADER (HELLCOIN Name is placed here) */}
+                          <div className="flex flex-col items-start gap-4 shrink-0 mb-8">
+                             <h2 className="font-gothic text-4xl text-hell-orange tracking-wide text-glow">HELLCOIN</h2>
+                             <h3 className="font-terminal text-[#ffae00] text-sm uppercase tracking-widest font-bold">
+                                 /// NAVIGATION TREE ///
+                             </h3>
+                          </div>
+                          
+                          {/* 2. LINKS - SCROLLABLE AREA (Allows links to scroll if needed) */}
+                          <div className="flex flex-col items-start gap-y-4 overflow-y-auto scrollbar-hide flex-grow pb-4">
+                              {NAV_LINKS_DATA.map((link) => (
+                                  <a 
+                                      key={link.name} 
+                                      href={link.href} 
+                                      onClick={(e) => { handleNavClick(e, link.href); setMobileMenuOpen(false); }}
+                                      className="font-terminal text-xl text-hell-white hover:text-hell-red transition-colors cursor-pointer font-bold relative group shrink-0" 
+                                  >
+                                      {link.name}
+                                      <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-hell-red transition-all group-hover:w-full"></span>
+                                  </a>
+                              ))}
+                          </div>
+
+                          {/* 3. ACQUIRE BUTTON (Fixed at Bottom) */}
+                          <a 
+                              href={BUY_LINK}
+                              target="_blank" 
+                              rel="noopener noreferrer"
+                              className="bg-hell-red text-hell-white font-gothic text-xl py-3 px-6 rounded shadow-[0_0_20px_rgba(204,0,0,0.6)] text-center mt-8 shrink-0"
+                          >
+                              ACQUIRE $666
+                          </a>
+                      </div>
+                  </motion.div>
+              </motion.div>
+          )}
+      </AnimatePresence>
     </nav>
   );
 };
