@@ -2,11 +2,26 @@
 import { useState, useEffect } from "react";
 import { Menu } from "lucide-react";
 import { cn } from "../../lib/utils";
+import { motion, AnimatePresence } from "framer-motion";
 
+// --- CONFIGURATION ---
 const BUY_LINK = "https://raydium.io/swap"; 
 
-export const Navbar = ({ onTriggerPaperHands, onToggleMenu }) => {
-  const [isScrolled, setIsScrolled] = useState(false); // Kept for background blur transition
+const NAV_LINKS_DATA = [
+  { name: "GENESIS", href: "#genesis" },
+  { name: "COMMANDMENTS", href: "#commandments" },
+  { name: "NINE TYPES", href: "#nine-types" },
+  { name: "MATH", href: "#math" },
+  { name: "RITUAL", href: "#ritual" },
+  { name: "HELLMAP", href: "#hellmap" },
+  { name: "HALL OF PAIN", href: "#hall-of-pain" },
+  { name: "REVELATION", href: "#revelation" },
+  { name: "THE PIT", href: "#the-pit" },
+];
+
+// FIX: Added mobileMenuOpen to the component definition props
+export const Navbar = ({ onTriggerPaperHands, onToggleMenu, mobileMenuOpen }) => {
+  const [isScrolled, setIsScrolled] = useState(false); 
 
   useEffect(() => {
     const handleScroll = () => {
@@ -17,18 +32,43 @@ export const Navbar = ({ onTriggerPaperHands, onToggleMenu }) => {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
+  // SCROLL LOCK: Hides body scroll when mobile menu is open
+  // Now uses the prop passed from app/page.tsx
+  useEffect(() => {
+    if (mobileMenuOpen) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "unset";
+    }
+    return () => { document.body.style.overflow = "unset"; };
+  }, [mobileMenuOpen]);
+
+  // --- NAVIGATION HANDLERS ---
+  const handleNavClick = (e: React.MouseEvent<HTMLAnchorElement>, href: string) => {
+    e.preventDefault();
+    // Since the menu state is now controlled by app/page.tsx, 
+    // we assume the parent component will close the menu after navigation.
+    const targetId = href.replace("#", "");
+    const elem = document.getElementById(targetId);
+    if (elem) {
+      elem.scrollIntoView({ behavior: "smooth" });
+    }
+  };
+
   const scrollToTop = () => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
   
+  // Note: The logic for handling the sliding panel is removed from here
+  // because that logic should now reside in app/page.tsx or the sliding menu component.
+
   return (
     <nav 
       className={cn(
-        // Fixed positioning, transparent background, clean edges
         "fixed top-0 w-full z-40 transition-all duration-300 py-4",
         isScrolled 
-          ? "bg-hell-black/90 backdrop-blur-md" 
-          : "bg-transparent"
+          ? "bg-hell-black/90 backdrop-blur-md border-b border-hell-red/30" 
+          : "bg-transparent border-transparent"
       )}
     >
       <div className="max-w-7xl mx-auto px-4 flex justify-between items-center">
@@ -37,6 +77,7 @@ export const Navbar = ({ onTriggerPaperHands, onToggleMenu }) => {
         <div className="flex items-center gap-4">
             
             {/* 1. MENU BUTTON (Rectangular Shape) */}
+            {/* onToggleMenu is the function passed from app/page.tsx to control the state */}
             <button className="text-hell-white hover:text-hell-red transition-colors p-2 md:p-3 border border-transparent hover:border-hell-red" onClick={onToggleMenu}>
                 <Menu size={24} />
             </button>
@@ -46,7 +87,6 @@ export const Navbar = ({ onTriggerPaperHands, onToggleMenu }) => {
               onClick={scrollToTop}
               className="flex items-center gap-2 md:gap-3 group cursor-pointer shrink-0 transition-transform active:scale-95"
             >
-              {/* FIX: Perfect Square Logo */}
               <img 
                 src="/GOAPE.png" 
                 alt="Hellcoin" 
@@ -60,7 +100,7 @@ export const Navbar = ({ onTriggerPaperHands, onToggleMenu }) => {
         {/* --- RIGHT: ACTION CENTER --- */}
         <div className="flex items-center gap-2 md:gap-4">
           
-          {/* 1. HEAVEN MODE BUTTON (Responsive text/icon) */}
+          {/* 1. HEAVEN MODE BUTTON */}
           <button 
             onClick={onTriggerPaperHands}
             className="flex items-center gap-2 px-3 py-1 border border-pink-300 rounded text-pink-100 font-terminal text-xs md:text-sm font-bold hover:bg-pink-500/20 hover:text-white transition-colors shadow-[0_0_10px_rgba(255,192,203,0.3)]"
