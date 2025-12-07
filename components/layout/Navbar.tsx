@@ -63,6 +63,13 @@ export const Navbar = ({ onTriggerPaperHands, onToggleMenu, mobileMenuOpen }) =>
   const handleToggleMenu = () => {
       setIsMenuOpen(prev => !prev);
   }
+
+  // FIX: Added missing backdrop click handler
+  const handleBackdropClick = (e: React.MouseEvent) => {
+    if (e.target === e.currentTarget) {
+        setIsMenuOpen(false);
+    }
+  };
   
   return (
     // FIX 1: Removed all background colors/borders from <nav> tag. It is now transparent and floating.
