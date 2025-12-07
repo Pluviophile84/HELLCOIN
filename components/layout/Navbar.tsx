@@ -57,7 +57,7 @@ export const Navbar = ({ onTriggerPaperHands }: { onTriggerPaperHands: () => voi
 
     const containerWidth = navRef.current.offsetWidth;
     const moreButtonWidth = 100; // Space reserved for "MORE" button
-    const safetyBuffer = 40; // Buffer to trigger collapse earlier
+    const safetyBuffer = 40; // Buffer to prevent edge collisions
     let usedWidth = 0;
     let newVisibleCount = 0;
 
@@ -133,8 +133,8 @@ export const Navbar = ({ onTriggerPaperHands }: { onTriggerPaperHands: () => voi
           : "bg-transparent border-transparent"
       )}
     >
-      {/* FIX: Reverted to max-w-7xl to fix the "too wide" feeling on your 23" screen */}
-      <div className="max-w-7xl mx-auto px-4 flex justify-between items-center h-full">
+      {/* FIX: Increased max-width logic to allow full expansion on large screens (like your 23" monitor) */}
+      <div className="w-full max-w-7xl xl:max-w-[95%] 2xl:max-w-[2000px] mx-auto px-4 flex justify-between items-center h-full">
         
         {/* --- LEFT: LOGO --- */}
         <div 
@@ -152,9 +152,7 @@ export const Navbar = ({ onTriggerPaperHands }: { onTriggerPaperHands: () => voi
         {/* --- CENTER: ADAPTIVE LINKS (Hidden on Mobile) --- */}
         <div 
           ref={navRef} 
-          // FIX: Added 'min-w-0'. This is the magic CSS fix. 
-          // It allows this flex item to shrink below its content size, 
-          // which triggers the resize observer logic BEFORE buttons get pushed off screen.
+          // FIX: Added 'min-w-0' to allow shrinking
           className={cn(
             "hidden lg:flex items-center justify-center px-4 h-full relative flex-1 mx-4 min-w-0 transition-opacity duration-300",
             isReady ? "opacity-100" : "opacity-0"
@@ -213,17 +211,21 @@ export const Navbar = ({ onTriggerPaperHands }: { onTriggerPaperHands: () => voi
                        initial={{ opacity: 0, y: 10 }}
                        animate={{ opacity: 1, y: 0 }}
                        exit={{ opacity: 0, y: 10 }}
-                       className="absolute top-full right-0 pt-2 w-56 z-50" 
+                       // FIX: Changed right-0 to left-0 so menu aligns to the right side of the trigger
+                       className="absolute top-full left-0 pt-2 w-56 z-50" 
                      >
-                       <div className="bg-hell-black border border-hell-red/50 shadow-xl p-5 flex flex-col gap-2">
+                       <div className="bg-hell-black border border-hell-red/50 shadow-xl p-5 flex flex-col gap-4">
                          {hiddenLinks.map((link) => (
                            <a 
                              key={link.name} 
                              href={link.href}
                              onClick={(e) => handleNavClick(e, link.href)}
-                             className="font-terminal text-sm text-gray-400 hover:text-hell-red transition-colors uppercase py-1.5 block"
+                             // FIX: Styled exactly like primary links (Gold Hover, Bold, Underline)
+                             className="font-terminal text-base text-hell-white hover:text-[#ffae00] transition-colors uppercase tracking-widest relative group cursor-pointer font-bold w-fit"
                            >
                              {link.name}
+                             {/* Red Line Animation */}
+                             <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-hell-orange transition-all group-hover:w-full"></span>
                            </a>
                          ))}
                        </div>
