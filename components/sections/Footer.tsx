@@ -13,13 +13,11 @@ export const Footer = () => {
       <div className="max-w-7xl mx-auto px-4 relative z-10">
         
         {/* --- TOP ROW: BRAND & LINKS --- */}
-        {/* Mobile: Centered | Desktop: Left aligned */}
         <div className="flex flex-col md:flex-row justify-between items-center md:items-start gap-12 mb-20 text-center md:text-left">
           
           {/* LEFT: BRAND IDENTITY */}
           <div className="flex flex-col gap-4 items-center md:items-start">
             <div className="flex items-center gap-3">
-              {/* FIX: Removed Logo Image entirely. Made text massive. */}
               <span className="font-gothic text-6xl md:text-8xl text-hell-white tracking-wide leading-none">
                 HELLCOIN
               </span>
@@ -31,24 +29,30 @@ export const Footer = () => {
           </div>
 
           {/* RIGHT: NAVIGATION LINKS */}
-          {/* FIX: Changed 'flex-col' to 'flex-row' so columns sit side-by-side on ALL screens */}
-          {/* Added 'flex-wrap' just in case of very small screens to prevent breaking */}
-          <div className="flex flex-row flex-wrap gap-8 md:gap-24 font-terminal text-xl justify-center md:justify-start">
+          <div className="flex flex-row flex-wrap gap-8 md:gap-24 font-terminal justify-center md:justify-start">
             
             {/* Column 1 */}
             <div className="flex flex-col gap-4">
-              <span className="text-[#ffae00] text-sm uppercase font-semibold tracking-widest mb-2">DIRECTORY</span>
-              <a href="#genesis" className="text-gray-200 hover:text-hell-red transition-colors">GENESIS</a>
-              <a href="#revelation" className="text-gray-200 hover:text-hell-red transition-colors">TRUTH</a>
-              <a href="#the-pit" className="text-gray-200 hover:text-hell-red transition-colors">THE PIT</a>
+              {/* FIX: Title is larger and font-semibold (Hierarchy established) */}
+              <span className="text-[#ffae00] text-xl uppercase tracking-widest mb-2 font-semibold">
+                DIRECTORY
+              </span>
+              {/* FIX: Links are smaller (text-base) and non-bold (more elegant) */}
+              <a href="#genesis" className="text-gray-300 hover:text-hell-red transition-colors text-base">GENESIS</a>
+              <a href="#revelation" className="text-gray-300 hover:text-hell-red transition-colors text-base">TRUTH</a>
+              <a href="#the-pit" className="text-gray-300 hover:text-hell-red transition-colors text-base">THE PIT</a>
             </div>
 
             {/* Column 2 */}
             <div className="flex flex-col gap-4">
-              <span className="text-[#ffae00] text-sm uppercase font-semibold tracking-widest mb-2">PROTOCOL</span>
-              <a href="https://x.com" target="_blank" className="text-gray-200 hover:text-hell-red transition-colors">TWITTER (X)</a>
-              <a href="#" className="text-gray-200 hover:text-hell-red transition-colors">DEXSCREENER</a>
-              <a href="#" className="text-gray-200 hover:text-hell-red transition-colors">CONTRACT</a>
+              {/* FIX: Title is larger and font-semibold (Hierarchy established) */}
+              <span className="text-[#ffae00] text-xl uppercase tracking-widest mb-2 font-semibold">
+                PROTOCOL
+              </span>
+              {/* FIX: Links are smaller (text-base) and non-bold (more elegant) */}
+              <a href="https://x.com" target="_blank" className="text-gray-300 hover:text-hell-red transition-colors text-base">TWITTER (X)</a>
+              <a href="#" className="text-gray-300 hover:text-hell-red transition-colors text-base">DEXSCREENER</a>
+              <a href="#" className="text-gray-300 hover:text-hell-red transition-colors text-base">CONTRACT</a>
             </div>
 
           </div>
@@ -67,7 +71,7 @@ export const Footer = () => {
             </p>
           </div>
 
-          {/* Copyright - FIX: Consolidated to one line */}
+          {/* Copyright */}
           <div className="font-terminal text-gray-500 text-sm text-center md:text-right whitespace-nowrap">
             <p>© {currentYear} HELLCOIN. ALL RIGHTS BURNED.</p>
           </div>
