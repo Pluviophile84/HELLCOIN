@@ -255,13 +255,14 @@ export const Navbar = ({ onTriggerPaperHands }: { onTriggerPaperHands: () => voi
             animate={{ opacity: 1, height: "100vh" }}
             exit={{ opacity: 0, height: 0 }}
             onClick={() => setMobileMenuOpen(false)}
-            // New stable mobile menu container structure
-            className="lg:hidden fixed top-0 bottom-0 left-0 right-0 bg-hell-black/95 backdrop-blur-xl border-b border-hell-red/50 overflow-hidden shadow-2xl pt-[60px]"
+            // Fixed position, uses top/bottom/left/right 0 for absolute 100% viewport coverage
+            // This is the most stable method and removes the scrollbar flash permanently.
+            className="lg:hidden fixed top-0 bottom-0 left-0 right-0 bg-hell-black/95 backdrop-blur-xl border-b border-hell-red/50 overflow-hidden shadow-2xl"
           >
-            {/* Inner Content Container: Uses Flexbox to manage vertical spacing */}
-            <div className="p-6 h-full flex flex-col justify-between items-center overflow-hidden">
+            {/* Inner Content Container: Uses Flexbox to push content to Top/Bottom */}
+            <div className="p-6 h-full flex flex-col justify-between items-center overflow-hidden pt-[80px] pb-[40px]">
               
-              {/* 1. LINKS - Adaptive Spacing */}
+              {/* 1. LINKS - Adaptive Spacing (Fills all vertical space) */}
               <div className="flex flex-col flex-grow justify-around items-center w-full gap-y-0">
                 {NAV_LINKS_DATA.map((link) => (
                   <a 
