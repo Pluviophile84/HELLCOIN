@@ -69,7 +69,8 @@ export const Navbar = ({ onTriggerPaperHands }: { onTriggerPaperHands: () => voi
   const checkOverflow = useCallback(() => {
     if (!containerRef.current) return;
 
-    const containerWidth = containerRef.current.offsetWidth;
+    // Use clientWidth to measure available space accurately
+    const containerWidth = containerRef.current.clientWidth; 
     const moreButtonWidth = 80; // Estimated width of the 'MORE' button
     let currentWidth = 0;
     let visible = 0;
@@ -77,7 +78,7 @@ export const Navbar = ({ onTriggerPaperHands }: { onTriggerPaperHands: () => voi
     for (let i = 0; i < NAV_LINKS_DATA.length; i++) {
       const linkElement = linksRef.current[i];
       if (linkElement) {
-        // Add link width + gap (6 units = 24px)
+        // Add link width + margin/gap (Tailwind gap-6 means 24px)
         const linkWidth = linkElement.offsetWidth + 24;
         
         // If adding the current link + the 'MORE' button exceeds container width, stop.
@@ -101,7 +102,13 @@ export const Navbar = ({ onTriggerPaperHands }: { onTriggerPaperHands: () => voi
     const observer = new ResizeObserver(() => checkOverflow());
     observer.observe(containerRef.current);
 
-    return () => observer.disconnect();
+    // Run check on initial load (since component mounts before observer fires sometimes)
+    window.addEventListener('resize', checkOverflow);
+
+    return () => {
+      observer.disconnect();
+      window.removeEventListener('resize', checkOverflow);
+    };
   }, [checkOverflow]);
 
 
@@ -155,7 +162,8 @@ export const Navbar = ({ onTriggerPaperHands }: { onTriggerPaperHands: () => voi
             {visibleLinks.map((link, index) => (
               <a 
                 key={link.name} 
-                ref={el => linksRef.current[index] = el}
+                // FIX: Corrected ref assignment to return void
+                ref={el => { linksRef.current[index] = el; }} 
                 href={link.href}
                 onClick={(e) => handleNavClick(e, link.href)}
                 className="font-terminal text-base text-hell-white hover:text-[#ffae00] transition-colors uppercase tracking-widest relative group cursor-pointer font-bold whitespace-nowrap"
