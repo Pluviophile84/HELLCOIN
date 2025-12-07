@@ -24,24 +24,13 @@ export const Navbar = ({ onTriggerPaperHands }: { onTriggerPaperHands: () => voi
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  // --- FIX: SCROLL LOCK LOGIC (Prevents Red Flash) ---
   useEffect(() => {
     if (mobileMenuOpen) {
-      // 1. Hide scrollbar
       document.body.style.overflow = "hidden";
-      
-      // 2. Add padding to compensate for the scrollbar's width (avoids shifting content)
-      // This is a common solution for systems where scrollbar width is fixed (usually 8px or 15px)
-      document.body.style.paddingRight = "8px"; 
     } else {
-      // Restore normal state
       document.body.style.overflow = "unset";
-      document.body.style.paddingRight = "0"; 
     }
-    return () => { 
-      document.body.style.style.overflow = "unset"; 
-      document.body.style.paddingRight = "0"; 
-    };
+    return () => { document.body.style.overflow = "unset"; };
   }, [mobileMenuOpen]);
 
   const scrollToTop = () => {
@@ -168,7 +157,7 @@ export const Navbar = ({ onTriggerPaperHands }: { onTriggerPaperHands: () => voi
         {/* --- ACTIONS --- */}
         <div className="flex items-center gap-2 md:gap-4">
           
-          {/* HEAVEN MODE BUTTON */}
+          {/* HEAVEN MODE BUTTON (Restored) */}
           <button 
             onClick={onTriggerPaperHands}
             className="flex items-center gap-2 px-3 py-1 border border-pink-300 rounded text-pink-100 font-terminal text-xs md:text-sm font-bold hover:bg-pink-500/20 hover:text-white transition-colors shadow-[0_0_10px_rgba(255,192,203,0.3)]"
@@ -205,7 +194,6 @@ export const Navbar = ({ onTriggerPaperHands }: { onTriggerPaperHands: () => voi
             className="lg:hidden fixed top-[60px] left-0 w-full bg-hell-black/95 backdrop-blur-xl border-b border-hell-red/50 overflow-hidden shadow-2xl"
           >
             <div className="p-6 flex flex-col gap-6 items-center justify-center h-full pb-32 overflow-y-auto">
-              {/* Full list of 9 links for mobile menu */}
               {navLinks.map((link) => (
                 <a 
                   key={link.name} 
