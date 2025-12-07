@@ -23,7 +23,7 @@ export const Navbar = ({ onTriggerPaperHands }: { onTriggerPaperHands: () => voi
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [moreMenuOpen, setMoreMenuOpen] = useState(false);
 
-  // --- ADAPTIVE SIZING REFS ---
+  // --- ADAPTIVE SIZING REFS & LOGIC ---
   const containerRef = useRef<HTMLDivElement>(null);
   const linksRef = useRef<(HTMLAnchorElement | null)[]>([]);
   const [visibleCount, setVisibleCount] = useState(NAV_LINKS_DATA.length);
@@ -38,9 +38,10 @@ export const Navbar = ({ onTriggerPaperHands }: { onTriggerPaperHands: () => voi
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
+  // SCROLL LOCK: Hides body scroll when mobile menu is open
   useEffect(() => {
     if (mobileMenuOpen) {
-      document.body.style.overflow = "hidden"; // Scroll Lock
+      document.body.style.overflow = "hidden";
     } else {
       document.body.style.overflow = "unset";
     }
@@ -65,23 +66,19 @@ export const Navbar = ({ onTriggerPaperHands }: { onTriggerPaperHands: () => voi
     setMoreMenuOpen(false);
   };
 
-  // --- DYNAMIC COLLAPSE LOGIC (Measures link widths) ---
+  // DYNAMIC COLLAPSE LOGIC (Kept for Desktop)
   const checkOverflow = useCallback(() => {
     if (!containerRef.current) return;
 
-    // Use clientWidth to measure available space accurately
     const containerWidth = containerRef.current.clientWidth; 
-    const moreButtonWidth = 80; // Estimated width of the 'MORE' button
+    const moreButtonWidth = 80; 
     let currentWidth = 0;
     let visible = 0;
 
     for (let i = 0; i < NAV_LINKS_DATA.length; i++) {
       const linkElement = linksRef.current[i];
       if (linkElement) {
-        // Add link width + margin/gap (Tailwind gap-6 means 24px)
         const linkWidth = linkElement.offsetWidth + 24;
-        
-        // If adding the current link + the 'MORE' button exceeds container width, stop.
         if (currentWidth + linkWidth + moreButtonWidth >= containerWidth) {
           break; 
         }
@@ -90,19 +87,16 @@ export const Navbar = ({ onTriggerPaperHands }: { onTriggerPaperHands: () => voi
       }
     }
     
-    // Set minimum of 3 visible links to prevent flicker
     setVisibleCount(Math.max(visible, 3));
   }, []);
 
-  // Use ResizeObserver to check when container size changes
   useEffect(() => {
     if (typeof ResizeObserver === 'undefined' || !containerRef.current) return;
-    checkOverflow(); // Initial check
+    checkOverflow();
 
     const observer = new ResizeObserver(() => checkOverflow());
     observer.observe(containerRef.current);
 
-    // Run check on initial load (since component mounts before observer fires sometimes)
     window.addEventListener('resize', checkOverflow);
 
     return () => {
@@ -162,7 +156,6 @@ export const Navbar = ({ onTriggerPaperHands }: { onTriggerPaperHands: () => voi
             {visibleLinks.map((link, index) => (
               <a 
                 key={link.name} 
-                // FIX: Corrected ref assignment to return void
                 ref={el => { linksRef.current[index] = el; }} 
                 href={link.href}
                 onClick={(e) => handleNavClick(e, link.href)}
@@ -262,18 +255,20 @@ export const Navbar = ({ onTriggerPaperHands }: { onTriggerPaperHands: () => voi
             animate={{ opacity: 1, height: "100vh" }}
             exit={{ opacity: 0, height: 0 }}
             onClick={() => setMobileMenuOpen(false)}
-            // Fixed position, uses 'w-screen' to be certain to cover the entire width
-            className="lg:hidden fixed top-[60px] left-0 w-screen h-[calc(100vh-60px)] bg-hell-black/95 backdrop-blur-xl border-b border-hell-red/50 overflow-hidden shadow-2xl"
+            // New stable mobile menu container structure
+            className="lg:hidden fixed top-0 bottom-0 left-0 right-0 bg-hell-black/95 backdrop-blur-xl border-b border-hell-red/50 overflow-hidden shadow-2xl pt-[60px]"
           >
+            {/* Inner Content Container: Uses Flexbox to manage vertical spacing */}
             <div className="p-6 h-full flex flex-col justify-between items-center overflow-hidden">
               
-              {/* 1. LINKS - Adaptive Spacing (Fills all vertical space) */}
+              {/* 1. LINKS - Adaptive Spacing */}
               <div className="flex flex-col flex-grow justify-around items-center w-full gap-y-0">
                 {NAV_LINKS_DATA.map((link) => (
                   <a 
                     key={link.name} 
                     href={link.href} 
                     onClick={(e) => handleNavClick(e, link.href)}
+                    // Adapt link size slightly to guarantee fit on shortest screens
                     className="font-terminal text-lg text-hell-white hover:text-hell-orange tracking-widest cursor-pointer font-bold shrink-0 py-0.5" 
                   >
                     {link.name}
