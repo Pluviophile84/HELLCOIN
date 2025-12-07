@@ -133,8 +133,8 @@ export const Navbar = ({ onTriggerPaperHands }: { onTriggerPaperHands: () => voi
           : "bg-transparent border-transparent"
       )}
     >
-      {/* FIX: Increased max-width logic to allow full expansion on large screens (like your 23" monitor) */}
-      <div className="w-full max-w-7xl xl:max-w-[95%] 2xl:max-w-[2000px] mx-auto px-4 flex justify-between items-center h-full">
+      {/* FIX: Reduced max-width to 80% on large screens to pull logo and buttons closer to center */}
+      <div className="w-full max-w-7xl xl:max-w-[80%] 2xl:max-w-[80%] mx-auto px-4 flex justify-between items-center h-full">
         
         {/* --- LEFT: LOGO --- */}
         <div 
