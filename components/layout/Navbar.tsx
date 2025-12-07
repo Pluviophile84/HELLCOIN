@@ -24,17 +24,26 @@ export const Navbar = ({ onTriggerPaperHands }: { onTriggerPaperHands: () => voi
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  // --- FINAL SCROLL LOCK FIX (Eliminates the Red Flash) ---
+  // --- FIX: SCROLL LOCK LOGIC (Conditional Padding for Mobile) ---
   useEffect(() => {
+    // Check if device is likely desktop (viewport width greater than lg breakpoint)
+    const isDesktop = typeof window !== 'undefined' && window.innerWidth >= 1024;
+    
     if (mobileMenuOpen) {
-      // Hide scrollbar, do NOT apply paddingRight compensation on mobile
       document.body.style.overflow = "hidden";
+      
+      // FIX: Only apply padding to desktop to prevent content shift on mobile
+      if (isDesktop) {
+        document.body.style.paddingRight = "8px"; 
+      }
     } else {
-      // Restore scroll
+      // Restore normal state
       document.body.style.overflow = "unset";
+      document.body.style.paddingRight = "0"; 
     }
     return () => { 
       document.body.style.overflow = "unset"; 
+      document.body.style.paddingRight = "0"; 
     };
   }, [mobileMenuOpen]);
 
