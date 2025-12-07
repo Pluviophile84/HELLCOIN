@@ -1,13 +1,12 @@
 "use client";
 import { useState, useEffect } from "react";
-import { Menu, X, ChevronDown, ChevronUp } from "lucide-react";
+import { Menu, X } from "lucide-react";
 import { cn } from "../../lib/utils";
 import { motion, AnimatePresence } from "framer-motion";
 
 export const Navbar = ({ onTriggerPaperHands }: { onTriggerPaperHands: () => void }) => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const [moreMenuOpen, setMoreMenuOpen] = useState(false); 
 
   const BUY_LINK = "https://raydium.io/swap"; 
 
@@ -36,13 +35,11 @@ export const Navbar = ({ onTriggerPaperHands }: { onTriggerPaperHands: () => voi
   const scrollToTop = () => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
     setMobileMenuOpen(false);
-    setMoreMenuOpen(false);
   };
 
   const handleNavClick = (e: React.MouseEvent<HTMLAnchorElement>, href: string) => {
     e.preventDefault();
     setMobileMenuOpen(false);
-    setMoreMenuOpen(false); 
     const targetId = href.replace("#", "");
     const elem = document.getElementById(targetId);
     if (elem) {
@@ -51,19 +48,14 @@ export const Navbar = ({ onTriggerPaperHands }: { onTriggerPaperHands: () => voi
   };
 
   const navLinks = [
-    { name: "GENESIS", href: "#genesis", primary: true },
-    { name: "COMMANDMENTS", href: "#commandments", primary: true },
-    { name: "NINE TYPES", href: "#nine-types", primary: true },
-    { name: "MATH", href: "#math", primary: true },
-    { name: "RITUAL", href: "#ritual", primary: true }, 
-    { name: "HELLMAP", href: "#hellmap", primary: false }, 
-    { name: "HALL OF PAIN", href: "#hall-of-pain", primary: false },
-    { name: "REVELATION", href: "#revelation", primary: false },
-    { name: "THE PIT", href: "#the-pit", primary: false },
+    { name: "GENESIS", short: "GEN", href: "#genesis" },
+    { name: "TRUTH", short: "TRU", href: "#revelation" },
+    { name: "COMMANDMENTS", short: "CMD", href: "#commandments" },
+    { name: "MATH", short: "MTH", href: "#math" },
+    { name: "RITUAL", short: "RIT", href: "#ritual" },
+    { name: "HELLMAP", short: "MAP", href: "#hellmap" },
+    { name: "THE PIT", short: "PIT", href: "#the-pit" },
   ];
-
-  const primaryLinks = navLinks.filter(link => link.primary); 
-  const secondaryLinks = navLinks.filter(link => !link.primary); 
 
   return (
     <nav 
@@ -90,74 +82,41 @@ export const Navbar = ({ onTriggerPaperHands }: { onTriggerPaperHands: () => voi
         </div>
 
         {/* --- NAVIGATION LINKS --- */}
-        <div className="relative hidden lg:flex items-center gap-6">
 
-          {/* 1. PRIMARY VISIBLE LINKS */}
-          <div className="flex gap-6">
-            {primaryLinks.map((link) => (
-              <a 
-                key={link.name} 
-                href={link.href}
-                onClick={(e) => handleNavClick(e, link.href)}
-                className="font-terminal text-base text-hell-white hover:text-[#ffae00] transition-colors uppercase tracking-widest relative group cursor-pointer font-bold"
-              >
-                {link.name}
-                <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-hell-orange transition-all group-hover:w-full"></span>
-              </a>
-            ))}
-          </div>
-          
-          {/* 2. MORE DROPDOWN (Hover Activated) */}
-          <div 
-            className="relative h-full flex items-center"
-            onMouseEnter={() => setMoreMenuOpen(true)}
-            onMouseLeave={() => setMoreMenuOpen(false)}
-          >
-            <button 
-              className={cn(
-                "flex items-center gap-1 font-terminal text-base transition-colors uppercase cursor-pointer border px-2 py-1",
-                moreMenuOpen 
-                  ? "text-hell-red border-hell-red" 
-                  : "text-[#ffae00] border-hell-red/50 hover:text-hell-red"
-              )}
+        {/* 1. DESKTOP WIDE (Full Names) */}
+        <div className="hidden xl:flex gap-6">
+          {navLinks.map((link) => (
+            <a 
+              key={link.name} 
+              href={link.href}
+              onClick={(e) => handleNavClick(e, link.href)}
+              className="font-terminal text-base text-hell-white hover:text-hell-gold transition-colors uppercase tracking-widest relative group cursor-pointer font-bold"
             >
-              MORE
-              {moreMenuOpen ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
-            </button>
-
-            {/* DROPDOWN MENU */}
-            <AnimatePresence>
-              {moreMenuOpen && (
-                <motion.div
-                  initial={{ opacity: 0, y: 10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: 10 }}
-                  className="absolute top-full left-0 pt-4 w-56 z-50" 
-                >
-                  <div className="bg-hell-black border border-hell-red/50 shadow-xl p-5 flex flex-col gap-4">
-                    {secondaryLinks.map((link) => (
-                      <a 
-                        key={link.name} 
-                        href={link.href}
-                        onClick={(e) => handleNavClick(e, link.href)}
-                        className="font-terminal text-base text-hell-white hover:text-[#ffae00] transition-colors uppercase tracking-widest relative group cursor-pointer font-bold w-fit"
-                      >
-                        {link.name}
-                        <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-hell-orange transition-all group-hover:w-full"></span>
-                      </a>
-                    ))}
-                  </div>
-                </motion.div>
-              )}
-            </AnimatePresence>
-          </div>
+              {link.name}
+              <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-hell-orange transition-all group-hover:w-full"></span>
+            </a>
+          ))}
         </div>
         
+        {/* 2. LAPTOP MEDIUM (Abbreviated Names) */}
+        <div className="hidden lg:flex xl:hidden gap-5">
+          {navLinks.map((link) => (
+            <a 
+              key={link.name} 
+              href={link.href}
+              onClick={(e) => handleNavClick(e, link.href)}
+              title={link.name}
+              className="font-terminal text-sm text-hell-white hover:text-hell-gold transition-colors uppercase tracking-widest relative group cursor-pointer font-bold border border-transparent px-1 hover:border-hell-red/50"
+            >
+              {link.short}
+            </a>
+          ))}
+        </div>
 
         {/* --- ACTIONS --- */}
         <div className="flex items-center gap-2 md:gap-4">
           
-          {/* HEAVEN MODE BUTTON (Restored) */}
+          {/* HEAVEN MODE BUTTON */}
           <button 
             onClick={onTriggerPaperHands}
             className="flex items-center gap-2 px-3 py-1 border border-pink-300 rounded text-pink-100 font-terminal text-xs md:text-sm font-bold hover:bg-pink-500/20 hover:text-white transition-colors shadow-[0_0_10px_rgba(255,192,203,0.3)]"
@@ -176,7 +135,7 @@ export const Navbar = ({ onTriggerPaperHands }: { onTriggerPaperHands: () => voi
             ACQUIRE $666
           </a>
 
-          {/* MOBILE TOGGLE */}
+          {/* MOBILE TOGGLE (Hidden on large screens) */}
           <button className="lg:hidden text-hell-white" onClick={() => setMobileMenuOpen(!mobileMenuOpen)}>
             {mobileMenuOpen ? <X size={28} /> : <Menu size={28} />}
           </button>
@@ -193,7 +152,7 @@ export const Navbar = ({ onTriggerPaperHands }: { onTriggerPaperHands: () => voi
             onClick={() => setMobileMenuOpen(false)}
             className="lg:hidden fixed top-[60px] left-0 w-full bg-hell-black/95 backdrop-blur-xl border-b border-hell-red/50 overflow-hidden shadow-2xl"
           >
-            <div className="p-6 flex flex-col gap-6 items-center justify-center h-full pb-32 overflow-y-auto">
+            <div className="p-6 flex flex-col gap-6 items-center justify-center h-full pb-32">
               {navLinks.map((link) => (
                 <a 
                   key={link.name} 
@@ -205,14 +164,14 @@ export const Navbar = ({ onTriggerPaperHands }: { onTriggerPaperHands: () => voi
                 </a>
               ))}
               
-              <div className="w-16 h-1 bg-hell-red/50 my-4 shrink-0"></div>
+              <div className="w-16 h-1 bg-hell-red/50 my-4"></div>
               
               {/* ACQUIRE LINK (Mobile) */}
               <a 
                 href={BUY_LINK}
                 target="_blank" 
                 rel="noopener noreferrer"
-                className="bg-hell-red text-hell-white font-gothic text-xl py-3 px-12 rounded shadow-[0_0_20px_rgba(204,0,0,0.6)] shrink-0"
+                className="bg-hell-red text-hell-white font-gothic text-xl py-3 px-12 rounded shadow-[0_0_20px_rgba(204,0,0,0.6)]"
               >
                 ACQUIRE $666
               </a>
