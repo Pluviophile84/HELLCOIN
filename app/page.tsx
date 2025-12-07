@@ -2,7 +2,7 @@
 import { useState } from "react";
 import { Navbar } from "@/components/layout/Navbar";
 import { PaperHandsOverlay } from "@/components/ui/PaperHandsOverlay";
-import { SlidingCockpitMenu } from "@/components/layout/SlidingCockpitMenu"; 
+// Note: SlidingCockpitMenu is NO LONGER IMPORTED
 import { Hero } from "@/components/sections/Hero";
 import { Genesis } from "@/components/sections/Genesis";
 import { Revelation } from "@/components/sections/Revelation";
@@ -14,16 +14,6 @@ import { HallOfPain } from "@/components/sections/HallOfPain";
 import { Hellmap } from "@/components/sections/Hellmap";
 import { ThePit } from "@/components/sections/ThePit";
 import { Footer } from "@/components/sections/Footer";
-
-// Generic handler for the Cockpit Menu links
-const handleCockpitNavClick = (e, href) => {
-    e.preventDefault();
-    const targetId = href.replace("#", "");
-    const elem = document.getElementById(targetId);
-    if (elem) {
-        elem.scrollIntoView({ behavior: "smooth" });
-    }
-}
 
 
 export default function Home() {
@@ -44,17 +34,12 @@ export default function Home() {
       {/* 1. The Full Screen Overlay */}
       <PaperHandsOverlay isActive={paperHands} onClose={() => setPaperHands(false)} />
       
-      {/* 2. The Fixed Top Header */}
-      <Navbar onTriggerPaperHands={triggerHeavenMode} onToggleMenu={toggleCockpit} /> 
+      {/* 2. The Fixed Top Header (Passes the toggle function and state) */}
+      <Navbar onTriggerPaperHands={triggerHeavenMode} onToggleMenu={toggleCockpit} mobileMenuOpen={cockpitOpen} /> 
       
-      {/* 3. THE SLIDING COCKPIT MENU */}
-      <SlidingCockpitMenu 
-          isOpen={cockpitOpen} 
-          onClose={() => setCockpitOpen(false)} 
-          handleNavClick={handleCockpitNavClick} 
-      />
+      {/* Note: SlidingCockpitMenu is not here. */}
 
-      {/* --- PAGE SECTIONS (No margin needed now, content is naturally centered) --- */}
+      {/* --- PAGE SECTIONS --- */}
       <div> 
         <Hero />
         <Genesis />
