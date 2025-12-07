@@ -24,16 +24,22 @@ export const Navbar = ({ onTriggerPaperHands }: { onTriggerPaperHands: () => voi
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
+  // --- FIX: SCROLL LOCK LOGIC (Prevents Red Flash) ---
   useEffect(() => {
     if (mobileMenuOpen) {
+      // 1. Hide scrollbar
       document.body.style.overflow = "hidden";
+      
+      // 2. Add padding to compensate for the scrollbar's width (avoids shifting content)
+      // This is a common solution for systems where scrollbar width is fixed (usually 8px or 15px)
       document.body.style.paddingRight = "8px"; 
     } else {
+      // Restore normal state
       document.body.style.overflow = "unset";
       document.body.style.paddingRight = "0"; 
     }
     return () => { 
-      document.body.style.overflow = "unset"; 
+      document.body.style.style.overflow = "unset"; 
       document.body.style.paddingRight = "0"; 
     };
   }, [mobileMenuOpen]);
@@ -95,8 +101,7 @@ export const Navbar = ({ onTriggerPaperHands }: { onTriggerPaperHands: () => voi
         </div>
 
         {/* --- NAVIGATION LINKS --- */}
-        {/* FIX: Ensure this entire container has space to expand without hitting the edge of the screen */}
-        <div className="relative hidden lg:flex items-center gap-6 max-w-[65%] xl:max-w-none"> 
+        <div className="relative hidden lg:flex items-center gap-6">
 
           {/* 1. PRIMARY VISIBLE LINKS */}
           <div className="flex gap-6">
@@ -138,9 +143,7 @@ export const Navbar = ({ onTriggerPaperHands }: { onTriggerPaperHands: () => voi
                   initial={{ opacity: 0, y: 10 }}
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, y: 10 }}
-                  // FIX: Reverted to right-0 so it opens away from the logo/center 
-                  // but pushed the links container wider to compensate for space.
-                  className="absolute top-full right-0 pt-4 w-56 z-50" 
+                  className="absolute top-full left-0 pt-4 w-56 z-50" 
                 >
                   <div className="bg-hell-black border border-hell-red/50 shadow-xl p-5 flex flex-col gap-4">
                     {secondaryLinks.map((link) => (
@@ -165,7 +168,14 @@ export const Navbar = ({ onTriggerPaperHands }: { onTriggerPaperHands: () => voi
         {/* --- ACTIONS --- */}
         <div className="flex items-center gap-2 md:gap-4">
           
-          {/* HEAVEN MODE BUTTON (Removed from here, now a bubble) */}
+          {/* HEAVEN MODE BUTTON */}
+          <button 
+            onClick={onTriggerPaperHands}
+            className="flex items-center gap-2 px-3 py-1 border border-pink-300 rounded text-pink-100 font-terminal text-xs md:text-sm font-bold hover:bg-pink-500/20 hover:text-white transition-colors shadow-[0_0_10px_rgba(255,192,203,0.3)]"
+          >
+            <span className="w-2 h-2 rounded-full bg-pink-200 animate-pulse shadow-[0_0_5px_#fff]"></span>
+            HEAVEN MODE
+          </button>
           
           {/* ACQUIRE BUTTON (DESKTOP/LAPTOP) */}
           <a 
