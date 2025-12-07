@@ -24,11 +24,13 @@ export const Navbar = ({ onTriggerPaperHands }: { onTriggerPaperHands: () => voi
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  // --- SCROLL LOCK LOGIC (Prevents Scroll on Mobile Menu Open) ---
+  // --- FINAL SCROLL LOCK FIX (Eliminates the Red Flash) ---
   useEffect(() => {
     if (mobileMenuOpen) {
+      // Hide scrollbar, do NOT apply paddingRight compensation on mobile
       document.body.style.overflow = "hidden";
     } else {
+      // Restore scroll
       document.body.style.overflow = "unset";
     }
     return () => { 
@@ -186,47 +188,40 @@ export const Navbar = ({ onTriggerPaperHands }: { onTriggerPaperHands: () => voi
         </div>
       </div>
 
-      {/* --- MOBILE/VERTICAL MENU (FULL VIEWPORT TAKEOVER) --- */}
+      {/* --- MOBILE/VERTICAL MENU --- */}
       <AnimatePresence>
         {mobileMenuOpen && (
           <motion.div
             initial={{ opacity: 0, height: 0 }}
-            animate={{ opacity: 1, height: "100vh" }} // Ensure it takes full viewport height
+            animate={{ opacity: 1, height: "100vh" }}
             exit={{ opacity: 0, height: 0 }}
             onClick={() => setMobileMenuOpen(false)}
-            // Fixed position, takes up space not covered by navbar (top-[60px])
-            className="lg:hidden fixed top-[60px] left-0 w-full h-[calc(100vh-60px)] bg-hell-black/95 backdrop-blur-xl border-b border-hell-red/50 overflow-hidden shadow-2xl"
+            className="lg:hidden fixed top-[60px] left-0 w-full bg-hell-black/95 backdrop-blur-xl border-b border-hell-red/50 overflow-hidden shadow-2xl"
           >
-            {/* Inner Container: Uses Flexbox to push content to Top/Bottom */}
-            <div className="p-6 h-full flex flex-col justify-between items-center overflow-hidden">
-              
-              {/* 1. LINKS - Scrollable Area (Fills remaining space) */}
-              <div className="flex flex-col gap-6 items-center w-full overflow-y-auto pt-6 pb-6 scrollbar-hide">
-                {navLinks.map((link) => (
-                  <a 
-                    key={link.name} 
-                    href={link.href} 
-                    onClick={(e) => handleNavClick(e, link.href)}
-                    className="font-terminal text-2xl text-hell-white hover:text-hell-orange tracking-widest cursor-pointer font-bold shrink-0" 
-                  >
-                    {link.name}
-                  </a>
-                ))}
-              </div>
-              
-              {/* 2. ACQUIRE BUTTON (Fixed at the bottom) */}
-              <div className="w-full flex flex-col items-center shrink-0 pt-4 border-t border-gray-900">
-                <div className="w-16 h-1 bg-hell-red/50 mb-4"></div>
+            <div className="p-6 flex flex-col gap-6 items-center justify-center h-full pb-32 overflow-y-auto">
+              {/* Full list of 9 links for mobile menu */}
+              {navLinks.map((link) => (
                 <a 
-                  href={BUY_LINK}
-                  target="_blank" 
-                  rel="noopener noreferrer"
-                  className="bg-hell-red text-hell-white font-gothic text-xl py-3 px-12 rounded shadow-[0_0_20px_rgba(204,0,0,0.6)]"
+                  key={link.name} 
+                  href={link.href} 
+                  onClick={(e) => handleNavClick(e, link.href)}
+                  className="font-terminal text-xl text-hell-white hover:text-hell-orange tracking-widest cursor-pointer font-bold" 
                 >
-                  ACQUIRE $666
+                  {link.name}
                 </a>
-              </div>
+              ))}
               
+              <div className="w-16 h-1 bg-hell-red/50 my-4 shrink-0"></div>
+              
+              {/* ACQUIRE LINK (Mobile) */}
+              <a 
+                href={BUY_LINK}
+                target="_blank" 
+                rel="noopener noreferrer"
+                className="bg-hell-red text-hell-white font-gothic text-xl py-3 px-12 rounded shadow-[0_0_20px_rgba(204,0,0,0.6)] shrink-0"
+              >
+                ACQUIRE $666
+              </a>
             </div>
           </motion.div>
         )}
