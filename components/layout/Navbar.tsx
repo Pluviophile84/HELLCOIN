@@ -1,6 +1,6 @@
 "use client";
 import { useState, useEffect } from "react";
-import { Menu, X } from "lucide-react";
+import { Menu, X, ChevronRight } from "lucide-react";
 import { cn } from "../../lib/utils";
 import { motion, AnimatePresence } from "framer-motion";
 
@@ -44,7 +44,6 @@ export const Navbar = ({ onTriggerPaperHands, onToggleMenu, mobileMenuOpen }) =>
   // --- NAVIGATION HANDLERS ---
   const handleNavClick = (e: React.MouseEvent<HTMLAnchorElement>, href: string) => {
     e.preventDefault();
-    // Assuming the parent component will close the menu after navigation.
     const targetId = href.replace("#", "");
     const elem = document.getElementById(targetId);
     if (elem) {
@@ -56,22 +55,21 @@ export const Navbar = ({ onTriggerPaperHands, onToggleMenu, mobileMenuOpen }) =>
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
-  // FIX: Defining the missing backdrop click handler
+  // Defining the missing backdrop click handler
   const handleBackdropClick = (e: React.MouseEvent) => {
     if (e.target === e.currentTarget) {
         onToggleMenu(); // Uses the function passed from app/page.tsx to close the menu
     }
   };
   
-  // NOTE: The entire Navbar structure is simplified to remove center bar and links.
   return (
     <nav 
       className={cn(
-        // Transparent base, only backdrop-blur on scroll
+        // Fixed Top Bar Style
         "fixed top-0 w-full z-40 transition-all duration-300 py-4",
         isScrolled 
-          ? "bg-hell-black/90 backdrop-blur-md border-b border-hell-red/30" // Dark transparent strip on scroll
-          : "bg-transparent" // Fully transparent when at the top
+          ? "bg-hell-black/90 backdrop-blur-md border-b border-hell-red/30"
+          : "bg-transparent"
       )}
     >
       <div className="max-w-7xl mx-auto px-4 flex justify-between items-center">
@@ -79,13 +77,13 @@ export const Navbar = ({ onTriggerPaperHands, onToggleMenu, mobileMenuOpen }) =>
         {/* --- LEFT: MENU TOGGLE + LOGO --- */}
         <div className="flex items-center gap-4">
             
-            {/* 1. MENU BUTTON (Rectangular Shape, Replaces HELLCOIN name) */}
+            {/* 1. MENU BUTTON (Rectangular Shape, Arrow pointing Right) */}
             <button 
-              className="text-hell-white hover:text-hell-red transition-colors p-2 border border-hell-red/50 uppercase font-terminal text-sm md:text-base font-bold" 
+              className="text-hell-white hover:text-hell-red transition-colors p-2 border border-hell-red/50 uppercase font-terminal text-sm md:text-base font-bold flex items-center gap-1" 
               onClick={onToggleMenu}
               style={{ borderRadius: 0 }} // Force rectangular
             >
-                MENU
+                MENU <ChevronRight size={16} />
             </button>
 
             {/* 2. LOGO (Square Shape) */}
@@ -99,11 +97,10 @@ export const Navbar = ({ onTriggerPaperHands, onToggleMenu, mobileMenuOpen }) =>
                 className="w-12 h-12 md:w-14 md:h-14 border border-hell-orange object-cover shadow-lg" 
                 style={{ borderRadius: 0 }} // Force square corners
               />
-              {/* HELLCOIN name removed from here */}
             </div>
         </div>
 
-        {/* --- RIGHT: ACTION CENTER --- */}
+        {/* --- RIGHT: ACTION CENTER (Heaven Mode + Acquire) --- */}
         <div className="flex items-center gap-2 md:gap-4">
           
           {/* 1. HEAVEN MODE BUTTON */}
@@ -139,7 +136,7 @@ export const Navbar = ({ onTriggerPaperHands, onToggleMenu, mobileMenuOpen }) =>
                   onClick={handleBackdropClick}
                   className="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm"
               >
-                  {/* Sliding Panel: Uses the fixed top-left bar space */}
+                  {/* Sliding Panel: Fixed size panel (w-full mobile, capped on desktop) */}
                   <motion.div
                       initial={{ x: '-100%' }}
                       animate={{ x: 0 }}
@@ -161,9 +158,12 @@ export const Navbar = ({ onTriggerPaperHands, onToggleMenu, mobileMenuOpen }) =>
                           {/* 1. HEADER (HELLCOIN Name is placed here) */}
                           <div className="flex flex-col items-start gap-4 shrink-0 mb-8">
                              <h2 className="font-gothic text-4xl text-hell-orange tracking-wide text-glow">HELLCOIN</h2>
-                             <h3 className="font-terminal text-[#ffae00] text-sm uppercase tracking-widest font-bold">
-                                 /// NAVIGATION TREE ///
-                             </h3>
+                             {/* FIX: Removed /// slashes, replaced with decorative line */}
+                             <div className="w-full border-b border-hell-red/50 pb-2 mb-2">
+                                <h3 className="font-terminal text-[#ffae00] text-sm uppercase tracking-widest font-bold">
+                                    NAVIGATION TREE
+                                </h3>
+                             </div>
                           </div>
                           
                           {/* 2. LINKS - ADAPTIVE VERTICAL SPACING */}
