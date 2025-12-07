@@ -57,7 +57,8 @@ export const Navbar = ({ onTriggerPaperHands }: { onTriggerPaperHands: () => voi
 
     const containerWidth = navRef.current.offsetWidth;
     const moreButtonWidth = 100; // Space reserved for "MORE" button
-    const safetyBuffer = 40; // Buffer to prevent edge collisions
+    // FIX: Increased buffer to 180px to prevent crushing on 1440px screens
+    const safetyBuffer = 180; 
     let usedWidth = 0;
     let newVisibleCount = 0;
 
@@ -133,8 +134,8 @@ export const Navbar = ({ onTriggerPaperHands }: { onTriggerPaperHands: () => voi
           : "bg-transparent border-transparent"
       )}
     >
-      {/* RESTORED WIDER CONTAINER: Matches your 23" screen preference */}
-      <div className="w-full max-w-7xl xl:max-w-[95%] 2xl:max-w-[2000px] mx-auto px-4 flex justify-between items-center h-full">
+      {/* FIX: Restored w-[85%] to keep it centered and not edge-to-edge */}
+      <div className="w-[85%] max-w-[2400px] mx-auto px-4 flex justify-between items-center h-full">
         
         {/* --- LEFT: LOGO --- */}
         <div 
@@ -152,6 +153,7 @@ export const Navbar = ({ onTriggerPaperHands }: { onTriggerPaperHands: () => voi
         {/* --- CENTER: ADAPTIVE LINKS (Hidden on Mobile) --- */}
         <div 
           ref={navRef} 
+          // FIX: Added 'min-w-0' to allow shrinking
           className={cn(
             "hidden lg:flex items-center justify-center px-4 h-full relative flex-1 mx-4 min-w-0 transition-opacity duration-300",
             isReady ? "opacity-100" : "opacity-0"
@@ -210,7 +212,7 @@ export const Navbar = ({ onTriggerPaperHands }: { onTriggerPaperHands: () => voi
                        initial={{ opacity: 0, y: 10 }}
                        animate={{ opacity: 1, y: 0 }}
                        exit={{ opacity: 0, y: 10 }}
-                       // FIX: Changed right-0 to left-0 for alignment preference
+                       // FIX: Changed right-0 to left-0 so menu aligns to the right side of the trigger
                        className="absolute top-full left-0 pt-2 w-56 z-50" 
                      >
                        <div className="bg-hell-black border border-hell-red/50 shadow-xl p-5 flex flex-col gap-4">
@@ -270,8 +272,7 @@ export const Navbar = ({ onTriggerPaperHands }: { onTriggerPaperHands: () => voi
             animate={{ opacity: 1, height: "100vh" }}
             exit={{ opacity: 0, height: 0 }}
             onClick={() => setMobileMenuOpen(false)}
-            // FIX: Replaced 'w-screen -mr-1' with 'fixed inset-0'.
-            // This is the guaranteed fix for horizontal scroll issues. It forces the menu to fit the viewport exactly.
+            // FIX: Using fixed inset-0 to prevent horizontal scroll
             className="lg:hidden fixed inset-0 bg-hell-black/95 backdrop-blur-xl border-b border-hell-red/50 overflow-hidden shadow-2xl z-40 pt-[80px]"
           >
             <div className="p-6 h-full flex flex-col justify-between items-center overflow-hidden">
