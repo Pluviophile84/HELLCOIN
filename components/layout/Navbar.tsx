@@ -1,5 +1,5 @@
 "use client";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import { Menu, X, ChevronDown, ChevronUp } from "lucide-react";
 import { cn } from "../../lib/utils";
 import { motion, AnimatePresence } from "framer-motion";
@@ -23,10 +23,15 @@ export const Navbar = ({ onTriggerPaperHands }: { onTriggerPaperHands: () => voi
   const [isScrolled, setIsScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   
+  // --- ADAPTIVE MENU STATES ---
   const [moreMenuOpen, setMoreMenuOpen] = useState(false);
   const [visibleCount, setVisibleCount] = useState(NAV_LINKS_DATA.length);
   const [isReady, setIsReady] = useState(false); 
   
+  // Refs for measuring width
+  const navRef = useRef<HTMLDivElement>(null);
+  const itemsRef = useRef<(HTMLAnchorElement | null)[]>([]);
+
   useEffect(() => {
     const handleScroll = () => {
       setIsScrolled(window.scrollY > 50);
@@ -36,7 +41,7 @@ export const Navbar = ({ onTriggerPaperHands }: { onTriggerPaperHands: () => voi
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  // --- SCROLL LOCK ---
+  // --- SCROLL LOCK FOR MOBILE MENU ---
   useEffect(() => {
     if (mobileMenuOpen) {
       document.body.style.overflow = "hidden";
@@ -45,6 +50,60 @@ export const Navbar = ({ onTriggerPaperHands }: { onTriggerPaperHands: () => voi
     }
     return () => { document.body.style.overflow = "unset"; };
   }, [mobileMenuOpen]);
+
+  // --- DYNAMIC LINK CALCULATION ---
+  const updateVisibleLinks = useCallback(() => {
+    if (!navRef.current) return;
+
+    const containerWidth = navRef.current.offsetWidth;
+    const moreButtonWidth = 100; // Space reserved for "MORE" button
+    const safetyBuffer = 40; // Buffer to prevent edge collisions
+    let usedWidth = 0;
+    let newVisibleCount = 0;
+
+    for (let i = 0; i < NAV_LINKS_DATA.length; i++) {
+      const item = itemsRef.current[i];
+      if (item) {
+        // Link width + gap (24px for gap-6)
+        const itemWidth = item.getBoundingClientRect().width + 24; 
+        
+        if (usedWidth + itemWidth + moreButtonWidth + safetyBuffer < containerWidth) {
+          usedWidth += itemWidth;
+          newVisibleCount++;
+        } else {
+          break;
+        }
+      }
+    }
+    
+    // Ensure calculation stays within bounds
+    setVisibleCount(Math.min(newVisibleCount, NAV_LINKS_DATA.length));
+    setIsReady(true); 
+  }, []);
+
+  useEffect(() => {
+    // Initial calculation with a slight delay to ensure fonts render width correctly
+    const timeout = setTimeout(() => {
+      updateVisibleLinks();
+    }, 100);
+
+    const observer = new ResizeObserver(() => {
+      updateVisibleLinks();
+    });
+    
+    if (navRef.current) {
+      observer.observe(navRef.current);
+    }
+
+    window.addEventListener('resize', updateVisibleLinks);
+
+    return () => {
+      clearTimeout(timeout);
+      observer.disconnect();
+      window.removeEventListener('resize', updateVisibleLinks);
+    };
+  }, [updateVisibleLinks]);
+
 
   const scrollToTop = () => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -62,9 +121,8 @@ export const Navbar = ({ onTriggerPaperHands }: { onTriggerPaperHands: () => voi
     }
   };
 
-  // --- DESKTOP ADAPTIVE LOGIC ---
-  // (This logic is kept for desktop functionality)
-  // ... [Logic remains same as previous stable version] ...
+  const visibleLinks = NAV_LINKS_DATA.slice(0, visibleCount);
+  const hiddenLinks = NAV_LINKS_DATA.slice(visibleCount);
 
   return (
     <nav 
@@ -75,9 +133,10 @@ export const Navbar = ({ onTriggerPaperHands }: { onTriggerPaperHands: () => voi
           : "bg-transparent border-transparent"
       )}
     >
-      <div className="max-w-7xl mx-auto px-4 flex justify-between items-center h-full">
+      {/* RESTORED WIDER CONTAINER: Matches your 23" screen preference */}
+      <div className="w-full max-w-7xl xl:max-w-[95%] 2xl:max-w-[2000px] mx-auto px-4 flex justify-between items-center h-full">
         
-        {/* LOGO */}
+        {/* --- LEFT: LOGO --- */}
         <div 
           onClick={scrollToTop}
           className="flex items-center gap-2 md:gap-3 group cursor-pointer shrink-0 transition-transform active:scale-95 z-50 relative"
@@ -90,66 +149,120 @@ export const Navbar = ({ onTriggerPaperHands }: { onTriggerPaperHands: () => voi
           <span className="font-gothic text-xl md:text-3xl text-hell-orange tracking-wide text-glow">HELLCOIN</span>
         </div>
 
-        {/* DESKTOP LINKS (Static for stability based on your request, or Adaptive) */}
-        <div className="hidden lg:flex gap-6">
-          {NAV_LINKS_DATA.slice(0, 5).map((link) => (
-             <a 
-               key={link.name} 
-               href={link.href}
-               onClick={(e) => handleNavClick(e, link.href)}
-               className="font-terminal text-base text-hell-white hover:text-[#ffae00] transition-colors uppercase tracking-widest relative group cursor-pointer font-bold"
-             >
-               {link.name}
-               <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-hell-orange transition-all group-hover:w-full"></span>
-             </a>
-          ))}
-          
-          {/* Simple More Button for remaining links */}
-          <div 
-             className="relative h-full flex items-center"
-             onMouseEnter={() => setMoreMenuOpen(true)}
-             onMouseLeave={() => setMoreMenuOpen(false)}
-           >
-             <button className="flex items-center gap-1 font-terminal text-base text-[#ffae00] hover:text-hell-red transition-colors uppercase cursor-pointer border border-hell-red/50 px-2 py-1">
-               MORE <ChevronDown size={16} />
-             </button>
-             <AnimatePresence>
-               {moreMenuOpen && (
-                 <motion.div
-                   initial={{ opacity: 0, y: 10 }}
-                   animate={{ opacity: 1, y: 0 }}
-                   exit={{ opacity: 0, y: 10 }}
-                   className="absolute top-full left-0 pt-2 w-56 z-50" 
+        {/* --- CENTER: ADAPTIVE LINKS (Hidden on Mobile) --- */}
+        <div 
+          ref={navRef} 
+          className={cn(
+            "hidden lg:flex items-center justify-center px-4 h-full relative flex-1 mx-4 min-w-0 transition-opacity duration-300",
+            isReady ? "opacity-100" : "opacity-0"
+          )}
+        >
+          {/* Hidden measurement container */}
+          <div className="flex gap-6 invisible absolute pointer-events-none top-0 left-0">
+             {NAV_LINKS_DATA.map((link, i) => (
+                <a 
+                  key={`measure-${i}`} 
+                  ref={(el) => { itemsRef.current[i] = el; }} 
+                  href={link.href}
+                  className="font-terminal text-base font-bold uppercase"
+                >
+                  {link.name}
+                </a>
+             ))}
+          </div>
+
+          <div className="flex gap-6 items-center justify-center w-full">
+            {/* VISIBLE LINKS */}
+            {visibleLinks.map((link) => (
+              <a 
+                key={link.name} 
+                href={link.href}
+                onClick={(e) => handleNavClick(e, link.href)}
+                className="font-terminal text-base text-hell-white hover:text-[#ffae00] transition-colors uppercase tracking-widest relative group cursor-pointer font-bold whitespace-nowrap"
+              >
+                {link.name}
+                <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-hell-orange transition-all group-hover:w-full"></span>
+              </a>
+            ))}
+
+            {/* MORE BUTTON */}
+            {hiddenLinks.length > 0 && (
+               <div 
+                 className="relative h-full flex items-center"
+                 onMouseEnter={() => setMoreMenuOpen(true)}
+                 onMouseLeave={() => setMoreMenuOpen(false)}
+               >
+                 <button 
+                   className={cn(
+                     "flex items-center gap-1 font-terminal text-base transition-colors uppercase cursor-pointer border px-2 py-1",
+                     moreMenuOpen 
+                       ? "text-hell-red border-hell-red" 
+                       : "text-[#ffae00] border-hell-red/50 hover:text-hell-red"
+                   )}
                  >
-                   <div className="bg-hell-black border border-hell-red/50 shadow-xl p-5 flex flex-col gap-2">
-                     {NAV_LINKS_DATA.slice(5).map((link) => (
-                       <a key={link.name} href={link.href} onClick={(e) => handleNavClick(e, link.href)} className="font-terminal text-sm text-gray-400 hover:text-hell-red transition-colors uppercase py-1.5 block">
-                         {link.name}
-                       </a>
-                     ))}
-                   </div>
-                 </motion.div>
-               )}
-             </AnimatePresence>
-           </div>
+                   MORE
+                   {moreMenuOpen ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
+                 </button>
+
+                 <AnimatePresence>
+                   {moreMenuOpen && (
+                     <motion.div
+                       initial={{ opacity: 0, y: 10 }}
+                       animate={{ opacity: 1, y: 0 }}
+                       exit={{ opacity: 0, y: 10 }}
+                       // FIX: Changed right-0 to left-0 for alignment preference
+                       className="absolute top-full left-0 pt-2 w-56 z-50" 
+                     >
+                       <div className="bg-hell-black border border-hell-red/50 shadow-xl p-5 flex flex-col gap-4">
+                         {hiddenLinks.map((link) => (
+                           <a 
+                             key={link.name} 
+                             href={link.href}
+                             onClick={(e) => handleNavClick(e, link.href)}
+                             // FIX: Styled exactly like primary links (Gold Hover, Bold, Underline)
+                             className="font-terminal text-base text-hell-white hover:text-[#ffae00] transition-colors uppercase tracking-widest relative group cursor-pointer font-bold w-fit"
+                           >
+                             {link.name}
+                             {/* Red Line Animation inside Dropdown */}
+                             <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-hell-orange transition-all group-hover:w-full"></span>
+                           </a>
+                         ))}
+                       </div>
+                     </motion.div>
+                   )}
+                 </AnimatePresence>
+               </div>
+            )}
+          </div>
         </div>
 
-        {/* ACTIONS */}
+        {/* --- RIGHT: ACTIONS --- */}
         <div className="flex items-center gap-2 md:gap-4 shrink-0 z-50 relative">
-          <button onClick={onTriggerPaperHands} className="flex items-center gap-2 px-3 py-1 border border-pink-300 rounded text-pink-100 font-terminal text-xs md:text-sm font-bold hover:bg-pink-500/20 hover:text-white transition-colors shadow-[0_0_10px_rgba(255,192,203,0.3)]">
+          <button 
+            onClick={onTriggerPaperHands}
+            className="flex items-center gap-2 px-3 py-1 border border-pink-300 rounded text-pink-100 font-terminal text-xs md:text-sm font-bold hover:bg-pink-500/20 hover:text-white transition-colors shadow-[0_0_10px_rgba(255,192,203,0.3)]"
+          >
             <span className="w-2 h-2 rounded-full bg-pink-200 animate-pulse shadow-[0_0_5px_#fff]"></span>
             HEAVEN MODE
           </button>
-          <a href={BUY_LINK} target="_blank" rel="noopener noreferrer" className="hidden md:block bg-hell-red hover:bg-hell-orange text-hell-white font-gothic text-lg px-6 py-2 rounded shadow-[0_0_15px_rgba(204,0,0,0.5)] transition-all transform hover:scale-105 border border-hell-orange/50 text-center">
+          
+          <a 
+            href={BUY_LINK}
+            target="_blank" 
+            rel="noopener noreferrer"
+            className="hidden md:block bg-hell-red hover:bg-hell-orange text-hell-white font-gothic text-lg px-6 py-2 rounded shadow-[0_0_15px_rgba(204,0,0,0.5)] transition-all transform hover:scale-105 border border-hell-orange/50 text-center"
+          >
             ACQUIRE $666
           </a>
+
+          {/* MOBILE TOGGLE */}
           <button className="lg:hidden text-hell-white" onClick={() => setMobileMenuOpen(!mobileMenuOpen)}>
             {mobileMenuOpen ? <X size={28} /> : <Menu size={28} />}
           </button>
         </div>
       </div>
 
-      {/* --- MOBILE MENU (FIXED ROOT CAUSE) --- */}
+      {/* --- MOBILE MENU --- */}
       <AnimatePresence>
         {mobileMenuOpen && (
           <motion.div
@@ -157,10 +270,8 @@ export const Navbar = ({ onTriggerPaperHands }: { onTriggerPaperHands: () => voi
             animate={{ opacity: 1, height: "100vh" }}
             exit={{ opacity: 0, height: 0 }}
             onClick={() => setMobileMenuOpen(false)}
-            // ROOT CAUSE FIX: 
-            // Changed 'w-screen' to 'fixed inset-0'.
-            // Removed '-mr-1'.
-            // This forces the menu to match the viewport exactly, eliminating horizontal scroll.
+            // FIX: Replaced 'w-screen -mr-1' with 'fixed inset-0'.
+            // This is the guaranteed fix for horizontal scroll issues. It forces the menu to fit the viewport exactly.
             className="lg:hidden fixed inset-0 bg-hell-black/95 backdrop-blur-xl border-b border-hell-red/50 overflow-hidden shadow-2xl z-40 pt-[80px]"
           >
             <div className="p-6 h-full flex flex-col justify-between items-center overflow-hidden">
