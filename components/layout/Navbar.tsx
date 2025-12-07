@@ -54,12 +54,9 @@ export const Navbar = ({ onTriggerPaperHands }: { onTriggerPaperHands: () => voi
   const updateVisibleLinks = useCallback(() => {
     if (!navRef.current) return;
 
-    // Available width for links (Total Container - Logo - Actions - Buffer)
-    // We assume the Logo is ~200px and Actions are ~300px based on layout
-    // Ideally we measure the parent container width and subtract fixed elements, 
-    // but for stability in this component structure, measuring the container itself works best.
     const containerWidth = navRef.current.offsetWidth;
     const moreButtonWidth = 100; // Space reserved for "MORE" button
+    const safetyBuffer = 60; // Extra buffer to trigger collapse earlier for better spacing
     let usedWidth = 0;
     let newVisibleCount = 0;
 
@@ -69,7 +66,8 @@ export const Navbar = ({ onTriggerPaperHands }: { onTriggerPaperHands: () => voi
         // Link width + gap (24px for gap-6)
         const itemWidth = item.getBoundingClientRect().width + 24; 
         
-        if (usedWidth + itemWidth + moreButtonWidth < containerWidth) {
+        // Check if adding this link exceeds the available space (minus buffer)
+        if (usedWidth + itemWidth + moreButtonWidth + safetyBuffer < containerWidth) {
           usedWidth += itemWidth;
           newVisibleCount++;
         } else {
@@ -78,8 +76,8 @@ export const Navbar = ({ onTriggerPaperHands }: { onTriggerPaperHands: () => voi
       }
     }
     
-    // Ensure at least 1 link is visible if possible, or 0 if screen is very tight
-    setVisibleCount(newVisibleCount);
+    // Ensure at least 0 links visible if screen is extremely tight, max is all links
+    setVisibleCount(Math.min(newVisibleCount, NAV_LINKS_DATA.length));
   }, []);
 
   useEffect(() => {
@@ -154,11 +152,11 @@ export const Navbar = ({ onTriggerPaperHands }: { onTriggerPaperHands: () => voi
           className="hidden lg:flex items-center flex-1 justify-center px-8 h-full overflow-hidden"
         >
           {/* This hidden rendering helps us measure widths even if they aren't 'visible' yet */}
-          <div className="flex gap-6 invisible absolute pointer-events-none">
+          <div className="flex gap-6 invisible absolute pointer-events-none top-0 left-0">
              {NAV_LINKS_DATA.map((link, i) => (
                 <a 
                   key={`measure-${i}`} 
-                  ref={(el) => { itemsRef.current[i] = el; }} // Correct REF assignment
+                  ref={(el) => { itemsRef.current[i] = el; }} 
                   href={link.href}
                   className="font-terminal text-base font-bold uppercase"
                 >
@@ -167,7 +165,7 @@ export const Navbar = ({ onTriggerPaperHands }: { onTriggerPaperHands: () => voi
              ))}
           </div>
 
-          <div className="flex gap-6 items-center">
+          <div className="flex gap-6 items-center justify-center w-full">
             {/* VISIBLE LINKS */}
             {visibleLinks.map((link) => (
               <a 
@@ -181,10 +179,10 @@ export const Navbar = ({ onTriggerPaperHands }: { onTriggerPaperHands: () => voi
               </a>
             ))}
 
-            {/* MORE BUTTON */}
+            {/* MORE BUTTON - AUTOMATIC DROPDOWN ON HOVER */}
             {hiddenLinks.length > 0 && (
                <div 
-                 className="relative"
+                 className="relative h-full flex items-center"
                  onMouseEnter={() => setMoreMenuOpen(true)}
                  onMouseLeave={() => setMoreMenuOpen(false)}
                >
@@ -206,15 +204,15 @@ export const Navbar = ({ onTriggerPaperHands }: { onTriggerPaperHands: () => voi
                        initial={{ opacity: 0, y: 10 }}
                        animate={{ opacity: 1, y: 0 }}
                        exit={{ opacity: 0, y: 10 }}
-                       className="absolute top-full right-0 pt-4 w-56 z-50" 
+                       className="absolute top-full right-0 pt-2 w-56 z-50" 
                      >
-                       <div className="bg-hell-black border border-hell-red/50 shadow-xl p-5 flex flex-col gap-4">
+                       <div className="bg-hell-black border border-hell-red/50 shadow-xl p-5 flex flex-col gap-2">
                          {hiddenLinks.map((link) => (
                            <a 
                              key={link.name} 
                              href={link.href}
                              onClick={(e) => handleNavClick(e, link.href)}
-                             className="font-terminal text-sm text-gray-400 hover:text-hell-red transition-colors uppercase py-1"
+                             className="font-terminal text-sm text-gray-400 hover:text-hell-red transition-colors uppercase py-1.5 block"
                            >
                              {link.name}
                            </a>
