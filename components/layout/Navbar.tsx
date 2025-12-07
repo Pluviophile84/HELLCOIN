@@ -55,6 +55,13 @@ export const Navbar = ({ onTriggerPaperHands, onToggleMenu, mobileMenuOpen }) =>
   const scrollToTop = () => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
+
+  // FIX: Defining the missing backdrop click handler
+  const handleBackdropClick = (e: React.MouseEvent) => {
+    if (e.target === e.currentTarget) {
+        onToggleMenu(); // Uses the function passed from app/page.tsx to close the menu
+    }
+  };
   
   // NOTE: The entire Navbar structure is simplified to remove center bar and links.
   return (
@@ -63,7 +70,7 @@ export const Navbar = ({ onTriggerPaperHands, onToggleMenu, mobileMenuOpen }) =>
         // Transparent base, only backdrop-blur on scroll
         "fixed top-0 w-full z-40 transition-all duration-300 py-4",
         isScrolled 
-          ? "bg-hell-black/90 backdrop-blur-md" // Dark transparent strip on scroll
+          ? "bg-hell-black/90 backdrop-blur-md border-b border-hell-red/30" // Dark transparent strip on scroll
           : "bg-transparent" // Fully transparent when at the top
       )}
     >
@@ -142,7 +149,7 @@ export const Navbar = ({ onTriggerPaperHands, onToggleMenu, mobileMenuOpen }) =>
                   >
                       {/* Close Button */}
                       <button 
-                          onClick={() => setMobileMenuOpen(false)}
+                          onClick={onToggleMenu}
                           className="absolute top-4 right-4 text-hell-white hover:text-hell-red"
                       >
                           <X size={28} />
@@ -159,13 +166,13 @@ export const Navbar = ({ onTriggerPaperHands, onToggleMenu, mobileMenuOpen }) =>
                              </h3>
                           </div>
                           
-                          {/* 2. LINKS - SCROLLABLE AREA (Allows links to scroll if needed) */}
-                          <div className="flex flex-col items-start gap-y-4 overflow-y-auto scrollbar-hide flex-grow pb-4">
+                          {/* 2. LINKS - ADAPTIVE VERTICAL SPACING */}
+                          <div className="flex flex-col items-start justify-evenly h-full gap-y-0">
                               {NAV_LINKS_DATA.map((link) => (
                                   <a 
                                       key={link.name} 
                                       href={link.href} 
-                                      onClick={(e) => { handleNavClick(e, link.href); setMobileMenuOpen(false); }}
+                                      onClick={(e) => { handleNavClick(e, link.href); onToggleMenu(); }}
                                       className="font-terminal text-xl text-hell-white hover:text-hell-red transition-colors cursor-pointer font-bold relative group shrink-0" 
                                   >
                                       {link.name}
