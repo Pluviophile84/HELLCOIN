@@ -26,7 +26,6 @@ export const Navbar = ({ onTriggerPaperHands }: { onTriggerPaperHands: () => voi
   // --- ADAPTIVE MENU STATES ---
   const [moreMenuOpen, setMoreMenuOpen] = useState(false);
   const [visibleCount, setVisibleCount] = useState(NAV_LINKS_DATA.length);
-  // FIX: isReady prevents the "glitch" by hiding links until calculation is done
   const [isReady, setIsReady] = useState(false); 
   
   // Refs for measuring width
@@ -58,7 +57,7 @@ export const Navbar = ({ onTriggerPaperHands }: { onTriggerPaperHands: () => voi
 
     const containerWidth = navRef.current.offsetWidth;
     const moreButtonWidth = 100; // Space reserved for "MORE" button
-    const safetyBuffer = 80; // Buffer to ensure comfortable spacing
+    const safetyBuffer = 40; // Buffer to trigger collapse earlier
     let usedWidth = 0;
     let newVisibleCount = 0;
 
@@ -77,15 +76,16 @@ export const Navbar = ({ onTriggerPaperHands }: { onTriggerPaperHands: () => voi
       }
     }
     
+    // Ensure calculation stays within bounds
     setVisibleCount(Math.min(newVisibleCount, NAV_LINKS_DATA.length));
-    setIsReady(true); // FIX: Mark calculation as complete to reveal links
+    setIsReady(true); 
   }, []);
 
   useEffect(() => {
-    // We need a small delay to ensure fonts/layout are stable before measuring
+    // Initial calculation with a slight delay to ensure fonts render width correctly
     const timeout = setTimeout(() => {
       updateVisibleLinks();
-    }, 50);
+    }, 100);
 
     const observer = new ResizeObserver(() => {
       updateVisibleLinks();
@@ -133,9 +133,8 @@ export const Navbar = ({ onTriggerPaperHands }: { onTriggerPaperHands: () => voi
           : "bg-transparent border-transparent"
       )}
     >
-      {/* FIX: Changed max-w-7xl to w-[95%] max-w-[2400px].
-          This ensures it scales nicely on 27"/32" screens while keeping margins. */}
-      <div className="w-[95%] max-w-[2400px] mx-auto px-4 flex justify-between items-center h-full">
+      {/* FIX: Reverted to max-w-7xl to fix the "too wide" feeling on your 23" screen */}
+      <div className="max-w-7xl mx-auto px-4 flex justify-between items-center h-full">
         
         {/* --- LEFT: LOGO --- */}
         <div 
@@ -153,10 +152,11 @@ export const Navbar = ({ onTriggerPaperHands }: { onTriggerPaperHands: () => voi
         {/* --- CENTER: ADAPTIVE LINKS (Hidden on Mobile) --- */}
         <div 
           ref={navRef} 
-          // FIX: Added 'opacity-0' initially to prevent the "expand/shrink" glitch. 
-          // It fades in only after calculation is done.
+          // FIX: Added 'min-w-0'. This is the magic CSS fix. 
+          // It allows this flex item to shrink below its content size, 
+          // which triggers the resize observer logic BEFORE buttons get pushed off screen.
           className={cn(
-            "hidden lg:flex items-center justify-center px-8 h-full relative max-w-7xl w-full mx-auto transition-opacity duration-300",
+            "hidden lg:flex items-center justify-center px-4 h-full relative flex-1 mx-4 min-w-0 transition-opacity duration-300",
             isReady ? "opacity-100" : "opacity-0"
           )}
         >
