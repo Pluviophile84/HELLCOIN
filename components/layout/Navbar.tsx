@@ -48,7 +48,7 @@ export const Navbar = ({ onTriggerPaperHands, onToggleMenu }) => {
             >
               {/* FIX: Perfect Square Logo */}
               <img 
-                src="/Logo.png" 
+                src="/GOAPE.png" 
                 alt="Hellcoin" 
                 className="w-12 h-12 md:w-14 md:h-14 border border-hell-orange object-cover shadow-lg" 
                 style={{ borderRadius: 0 }} // Force square corners
