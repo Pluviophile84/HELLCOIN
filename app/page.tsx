@@ -2,7 +2,6 @@
 import { useState } from "react";
 import { Navbar } from "@/components/layout/Navbar";
 import { PaperHandsOverlay } from "@/components/ui/PaperHandsOverlay";
-// Note: SlidingCockpitMenu is NO LONGER IMPORTED
 import { Hero } from "@/components/sections/Hero";
 import { Genesis } from "@/components/sections/Genesis";
 import { Revelation } from "@/components/sections/Revelation";
@@ -15,29 +14,21 @@ import { Hellmap } from "@/components/sections/Hellmap";
 import { ThePit } from "@/components/sections/ThePit";
 import { Footer } from "@/components/sections/Footer";
 
-
 export default function Home() {
   const [paperHands, setPaperHands] = useState(false);
-  const [cockpitOpen, setCockpitOpen] = useState(false); // State for the sliding menu
 
   // Triggered by the Navbar
   const triggerHeavenMode = () => {
     setPaperHands(true);
   };
-  
-  const toggleCockpit = () => {
-      setCockpitOpen(prev => !prev);
-  }
 
   return (
     <main className="min-h-screen bg-hell-black text-hell-white selection:bg-hell-red selection:text-white">
       {/* 1. The Full Screen Overlay */}
       <PaperHandsOverlay isActive={paperHands} onClose={() => setPaperHands(false)} />
       
-      {/* 2. The Fixed Top Header (Passes the toggle function and state) */}
-      <Navbar onTriggerPaperHands={triggerHeavenMode} onToggleMenu={toggleCockpit} mobileMenuOpen={cockpitOpen} /> 
-      
-      {/* Note: SlidingCockpitMenu is not here. */}
+      {/* 2. The Original Navbar (Self-contained) */}
+      <Navbar onTriggerPaperHands={triggerHeavenMode} /> 
 
       {/* --- PAGE SECTIONS --- */}
       <div> 
