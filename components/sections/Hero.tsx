@@ -14,7 +14,8 @@ export const Hero = () => {
   const yText = useTransform(scrollYProgress, [0, 1], ["0%", "50%"]);
   const opacityText = useTransform(scrollYProgress, [0, 0.5], [1, 0]);
 
-  const handleAbandonHope = () => {
+  // FIX: Renamed function to match the button usage below
+  const handleEnterHell = () => {
     const genesisSection = document.getElementById("genesis");
     if (genesisSection) {
       genesisSection.scrollIntoView({ behavior: "smooth" });
