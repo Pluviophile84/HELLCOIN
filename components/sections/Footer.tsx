@@ -10,59 +10,61 @@ export const Footer = () => {
       {/* Background Ambience */}
       <div className="absolute top-0 left-0 w-full h-full bg-[radial-gradient(circle_at_top,_var(--tw-gradient-stops))] from-hell-red/5 to-transparent pointer-events-none"></div>
 
-      <div className="max-w-7xl mx-auto px-4 relative z-10">
+      {/* FIX: Matching Navbar width logic (w-[85%] max-w-[2400px]) for consistency */}
+      <div className="w-full lg:w-[85%] max-w-[2400px] mx-auto px-4 relative z-10">
         
         {/* --- TOP ROW: BRAND & LINKS --- */}
-        <div className="flex flex-col md:flex-row justify-between items-center md:items-start gap-12 mb-20 text-center md:text-left">
+        {/* FIX: Changed 'md:flex-row' to 'lg:flex-row'. 
+            Now Tablets (md) will stay stacked/centered like Mobile. 
+            Only Laptops (lg) and up will go horizontal. */}
+        <div className="flex flex-col lg:flex-row justify-between items-center lg:items-start gap-12 mb-20 text-center lg:text-left">
           
           {/* LEFT: BRAND IDENTITY */}
-          <div className="flex flex-col gap-4 items-center md:items-start">
+          <div className="flex flex-col gap-4 items-center lg:items-start">
             <div className="flex items-center gap-3">
               <span className="font-gothic text-6xl md:text-8xl text-hell-white tracking-wide leading-none">
                 HELLCOIN
               </span>
             </div>
-            <p className="font-terminal text-gray-400 max-w-sm text-lg">
+            <p className="font-terminal text-gray-400 max-w-sm text-lg leading-relaxed">
               The final destination for the rekt. <br/>
               Born in the red. Forged by regret.
             </p>
           </div>
 
           {/* RIGHT: NAVIGATION LINKS */}
-          <div className="flex flex-row flex-wrap gap-8 md:gap-24 font-terminal justify-center md:justify-start">
+          {/* FIX: Centered on Tablet, Left-aligned on Desktop */}
+          <div className="flex flex-row flex-wrap gap-12 md:gap-24 font-terminal text-lg justify-center lg:justify-start">
             
             {/* Column 1 */}
             <div className="flex flex-col gap-4">
-              {/* FIX: Title is larger and font-semibold (Hierarchy established) */}
-              <span className="text-[#ffae00] text-xl uppercase tracking-widest mb-2 font-semibold">
+              <span className="text-[#ffae00] text-sm uppercase tracking-widest mb-2 font-bold">
                 DIRECTORY
               </span>
-              {/* FIX: Links are smaller (text-base) and non-bold (more elegant) */}
-              <a href="#genesis" className="text-gray-300 hover:text-hell-red transition-colors text-base">GENESIS</a>
-              <a href="#revelation" className="text-gray-300 hover:text-hell-red transition-colors text-base">TRUTH</a>
-              <a href="#the-pit" className="text-gray-300 hover:text-hell-red transition-colors text-base">THE PIT</a>
+              <a href="#genesis" className="text-gray-400 hover:text-hell-red transition-colors">GENESIS</a>
+              <a href="#revelation" className="text-gray-400 hover:text-hell-red transition-colors">TRUTH</a>
+              <a href="#the-pit" className="text-gray-400 hover:text-hell-red transition-colors">THE PIT</a>
             </div>
 
             {/* Column 2 */}
             <div className="flex flex-col gap-4">
-              {/* FIX: Title is larger and font-semibold (Hierarchy established) */}
-              <span className="text-[#ffae00] text-xl uppercase tracking-widest mb-2 font-semibold">
+              <span className="text-[#ffae00] text-sm uppercase tracking-widest mb-2 font-bold">
                 PROTOCOL
               </span>
-              {/* FIX: Links are smaller (text-base) and non-bold (more elegant) */}
-              <a href="https://x.com" target="_blank" className="text-gray-300 hover:text-hell-red transition-colors text-base">TWITTER (X)</a>
-              <a href="#" className="text-gray-300 hover:text-hell-red transition-colors text-base">DEXSCREENER</a>
-              <a href="#" className="text-gray-300 hover:text-hell-red transition-colors text-base">CONTRACT</a>
+              <a href="https://x.com" target="_blank" className="text-gray-400 hover:text-hell-red transition-colors">TWITTER (X)</a>
+              <a href="#" className="text-gray-400 hover:text-hell-red transition-colors">DEXSCREENER</a>
+              <a href="#" className="text-gray-400 hover:text-hell-red transition-colors">CONTRACT</a>
             </div>
 
           </div>
         </div>
 
         {/* --- BOTTOM ROW: THE DISCLAIMER --- */}
-        <div className="border-t border-gray-900 pt-8 flex flex-col md:flex-row justify-between items-center md:items-end gap-6 text-center md:text-left">
+        {/* FIX: Changed 'md:flex-row' to 'lg:flex-row' here as well for consistency */}
+        <div className="border-t border-gray-900 pt-8 flex flex-col lg:flex-row justify-between items-center lg:items-end gap-8 text-center lg:text-left">
           
           {/* Legal Text */}
-          <div className="font-terminal text-gray-400 text-sm max-w-2xl leading-relaxed">
+          <div className="font-terminal text-gray-500 text-sm max-w-2xl leading-relaxed">
             <p className="mb-2">
               <span className="text-hell-red font-bold">DISCLAIMER:</span> $666 is a useless memecoin with no intrinsic value and no expectation of financial return. There is no roadmap, no team, and no utility. 
             </p>
@@ -72,7 +74,8 @@ export const Footer = () => {
           </div>
 
           {/* Copyright */}
-          <div className="font-terminal text-gray-500 text-sm text-center md:text-right whitespace-nowrap">
+          {/* FIX: Centered on Tablet, Right-aligned on Desktop */}
+          <div className="font-terminal text-gray-600 text-sm text-center lg:text-right whitespace-nowrap">
             <p>© {currentYear} HELLCOIN. ALL RIGHTS BURNED.</p>
           </div>
 
