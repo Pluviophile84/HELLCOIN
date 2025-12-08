@@ -6,7 +6,6 @@ import { TrendingDown, Flame } from "lucide-react";
 export const Hero = () => {
   const ref = useRef(null);
   
-  // Parallax Hooks
   const { scrollYProgress } = useScroll({
     target: ref,
     offset: ["start start", "end start"],
@@ -25,35 +24,33 @@ export const Hero = () => {
   const BUY_LINK = "https://raydium.io/swap";
 
   return (
-    // FIX: Changed h-screen to h-[100dvh] for better mobile browser support
     <section ref={ref} className="relative h-[100dvh] w-full flex items-center justify-center overflow-hidden">
       
-      {/* --- BACKGROUND IMAGE LAYER --- */}
+      {/* BACKGROUND */}
       <div className="absolute inset-0 z-0">
         <img 
-          src="/banner.png" 
-          // FIX: object-[30%_center] forces the crop to focus on the center-left (The Devil)
-          className="absolute inset-0 w-full h-full object-cover object-[30%_center] opacity-100" 
+          src="/WEB-BANNER.jpg" 
+          className="absolute inset-0 w-full h-full object-cover object-[30%_center] opacity-50" 
           alt="Hellcoin Throne"
         />
         <div className="absolute inset-0 bg-gradient-to-t from-hell-black via-hell-black/80 to-transparent"></div>
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-transparent via-hell-black/40 to-hell-black"></div>
       </div>
 
-      {/* --- CONTENT LAYER --- */}
+      {/* CONTENT */}
       <motion.div 
         style={{ y: yText, opacity: opacityText }}
-        // FIX: Added 'pt-32' to ensure text clears the Navbar visually
-        // FIX: Increased z-index to z-30 to sit ABOVE the fog layer
-        className="relative z-30 px-4 md:px-12 pt-32 max-w-[1600px] w-full mx-auto flex flex-col items-center md:items-end text-center md:text-right h-full justify-center"
+        // FIX: Increased bottom padding (pb-32 -> pb-48) to push content slightly MORE upward visually
+        className="relative z-30 px-4 md:px-12 pt-32 pb-32 md:pb-48 max-w-[1600px] w-full mx-auto flex flex-col items-center md:items-end text-center md:text-right h-full justify-center"
       >
-        {/* 1. MAIN TITLE */}
+        {/* 1. MAIN TITLE - OPTIMIZED SIZE */}
         <motion.h1 
           initial={{ scale: 0.9, opacity: 0 }}
           animate={{ scale: 1, opacity: 1 }}
           transition={{ type: "spring", duration: 1.5 }}
-          // FIX: Adjusted font sizes (4xl mobile -> 9xl desktop) to prevent overflow
-          className="font-gothic text-5xl sm:text-6xl md:text-9xl leading-[0.9] text-hell-white text-glow drop-shadow-2xl mb-6 md:mb-8 md:max-w-6xl"
+          // FIX: Adjusted from [11rem] down to [10rem] for the perfect +10% balance.
+          // Mobile starts at 6xl to remain safe and readable.
+          className="font-gothic text-6xl sm:text-8xl md:text-9xl lg:text-[10rem] leading-[0.85] text-hell-white text-glow drop-shadow-2xl mb-6 md:mb-8 md:max-w-7xl"
         >
           BORN IN THE <span className="text-hell-red">RED.</span><br />
           FORGED BY <span className="text-[#ffae00]">REGRET.</span>
@@ -68,7 +65,6 @@ export const Hero = () => {
         >
           <p className="leading-relaxed">
             The first cryptocurrency powered by{" "}
-            {/* FIX: Ensuring text breaks nicely on mobile */}
             <span className="block md:inline text-[#ffae00] text-xl sm:text-2xl md:text-3xl my-1 md:my-0 font-bold md:font-normal">
               Proof-of-Suffering
             </span>
@@ -83,10 +79,9 @@ export const Hero = () => {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 1.0 }}
-          // FIX: Reduced mobile size to text-sm/base to fit width
           className="font-terminal text-hell-red text-sm sm:text-lg md:text-2xl mt-6 md:mt-8 tracking-widest uppercase animate-pulse md:max-w-5xl"
         >
-          WHEN THE MARKET BURNS, WE TREND
+          /// WHEN THE MARKET BURNS, WE TREND ///
         </motion.p>
 
         {/* 4. BUTTONS */}
@@ -96,7 +91,6 @@ export const Hero = () => {
           transition={{ delay: 1.4 }}
           className="mt-8 md:mt-12 flex flex-col md:flex-row gap-6 md:gap-8 justify-center md:justify-end items-center w-full md:max-w-5xl"
         >
-          {/* SECONDARY: ABANDON HOPE */}
           <button 
             onClick={handleAbandonHope}
             className="text-gray-500 font-terminal text-lg md:text-2xl hover:text-[#ffae00] transition-colors flex items-center gap-2 group order-1 md:order-none"
@@ -105,7 +99,6 @@ export const Hero = () => {
             <TrendingDown className="w-5 h-5 group-hover:translate-y-1 transition-transform" />
           </button>
 
-          {/* PRIMARY: ACQUIRE */}
           <a 
             href={BUY_LINK}
             target="_blank"
@@ -120,8 +113,6 @@ export const Hero = () => {
         </motion.div>
       </motion.div>
 
-      {/* Bottom Fog Fade */}
-      {/* FIX: Added 'pointer-events-none' so it doesn't block clicks on the buttons */}
       <div className="absolute bottom-0 w-full h-32 bg-gradient-to-t from-hell-black to-transparent z-20 pointer-events-none"></div>
     </section>
   );
