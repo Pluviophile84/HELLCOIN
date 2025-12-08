@@ -57,7 +57,7 @@ export const Navbar = ({ onTriggerPaperHands }: { onTriggerPaperHands: () => voi
 
     const containerWidth = navRef.current.offsetWidth;
     const moreButtonWidth = 100; // Space reserved for "MORE" button
-    const safetyBuffer = 40; // Reduced buffer to allow more links on 1920px screens
+    const safetyBuffer = 40; // Buffer to prevent edge collisions
     let usedWidth = 0;
     let newVisibleCount = 0;
 
@@ -127,17 +127,17 @@ export const Navbar = ({ onTriggerPaperHands }: { onTriggerPaperHands: () => voi
   return (
     <nav 
       className={cn(
-        // FIX: Added overflow-x-clip to prevent any horizontal scroll coming from the navbar itself
-        "fixed top-0 w-full z-40 border-b transition-all duration-300 py-4 overflow-x-clip",
+        "fixed top-0 w-full z-40 border-b transition-all duration-300 py-4",
         isScrolled 
           ? "bg-hell-black/90 backdrop-blur-md border-hell-red/30" 
           : "bg-transparent border-transparent"
       )}
     >
-      {/* FIX: Expanded width logic to fit 23" screens. 
-          Changed max-w-7xl to percentage based width on larger screens (xl:w-[92%]) 
-          so links have room to breathe and don't trigger the "MORE" button unnecessarily. */}
-      <div className="w-full max-w-7xl xl:w-[92%] xl:max-w-[2400px] mx-auto px-4 flex justify-between items-center h-full">
+      {/* FIX: Width Logic 
+          - Mobile (Default): w-full px-4 (Standard)
+          - Desktop (lg+): w-[85%] max-w-none (Fixed 85% Width Standard) 
+      */}
+      <div className="w-full lg:w-[85%] mx-auto px-4 lg:px-0 flex justify-between items-center h-full">
         
         {/* --- LEFT: LOGO --- */}
         <div 
@@ -155,14 +155,15 @@ export const Navbar = ({ onTriggerPaperHands }: { onTriggerPaperHands: () => voi
         {/* --- CENTER: ADAPTIVE LINKS (Hidden on Mobile) --- */}
         <div 
           ref={navRef} 
-          // FIX: Added 'min-w-0' to allow shrinking
           className={cn(
             "hidden lg:flex items-center justify-center px-4 h-full relative flex-1 mx-4 min-w-0 transition-opacity duration-300",
             isReady ? "opacity-100" : "opacity-0"
           )}
         >
-          {/* Hidden measurement container - FIX: Added whitespace-nowrap for accurate measurement */}
-          <div className="flex gap-6 invisible absolute pointer-events-none top-0 left-0 whitespace-nowrap">
+          {/* FIX: Hidden measurement container 
+              Added 'w-0 h-0 overflow-hidden' to prevent this invisible div from pushing the page width out 
+          */}
+          <div className="flex gap-6 invisible absolute pointer-events-none top-0 left-0 whitespace-nowrap w-0 h-0 overflow-hidden">
              {NAV_LINKS_DATA.map((link, i) => (
                 <a 
                   key={`measure-${i}`} 
