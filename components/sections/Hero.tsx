@@ -42,49 +42,51 @@ export const Hero = () => {
       {/* --- CONTENT LAYER --- */}
       <motion.div 
         style={{ y: yText, opacity: opacityText }}
-        // FIX: Added 'pb-24' to push the optical center upwards slightly on all screens
-        className="relative z-30 px-4 md:px-12 pt-32 pb-24 max-w-[1800px] w-full mx-auto flex flex-col items-center md:items-end text-center md:text-right h-full justify-center"
+        // FIX: Reduced bottom padding slightly to balance the vertical center
+        className="relative z-30 px-4 md:px-12 pt-32 pb-12 max-w-[1800px] w-full mx-auto flex flex-col items-center md:items-end text-center md:text-right h-full justify-center"
       >
         {/* WRAPPER: Centers the subtitle relative to the main title */}
         <div className="flex flex-col items-center">
-            {/* 1. ABANDON HOPE - SCALED UP ONE STEP */}
+            {/* 1. ABANDON HOPE - Refined Scaling */}
             <motion.p
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.2, duration: 0.8 }}
-                // BASE: text-2xl (Was xl) -> 2XL: text-6xl (Was 5xl)
+                // BASE: text-2xl (Mobile) -> XL: text-5xl (Desktop Cap)
+                // Removed the extreme 7xl sizes that broke the layout
                 className="font-terminal font-black text-[#ffae00] animate-pulse mb-2 tracking-widest uppercase
-                           text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl 2xl:text-7xl text-center"
+                           text-2xl sm:text-3xl md:text-4xl lg:text-5xl text-center"
             >
                 ABANDON HOPE.
             </motion.p>
 
-            {/* 2. MAIN TITLE - ACQUIRE $666 - SCALED UP ONE STEP */}
+            {/* 2. MAIN TITLE - Controlled Scaling */}
             <motion.h1 
               initial={{ scale: 0.9, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
               transition={{ type: "spring", duration: 1.5, delay: 0.3 }}
-              // BASE: text-6xl (Was 5xl) -> 2XL: text-[12rem] (Was 11rem)
+              // BASE: text-6xl (Mobile) -> XL: text-9xl (Desktop Cap)
+              // This keeps it massive but prevents it from exploding on 27" screens
               className="font-gothic leading-[0.9] text-hell-white text-glow drop-shadow-2xl mb-6 md:mb-8 md:max-w-7xl text-center
-                         text-6xl sm:text-7xl md:text-8xl lg:text-9xl xl:text-[10rem] 2xl:text-[12rem]"
+                         text-6xl sm:text-7xl md:text-8xl lg:text-9xl 2xl:text-[10rem]"
             >
               ACQUIRE <span className="text-hell-red">$666.</span>
             </motion.h1>
         </div>
 
-        {/* 3. SUBTITLE - SCALED UP ONE STEP */}
+        {/* 3. SUBTITLE - Refined Proportions */}
         <motion.div 
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 0.6 }}
-          // BASE: text-xl (Was lg) -> 2XL: text-5xl (Was 4xl)
+          // Scales smoothly without becoming comically large
           className="font-terminal text-gray-300 max-w-4xl md:max-w-5xl mx-auto md:mx-0 space-y-2 md:space-y-1
-                     text-xl sm:text-2xl md:text-3xl lg:text-4xl xl:text-5xl"
+                     text-xl sm:text-2xl md:text-3xl lg:text-4xl"
         >
           <p className="leading-relaxed">
             The first cryptocurrency powered by{" "}
             <span className="block md:inline text-[#ffae00] font-bold md:font-normal
-                             text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl my-2 md:my-0">
+                             text-2xl sm:text-3xl md:text-4xl lg:text-5xl my-2 md:my-0">
               Proof-of-Suffering
             </span>
           </p>
@@ -93,40 +95,40 @@ export const Hero = () => {
           </p>
         </motion.div>
 
-        {/* 4. BUTTONS - SCALED UP ONE STEP */}
+        {/* 4. BUTTONS - Corrected Order & Size */}
         <motion.div 
           initial={{ opacity: 0, y: 50 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 1.4 }}
           className="mt-8 md:mt-12 xl:mt-16 flex flex-col md:flex-row gap-6 md:gap-8 justify-center md:justify-end items-center w-full md:max-w-5xl"
         >
-          {/* SECONDARY: "ENTER HELL" */}
-          <button 
-            onClick={handleEnterHell}
-            className="text-gray-500 font-terminal hover:text-[#ffae00] transition-colors flex items-center gap-2 group order-1 md:order-none
-                       text-lg sm:text-xl md:text-2xl lg:text-3xl xl:text-4xl"
-          >
-            [ ENTER HELL ]
-            <TrendingDown className="w-5 h-5 md:w-6 md:h-6 xl:w-7 xl:h-7 group-hover:translate-y-1 transition-transform" />
-          </button>
-
-          {/* PRIMARY: "ACQUIRE" */}
+          {/* PRIMARY: "ACQUIRE" - ORDER 1 ON MOBILE (Top) */}
           <a 
             href={BUY_LINK}
             target="_blank"
             rel="noopener noreferrer"
-            // BASE: text-2xl + px-8 (Was xl + px-6)
-            className="group relative bg-transparent border-2 border-hell-red text-hell-red font-gothic uppercase overflow-hidden transition-all hover:text-hell-white hover:border-hell-orange hover:shadow-[0_0_30px_rgba(204,0,0,0.6)] order-2 md:order-none cursor-pointer flex items-center gap-2
+            // ORDER CHANGE: order-1 on mobile (Top), order-2 on desktop (Right side)
+            className="group relative bg-transparent border-2 border-hell-red text-hell-red font-gothic uppercase overflow-hidden transition-all hover:text-hell-white hover:border-hell-orange hover:shadow-[0_0_30px_rgba(204,0,0,0.6)] order-1 md:order-2 cursor-pointer flex items-center gap-2
                        px-8 py-3 text-2xl
                        sm:px-10 sm:py-4 sm:text-3xl
-                       md:px-12 md:py-5 md:text-4xl
-                       xl:px-14 xl:py-6 xl:text-5xl"
+                       md:px-12 md:py-5 md:text-4xl"
           >
             <span className="absolute inset-0 w-full h-full bg-hell-red -translate-x-full group-hover:translate-x-0 transition-transform duration-300 ease-out"></span>
             <span className="relative z-10 flex items-center gap-2">
               ACQUIRE $666
             </span>
           </a>
+
+          {/* SECONDARY: "ENTER HELL" - ORDER 2 ON MOBILE (Bottom) */}
+          <button 
+            onClick={handleEnterHell}
+            // ORDER CHANGE: order-2 on mobile (Bottom), order-1 on desktop (Left side)
+            className="text-gray-500 font-terminal hover:text-[#ffae00] transition-colors flex items-center gap-2 group order-2 md:order-1
+                       text-lg sm:text-xl md:text-2xl lg:text-3xl"
+          >
+            [ ENTER HELL ]
+            <TrendingDown className="w-5 h-5 md:w-6 md:h-6 group-hover:translate-y-1 transition-transform" />
+          </button>
         </motion.div>
       </motion.div>
 
