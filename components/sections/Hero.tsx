@@ -29,8 +29,8 @@ export const Hero = () => {
       {/* BACKGROUND */}
       <div className="absolute inset-0 z-0">
         <img 
-          src="/WEB-BANNER.jpg" 
-          className="absolute inset-0 w-full h-full object-cover object-[30%_center] opacity-50" 
+          src="/banner.png" 
+          className="absolute inset-0 w-full h-full object-cover object-[30%_center] opacity-100" 
           alt="Hellcoin Throne"
         />
         <div className="absolute inset-0 bg-gradient-to-t from-hell-black via-hell-black/80 to-transparent"></div>
@@ -84,7 +84,7 @@ export const Hero = () => {
           // FIX: Tighter punchline size
           className="font-terminal text-hell-red text-sm sm:text-base md:text-xl mt-6 md:mt-8 tracking-widest uppercase animate-pulse md:max-w-4xl"
         >
-          /// WHEN THE MARKET BURNS, WE TREND ///
+          WHEN THE MARKET BURNS, WE TREND
         </motion.p>
 
         {/* 4. BUTTONS */}
