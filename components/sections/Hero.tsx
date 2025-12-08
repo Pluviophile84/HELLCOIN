@@ -82,7 +82,7 @@ export const Hero = () => {
           transition={{ delay: 1.0 }}
           className="font-terminal text-hell-red text-sm sm:text-lg md:text-2xl mt-6 md:mt-8 tracking-widest uppercase animate-pulse md:max-w-5xl"
         >
-          /// WHEN THE MARKET BURNS, WE TREND ///
+          WHEN THE MARKET BURNS, WE TREND
         </motion.p>
 
         {/* 4. BUTTONS */}
