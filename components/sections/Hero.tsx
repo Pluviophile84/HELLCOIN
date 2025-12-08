@@ -29,8 +29,8 @@ export const Hero = () => {
       {/* --- BACKGROUND IMAGE LAYER --- */}
       <div className="absolute inset-0 z-0">
         <img 
-          src="/WEB-BANNER.jpg" 
-          className="absolute inset-0 w-full h-full object-cover object-[30%_center] opacity-50" 
+          src="/banner.png" 
+          className="absolute inset-0 w-full h-full object-cover object-[30%_center] opacity-100" 
           alt="Hellcoin Throne"
         />
         <div className="absolute inset-0 bg-gradient-to-t from-hell-black via-hell-black/80 to-transparent"></div>
