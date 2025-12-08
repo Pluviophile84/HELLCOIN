@@ -31,7 +31,7 @@ export const Hero = () => {
       {/* --- BACKGROUND IMAGE LAYER --- */}
       <div className="absolute inset-0 z-0">
         <img 
-          src="/WEB-BANNER.jpg" 
+          src="/banner.png" 
           // FIX: object-[30%_center] forces the crop to focus on the center-left (The Devil)
           className="absolute inset-0 w-full h-full object-cover object-[30%_center] opacity-50" 
           alt="Hellcoin Throne"
