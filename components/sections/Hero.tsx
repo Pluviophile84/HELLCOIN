@@ -31,7 +31,7 @@ export const Hero = () => {
       <div className="absolute inset-0 z-0">
         <img 
           src="/banner.png" 
-          className="absolute inset-0 w-full h-full object-cover object-[30%_center] opacity-100" 
+          className="absolute inset-0 w-full h-full object-cover object-[30%_center] opacity-50" 
           alt="Hellcoin Throne"
         />
         <div className="absolute inset-0 bg-gradient-to-t from-hell-black via-hell-black/80 to-transparent"></div>
@@ -43,36 +43,37 @@ export const Hero = () => {
         style={{ y: yText, opacity: opacityText }}
         className="relative z-30 px-4 md:px-12 pt-32 max-w-[1800px] w-full mx-auto flex flex-col items-center md:items-end text-center md:text-right h-full justify-center"
       >
-        {/* 1. NEW SUBTITLE - ABANDON HOPE (GOLD & PULSING) */}
-        <motion.p
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.2, duration: 0.8 }}
-            // FIX: Changed text-gray-300 to text-[#ffae00] (Gold)
-            className="font-terminal font-black text-[#ffae00] animate-pulse mb-2 tracking-widest uppercase
-                       text-xl sm:text-2xl md:text-3xl lg:text-4xl"
-        >
-            ABANDON HOPE.
-        </motion.p>
+        {/* WRAPPER: Centers the subtitle relative to the main title */}
+        <div className="flex flex-col items-center">
+            {/* 1. NEW SUBTITLE - ABANDON HOPE. (Added Period) */}
+            <motion.p
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.2, duration: 0.8 }}
+                className="font-terminal font-black text-[#ffae00] animate-pulse mb-2 tracking-widest uppercase
+                           text-xl sm:text-2xl md:text-3xl lg:text-4xl text-center"
+            >
+                ABANDON HOPE.
+            </motion.p>
 
-        {/* 2. MAIN TITLE - ACQUIRE $666 */}
-        <motion.h1 
-          initial={{ scale: 0.9, opacity: 0 }}
-          animate={{ scale: 1, opacity: 1 }}
-          transition={{ type: "spring", duration: 1.5, delay: 0.3 }}
-          className="font-gothic leading-[0.9] text-hell-white text-glow drop-shadow-2xl mb-6 md:mb-8 md:max-w-7xl
-                     text-5xl sm:text-6xl md:text-7xl lg:text-8xl xl:text-9xl 2xl:text-[11rem]"
-        >
-          ACQUIRE <span className="text-hell-red">$666.</span>
-        </motion.h1>
+            {/* 2. MAIN TITLE - ACQUIRE $666. (Period Confirmed) */}
+            <motion.h1 
+              initial={{ scale: 0.9, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              transition={{ type: "spring", duration: 1.5, delay: 0.3 }}
+              className="font-gothic leading-[0.9] text-hell-white text-glow drop-shadow-2xl mb-6 md:mb-8 md:max-w-7xl text-center
+                         text-5xl sm:text-6xl md:text-7xl lg:text-8xl xl:text-9xl 2xl:text-[11rem]"
+            >
+              ACQUIRE <span className="text-hell-red">$666.</span>
+            </motion.h1>
+        </div>
 
         {/* 3. SUBTITLE - PROPORTIONAL SCALING */}
         <motion.div 
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 0.6 }}
-          className="font-terminal text-gray-300 max-w-4xl md:max-w-5xl mx-auto md:mx-0 space-y-2 md:space-y-0
-                     text-sm sm:text-base md:text-xl lg:text-2xl xl:text-3xl"
+          className="font-terminal text-gray-300 max-w-4xl md:max-w-5xl mx-auto md:mx-0 space-y-2 md:space-y-0"
         >
           <p className="leading-relaxed">
             The first cryptocurrency powered by{" "}
@@ -116,13 +117,12 @@ export const Hero = () => {
           >
             <span className="absolute inset-0 w-full h-full bg-hell-red -translate-x-full group-hover:translate-x-0 transition-transform duration-300 ease-out"></span>
             <span className="relative z-10 flex items-center gap-2">
-              ACQUIRE $666 <Flame className="w-5 h-5 md:w-6 md:h-6 xl:w-8 xl:h-8" />
+              ACQUIRE $666
             </span>
           </a>
         </motion.div>
       </motion.div>
 
-      {/* Bottom Fog Fade */}
       <div className="absolute bottom-0 w-full h-32 bg-gradient-to-t from-hell-black to-transparent z-20 pointer-events-none"></div>
     </section>
   );
