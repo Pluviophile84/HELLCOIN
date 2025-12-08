@@ -268,6 +268,7 @@ export const Navbar = ({ onTriggerPaperHands }: { onTriggerPaperHands: () => voi
             initial={{ opacity: 0, height: 0 }}
             animate={{ opacity: 1, height: "100vh" }}
             exit={{ opacity: 0, height: 0 }}
+            transition={{ duration: 0.3, ease: "easeInOut" }} // Smoother transition
             onClick={() => setMobileMenuOpen(false)}
             // FIX: Using fixed inset-0 to prevent horizontal scroll
             className="lg:hidden fixed inset-0 bg-hell-black/95 backdrop-blur-xl border-b border-hell-red/50 overflow-hidden shadow-2xl z-40 pt-[80px]"
@@ -286,7 +287,7 @@ export const Navbar = ({ onTriggerPaperHands }: { onTriggerPaperHands: () => voi
                 ))}
               </div>
               <div className="w-full flex flex-col items-center shrink-0 pt-4 border-t border-gray-900 mb-8">
-                <div className="w-16 h-1 bg-hell-red/50 mb-4 shrink-0"></div>
+                {/* FIX: Removed the red line div here */}
                 <a 
                   href={BUY_LINK}
                   target="_blank" 
