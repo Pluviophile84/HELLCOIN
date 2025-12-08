@@ -127,10 +127,12 @@ export const Navbar = ({ onTriggerPaperHands }: { onTriggerPaperHands: () => voi
   return (
     <nav 
       className={cn(
-        "fixed top-0 w-full z-40 border-b transition-all duration-300 py-4",
+        "fixed top-0 w-full z-40 border-b transition-all duration-300",
         isScrolled 
-          ? "bg-hell-black/90 backdrop-blur-md border-gray-800" 
-          : "bg-transparent border-transparent"
+          // Scrolled: Dark background, thinner padding (py-3 mobile, py-2 desktop)
+          ? "bg-hell-black/90 backdrop-blur-md border-hell-red/30 py-3 md:py-2" 
+          // Top: Transparent, thicker padding (py-4 mobile, py-6 desktop)
+          : "bg-transparent border-transparent py-4 md:py-6"
       )}
     >
       {/* FIX: Width Logic 
@@ -155,14 +157,13 @@ export const Navbar = ({ onTriggerPaperHands }: { onTriggerPaperHands: () => voi
         {/* --- CENTER: ADAPTIVE LINKS (Hidden on Mobile) --- */}
         <div 
           ref={navRef} 
+          // FIX: Added 'min-w-0' to allow shrinking
           className={cn(
             "hidden lg:flex items-center justify-center px-4 h-full relative flex-1 mx-4 min-w-0 transition-opacity duration-300",
             isReady ? "opacity-100" : "opacity-0"
           )}
         >
-          {/* FIX: Hidden measurement container 
-              Added 'w-0 h-0 overflow-hidden' to prevent this invisible div from pushing the page width out 
-          */}
+          {/* Hidden measurement container */}
           <div className="flex gap-6 invisible absolute pointer-events-none top-0 left-0 whitespace-nowrap w-0 h-0 overflow-hidden">
              {NAV_LINKS_DATA.map((link, i) => (
                 <a 
@@ -215,7 +216,7 @@ export const Navbar = ({ onTriggerPaperHands }: { onTriggerPaperHands: () => voi
                        initial={{ opacity: 0, y: 10 }}
                        animate={{ opacity: 1, y: 0 }}
                        exit={{ opacity: 0, y: 10 }}
-                       className="absolute top-full right-0 pt-2 w-56 z-50" 
+                       className="absolute top-full left-0 pt-2 w-56 z-50" 
                      >
                        <div className="bg-hell-black border border-hell-red/50 shadow-xl p-5 flex flex-col gap-2">
                          {hiddenLinks.map((link) => (
