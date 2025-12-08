@@ -26,32 +26,32 @@ export const Hero = () => {
   return (
     <section ref={ref} className="relative h-[100dvh] w-full flex items-center justify-center overflow-hidden">
       
-      {/* BACKGROUND */}
+      {/* --- BACKGROUND IMAGE LAYER --- */}
       <div className="absolute inset-0 z-0">
         <img 
-          src="/banner.png" 
-          className="absolute inset-0 w-full h-full object-cover object-[30%_center] opacity-100" 
+          src="/WEB-BANNER.jpg" 
+          className="absolute inset-0 w-full h-full object-cover object-[30%_center] opacity-50" 
           alt="Hellcoin Throne"
         />
         <div className="absolute inset-0 bg-gradient-to-t from-hell-black via-hell-black/80 to-transparent"></div>
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-transparent via-hell-black/40 to-hell-black"></div>
       </div>
 
-      {/* CONTENT */}
+      {/* --- CONTENT LAYER --- */}
       <motion.div 
         style={{ y: yText, opacity: opacityText }}
-        // FIX: Increased bottom padding (pb-32 -> pb-48) to push content slightly MORE upward visually
-        className="relative z-30 px-4 md:px-12 pt-32 pb-32 md:pb-48 max-w-[1600px] w-full mx-auto flex flex-col items-center md:items-end text-center md:text-right h-full justify-center"
+        // FIX: Reverted padding. Removed 'pb-32'. 
+        // Kept 'pt-32' to clear the navbar, but let justify-center handle the rest naturally.
+        className="relative z-30 px-4 md:px-12 pt-32 max-w-[1600px] w-full mx-auto flex flex-col items-center md:items-end text-center md:text-right h-full justify-center"
       >
-        {/* 1. MAIN TITLE - OPTIMIZED SIZE (30% Smaller) */}
+        {/* 1. MAIN TITLE */}
         <motion.h1 
           initial={{ scale: 0.9, opacity: 0 }}
           animate={{ scale: 1, opacity: 1 }}
           transition={{ type: "spring", duration: 1.5 }}
-          // FIX: Reduced sizes significantly for "Compact & Elegant" look.
-          // Old: text-6xl sm:text-8xl md:text-9xl lg:text-[10rem]
-          // New: text-5xl sm:text-6xl md:text-7xl lg:text-8xl
-          className="font-gothic text-5xl sm:text-6xl md:text-7xl lg:text-8xl leading-[0.9] text-hell-white text-glow drop-shadow-2xl mb-6 md:mb-8 md:max-w-5xl"
+          // FIX: Restored to text-6xl (Mobile) -> text-9xl (Desktop)
+          // This is the "Best" size you identified earlier.
+          className="font-gothic text-6xl sm:text-7xl md:text-9xl leading-[0.9] text-hell-white text-glow drop-shadow-2xl mb-6 md:mb-8 md:max-w-6xl"
         >
           BORN IN THE <span className="text-hell-red">RED.</span><br />
           FORGED BY <span className="text-[#ffae00]">REGRET.</span>
@@ -62,12 +62,11 @@ export const Hero = () => {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 0.5 }}
-          // FIX: Slightly reduced subtitle size to match new header proportion
-          className="font-terminal text-base sm:text-lg md:text-2xl text-gray-300 max-w-4xl md:max-w-4xl mx-auto md:mx-0 space-y-2 md:space-y-0"
+          className="font-terminal text-lg sm:text-xl md:text-3xl text-gray-300 max-w-4xl md:max-w-5xl mx-auto md:mx-0 space-y-2 md:space-y-0"
         >
           <p className="leading-relaxed">
             The first cryptocurrency powered by{" "}
-            <span className="block md:inline text-[#ffae00] text-lg sm:text-xl md:text-2xl my-1 md:my-0 font-bold md:font-normal">
+            <span className="block md:inline text-[#ffae00] text-xl sm:text-2xl md:text-3xl my-1 md:my-0 font-bold md:font-normal">
               Proof-of-Suffering
             </span>
           </p>
@@ -81,10 +80,9 @@ export const Hero = () => {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 1.0 }}
-          // FIX: Tighter punchline size
-          className="font-terminal text-hell-red text-sm sm:text-base md:text-xl mt-6 md:mt-8 tracking-widest uppercase animate-pulse md:max-w-4xl"
+          className="font-terminal text-hell-red text-sm sm:text-lg md:text-2xl mt-6 md:mt-8 tracking-widest uppercase animate-pulse md:max-w-5xl"
         >
-          WHEN THE MARKET BURNS, WE TREND
+          /// WHEN THE MARKET BURNS, WE TREND ///
         </motion.p>
 
         {/* 4. BUTTONS */}
@@ -92,11 +90,11 @@ export const Hero = () => {
           initial={{ opacity: 0, y: 50 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 1.4 }}
-          className="mt-8 md:mt-12 flex flex-col md:flex-row gap-6 md:gap-8 justify-center md:justify-end items-center w-full md:max-w-4xl"
+          className="mt-8 md:mt-12 flex flex-col md:flex-row gap-6 md:gap-8 justify-center md:justify-end items-center w-full md:max-w-5xl"
         >
           <button 
             onClick={handleAbandonHope}
-            className="text-gray-500 font-terminal text-base md:text-xl hover:text-[#ffae00] transition-colors flex items-center gap-2 group order-1 md:order-none"
+            className="text-gray-500 font-terminal text-lg md:text-2xl hover:text-[#ffae00] transition-colors flex items-center gap-2 group order-1 md:order-none"
           >
             [ ABANDON HOPE ]
             <TrendingDown className="w-5 h-5 group-hover:translate-y-1 transition-transform" />
@@ -106,16 +104,17 @@ export const Hero = () => {
             href={BUY_LINK}
             target="_blank"
             rel="noopener noreferrer"
-            className="group relative px-8 py-3 md:px-8 md:py-4 bg-transparent border-2 border-hell-red text-hell-red font-gothic text-lg md:text-2xl uppercase overflow-hidden transition-all hover:text-hell-white hover:border-hell-orange hover:shadow-[0_0_30px_rgba(204,0,0,0.6)] order-2 md:order-none cursor-pointer flex items-center gap-2"
+            className="group relative px-8 py-3 md:px-8 md:py-4 bg-transparent border-2 border-hell-red text-hell-red font-gothic text-xl md:text-3xl uppercase overflow-hidden transition-all hover:text-hell-white hover:border-hell-orange hover:shadow-[0_0_30px_rgba(204,0,0,0.6)] order-2 md:order-none cursor-pointer flex items-center gap-2"
           >
             <span className="absolute inset-0 w-full h-full bg-hell-red -translate-x-full group-hover:translate-x-0 transition-transform duration-300 ease-out"></span>
             <span className="relative z-10 flex items-center gap-2">
-              ACQUIRE $666 <Flame size={24} className="md:w-6 md:h-6" />
+              ACQUIRE $666 <Flame size={24} className="md:w-7 md:h-7" />
             </span>
           </a>
         </motion.div>
       </motion.div>
 
+      {/* Bottom Fog Fade */}
       <div className="absolute bottom-0 w-full h-32 bg-gradient-to-t from-hell-black to-transparent z-20 pointer-events-none"></div>
     </section>
   );
