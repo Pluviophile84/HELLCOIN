@@ -33,7 +33,7 @@ export const Hero = () => {
         <img 
           src="/banner.png" 
           // FIX: object-[30%_center] forces the crop to focus on the center-left (The Devil)
-          className="absolute inset-0 w-full h-full object-cover object-[30%_center] opacity-50" 
+          className="absolute inset-0 w-full h-full object-cover object-[30%_center] opacity-100" 
           alt="Hellcoin Throne"
         />
         <div className="absolute inset-0 bg-gradient-to-t from-hell-black via-hell-black/80 to-transparent"></div>
@@ -86,7 +86,7 @@ export const Hero = () => {
           // FIX: Reduced mobile size to text-sm/base to fit width
           className="font-terminal text-hell-red text-sm sm:text-lg md:text-2xl mt-6 md:mt-8 tracking-widest uppercase animate-pulse md:max-w-5xl"
         >
-          /// WHEN THE MARKET BURNS, WE TREND ///
+          WHEN THE MARKET BURNS, WE TREND
         </motion.p>
 
         {/* 4. BUTTONS */}
