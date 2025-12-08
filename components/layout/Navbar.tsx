@@ -127,18 +127,13 @@ export const Navbar = ({ onTriggerPaperHands }: { onTriggerPaperHands: () => voi
   return (
     <nav 
       className={cn(
-        "fixed top-0 w-full z-40 border-b transition-all duration-300",
+        "fixed top-0 w-full z-40 border-b transition-all duration-300 py-4",
         isScrolled 
-          // Scrolled: Dark background, thinner padding (py-3 mobile, py-2 desktop)
-          ? "bg-hell-black/90 backdrop-blur-md border-hell-red/30 py-3 md:py-2" 
-          // Top: Transparent, thicker padding (py-4 mobile, py-6 desktop)
-          : "bg-transparent border-transparent py-4 md:py-6"
+          ? "bg-hell-black/90 backdrop-blur-md border-hell-red/30" 
+          : "bg-transparent border-transparent"
       )}
     >
-      {/* FIX: Width Logic 
-          - Mobile (Default): w-full px-4 (Standard)
-          - Desktop (lg+): w-[85%] max-w-none (Fixed 85% Width Standard) 
-      */}
+      {/* FIX: Width Logic */}
       <div className="w-full lg:w-[85%] mx-auto px-4 lg:px-0 flex justify-between items-center h-full">
         
         {/* --- LEFT: LOGO --- */}
@@ -157,7 +152,6 @@ export const Navbar = ({ onTriggerPaperHands }: { onTriggerPaperHands: () => voi
         {/* --- CENTER: ADAPTIVE LINKS (Hidden on Mobile) --- */}
         <div 
           ref={navRef} 
-          // FIX: Added 'min-w-0' to allow shrinking
           className={cn(
             "hidden lg:flex items-center justify-center px-4 h-full relative flex-1 mx-4 min-w-0 transition-opacity duration-300",
             isReady ? "opacity-100" : "opacity-0"
@@ -218,15 +212,18 @@ export const Navbar = ({ onTriggerPaperHands }: { onTriggerPaperHands: () => voi
                        exit={{ opacity: 0, y: 10 }}
                        className="absolute top-full left-0 pt-2 w-56 z-50" 
                      >
-                       <div className="bg-hell-black border border-hell-red/50 shadow-xl p-5 flex flex-col gap-2">
+                       <div className="bg-hell-black border border-hell-red/50 shadow-xl p-5 flex flex-col gap-4">
                          {hiddenLinks.map((link) => (
                            <a 
                              key={link.name} 
                              href={link.href}
                              onClick={(e) => handleNavClick(e, link.href)}
-                             className="font-terminal text-sm text-gray-400 hover:text-hell-red transition-colors uppercase py-1.5 block"
+                             // FIX: Styled to match main navbar links (Bold, White -> Gold, Red Underline)
+                             className="font-terminal text-base text-hell-white hover:text-[#ffae00] transition-colors uppercase tracking-widest relative group cursor-pointer font-bold w-fit"
                            >
                              {link.name}
+                             {/* Red Line Animation */}
+                             <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-hell-orange transition-all group-hover:w-full"></span>
                            </a>
                          ))}
                        </div>
