@@ -127,10 +127,12 @@ export const Navbar = ({ onTriggerPaperHands }: { onTriggerPaperHands: () => voi
   return (
     <nav 
       className={cn(
-        "fixed top-0 w-full z-40 border-b transition-all duration-300 py-4",
+        "fixed top-0 w-full z-40 border-b transition-all duration-300",
+        // FIX: Restored mobile transition (py-4 -> py-3)
+        // Desktop transition remains (py-6 -> py-2)
         isScrolled 
-          ? "bg-hell-black/90 backdrop-blur-md border-hell-red/30" 
-          : "bg-transparent border-transparent"
+          ? "bg-hell-black/90 backdrop-blur-md border-hell-red/30 py-3 md:py-2" 
+          : "bg-transparent border-transparent py-4 md:py-6"
       )}
     >
       {/* FIX: Width Logic */}
@@ -212,17 +214,15 @@ export const Navbar = ({ onTriggerPaperHands }: { onTriggerPaperHands: () => voi
                        exit={{ opacity: 0, y: 10 }}
                        className="absolute top-full left-0 pt-2 w-56 z-50" 
                      >
-                       <div className="bg-hell-black border border-hell-red/50 shadow-xl p-5 flex flex-col gap-4">
+                       <div className="bg-hell-black border border-hell-red/50 shadow-xl p-5 flex flex-col gap-2">
                          {hiddenLinks.map((link) => (
                            <a 
                              key={link.name} 
                              href={link.href}
                              onClick={(e) => handleNavClick(e, link.href)}
-                             // FIX: Styled to match main navbar links (Bold, White -> Gold, Red Underline)
                              className="font-terminal text-base text-hell-white hover:text-[#ffae00] transition-colors uppercase tracking-widest relative group cursor-pointer font-bold w-fit"
                            >
                              {link.name}
-                             {/* Red Line Animation */}
                              <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-hell-orange transition-all group-hover:w-full"></span>
                            </a>
                          ))}
