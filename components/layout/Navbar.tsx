@@ -129,7 +129,7 @@ export const Navbar = ({ onTriggerPaperHands }: { onTriggerPaperHands: () => voi
       className={cn(
         "fixed top-0 w-full z-40 border-b transition-all duration-300 py-4",
         isScrolled 
-          ? "bg-hell-black/90 backdrop-blur-md border-hell-red/30" 
+          ? "bg-hell-black/90 backdrop-blur-md border-gray-800" 
           : "bg-transparent border-transparent"
       )}
     >
