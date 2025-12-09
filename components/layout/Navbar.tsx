@@ -22,7 +22,6 @@ const NAV_LINKS_DATA = [
 export const Navbar = ({ onTriggerPaperHands }: { onTriggerPaperHands: () => void }) => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  
   const [moreMenuOpen, setMoreMenuOpen] = useState(false);
   const [visibleCount, setVisibleCount] = useState(NAV_LINKS_DATA.length);
   const [isReady, setIsReady] = useState(false); 
@@ -61,7 +60,6 @@ export const Navbar = ({ onTriggerPaperHands }: { onTriggerPaperHands: () => voi
       const item = itemsRef.current[i];
       if (item) {
         const itemWidth = item.getBoundingClientRect().width + 24; 
-        
         if (usedWidth + itemWidth + moreButtonWidth + safetyBuffer < containerWidth) {
           usedWidth += itemWidth;
           newVisibleCount++;
@@ -97,7 +95,6 @@ export const Navbar = ({ onTriggerPaperHands }: { onTriggerPaperHands: () => voi
     };
   }, [updateVisibleLinks]);
 
-
   const scrollToTop = () => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
     setMobileMenuOpen(false);
@@ -121,65 +118,65 @@ export const Navbar = ({ onTriggerPaperHands }: { onTriggerPaperHands: () => voi
     <nav 
       className={cn(
         "fixed top-0 w-full z-40 border-b transition-all duration-300",
-        // FIX: Desktop transition restored (py-6 to py-2), mobile fixed at py-4
+        // HYBRID: Fluid padding based on scroll state
         isScrolled 
-          ? "bg-hell-black/90 backdrop-blur-md border-hell-red/30 py-4 md:py-2 2xl:py-3" 
-          : "bg-transparent border-transparent py-4 md:py-6 2xl:py-8"
+          ? "bg-hell-black/90 backdrop-blur-md border-hell-red/30 py-[clamp(0.5rem,1vw,1rem)]" 
+          : "bg-transparent border-transparent py-[clamp(1rem,2vw,2rem)]"
       )}
     >
-      <div className="w-full lg:w-[85%] 2xl:max-w-[2400px] mx-auto px-4 lg:px-0 flex justify-between items-center h-full">
+      <div className="w-[92%] max-w-[2400px] mx-auto px-4 flex justify-between items-center h-full">
         
-        {/* --- LEFT: LOGO --- */}
+        {/* --- LOGO --- */}
         <div 
           onClick={scrollToTop}
-          className="flex items-center gap-2 md:gap-3 2xl:gap-5 group cursor-pointer shrink-0 transition-transform active:scale-95 z-50 relative"
+          className="flex items-center gap-[clamp(0.5rem,0.8vw,1rem)] group cursor-pointer shrink-0 transition-transform active:scale-95 z-50 relative"
         >
-          {/* FIX: Logo scales on 2xl */}
           <img 
             src="/GOAPE.png" 
             alt="Hellcoin" 
-            className="w-8 h-8 md:w-12 md:h-12 2xl:w-16 2xl:h-16 rounded-full border border-hell-orange object-cover" 
+            className="w-[clamp(2.5rem,3.5vw,4rem)] h-[clamp(2.5rem,3.5vw,4rem)] rounded-full border border-hell-orange object-cover" 
           />
-          <span className="font-gothic text-xl md:text-3xl 2xl:text-5xl text-hell-orange tracking-wide text-glow">HELLCOIN</span>
+          <span className="font-gothic text-hell-orange tracking-wide text-glow text-[clamp(1.25rem,2vw,2.25rem)]">
+            HELLCOIN
+          </span>
         </div>
 
-        {/* --- CENTER: ADAPTIVE LINKS --- */}
+        {/* --- ADAPTIVE LINKS --- */}
         <div 
           ref={navRef} 
           className={cn(
-            "hidden lg:flex items-center justify-center px-4 h-full relative flex-1 mx-4 2xl:mx-12 min-w-0 transition-opacity duration-300",
+            "hidden lg:flex items-center justify-center px-4 h-full relative flex-1 mx-4 min-w-0 transition-opacity duration-300",
             isReady ? "opacity-100" : "opacity-0"
           )}
         >
+          {/* Measurement container */}
           <div className="flex gap-6 invisible absolute pointer-events-none top-0 left-0 whitespace-nowrap w-0 h-0 overflow-hidden">
              {NAV_LINKS_DATA.map((link, i) => (
                 <a 
                   key={`measure-${i}`} 
                   ref={(el) => { itemsRef.current[i] = el; }} 
                   href={link.href}
-                  className="font-terminal text-base font-bold uppercase"
+                  className="font-terminal font-bold uppercase text-[clamp(1rem,1.1vw,1.3rem)]"
                 >
                   {link.name}
                 </a>
              ))}
           </div>
 
-          <div className="flex gap-6 2xl:gap-10 items-center justify-center w-full">
-            {/* VISIBLE LINKS */}
+          <div className="flex gap-[clamp(1.5rem,2vw,3rem)] items-center justify-center w-full">
             {visibleLinks.map((link) => (
               <a 
                 key={link.name} 
                 href={link.href}
                 onClick={(e) => handleNavClick(e, link.href)}
-                // FIX: Links scale up on 2xl screens (text-base -> text-xl)
-                className="font-terminal text-base 2xl:text-xl text-hell-white hover:text-[#ffae00] transition-colors uppercase tracking-widest relative group cursor-pointer font-bold whitespace-nowrap"
+                // HYBRID: Fluid font size 1rem -> 1.3rem
+                className="font-terminal text-hell-white hover:text-[#ffae00] transition-colors uppercase tracking-widest relative group cursor-pointer font-bold whitespace-nowrap text-[clamp(1rem,1.1vw,1.3rem)]"
               >
                 {link.name}
-                <span className="absolute -bottom-1 left-0 w-0 h-0.5 2xl:h-1 bg-hell-orange transition-all group-hover:w-full"></span>
+                <span className="absolute -bottom-1 left-0 w-0 h-[2px] bg-hell-orange transition-all group-hover:w-full"></span>
               </a>
             ))}
 
-            {/* MORE BUTTON */}
             {hiddenLinks.length > 0 && (
                <div 
                  className="relative h-full flex items-center"
@@ -188,14 +185,14 @@ export const Navbar = ({ onTriggerPaperHands }: { onTriggerPaperHands: () => voi
                >
                  <button 
                    className={cn(
-                     "flex items-center gap-1 font-terminal text-base 2xl:text-xl transition-colors uppercase cursor-pointer border px-2 py-1 2xl:px-4 2xl:py-2",
+                     "flex items-center gap-1 font-terminal transition-colors uppercase cursor-pointer border px-2 py-1 text-[clamp(1rem,1.1vw,1.3rem)]",
                      moreMenuOpen 
                        ? "text-hell-red border-hell-red" 
                        : "text-[#ffae00] border-hell-red/50 hover:text-hell-red"
                    )}
                  >
                    MORE
-                   {moreMenuOpen ? <ChevronUp size={16} className="2xl:w-6 2xl:h-6" /> : <ChevronDown size={16} className="2xl:w-6 2xl:h-6" />}
+                   {moreMenuOpen ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
                  </button>
 
                  <AnimatePresence>
@@ -204,7 +201,7 @@ export const Navbar = ({ onTriggerPaperHands }: { onTriggerPaperHands: () => voi
                        initial={{ opacity: 0, y: 10 }}
                        animate={{ opacity: 1, y: 0 }}
                        exit={{ opacity: 0, y: 10 }}
-                       className="absolute top-full left-0 pt-2 w-56 2xl:w-72 z-50" 
+                       className="absolute top-full left-0 pt-2 w-56 z-50" 
                      >
                        <div className="bg-hell-black border border-hell-red/50 shadow-xl p-5 flex flex-col gap-2">
                          {hiddenLinks.map((link) => (
@@ -212,7 +209,7 @@ export const Navbar = ({ onTriggerPaperHands }: { onTriggerPaperHands: () => voi
                              key={link.name} 
                              href={link.href}
                              onClick={(e) => handleNavClick(e, link.href)}
-                             className="font-terminal text-sm 2xl:text-lg text-gray-400 hover:text-hell-red transition-colors uppercase py-1.5 block"
+                             className="font-terminal text-sm text-hell-white hover:text-[#ffae00] transition-colors uppercase py-1.5 block font-bold"
                            >
                              {link.name}
                            </a>
@@ -226,14 +223,15 @@ export const Navbar = ({ onTriggerPaperHands }: { onTriggerPaperHands: () => voi
           </div>
         </div>
 
-        {/* --- RIGHT: ACTIONS --- */}
+        {/* --- ACTIONS --- */}
         <div className="flex items-center gap-2 md:gap-4 shrink-0 z-50 relative">
           <button 
             onClick={onTriggerPaperHands}
-            // FIX: Heaven Mode button scales on 2xl
-            className="flex items-center gap-2 px-3 py-1 2xl:px-5 2xl:py-3 border border-pink-300 rounded text-pink-100 font-terminal text-xs md:text-sm 2xl:text-lg font-bold hover:bg-pink-500/20 hover:text-white transition-colors shadow-[0_0_10px_rgba(255,192,203,0.3)]"
+            // HYBRID: Fluid text and padding for buttons
+            className="flex items-center gap-2 border border-pink-300 rounded text-pink-100 font-terminal font-bold hover:bg-pink-500/20 hover:text-white transition-colors shadow-[0_0_10px_rgba(255,192,203,0.3)] 
+                       text-[clamp(0.7rem,0.9vw,1rem)] px-[clamp(0.5rem,1vw,1.2rem)] py-[clamp(0.25rem,0.5vw,0.75rem)]"
           >
-            <span className="w-2 h-2 2xl:w-3 2xl:h-3 rounded-full bg-pink-200 animate-pulse shadow-[0_0_5px_#fff]"></span>
+            <span className="w-2 h-2 rounded-full bg-pink-200 animate-pulse shadow-[0_0_5px_#fff]"></span>
             HEAVEN MODE
           </button>
           
@@ -241,8 +239,9 @@ export const Navbar = ({ onTriggerPaperHands }: { onTriggerPaperHands: () => voi
             href={BUY_LINK}
             target="_blank" 
             rel="noopener noreferrer"
-            // FIX: Acquire button scales padding/text on 2xl
-            className="hidden md:block bg-hell-red hover:bg-hell-orange text-hell-white font-gothic text-lg 2xl:text-2xl px-6 py-2 2xl:px-10 2xl:py-4 rounded shadow-[0_0_15px_rgba(204,0,0,0.5)] transition-all transform hover:scale-105 border border-hell-orange/50 text-center"
+            // HYBRID: Fluid text and padding for Acquire button
+            className="hidden md:block bg-hell-red hover:bg-hell-orange text-hell-white font-gothic rounded shadow-[0_0_15px_rgba(204,0,0,0.5)] transition-all transform hover:scale-105 border border-hell-orange/50 text-center
+                       text-[clamp(1.1rem,1.3vw,1.6rem)] px-[clamp(1rem,2vw,2.5rem)] py-[clamp(0.4rem,0.8vw,1rem)]"
           >
             ACQUIRE $666
           </a>
@@ -278,7 +277,6 @@ export const Navbar = ({ onTriggerPaperHands }: { onTriggerPaperHands: () => voi
                 ))}
               </div>
               <div className="w-full flex flex-col items-center shrink-0 pt-4 border-t border-gray-900 mb-8">
-                <div className="w-16 h-1 bg-hell-red/50 mb-4 shrink-0"></div>
                 <a 
                   href={BUY_LINK}
                   target="_blank" 
