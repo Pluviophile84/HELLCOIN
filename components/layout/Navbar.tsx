@@ -23,12 +23,10 @@ export const Navbar = ({ onTriggerPaperHands }: { onTriggerPaperHands: () => voi
   const [isScrolled, setIsScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   
-  // --- ADAPTIVE MENU STATES ---
   const [moreMenuOpen, setMoreMenuOpen] = useState(false);
   const [visibleCount, setVisibleCount] = useState(NAV_LINKS_DATA.length);
   const [isReady, setIsReady] = useState(false); 
   
-  // Refs for measuring width
   const navRef = useRef<HTMLDivElement>(null);
   const itemsRef = useRef<(HTMLAnchorElement | null)[]>([]);
 
@@ -54,15 +52,16 @@ export const Navbar = ({ onTriggerPaperHands }: { onTriggerPaperHands: () => voi
     if (!navRef.current) return;
 
     const containerWidth = navRef.current.offsetWidth;
-    const moreButtonWidth = 100;
-    const safetyBuffer = 40; 
+    const moreButtonWidth = 80; // Reduced size
+    const safetyBuffer = 30;
     let usedWidth = 0;
     let newVisibleCount = 0;
 
     for (let i = 0; i < NAV_LINKS_DATA.length; i++) {
       const item = itemsRef.current[i];
       if (item) {
-        const itemWidth = item.getBoundingClientRect().width + 24; 
+        const itemWidth = item.getBoundingClientRect().width + 20; // Tighter gap calculation
+        
         if (usedWidth + itemWidth + moreButtonWidth + safetyBuffer < containerWidth) {
           usedWidth += itemWidth;
           newVisibleCount++;
@@ -98,6 +97,7 @@ export const Navbar = ({ onTriggerPaperHands }: { onTriggerPaperHands: () => voi
     };
   }, [updateVisibleLinks]);
 
+
   const scrollToTop = () => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
     setMobileMenuOpen(false);
@@ -121,15 +121,16 @@ export const Navbar = ({ onTriggerPaperHands }: { onTriggerPaperHands: () => voi
     <nav 
       className={cn(
         "fixed top-0 w-full z-40 border-b transition-all duration-300",
-        // Adjusted padding clamps to be less aggressive on large screens
+        // FIX: Reduced padding significantly. py-3 -> py-2.
         isScrolled 
           ? "bg-hell-black/90 backdrop-blur-md border-hell-red/30 py-3" 
-          : "bg-transparent border-transparent py-[clamp(1rem,1.5vw,1.5rem)]"
+          : "bg-transparent border-transparent py-4"
       )}
     >
-      <div className="w-full lg:w-[85%] 2xl:max-w-[1920px] mx-auto px-4 lg:px-0 flex justify-between items-center h-full">
+      {/* FIX: Constrained max-width to 1400px (standard desktop) so it doesn't stretch too wide on 1920px */}
+      <div className="w-full max-w-[1400px] mx-auto px-6 flex justify-between items-center h-full">
         
-        {/* --- LEFT: LOGO --- */}
+        {/* --- LEFT: LOGO (Smaller) --- */}
         <div 
           onClick={scrollToTop}
           className="flex items-center gap-2 md:gap-3 group cursor-pointer shrink-0 transition-transform active:scale-95 z-50 relative"
@@ -137,11 +138,10 @@ export const Navbar = ({ onTriggerPaperHands }: { onTriggerPaperHands: () => voi
           <img 
             src="/GOAPE.png" 
             alt="Hellcoin" 
-            // Tamed logo size
-            className="w-[clamp(2.5rem,3vw,3.5rem)] h-[clamp(2.5rem,3vw,3.5rem)] rounded-full border border-hell-orange object-cover" 
+            className="w-8 h-8 md:w-10 md:h-10 rounded-full border border-hell-orange object-cover" 
           />
-          {/* Tamed text size */}
-          <span className="font-gothic text-hell-orange tracking-wide text-glow text-[clamp(1.25rem,1.5vw,1.75rem)]">HELLCOIN</span>
+          {/* Reduced font size */}
+          <span className="font-gothic text-lg md:text-2xl text-hell-orange tracking-wide text-glow">HELLCOIN</span>
         </div>
 
         {/* --- CENTER: ADAPTIVE LINKS --- */}
@@ -152,27 +152,27 @@ export const Navbar = ({ onTriggerPaperHands }: { onTriggerPaperHands: () => voi
             isReady ? "opacity-100" : "opacity-0"
           )}
         >
-          <div className="flex gap-6 invisible absolute pointer-events-none top-0 left-0 whitespace-nowrap w-0 h-0 overflow-hidden">
+          <div className="flex gap-5 invisible absolute pointer-events-none top-0 left-0 whitespace-nowrap w-0 h-0 overflow-hidden">
              {NAV_LINKS_DATA.map((link, i) => (
                 <a 
                   key={`measure-${i}`} 
                   ref={(el) => { itemsRef.current[i] = el; }} 
                   href={link.href}
-                  className="font-terminal font-bold uppercase text-base"
+                  className="font-terminal text-sm font-bold uppercase"
                 >
                   {link.name}
                 </a>
              ))}
           </div>
 
-          <div className="flex gap-6 2xl:gap-8 items-center justify-center w-full">
+          <div className="flex gap-5 2xl:gap-8 items-center justify-center w-full">
             {visibleLinks.map((link) => (
               <a 
                 key={link.name} 
                 href={link.href}
                 onClick={(e) => handleNavClick(e, link.href)}
-                // Tamed link font size: 0.95rem -> 1.05rem max
-                className="font-terminal text-hell-white hover:text-[#ffae00] transition-colors uppercase tracking-widest relative group cursor-pointer font-bold whitespace-nowrap text-[clamp(0.95rem,0.9vw,1.05rem)]"
+                // FIX: Reduced text size (text-sm -> text-base max)
+                className="font-terminal text-sm 2xl:text-base text-hell-white hover:text-[#ffae00] transition-colors uppercase tracking-widest relative group cursor-pointer font-bold whitespace-nowrap"
               >
                 {link.name}
                 <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-hell-orange transition-all group-hover:w-full"></span>
@@ -187,14 +187,14 @@ export const Navbar = ({ onTriggerPaperHands }: { onTriggerPaperHands: () => voi
                >
                  <button 
                    className={cn(
-                     "flex items-center gap-1 font-terminal transition-colors uppercase cursor-pointer border px-2 py-1 text-[clamp(0.95rem,0.9vw,1.05rem)]",
+                     "flex items-center gap-1 font-terminal text-sm transition-colors uppercase cursor-pointer border px-2 py-0.5",
                      moreMenuOpen 
                        ? "text-hell-red border-hell-red" 
                        : "text-[#ffae00] border-hell-red/50 hover:text-hell-red"
                    )}
                  >
                    MORE
-                   {moreMenuOpen ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
+                   {moreMenuOpen ? <ChevronUp size={14} /> : <ChevronDown size={14} />}
                  </button>
 
                  <AnimatePresence>
@@ -203,15 +203,15 @@ export const Navbar = ({ onTriggerPaperHands }: { onTriggerPaperHands: () => voi
                        initial={{ opacity: 0, y: 10 }}
                        animate={{ opacity: 1, y: 0 }}
                        exit={{ opacity: 0, y: 10 }}
-                       className="absolute top-full right-0 pt-2 w-56 z-50" 
+                       className="absolute top-full left-0 pt-2 w-48 z-50" 
                      >
-                       <div className="bg-hell-black border border-hell-red/50 shadow-xl p-5 flex flex-col gap-2">
+                       <div className="bg-hell-black border border-hell-red/50 shadow-xl p-4 flex flex-col gap-2">
                          {hiddenLinks.map((link) => (
                            <a 
                              key={link.name} 
                              href={link.href}
                              onClick={(e) => handleNavClick(e, link.href)}
-                             className="font-terminal text-sm text-gray-400 hover:text-hell-red transition-colors uppercase py-1.5 block"
+                             className="font-terminal text-xs 2xl:text-sm text-gray-400 hover:text-hell-red transition-colors uppercase py-1 block"
                            >
                              {link.name}
                            </a>
@@ -225,12 +225,11 @@ export const Navbar = ({ onTriggerPaperHands }: { onTriggerPaperHands: () => voi
           </div>
         </div>
 
-        {/* --- RIGHT: ACTIONS --- */}
-        <div className="flex items-center gap-2 md:gap-4 shrink-0 z-50 relative">
+        {/* --- RIGHT: ACTIONS (Compact) --- */}
+        <div className="flex items-center gap-2 md:gap-3 shrink-0 z-50 relative">
           <button 
             onClick={onTriggerPaperHands}
-            className="flex items-center gap-2 border border-pink-300 rounded text-pink-100 font-terminal font-bold hover:bg-pink-500/20 hover:text-white transition-colors shadow-[0_0_10px_rgba(255,192,203,0.3)]
-                       text-[clamp(0.75rem,0.8vw,0.875rem)] px-[clamp(0.6rem,0.8vw,0.9rem)] py-[clamp(0.25rem,0.4vw,0.5rem)]"
+            className="flex items-center gap-2 px-3 py-1 border border-pink-300 rounded text-pink-100 font-terminal text-xs font-bold hover:bg-pink-500/20 hover:text-white transition-colors shadow-[0_0_10px_rgba(255,192,203,0.3)]"
           >
             <span className="w-2 h-2 rounded-full bg-pink-200 animate-pulse shadow-[0_0_5px_#fff]"></span>
             HEAVEN MODE
@@ -240,8 +239,8 @@ export const Navbar = ({ onTriggerPaperHands }: { onTriggerPaperHands: () => voi
             href={BUY_LINK}
             target="_blank" 
             rel="noopener noreferrer"
-            className="hidden md:block bg-hell-red hover:bg-hell-orange text-hell-white font-gothic rounded shadow-[0_0_15px_rgba(204,0,0,0.5)] transition-all transform hover:scale-105 border border-hell-orange/50 text-center
-                       text-[clamp(1rem,1.1vw,1.25rem)] px-[clamp(1rem,1.5vw,1.5rem)] py-[clamp(0.4rem,0.5vw,0.6rem)]"
+            // FIX: Reduced button size
+            className="hidden md:block bg-hell-red hover:bg-hell-orange text-hell-white font-gothic text-base px-5 py-1.5 rounded shadow-[0_0_15px_rgba(204,0,0,0.5)] transition-all transform hover:scale-105 border border-hell-orange/50 text-center"
           >
             ACQUIRE $666
           </a>
