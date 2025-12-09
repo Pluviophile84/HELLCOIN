@@ -12,51 +12,57 @@ export const Genesis = () => {
   ];
 
   return (
-    <section id="genesis" className="py-32 2xl:py-64 px-4 bg-hell-dark relative">
-      {/* FIX: Increased max-width for 4K screens so text doesn't wrap too early */}
-      <div className="max-w-5xl 2xl:max-w-[2500px] mx-auto">
+    // FIX: Fluid vertical padding [clamp(8rem, 10vw, 20rem)]
+    <section id="genesis" className="px-4 bg-hell-dark relative" style={{ paddingTop: 'clamp(8rem, 10vw, 20rem)', paddingBottom: 'clamp(8rem, 10vw, 20rem)' }}>
+      {/* FIX: Fluid Max Width [clamp(1000px, 90vw, 2500px)] ensures container grows with screen */}
+      <div className="w-full mx-auto" style={{ maxWidth: 'clamp(1000px, 90vw, 2500px)' }}>
         
         {/* --- HEADER --- */}
         <motion.div 
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          className="flex flex-col items-center text-center gap-2 mb-16 2xl:mb-32"
+          className="flex flex-col items-center text-center gap-2"
+          // FIX: Fluid margin bottom [clamp(4rem, 6vw, 10rem)]
+          style={{ marginBottom: 'clamp(4rem, 6vw, 10rem)' }}
         >
-          {/* FIX: Reduced growth rate from 2vw to 1.2vw. 
-              On 1920px screen, this will be ~23px (manageable) instead of ~38px. */}
           <span className="font-terminal text-[#ffae00] tracking-widest uppercase font-bold text-[clamp(1.25rem,1.2vw,3rem)]">
             GENESIS BLOCK 001
           </span>
           
-          {/* FIX: Reduced growth rate from 8vw to 5vw.
-              On 1920px screen, this will be ~96px (6rem) instead of ~153px (9.5rem).
-              It only hits 12rem on full 4K screens. */}
           <h2 className="font-gothic text-hell-white leading-none text-[clamp(3.75rem,5vw,12rem)]">
             IN THE <span className="text-hell-red">BEGINNING</span>
           </h2>
         </motion.div>
 
         {/* --- CONTENT --- */}
-        <div className="space-y-12 2xl:space-y-24 pl-0 md:pl-12 max-w-4xl 2xl:max-w-[80%] mx-auto">
-          {paragraphs.map((para, i) => (
-            <motion.div
-              key={i}
-              initial={{ opacity: 0.2, x: -50 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              viewport={{ once: true, margin: "-100px" }}
-              transition={{ duration: 0.8, delay: i * 0.2 }}
-              className={`
-                font-terminal leading-relaxed border-l-4 pl-6 2xl:border-l-8 2xl:pl-12
-                /* FIX: Reduced growth rate from 1.5vw to 1.1vw. 
-                   Keeps text readable on standard desktops without blowing up. */
-                text-[clamp(1.25rem,1.1vw,3rem)]
-                ${para.highlight ? 'text-hell-red border-hell-red font-bold' : 'text-gray-400 border-hell-dark'}
-              `}
-            >
-              {para.text}
-            </motion.div>
-          ))}
+        {/* FIX: Fluid max-width for reading area */}
+        <div className="w-full mx-auto" style={{ maxWidth: 'clamp(800px, 75vw, 1800px)' }}>
+          {/* FIX: Fluid vertical gap between paragraphs */}
+          <div className="flex flex-col" style={{ gap: 'clamp(2rem, 3vw, 5rem)' }}>
+            {paragraphs.map((para, i) => (
+              <motion.div
+                key={i}
+                initial={{ opacity: 0.2, x: -50 }}
+                whileInView={{ opacity: 1, x: 0 }}
+                viewport={{ once: true, margin: "-100px" }}
+                transition={{ duration: 0.8, delay: i * 0.2 }}
+                className={`
+                  font-terminal leading-relaxed 
+                  ${para.highlight ? 'text-hell-red border-hell-red font-bold' : 'text-gray-400 border-hell-dark'}
+                `}
+                style={{
+                  // FIX: Fluid Border Width [clamp(4px, 0.5vw, 10px)]
+                  borderLeftWidth: 'clamp(4px, 0.5vw, 10px)',
+                  // FIX: Fluid Padding Left [clamp(1.5rem, 2vw, 4rem)]
+                  paddingLeft: 'clamp(1.5rem, 2vw, 4rem)',
+                  fontSize: 'clamp(1.25rem, 1.1vw, 3rem)'
+                }}
+              >
+                {para.text}
+              </motion.div>
+            ))}
+          </div>
         </div>
       </div>
     </section>
