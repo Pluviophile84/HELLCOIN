@@ -13,7 +13,8 @@ export const Genesis = () => {
 
   return (
     <section id="genesis" className="py-32 2xl:py-64 px-4 bg-hell-dark relative">
-      <div className="max-w-5xl 2xl:max-w-7xl mx-auto">
+      {/* FIX: Increased max-width for 4K screens so text doesn't wrap too early */}
+      <div className="max-w-5xl 2xl:max-w-[2500px] mx-auto">
         
         {/* --- HEADER --- */}
         <motion.div 
@@ -22,21 +23,19 @@ export const Genesis = () => {
           viewport={{ once: true }}
           className="flex flex-col items-center text-center gap-2 mb-16 2xl:mb-32"
         >
-          {/* FIX: Replaced stepped breakpoints with clamp() for smooth vector-like scaling 
-              Min: 1.25rem (20px), Ideal: 2.5vw, Max: 3rem (48px) */}
-          <span className="font-terminal text-[#ffae00] tracking-widest uppercase font-bold text-[clamp(1.25rem,2.5vw,3rem)]">
+          {/* FIX: Raised Ceiling to 3rem for 4K displays */}
+          <span className="font-terminal text-[#ffae00] tracking-widest uppercase font-bold text-[clamp(1.25rem,2vw,3rem)]">
             GENESIS BLOCK 001
           </span>
           
-          {/* FIX: Fluid scaling for Main Title
-              Min: 3.75rem (60px), Ideal: 9vw, Max: 9rem (144px) */}
-          <h2 className="font-gothic text-hell-white leading-none text-[clamp(3.75rem,9vw,9rem)]">
+          {/* FIX: Raised Ceiling to 12rem (Titan Size) for 4K displays */}
+          <h2 className="font-gothic text-hell-white leading-none text-[clamp(3.75rem,8vw,12rem)]">
             IN THE <span className="text-hell-red">BEGINNING</span>
           </h2>
         </motion.div>
 
         {/* --- CONTENT --- */}
-        <div className="space-y-12 2xl:space-y-24 pl-0 md:pl-12 max-w-4xl 2xl:max-w-6xl mx-auto">
+        <div className="space-y-12 2xl:space-y-24 pl-0 md:pl-12 max-w-4xl 2xl:max-w-[80%] mx-auto">
           {paragraphs.map((para, i) => (
             <motion.div
               key={i}
@@ -45,10 +44,9 @@ export const Genesis = () => {
               viewport={{ once: true, margin: "-100px" }}
               transition={{ duration: 0.8, delay: i * 0.2 }}
               className={`
-                font-terminal leading-relaxed border-l-4 pl-6 2xl:border-l-8 2xl:pl-10
-                /* FIX: Fluid scaling for Body Text
-                   Min: 1.25rem (20px), Ideal: 2.5vw, Max: 3rem (48px) */
-                text-[clamp(1.25rem,2.5vw,3rem)]
+                font-terminal leading-relaxed border-l-4 pl-6 2xl:border-l-8 2xl:pl-12
+                /* FIX: Raised Ceiling to 3rem for 4K readability */
+                text-[clamp(1.25rem,1.5vw,3rem)]
                 ${para.highlight ? 'text-hell-red border-hell-red font-bold' : 'text-gray-400 border-hell-dark'}
               `}
             >
