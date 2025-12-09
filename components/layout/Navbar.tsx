@@ -1,38 +1,22 @@
 "use client";
-import { useState, useEffect, useRef, useCallback } from "react";
-import { Menu, X, ChevronDown, ChevronUp } from "lucide-react";
+import { useState, useEffect } from "react";
+import { Menu, X } from "lucide-react";
 import { cn } from "../../lib/utils";
 import { motion, AnimatePresence } from "framer-motion";
-
-// --- CONFIGURATION ---
-const BUY_LINK = "https://raydium.io/swap";
-
-const NAV_LINKS_DATA = [
-  { name: "GENESIS", href: "#genesis" },
-  { name: "COMMANDMENTS", href: "#commandments" },
-  { name: "NINE TYPES", href: "#nine-types" },
-  { name: "MATH", href: "#math" },
-  { name: "RITUAL", href: "#ritual" },
-  { name: "HELLMAP", href: "#hellmap" },
-  { name: "HALL OF PAIN", href: "#hall-of-pain" },
-  { name: "REVELATION", href: "#revelation" },
-  { name: "THE PIT", href: "#the-pit" },
-];
 
 export const Navbar = ({ onTriggerPaperHands }: { onTriggerPaperHands: () => void }) => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  
-  const [moreMenuOpen, setMoreMenuOpen] = useState(false);
-  const [visibleCount, setVisibleCount] = useState(NAV_LINKS_DATA.length);
-  const [isReady, setIsReady] = useState(false); 
-  
-  const navRef = useRef<HTMLDivElement>(null);
-  const itemsRef = useRef<(HTMLAnchorElement | null)[]>([]);
+
+  const BUY_LINK = "https://raydium.io/swap"; 
 
   useEffect(() => {
     const handleScroll = () => {
-      setIsScrolled(window.scrollY > 50);
+      if (window.scrollY > 50) {
+        setIsScrolled(true);
+      } else {
+        setIsScrolled(false);
+      }
     };
     handleScroll();
     window.addEventListener("scroll", handleScroll);
@@ -48,56 +32,6 @@ export const Navbar = ({ onTriggerPaperHands }: { onTriggerPaperHands: () => voi
     return () => { document.body.style.overflow = "unset"; };
   }, [mobileMenuOpen]);
 
-  const updateVisibleLinks = useCallback(() => {
-    if (!navRef.current) return;
-
-    const containerWidth = navRef.current.offsetWidth;
-    const moreButtonWidth = 80; // Reduced size
-    const safetyBuffer = 30;
-    let usedWidth = 0;
-    let newVisibleCount = 0;
-
-    for (let i = 0; i < NAV_LINKS_DATA.length; i++) {
-      const item = itemsRef.current[i];
-      if (item) {
-        const itemWidth = item.getBoundingClientRect().width + 20; // Tighter gap calculation
-        
-        if (usedWidth + itemWidth + moreButtonWidth + safetyBuffer < containerWidth) {
-          usedWidth += itemWidth;
-          newVisibleCount++;
-        } else {
-          break;
-        }
-      }
-    }
-    
-    setVisibleCount(Math.min(newVisibleCount, NAV_LINKS_DATA.length));
-    setIsReady(true); 
-  }, []);
-
-  useEffect(() => {
-    const timeout = setTimeout(() => {
-      updateVisibleLinks();
-    }, 100);
-
-    const observer = new ResizeObserver(() => {
-      updateVisibleLinks();
-    });
-    
-    if (navRef.current) {
-      observer.observe(navRef.current);
-    }
-
-    window.addEventListener('resize', updateVisibleLinks);
-
-    return () => {
-      clearTimeout(timeout);
-      observer.disconnect();
-      window.removeEventListener('resize', updateVisibleLinks);
-    };
-  }, [updateVisibleLinks]);
-
-
   const scrollToTop = () => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
     setMobileMenuOpen(false);
@@ -106,7 +40,6 @@ export const Navbar = ({ onTriggerPaperHands }: { onTriggerPaperHands: () => voi
   const handleNavClick = (e: React.MouseEvent<HTMLAnchorElement>, href: string) => {
     e.preventDefault();
     setMobileMenuOpen(false);
-    setMoreMenuOpen(false);
     const targetId = href.replace("#", "");
     const elem = document.getElementById(targetId);
     if (elem) {
@@ -114,138 +47,95 @@ export const Navbar = ({ onTriggerPaperHands }: { onTriggerPaperHands: () => voi
     }
   };
 
-  const visibleLinks = NAV_LINKS_DATA.slice(0, visibleCount);
-  const hiddenLinks = NAV_LINKS_DATA.slice(visibleCount);
+  const navLinks = [
+    { name: "GENESIS", short: "GEN", href: "#genesis" },
+    { name: "TRUTH", short: "TRU", href: "#revelation" },
+    { name: "COMMANDMENTS", short: "CMD", href: "#commandments" },
+    { name: "MATH", short: "MTH", href: "#math" },
+    { name: "RITUAL", short: "RIT", href: "#ritual" },
+    { name: "HELLMAP", short: "MAP", href: "#hellmap" },
+    { name: "THE PIT", short: "PIT", href: "#the-pit" },
+  ];
 
   return (
     <nav 
       className={cn(
-        "fixed top-0 w-full z-40 border-b transition-all duration-300",
-        // FIX: Reduced padding significantly. py-3 -> py-2.
+        "fixed top-0 w-full z-40 border-b transition-all duration-300 py-4",
         isScrolled 
-          ? "bg-hell-black/90 backdrop-blur-md border-hell-red/30 py-3" 
-          : "bg-transparent border-transparent py-4"
+          ? "bg-hell-black/90 backdrop-blur-md border-hell-red/30" 
+          : "bg-transparent border-transparent"
       )}
     >
-      {/* FIX: Constrained max-width to 1400px (standard desktop) so it doesn't stretch too wide on 1920px */}
-      <div className="w-full max-w-[1400px] mx-auto px-6 flex justify-between items-center h-full">
+      <div className="max-w-7xl mx-auto px-4 flex justify-between items-center">
         
-        {/* --- LEFT: LOGO (Smaller) --- */}
+        {/* LOGO */}
         <div 
           onClick={scrollToTop}
-          className="flex items-center gap-2 md:gap-3 group cursor-pointer shrink-0 transition-transform active:scale-95 z-50 relative"
+          className="flex items-center gap-2 md:gap-3 group cursor-pointer shrink-0 transition-transform active:scale-95"
         >
           <img 
             src="/GOAPE.png" 
             alt="Hellcoin" 
-            className="w-8 h-8 md:w-10 md:h-10 rounded-full border border-hell-orange object-cover" 
+            className="w-8 h-8 md:w-12 md:h-12 rounded-full border border-hell-orange object-cover" 
           />
-          {/* Reduced font size */}
-          <span className="font-gothic text-lg md:text-2xl text-hell-orange tracking-wide text-glow">HELLCOIN</span>
+          <span className="font-gothic text-xl md:text-3xl text-hell-orange tracking-wide text-glow">HELLCOIN</span>
         </div>
 
-        {/* --- CENTER: ADAPTIVE LINKS --- */}
-        <div 
-          ref={navRef} 
-          className={cn(
-            "hidden lg:flex items-center justify-center px-4 h-full relative flex-1 mx-4 min-w-0 transition-opacity duration-300",
-            isReady ? "opacity-100" : "opacity-0"
-          )}
-        >
-          <div className="flex gap-5 invisible absolute pointer-events-none top-0 left-0 whitespace-nowrap w-0 h-0 overflow-hidden">
-             {NAV_LINKS_DATA.map((link, i) => (
-                <a 
-                  key={`measure-${i}`} 
-                  ref={(el) => { itemsRef.current[i] = el; }} 
-                  href={link.href}
-                  className="font-terminal text-sm font-bold uppercase"
-                >
-                  {link.name}
-                </a>
-             ))}
-          </div>
+        {/* --- NAVIGATION LINKS --- */}
 
-          <div className="flex gap-5 2xl:gap-8 items-center justify-center w-full">
-            {visibleLinks.map((link) => (
-              <a 
-                key={link.name} 
-                href={link.href}
-                onClick={(e) => handleNavClick(e, link.href)}
-                // FIX: Reduced text size (text-sm -> text-base max)
-                className="font-terminal text-sm 2xl:text-base text-hell-white hover:text-[#ffae00] transition-colors uppercase tracking-widest relative group cursor-pointer font-bold whitespace-nowrap"
-              >
-                {link.name}
-                <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-hell-orange transition-all group-hover:w-full"></span>
-              </a>
-            ))}
-
-            {hiddenLinks.length > 0 && (
-               <div 
-                 className="relative h-full flex items-center"
-                 onMouseEnter={() => setMoreMenuOpen(true)}
-                 onMouseLeave={() => setMoreMenuOpen(false)}
-               >
-                 <button 
-                   className={cn(
-                     "flex items-center gap-1 font-terminal text-sm transition-colors uppercase cursor-pointer border px-2 py-0.5",
-                     moreMenuOpen 
-                       ? "text-hell-red border-hell-red" 
-                       : "text-[#ffae00] border-hell-red/50 hover:text-hell-red"
-                   )}
-                 >
-                   MORE
-                   {moreMenuOpen ? <ChevronUp size={14} /> : <ChevronDown size={14} />}
-                 </button>
-
-                 <AnimatePresence>
-                   {moreMenuOpen && (
-                     <motion.div
-                       initial={{ opacity: 0, y: 10 }}
-                       animate={{ opacity: 1, y: 0 }}
-                       exit={{ opacity: 0, y: 10 }}
-                       className="absolute top-full left-0 pt-2 w-48 z-50" 
-                     >
-                       <div className="bg-hell-black border border-hell-red/50 shadow-xl p-4 flex flex-col gap-2">
-                         {hiddenLinks.map((link) => (
-                           <a 
-                             key={link.name} 
-                             href={link.href}
-                             onClick={(e) => handleNavClick(e, link.href)}
-                             className="font-terminal text-xs 2xl:text-sm text-gray-400 hover:text-hell-red transition-colors uppercase py-1 block"
-                           >
-                             {link.name}
-                           </a>
-                         ))}
-                       </div>
-                     </motion.div>
-                   )}
-                 </AnimatePresence>
-               </div>
-            )}
-          </div>
+        {/* 1. DESKTOP WIDE (Full Names) */}
+        <div className="hidden xl:flex gap-6">
+          {navLinks.map((link) => (
+            <a 
+              key={link.name} 
+              href={link.href}
+              onClick={(e) => handleNavClick(e, link.href)}
+              className="font-terminal text-base text-hell-white hover:text-hell-gold transition-colors uppercase tracking-widest relative group cursor-pointer font-bold"
+            >
+              {link.name}
+              <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-hell-orange transition-all group-hover:w-full"></span>
+            </a>
+          ))}
+        </div>
+        
+        {/* 2. LAPTOP MEDIUM (Abbreviated Names) */}
+        <div className="hidden lg:flex xl:hidden gap-5">
+          {navLinks.map((link) => (
+            <a 
+              key={link.name} 
+              href={link.href}
+              onClick={(e) => handleNavClick(e, link.href)}
+              title={link.name}
+              className="font-terminal text-sm text-hell-white hover:text-hell-gold transition-colors uppercase tracking-widest relative group cursor-pointer font-bold border border-transparent px-1 hover:border-hell-red/50"
+            >
+              {link.short}
+            </a>
+          ))}
         </div>
 
-        {/* --- RIGHT: ACTIONS (Compact) --- */}
-        <div className="flex items-center gap-2 md:gap-3 shrink-0 z-50 relative">
+        {/* --- ACTIONS --- */}
+        <div className="flex items-center gap-2 md:gap-4">
+          
+          {/* HEAVEN MODE BUTTON */}
           <button 
             onClick={onTriggerPaperHands}
-            className="flex items-center gap-2 px-3 py-1 border border-pink-300 rounded text-pink-100 font-terminal text-xs font-bold hover:bg-pink-500/20 hover:text-white transition-colors shadow-[0_0_10px_rgba(255,192,203,0.3)]"
+            className="flex items-center gap-2 px-3 py-1 border border-pink-300 rounded text-pink-100 font-terminal text-xs md:text-sm font-bold hover:bg-pink-500/20 hover:text-white transition-colors shadow-[0_0_10px_rgba(255,192,203,0.3)]"
           >
             <span className="w-2 h-2 rounded-full bg-pink-200 animate-pulse shadow-[0_0_5px_#fff]"></span>
             HEAVEN MODE
           </button>
           
+          {/* ACQUIRE BUTTON (DESKTOP/LAPTOP) */}
           <a 
             href={BUY_LINK}
             target="_blank" 
             rel="noopener noreferrer"
-            // FIX: Reduced button size
-            className="hidden md:block bg-hell-red hover:bg-hell-orange text-hell-white font-gothic text-base px-5 py-1.5 rounded shadow-[0_0_15px_rgba(204,0,0,0.5)] transition-all transform hover:scale-105 border border-hell-orange/50 text-center"
+            className="hidden md:block bg-hell-red hover:bg-hell-orange text-hell-white font-gothic text-lg px-6 py-2 rounded shadow-[0_0_15px_rgba(204,0,0,0.5)] transition-all transform hover:scale-105 border border-hell-orange/50 text-center"
           >
             ACQUIRE $666
           </a>
 
-          {/* MOBILE TOGGLE */}
+          {/* MOBILE TOGGLE (Hidden on large screens) */}
           <button className="lg:hidden text-hell-white" onClick={() => setMobileMenuOpen(!mobileMenuOpen)}>
             {mobileMenuOpen ? <X size={28} /> : <Menu size={28} />}
           </button>
@@ -259,32 +149,32 @@ export const Navbar = ({ onTriggerPaperHands }: { onTriggerPaperHands: () => voi
             initial={{ opacity: 0, height: 0 }}
             animate={{ opacity: 1, height: "100vh" }}
             exit={{ opacity: 0, height: 0 }}
-            onClick={() => setMobileMenuOpen(false)}
-            className="lg:hidden fixed inset-0 bg-hell-black/95 backdrop-blur-xl border-b border-hell-red/50 overflow-hidden shadow-2xl z-40 pt-[80px]"
+            transition={{ duration: 0.3, ease: "easeInOut" }} // FIX: Smoother animation
+            className="lg:hidden fixed top-[60px] left-0 w-full bg-hell-black/95 backdrop-blur-xl border-b border-hell-red/50 overflow-hidden shadow-2xl"
           >
-            <div className="p-6 h-full flex flex-col justify-between items-center overflow-hidden">
-              <div className="flex flex-col flex-grow justify-around items-center w-full gap-y-0">
-                {NAV_LINKS_DATA.map((link) => (
-                  <a 
-                    key={link.name} 
-                    href={link.href} 
-                    onClick={(e) => handleNavClick(e, link.href)}
-                    className="font-terminal text-lg text-hell-white hover:text-hell-orange tracking-widest cursor-pointer font-bold shrink-0 py-0.5" 
-                  >
-                    {link.name}
-                  </a>
-                ))}
-              </div>
-              <div className="w-full flex flex-col items-center shrink-0 pt-4 border-t border-gray-900 mb-8">
+            <div className="p-6 flex flex-col gap-6 items-center justify-center h-full pb-32 overflow-y-auto">
+              {navLinks.map((link) => (
                 <a 
-                  href={BUY_LINK}
-                  target="_blank" 
-                  rel="noopener noreferrer"
-                  className="bg-hell-red text-hell-white font-gothic text-xl py-3 px-12 rounded shadow-[0_0_20px_rgba(204,0,0,0.6)]"
+                  key={link.name} 
+                  href={link.href} 
+                  onClick={(e) => handleNavClick(e, link.href)}
+                  className="font-terminal text-xl text-hell-white hover:text-hell-orange tracking-widest cursor-pointer font-bold" 
                 >
-                  ACQUIRE $666
+                  {link.name}
                 </a>
-              </div>
+              ))}
+              
+              {/* FIX: Removed the red divider line here */}
+              
+              {/* ACQUIRE LINK (Mobile) */}
+              <a 
+                href={BUY_LINK}
+                target="_blank" 
+                rel="noopener noreferrer"
+                className="bg-hell-red text-hell-white font-gothic text-xl py-3 px-12 rounded shadow-[0_0_20px_rgba(204,0,0,0.6)]"
+              >
+                ACQUIRE $666
+              </a>
             </div>
           </motion.div>
         )}
