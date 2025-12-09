@@ -23,13 +23,16 @@ export const Genesis = () => {
           viewport={{ once: true }}
           className="flex flex-col items-center text-center gap-2 mb-16 2xl:mb-32"
         >
-          {/* FIX: Raised Ceiling to 3rem for 4K displays */}
-          <span className="font-terminal text-[#ffae00] tracking-widest uppercase font-bold text-[clamp(1.25rem,2vw,3rem)]">
+          {/* FIX: Reduced growth rate from 2vw to 1.2vw. 
+              On 1920px screen, this will be ~23px (manageable) instead of ~38px. */}
+          <span className="font-terminal text-[#ffae00] tracking-widest uppercase font-bold text-[clamp(1.25rem,1.2vw,3rem)]">
             GENESIS BLOCK 001
           </span>
           
-          {/* FIX: Raised Ceiling to 12rem (Titan Size) for 4K displays */}
-          <h2 className="font-gothic text-hell-white leading-none text-[clamp(3.75rem,8vw,12rem)]">
+          {/* FIX: Reduced growth rate from 8vw to 5vw.
+              On 1920px screen, this will be ~96px (6rem) instead of ~153px (9.5rem).
+              It only hits 12rem on full 4K screens. */}
+          <h2 className="font-gothic text-hell-white leading-none text-[clamp(3.75rem,5vw,12rem)]">
             IN THE <span className="text-hell-red">BEGINNING</span>
           </h2>
         </motion.div>
@@ -45,8 +48,9 @@ export const Genesis = () => {
               transition={{ duration: 0.8, delay: i * 0.2 }}
               className={`
                 font-terminal leading-relaxed border-l-4 pl-6 2xl:border-l-8 2xl:pl-12
-                /* FIX: Raised Ceiling to 3rem for 4K readability */
-                text-[clamp(1.25rem,1.5vw,3rem)]
+                /* FIX: Reduced growth rate from 1.5vw to 1.1vw. 
+                   Keeps text readable on standard desktops without blowing up. */
+                text-[clamp(1.25rem,1.1vw,3rem)]
                 ${para.highlight ? 'text-hell-red border-hell-red font-bold' : 'text-gray-400 border-hell-dark'}
               `}
             >
