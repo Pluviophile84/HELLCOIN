@@ -12,41 +12,37 @@ export const Genesis = () => {
   ];
 
   return (
-    // FIX: Full 5-point padding scale for smooth vertical growth
+    // HYBRID: Padding scales smoothly
     <section id="genesis" className="relative bg-hell-dark px-4 
-                                   py-24 sm:py-32 md:py-36 lg:py-48 xl:py-56 2xl:py-64">
+                                   py-[clamp(6rem,10vw,16rem)]">
       
-      {/* FIX: Container width scales at every step */}
-      <div className="mx-auto w-full 
-                      max-w-xl sm:max-w-2xl md:max-w-4xl lg:max-w-5xl xl:max-w-6xl 2xl:max-w-7xl">
+      {/* HYBRID: Container max-width scales */}
+      <div className="mx-auto w-full max-w-[90%] 2xl:max-w-[2000px]">
         
         {/* --- HEADER --- */}
         <motion.div 
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          // FIX: Margin bottom scales at every step
           className="flex flex-col items-center text-center gap-2 
-                     mb-12 sm:mb-16 md:mb-20 lg:mb-24 xl:mb-28 2xl:mb-32"
+                     mb-[clamp(3rem,6vw,8rem)]"
         >
-          {/* FIX: Subtitle Full Scale (lg -> 5xl) */}
           <span className="font-terminal text-[#ffae00] tracking-widest uppercase font-bold 
-                           text-lg sm:text-xl md:text-2xl lg:text-3xl xl:text-4xl 2xl:text-5xl">
+                           text-[clamp(1rem,1.5vw,2.5rem)]">
             GENESIS BLOCK 001
           </span>
           
-          {/* FIX: Title Full Scale (5xl -> 11rem) */}
           <h2 className="font-gothic text-hell-white leading-none 
-                         text-5xl sm:text-6xl md:text-7xl lg:text-8xl xl:text-9xl 2xl:text-[11rem]">
+                         text-[clamp(3rem,6vw,8rem)]">
             IN THE <span className="text-hell-red">BEGINNING</span>
           </h2>
         </motion.div>
 
         {/* --- CONTENT --- */}
         <div className="mx-auto flex flex-col 
-                        gap-y-8 sm:gap-y-10 md:gap-y-12 lg:gap-y-16 xl:gap-y-20 2xl:gap-y-24 
-                        pl-0 md:pl-8 lg:pl-10 xl:pl-12
-                        max-w-lg sm:max-w-xl md:max-w-3xl lg:max-w-4xl xl:max-w-5xl 2xl:max-w-6xl">
+                        gap-y-[clamp(2rem,4vw,6rem)]
+                        pl-0 md:pl-8 lg:pl-10
+                        max-w-4xl 2xl:max-w-6xl">
           {paragraphs.map((para, i) => (
             <motion.div
               key={i}
@@ -54,12 +50,12 @@ export const Genesis = () => {
               whileInView={{ opacity: 1, x: 0 }}
               viewport={{ once: true, margin: "-100px" }}
               transition={{ duration: 0.8, delay: i * 0.2 }}
-              // FIX: Body Text Full Scale (lg -> 5xl) & Border Scaling
+              // HYBRID: Borders, Padding, and Text size all clamped
               className={`
                 font-terminal leading-relaxed 
-                border-l-4 lg:border-l-6 2xl:border-l-8 
-                pl-4 sm:pl-6 md:pl-8 lg:pl-10 xl:pl-12
-                text-lg sm:text-xl md:text-2xl lg:text-3xl xl:text-4xl 2xl:text-5xl
+                border-l-[clamp(4px,0.5vw,8px)]
+                pl-[clamp(1rem,2vw,3rem)]
+                text-[clamp(1.1rem,1.4vw,2.2rem)]
                 ${para.highlight ? 'text-hell-red border-hell-red font-bold' : 'text-gray-400 border-hell-dark'}
               `}
             >
