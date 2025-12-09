@@ -12,17 +12,14 @@ export const Navbar = ({ onTriggerPaperHands }: { onTriggerPaperHands: () => voi
 
   useEffect(() => {
     const handleScroll = () => {
-      if (window.scrollY > 50) {
-        setIsScrolled(true);
-      } else {
-        setIsScrolled(false);
-      }
+      setIsScrolled(window.scrollY > 50);
     };
     handleScroll();
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
+  // Simple scroll lock for mobile menu
   useEffect(() => {
     if (mobileMenuOpen) {
       document.body.style.overflow = "hidden";
@@ -48,25 +45,27 @@ export const Navbar = ({ onTriggerPaperHands }: { onTriggerPaperHands: () => voi
   };
 
   const navLinks = [
-    { name: "GENESIS", short: "GEN", href: "#genesis" },
-    { name: "TRUTH", short: "TRU", href: "#revelation" },
-    { name: "COMMANDMENTS", short: "CMD", href: "#commandments" },
-    { name: "MATH", short: "MTH", href: "#math" },
-    { name: "RITUAL", short: "RIT", href: "#ritual" },
-    { name: "HELLMAP", short: "MAP", href: "#hellmap" },
-    { name: "THE PIT", short: "PIT", href: "#the-pit" },
+    { name: "GENESIS", href: "#genesis" },
+    { name: "COMMANDMENTS", href: "#commandments" },
+    { name: "NINE TYPES", href: "#nine-types" },
+    { name: "MATH", href: "#math" },
+    { name: "RITUAL", href: "#ritual" },
+    { name: "HELLMAP", href: "#hellmap" },
+    { name: "HALL OF PAIN", href: "#hall-of-pain" },
+    { name: "REVELATION", href: "#revelation" },
+    { name: "THE PIT", href: "#the-pit" },
   ];
 
   return (
     <nav 
       className={cn(
-        "fixed top-0 w-full z-40 border-b transition-all duration-300 py-4",
+        "fixed top-0 w-full z-40 transition-all duration-300 py-4",
         isScrolled 
-          ? "bg-hell-black/90 backdrop-blur-md border-hell-red/30" 
+          ? "bg-hell-black/90 backdrop-blur-md border-b border-hell-red/30" 
           : "bg-transparent border-transparent"
       )}
     >
-      <div className="max-w-7xl mx-auto px-4 flex justify-between items-center">
+      <div className="w-full max-w-[90%] 2xl:max-w-[1800px] mx-auto px-4 flex justify-between items-center">
         
         {/* LOGO */}
         <div 
@@ -76,81 +75,60 @@ export const Navbar = ({ onTriggerPaperHands }: { onTriggerPaperHands: () => voi
           <img 
             src="/GOAPE.png" 
             alt="Hellcoin" 
-            className="w-8 h-8 md:w-12 md:h-12 rounded-full border border-hell-orange object-cover" 
+            className="w-8 h-8 md:w-10 md:h-10 2xl:w-14 2xl:h-14 rounded-full border border-hell-orange object-cover" 
           />
-          <span className="font-gothic text-xl md:text-3xl text-hell-orange tracking-wide text-glow">HELLCOIN</span>
+          <span className="font-gothic text-xl md:text-2xl 2xl:text-4xl text-hell-orange tracking-wide text-glow">HELLCOIN</span>
         </div>
 
-        {/* --- NAVIGATION LINKS --- */}
-
-        {/* 1. DESKTOP WIDE (Full Names) */}
-        <div className="hidden xl:flex gap-6">
+        {/* DESKTOP LINKS (Hidden < xl, Visible >= xl) */}
+        <div className="hidden xl:flex gap-6 2xl:gap-10">
           {navLinks.map((link) => (
             <a 
               key={link.name} 
               href={link.href}
               onClick={(e) => handleNavClick(e, link.href)}
-              className="font-terminal text-base text-hell-white hover:text-hell-gold transition-colors uppercase tracking-widest relative group cursor-pointer font-bold"
+              className="font-terminal text-base 2xl:text-xl text-hell-white hover:text-hell-gold transition-colors uppercase tracking-widest relative group cursor-pointer font-bold"
             >
               {link.name}
               <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-hell-orange transition-all group-hover:w-full"></span>
             </a>
           ))}
         </div>
-        
-        {/* 2. LAPTOP MEDIUM (Abbreviated Names) */}
-        <div className="hidden lg:flex xl:hidden gap-5">
-          {navLinks.map((link) => (
-            <a 
-              key={link.name} 
-              href={link.href}
-              onClick={(e) => handleNavClick(e, link.href)}
-              title={link.name}
-              className="font-terminal text-sm text-hell-white hover:text-hell-gold transition-colors uppercase tracking-widest relative group cursor-pointer font-bold border border-transparent px-1 hover:border-hell-red/50"
-            >
-              {link.short}
-            </a>
-          ))}
-        </div>
 
-        {/* --- ACTIONS --- */}
+        {/* ACTIONS */}
         <div className="flex items-center gap-2 md:gap-4">
-          
-          {/* HEAVEN MODE BUTTON */}
           <button 
             onClick={onTriggerPaperHands}
-            className="flex items-center gap-2 px-3 py-1 border border-pink-300 rounded text-pink-100 font-terminal text-xs md:text-sm font-bold hover:bg-pink-500/20 hover:text-white transition-colors shadow-[0_0_10px_rgba(255,192,203,0.3)]"
+            className="flex items-center gap-2 px-3 py-1 2xl:px-5 2xl:py-2 border border-pink-300 rounded text-pink-100 font-terminal text-xs md:text-sm 2xl:text-lg font-bold hover:bg-pink-500/20 hover:text-white transition-colors shadow-[0_0_10px_rgba(255,192,203,0.3)]"
           >
             <span className="w-2 h-2 rounded-full bg-pink-200 animate-pulse shadow-[0_0_5px_#fff]"></span>
             HEAVEN MODE
           </button>
           
-          {/* ACQUIRE BUTTON (DESKTOP/LAPTOP) */}
           <a 
             href={BUY_LINK}
             target="_blank" 
             rel="noopener noreferrer"
-            className="hidden md:block bg-hell-red hover:bg-hell-orange text-hell-white font-gothic text-lg px-6 py-2 rounded shadow-[0_0_15px_rgba(204,0,0,0.5)] transition-all transform hover:scale-105 border border-hell-orange/50 text-center"
+            className="hidden md:block bg-hell-red hover:bg-hell-orange text-hell-white font-gothic text-lg 2xl:text-2xl px-6 py-2 2xl:px-8 2xl:py-3 rounded shadow-[0_0_15px_rgba(204,0,0,0.5)] transition-all transform hover:scale-105 border border-hell-orange/50 text-center"
           >
             ACQUIRE $666
           </a>
 
-          {/* MOBILE TOGGLE (Hidden on large screens) */}
-          <button className="lg:hidden text-hell-white" onClick={() => setMobileMenuOpen(!mobileMenuOpen)}>
+          {/* MOBILE TOGGLE */}
+          <button className="xl:hidden text-hell-white" onClick={() => setMobileMenuOpen(!mobileMenuOpen)}>
             {mobileMenuOpen ? <X size={28} /> : <Menu size={28} />}
           </button>
         </div>
       </div>
 
-      {/* --- MOBILE MENU --- */}
+      {/* MOBILE MENU */}
       <AnimatePresence>
         {mobileMenuOpen && (
           <motion.div
             initial={{ opacity: 0, height: 0 }}
             animate={{ opacity: 1, height: "100vh" }}
             exit={{ opacity: 0, height: 0 }}
-            transition={{ duration: 0.3, ease: "easeInOut" }} // FIX: Smoother animation
-            className="lg:hidden fixed top-[60px] left-0 w-full bg-hell-black/95 backdrop-blur-xl border-b border-hell-red/50 overflow-hidden shadow-2xl"
+            className="xl:hidden fixed top-[60px] left-0 w-full bg-hell-black/95 backdrop-blur-xl border-b border-hell-red/50 overflow-hidden shadow-2xl"
           >
             <div className="p-6 flex flex-col gap-6 items-center justify-center h-full pb-32 overflow-y-auto">
               {navLinks.map((link) => (
@@ -164,9 +142,8 @@ export const Navbar = ({ onTriggerPaperHands }: { onTriggerPaperHands: () => voi
                 </a>
               ))}
               
-              {/* FIX: Removed the red divider line here */}
+              <div className="w-16 h-1 bg-hell-red/50 my-4"></div>
               
-              {/* ACQUIRE LINK (Mobile) */}
               <a 
                 href={BUY_LINK}
                 target="_blank" 
