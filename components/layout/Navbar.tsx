@@ -121,22 +121,24 @@ export const Navbar = ({ onTriggerPaperHands }: { onTriggerPaperHands: () => voi
     <nav 
       className={cn(
         "fixed top-0 w-full z-40 border-b transition-all duration-300",
+        // FIX: Desktop transition restored (py-6 to py-2), mobile fixed at py-4
         isScrolled 
-          ? "bg-hell-black/90 backdrop-blur-md border-hell-red/30 py-3 md:py-2 2xl:py-4" 
+          ? "bg-hell-black/90 backdrop-blur-md border-hell-red/30 py-4 md:py-2 2xl:py-3" 
           : "bg-transparent border-transparent py-4 md:py-6 2xl:py-8"
       )}
     >
-      <div className="w-full lg:w-[85%] max-w-[2400px] mx-auto px-4 lg:px-0 flex justify-between items-center h-full">
+      <div className="w-full lg:w-[85%] 2xl:max-w-[2400px] mx-auto px-4 lg:px-0 flex justify-between items-center h-full">
         
         {/* --- LEFT: LOGO --- */}
         <div 
           onClick={scrollToTop}
           className="flex items-center gap-2 md:gap-3 2xl:gap-5 group cursor-pointer shrink-0 transition-transform active:scale-95 z-50 relative"
         >
+          {/* FIX: Logo scales on 2xl */}
           <img 
             src="/GOAPE.png" 
             alt="Hellcoin" 
-            className="w-8 h-8 md:w-12 md:h-12 2xl:w-20 2xl:h-20 rounded-full border border-hell-orange object-cover" 
+            className="w-8 h-8 md:w-12 md:h-12 2xl:w-16 2xl:h-16 rounded-full border border-hell-orange object-cover" 
           />
           <span className="font-gothic text-xl md:text-3xl 2xl:text-5xl text-hell-orange tracking-wide text-glow">HELLCOIN</span>
         </div>
@@ -163,11 +165,13 @@ export const Navbar = ({ onTriggerPaperHands }: { onTriggerPaperHands: () => voi
           </div>
 
           <div className="flex gap-6 2xl:gap-10 items-center justify-center w-full">
+            {/* VISIBLE LINKS */}
             {visibleLinks.map((link) => (
               <a 
                 key={link.name} 
                 href={link.href}
                 onClick={(e) => handleNavClick(e, link.href)}
+                // FIX: Links scale up on 2xl screens (text-base -> text-xl)
                 className="font-terminal text-base 2xl:text-xl text-hell-white hover:text-[#ffae00] transition-colors uppercase tracking-widest relative group cursor-pointer font-bold whitespace-nowrap"
               >
                 {link.name}
@@ -175,6 +179,7 @@ export const Navbar = ({ onTriggerPaperHands }: { onTriggerPaperHands: () => voi
               </a>
             ))}
 
+            {/* MORE BUTTON */}
             {hiddenLinks.length > 0 && (
                <div 
                  className="relative h-full flex items-center"
@@ -225,6 +230,7 @@ export const Navbar = ({ onTriggerPaperHands }: { onTriggerPaperHands: () => voi
         <div className="flex items-center gap-2 md:gap-4 shrink-0 z-50 relative">
           <button 
             onClick={onTriggerPaperHands}
+            // FIX: Heaven Mode button scales on 2xl
             className="flex items-center gap-2 px-3 py-1 2xl:px-5 2xl:py-3 border border-pink-300 rounded text-pink-100 font-terminal text-xs md:text-sm 2xl:text-lg font-bold hover:bg-pink-500/20 hover:text-white transition-colors shadow-[0_0_10px_rgba(255,192,203,0.3)]"
           >
             <span className="w-2 h-2 2xl:w-3 2xl:h-3 rounded-full bg-pink-200 animate-pulse shadow-[0_0_5px_#fff]"></span>
@@ -235,11 +241,13 @@ export const Navbar = ({ onTriggerPaperHands }: { onTriggerPaperHands: () => voi
             href={BUY_LINK}
             target="_blank" 
             rel="noopener noreferrer"
+            // FIX: Acquire button scales padding/text on 2xl
             className="hidden md:block bg-hell-red hover:bg-hell-orange text-hell-white font-gothic text-lg 2xl:text-2xl px-6 py-2 2xl:px-10 2xl:py-4 rounded shadow-[0_0_15px_rgba(204,0,0,0.5)] transition-all transform hover:scale-105 border border-hell-orange/50 text-center"
           >
             ACQUIRE $666
           </a>
 
+          {/* MOBILE TOGGLE */}
           <button className="lg:hidden text-hell-white" onClick={() => setMobileMenuOpen(!mobileMenuOpen)}>
             {mobileMenuOpen ? <X size={28} /> : <Menu size={28} />}
           </button>
