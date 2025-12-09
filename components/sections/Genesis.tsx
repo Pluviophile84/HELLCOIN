@@ -22,10 +22,15 @@ export const Genesis = () => {
           viewport={{ once: true }}
           className="flex flex-col items-center text-center gap-2 mb-16 2xl:mb-32"
         >
-          <span className="font-terminal text-[#ffae00] tracking-widest uppercase font-bold text-xl sm:text-2xl md:text-3xl 2xl:text-5xl">
+          {/* FIX: Replaced stepped breakpoints with clamp() for smooth vector-like scaling 
+              Min: 1.25rem (20px), Ideal: 2.5vw, Max: 3rem (48px) */}
+          <span className="font-terminal text-[#ffae00] tracking-widest uppercase font-bold text-[clamp(1.25rem,2.5vw,3rem)]">
             GENESIS BLOCK 001
           </span>
-          <h2 className="font-gothic text-hell-white leading-none text-6xl sm:text-7xl md:text-8xl 2xl:text-[9rem]">
+          
+          {/* FIX: Fluid scaling for Main Title
+              Min: 3.75rem (60px), Ideal: 9vw, Max: 9rem (144px) */}
+          <h2 className="font-gothic text-hell-white leading-none text-[clamp(3.75rem,9vw,9rem)]">
             IN THE <span className="text-hell-red">BEGINNING</span>
           </h2>
         </motion.div>
@@ -41,7 +46,9 @@ export const Genesis = () => {
               transition={{ duration: 0.8, delay: i * 0.2 }}
               className={`
                 font-terminal leading-relaxed border-l-4 pl-6 2xl:border-l-8 2xl:pl-10
-                text-xl sm:text-2xl md:text-3xl 2xl:text-5xl
+                /* FIX: Fluid scaling for Body Text
+                   Min: 1.25rem (20px), Ideal: 2.5vw, Max: 3rem (48px) */
+                text-[clamp(1.25rem,2.5vw,3rem)]
                 ${para.highlight ? 'text-hell-red border-hell-red font-bold' : 'text-gray-400 border-hell-dark'}
               `}
             >
