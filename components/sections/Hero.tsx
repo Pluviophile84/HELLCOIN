@@ -5,12 +5,7 @@ import { TrendingDown, Flame } from "lucide-react";
 
 export const Hero = () => {
   const ref = useRef(null);
-  
-  const { scrollYProgress } = useScroll({
-    target: ref,
-    offset: ["start start", "end start"],
-  });
-
+  const { scrollYProgress } = useScroll({ target: ref, offset: ["start start", "end start"] });
   const yText = useTransform(scrollYProgress, [0, 1], ["0%", "50%"]);
   const opacityText = useTransform(scrollYProgress, [0, 0.5], [1, 0]);
 
@@ -25,71 +20,49 @@ export const Hero = () => {
 
   return (
     <section ref={ref} className="relative h-[100dvh] w-full flex items-center justify-center overflow-hidden">
-      
-      {/* --- BACKGROUND LAYER --- */}
       <div className="absolute inset-0 z-0">
-        <img 
-          src="/banner.png" 
-          // FIX: Preserved the smart crop. Devil stays visible on left.
-          className="absolute inset-0 w-full h-full object-cover object-[30%_center] opacity-50" 
-          alt="Hellcoin Throne"
-        />
-        {/* Gradient overlays for text readability */}
+        <img src="/banner.png" className="absolute inset-0 w-full h-full object-cover object-[30%_center] opacity-50" alt="Hellcoin Throne" />
         <div className="absolute inset-0 bg-gradient-to-t from-hell-black via-hell-black/80 to-transparent"></div>
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-transparent via-hell-black/40 to-hell-black"></div>
       </div>
 
-      {/* --- CONTENT LAYER --- */}
       <motion.div 
         style={{ y: yText, opacity: opacityText }}
-        // FIX: Spacing Logic
-        // pt-32: Clears Navbar.
-        // pb-12/24: Visual lift.
-        // max-w-[90%]: Prevents edge-touching on ultrawide.
-        className="relative z-30 px-4 md:px-12 pt-32 pb-12 w-full max-w-[1920px] mx-auto flex flex-col items-center md:items-end text-center md:text-right h-full justify-center"
+        className="relative z-30 px-4 md:px-12 pt-32 pb-12 2xl:pt-48 2xl:pb-24 max-w-[1800px] w-full mx-auto flex flex-col items-center md:items-end text-center md:text-right h-full justify-center"
       >
-        {/* WRAPPER: Centers subtitle to title */}
         <div className="flex flex-col items-center">
-            
-            {/* 1. ABANDON HOPE - The "Label" */}
             <motion.p
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.2, duration: 0.8 }}
-                // SCALE UP: text-xl -> text-2xl base, scaling up to 5xl
                 className="font-terminal font-black text-[#ffae00] animate-pulse mb-2 tracking-widest uppercase
-                           text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl text-center"
+                           text-xl sm:text-2xl md:text-3xl lg:text-4xl 2xl:text-6xl text-center"
             >
                 ABANDON HOPE.
             </motion.p>
 
-            {/* 2. MAIN TITLE - The "Titan" */}
             <motion.h1 
               initial={{ scale: 0.9, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
               transition={{ type: "spring", duration: 1.5, delay: 0.3 }}
-              // SCALE UP: text-6xl -> text-7xl base, scaling up to [11rem]
-              className="font-gothic leading-[0.9] text-hell-white text-glow drop-shadow-2xl mb-6 md:mb-8 md:max-w-6xl text-center
-                         text-6xl sm:text-7xl md:text-8xl lg:text-9xl xl:text-[10rem] 2xl:text-[11rem]"
+              className="font-gothic leading-[0.9] text-hell-white text-glow drop-shadow-2xl mb-6 md:mb-8 md:max-w-7xl text-center
+                         text-6xl sm:text-7xl md:text-8xl lg:text-9xl 2xl:text-[11rem]"
             >
               ACQUIRE <span className="text-hell-red">$666.</span>
             </motion.h1>
         </div>
 
-        {/* 3. BODY TEXT - The "Narrative" */}
         <motion.div 
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 0.6 }}
-          // SCALE UP: text-lg -> text-xl base, scaling up to 3xl
-          className="font-terminal text-gray-300 max-w-lg md:max-w-3xl xl:max-w-4xl mx-auto md:mx-0 space-y-2 md:space-y-1
-                     text-lg sm:text-xl md:text-2xl lg:text-3xl"
+          className="font-terminal text-gray-300 max-w-4xl md:max-w-5xl mx-auto md:mx-0 space-y-2 md:space-y-1
+                     text-lg sm:text-xl md:text-2xl 2xl:text-4xl"
         >
           <p className="leading-relaxed">
             The first cryptocurrency powered by{" "}
-            {/* Highlight text is slightly larger/bolder */}
             <span className="block md:inline text-[#ffae00] font-bold md:font-normal
-                             text-xl sm:text-2xl md:text-3xl lg:text-4xl my-1 md:my-0">
+                             text-xl sm:text-2xl md:text-3xl 2xl:text-5xl my-1 md:my-0">
               Proof-of-Suffering
             </span>
           </p>
@@ -98,39 +71,34 @@ export const Hero = () => {
           </p>
         </motion.div>
 
-        {/* 4. BUTTONS - The "Interaction" */}
         <motion.div 
           initial={{ opacity: 0, y: 50 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 1.4 }}
           className="mt-8 md:mt-12 xl:mt-16 flex flex-col md:flex-row gap-5 md:gap-8 justify-center md:justify-end items-center w-full md:max-w-4xl"
         >
-          {/* SECONDARY: "ENTER HELL" - Stacked Bottom on Mobile */}
           <button 
             onClick={handleEnterHell}
-            // SCALE UP: text-base -> text-lg base, scaling up to 3xl
             className="text-gray-500 font-terminal hover:text-[#ffae00] transition-colors flex items-center gap-2 group order-2 md:order-1
-                       text-base sm:text-lg md:text-2xl lg:text-3xl"
+                       text-base sm:text-lg md:text-xl 2xl:text-3xl"
           >
             [ ENTER HELL ]
-            <TrendingDown className="w-4 h-4 md:w-5 md:h-5 lg:w-6 lg:h-6 group-hover:translate-y-1 transition-transform" />
+            <TrendingDown className="w-4 h-4 md:w-5 md:h-5 2xl:w-7 2xl:h-7 group-hover:translate-y-1 transition-transform" />
           </button>
 
-          {/* PRIMARY: "ACQUIRE" - Stacked Top on Mobile */}
           <a 
             href={BUY_LINK}
             target="_blank"
             rel="noopener noreferrer"
-            // SCALE UP: text-2xl -> text-3xl base, scaling up to 5xl
             className="group relative bg-transparent border-2 border-hell-red text-hell-red font-gothic uppercase overflow-hidden transition-all hover:text-hell-white hover:border-hell-orange hover:shadow-[0_0_30px_rgba(204,0,0,0.6)] order-1 md:order-2 cursor-pointer flex items-center gap-2
-                       px-6 py-2 text-2xl
-                       sm:px-8 sm:py-3 sm:text-3xl
-                       md:px-10 md:py-4 md:text-4xl
-                       xl:px-12 xl:py-5 xl:text-5xl"
+                       px-6 py-2 text-xl           
+                       sm:px-8 sm:py-3 sm:text-2xl   
+                       md:px-10 md:py-4 md:text-3xl 
+                       2xl:px-14 2xl:py-6 2xl:text-5xl"
           >
             <span className="absolute inset-0 w-full h-full bg-hell-red -translate-x-full group-hover:translate-x-0 transition-transform duration-300 ease-out"></span>
             <span className="relative z-10 flex items-center gap-2">
-              ACQUIRE $666
+              ACQUIRE $666 <Flame className="w-5 h-5 md:w-6 md:h-6 2xl:w-10 2xl:h-10" />
             </span>
           </a>
         </motion.div>
