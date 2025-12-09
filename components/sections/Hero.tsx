@@ -64,7 +64,7 @@ export const Hero = () => {
             gap-4
           "
         >
-          {/* HERALD: ABANDON HOPE */}
+          {/* HERALD: ABANDON HOPE (H2) */}
           <motion.p
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
@@ -72,14 +72,15 @@ export const Hero = () => {
             className="
               font-terminal font-black uppercase
               text-[#ffae00] animate-pulse
-              tracking-[0.18em]
-              text-[clamp(1.4rem,3vw,2.4rem)]
+              tracking-[0.12em]
+              max-w-[16ch]
+              text-[clamp(1.1rem,2.5vw,2rem)]
             "
           >
             ABANDON HOPE.
           </motion.p>
 
-          {/* KING: ACQUIRE $666 */}
+          {/* KING: ACQUIRE $666 (H1) */}
           <motion.h1
             initial={{ scale: 0.9, opacity: 0 }}
             animate={{ scale: 1, opacity: 1 }}
@@ -89,7 +90,7 @@ export const Hero = () => {
               text-hell-white text-glow drop-shadow-2xl
               leading-[0.9]
               max-w-none
-              text-[clamp(3rem,7vw,7rem)]
+              text-[clamp(3.8rem,8vw,7.5rem)]
             "
           >
             ACQUIRE <span className="text-hell-red">$666.</span>
@@ -106,7 +107,7 @@ export const Hero = () => {
               space-y-2
             "
           >
-            <p className="leading-relaxed text-[clamp(1.1rem,2.4vw,2.1rem)]">
+            <p className="leading-relaxed text-[clamp(1.3rem,2.7vw,2.3rem)]">
               The first cryptocurrency powered by{" "}
               <span className="text-[#ffae00] font-semibold">
                 Proof-of-Suffering
@@ -148,7 +149,7 @@ export const Hero = () => {
                 order-1 md:order-2
                 px-8 sm:px-9 md:px-10 lg:px-12
                 py-3 sm:py-3.5 md:py-4 lg:py-5
-                text-[clamp(1.2rem,2.4vw,2.2rem)]
+                text-[clamp(1.4rem,2.7vw,2.4rem)]
               "
             >
               <span className="absolute inset-0 w-full h-full bg-hell-red -translate-x-full group-hover:translate-x-0 transition-transform duration-300 ease-out" />
@@ -167,7 +168,7 @@ export const Hero = () => {
                 group
                 order-2 md:order-1
                 hover:text-[#ffae00]
-                text-[clamp(1rem,2vw,1.6rem)]
+                text-[clamp(1.4rem,2.7vw,2.4rem)]
               "
             >
               [ ENTER HELL ]
