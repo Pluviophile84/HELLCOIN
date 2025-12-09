@@ -16,19 +16,23 @@ const commandments = [
 
 export const Commandments = () => {
   return (
+    // FIX: Reduced 2xl vertical padding from py-64 to py-40 to fit 1080p screens better
     <section id="commandments" className="bg-hell-dark relative px-4
-                                        py-24 sm:py-32 md:py-36 lg:py-48 xl:py-56 2xl:py-64">
-      <div className="mx-auto w-full max-w-xl sm:max-w-2xl md:max-w-4xl lg:max-w-5xl xl:max-w-7xl 2xl:max-w-[2000px]">
+                                        py-24 sm:py-32 md:py-36 lg:py-40 xl:py-44 2xl:py-48">
+      {/* FIX: Capped 2xl width at 1600px instead of 2000px for better density on 1920px screens */}
+      <div className="mx-auto w-full max-w-xl sm:max-w-2xl md:max-w-4xl lg:max-w-5xl xl:max-w-7xl 2xl:max-w-[1600px]">
         
         {/* --- HEADER --- */}
         <div className="flex flex-col items-center text-center gap-2 
-                        mb-16 sm:mb-20 md:mb-24 lg:mb-28 xl:mb-32 2xl:mb-40">
+                        mb-16 sm:mb-20 md:mb-24 lg:mb-24 xl:mb-28 2xl:mb-32">
+          {/* FIX: Reduced 2xl size from 5xl to 3xl for elegance */}
           <span className="font-terminal text-[#ffae00] tracking-widest uppercase font-bold 
-                           text-lg sm:text-xl md:text-2xl lg:text-3xl xl:text-4xl 2xl:text-5xl">
+                           text-lg sm:text-xl md:text-2xl lg:text-2xl xl:text-3xl 2xl:text-3xl">
             LAW OF THE LAND
           </span>
+          {/* FIX: Reduced 2xl size from 11rem (176px) to 8xl (96px) so it doesn't eat the screen */}
           <h2 className="font-gothic text-hell-white 
-                         text-5xl sm:text-6xl md:text-7xl lg:text-8xl xl:text-9xl 2xl:text-[11rem]">
+                         text-5xl sm:text-6xl md:text-7xl lg:text-7xl xl:text-8xl 2xl:text-8xl">
             THE TEN COMMANDMENTS
           </h2>
         </div>
@@ -41,8 +45,9 @@ export const Commandments = () => {
           variants={{
             visible: { transition: { staggerChildren: 0.1 } }
           }}
+          // FIX: Reduced 2xl gap from 12 to 8
           className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 
-                     gap-6 lg:gap-8 xl:gap-10 2xl:gap-12"
+                     gap-6 lg:gap-8 xl:gap-8 2xl:gap-10"
         >
           {commandments.map((c, i) => (
             <motion.div
@@ -55,27 +60,27 @@ export const Commandments = () => {
                 bg-hell-black border border-gray-800 relative group 
                 transition-all duration-75 ease-out
                 hover:border-hell-red hover:scale-[1.01]
-                p-6 sm:p-8 lg:p-10 2xl:p-12
+                p-6 sm:p-8 lg:p-8 2xl:p-10
                 ${i === 0 || i === 9 ? 'md:col-span-2' : ''}
               `}
             >
-              {/* ID Number */}
+              {/* ID Number - FIX: Reduced 2xl size from 7xl to 5xl */}
               <div className="absolute font-gothic text-hell-red transition-colors duration-75
-                              top-4 right-4 sm:top-6 sm:right-6 2xl:top-8 2xl:right-8
-                              text-4xl sm:text-5xl lg:text-6xl 2xl:text-7xl">
+                              top-4 right-4 sm:top-6 sm:right-6
+                              text-4xl sm:text-5xl lg:text-5xl 2xl:text-5xl">
                 {c.id}
               </div>
               
-              {/* Title */}
+              {/* Title - FIX: Reduced 2xl size from 4xl to 2xl */}
               <h3 className="font-terminal text-[#ffae00] group-hover:text-hell-red uppercase font-bold transition-colors duration-75
-                             mb-3 lg:mb-4 2xl:mb-6
-                             text-xl sm:text-2xl lg:text-3xl 2xl:text-4xl">
+                             mb-3 lg:mb-4
+                             text-xl sm:text-2xl lg:text-2xl 2xl:text-2xl">
                 {c.title}
               </h3>
               
-              {/* Text */}
+              {/* Text - FIX: Reduced 2xl size from 3xl to xl */}
               <p className="font-terminal text-gray-400 group-hover:text-gray-200 transition-colors duration-75
-                            text-lg sm:text-xl lg:text-2xl 2xl:text-3xl leading-relaxed">
+                            text-lg sm:text-xl lg:text-xl 2xl:text-xl leading-relaxed">
                 {c.text}
               </p>
             </motion.div>
