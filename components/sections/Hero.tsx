@@ -56,9 +56,9 @@ export const Hero = () => {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.2, duration: 0.8 }}
-                // SCALE: Smooth progression. Not too small on mobile, not comically big on TV.
+                // SCALE UP: text-xl -> text-2xl base, scaling up to 5xl
                 className="font-terminal font-black text-[#ffae00] animate-pulse mb-2 tracking-widest uppercase
-                           text-lg sm:text-xl md:text-2xl lg:text-3xl xl:text-4xl text-center"
+                           text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl text-center"
             >
                 ABANDON HOPE.
             </motion.p>
@@ -68,9 +68,9 @@ export const Hero = () => {
               initial={{ scale: 0.9, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
               transition={{ type: "spring", duration: 1.5, delay: 0.3 }}
-              // SCALE: Starts impactful (5xl), grows steadily. Capped at 9rem for elegance.
+              // SCALE UP: text-6xl -> text-7xl base, scaling up to [11rem]
               className="font-gothic leading-[0.9] text-hell-white text-glow drop-shadow-2xl mb-6 md:mb-8 md:max-w-6xl text-center
-                         text-5xl sm:text-6xl md:text-7xl lg:text-8xl xl:text-9xl 2xl:text-[10rem]"
+                         text-6xl sm:text-7xl md:text-8xl lg:text-9xl xl:text-[10rem] 2xl:text-[11rem]"
             >
               ACQUIRE <span className="text-hell-red">$666.</span>
             </motion.h1>
@@ -81,16 +81,15 @@ export const Hero = () => {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 0.6 }}
-          // SCALE: Kept tight. Body text shouldn't scream. 
-          // Starts at base, caps at 2xl.
+          // SCALE UP: text-lg -> text-xl base, scaling up to 3xl
           className="font-terminal text-gray-300 max-w-lg md:max-w-3xl xl:max-w-4xl mx-auto md:mx-0 space-y-2 md:space-y-1
-                     text-base sm:text-lg md:text-xl lg:text-2xl"
+                     text-lg sm:text-xl md:text-2xl lg:text-3xl"
         >
           <p className="leading-relaxed">
             The first cryptocurrency powered by{" "}
             {/* Highlight text is slightly larger/bolder */}
             <span className="block md:inline text-[#ffae00] font-bold md:font-normal
-                             text-lg sm:text-xl md:text-2xl lg:text-3xl my-1 md:my-0">
+                             text-xl sm:text-2xl md:text-3xl lg:text-4xl my-1 md:my-0">
               Proof-of-Suffering
             </span>
           </p>
@@ -109,8 +108,9 @@ export const Hero = () => {
           {/* SECONDARY: "ENTER HELL" - Stacked Bottom on Mobile */}
           <button 
             onClick={handleEnterHell}
+            // SCALE UP: text-base -> text-lg base, scaling up to 3xl
             className="text-gray-500 font-terminal hover:text-[#ffae00] transition-colors flex items-center gap-2 group order-2 md:order-1
-                       text-sm sm:text-base md:text-xl lg:text-2xl"
+                       text-base sm:text-lg md:text-2xl lg:text-3xl"
           >
             [ ENTER HELL ]
             <TrendingDown className="w-4 h-4 md:w-5 md:h-5 lg:w-6 lg:h-6 group-hover:translate-y-1 transition-transform" />
@@ -121,12 +121,12 @@ export const Hero = () => {
             href={BUY_LINK}
             target="_blank"
             rel="noopener noreferrer"
-            // SCALE: Padding increases naturally. Text stays legible without becoming a billboard.
+            // SCALE UP: text-2xl -> text-3xl base, scaling up to 5xl
             className="group relative bg-transparent border-2 border-hell-red text-hell-red font-gothic uppercase overflow-hidden transition-all hover:text-hell-white hover:border-hell-orange hover:shadow-[0_0_30px_rgba(204,0,0,0.6)] order-1 md:order-2 cursor-pointer flex items-center gap-2
-                       px-6 py-2 text-xl           
-                       sm:px-8 sm:py-3 sm:text-2xl   
-                       md:px-10 md:py-4 md:text-3xl 
-                       xl:px-12 xl:py-5 xl:text-4xl"
+                       px-6 py-2 text-2xl
+                       sm:px-8 sm:py-3 sm:text-3xl
+                       md:px-10 md:py-4 md:text-4xl
+                       xl:px-12 xl:py-5 xl:text-5xl"
           >
             <span className="absolute inset-0 w-full h-full bg-hell-red -translate-x-full group-hover:translate-x-0 transition-transform duration-300 ease-out"></span>
             <span className="relative z-10 flex items-center gap-2">
