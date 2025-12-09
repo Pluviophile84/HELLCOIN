@@ -26,7 +26,7 @@ export const Hero = () => {
   return (
     <section
       ref={ref}
-      className="relative min-h-[100svh] w-full flex items-center justify-center overflow-hidden"
+      className="relative h-[100dvh] w-full flex items-center justify-center overflow-hidden"
     >
       {/* --- BACKGROUND LAYER --- */}
       <div className="absolute inset-0 z-0">
@@ -44,141 +44,152 @@ export const Hero = () => {
         style={{ y: yText, opacity: opacityText }}
         className="
           relative z-30
-          h-full w-full
-          max-w-[1800px]
-          mx-auto
           px-4 sm:px-6 lg:px-12
-          pt-32 pb-24
-          flex flex-col justify-center
+          pt-28 pb-16
+          max-w-[1200px] w-full mx-auto
+          flex flex-col
+          items-center md:items-end
+          text-center md:text-right
+          h-full justify-center
         "
       >
-        {/* MAIN CONTENT WRAPPER */}
-        <div
-          className="
-            w-full
-            max-w-[60rem]
-            mx-auto md:ml-auto md:mr-0
-            flex flex-col
-            items-center md:items-end
-            text-center md:text-right
-            gap-4
-          "
-        >
-          {/* HERALD: ABANDON HOPE (H2) */}
+        {/* TITLE BLOCK */}
+        <div className="flex flex-col items-center md:items-end gap-3 w-full">
+          {/* H2 – ABANDON HOPE (smaller, narrower, clear sub-head) */}
           <motion.p
-            initial={{ opacity: 0, y: 20 }}
+            initial={{ opacity: 0, y: 16 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.2, duration: 0.8 }}
+            transition={{ delay: 0.2, duration: 0.7 }}
             className="
-              font-terminal font-black uppercase
+              font-terminal font-black uppercase tracking-[0.18em]
               text-[#ffae00] animate-pulse
-              tracking-[0.12em]
-              max-w-[16ch]
-              text-[clamp(1.1rem,2.5vw,2rem)]
+              max-w-[18ch]
+              text-base
+              sm:text-lg
+              md:text-xl
+              lg:text-2xl
             "
           >
             ABANDON HOPE.
           </motion.p>
 
-          {/* KING: ACQUIRE $666 (H1) */}
+          {/* H1 – ACQUIRE $666 (dominant, bold, but not insane) */}
           <motion.h1
-            initial={{ scale: 0.9, opacity: 0 }}
+            initial={{ scale: 0.96, opacity: 0 }}
             animate={{ scale: 1, opacity: 1 }}
-            transition={{ type: 'spring', duration: 1.5, delay: 0.3 }}
+            transition={{ type: 'spring', duration: 1.4, delay: 0.3 }}
             className="
-              font-gothic
-              text-hell-white text-glow drop-shadow-2xl
+              font-gothic text-hell-white text-glow drop-shadow-2xl
               leading-[0.9]
-              max-w-none
-              text-[clamp(3.8rem,8vw,7.5rem)]
+              max-w-[16ch]
+              text-4xl
+              sm:text-5xl
+              md:text-6xl
+              lg:text-7xl
+              xl:text-7xl
             "
           >
             ACQUIRE <span className="text-hell-red">$666.</span>
           </motion.h1>
-
-          {/* NARRATIVE */}
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 0.6 }}
-            className="
-              font-terminal text-gray-300
-              max-w-[42rem]
-              space-y-2
-            "
-          >
-            <p className="leading-relaxed text-[clamp(1.3rem,2.7vw,2.3rem)]">
-              The first cryptocurrency powered by{" "}
-              <span className="text-[#ffae00] font-semibold">
-                Proof-of-Suffering
-              </span>{" "}
-              — the only consensus mechanism traders truly understand.
-            </p>
-          </motion.div>
-
-          {/* BUTTONS */}
-          <motion.div
-            initial={{ opacity: 0, y: 40 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 1.2 }}
-            className="
-              mt-8 md:mt-10 lg:mt-12
-              flex flex-col md:flex-row
-              gap-4 md:gap-6
-              justify-center md:justify-end
-              items-center
-              w-full
-            "
-          >
-            {/* PRIMARY: ACQUIRE $666 — top on mobile, right on desktop */}
-            <a
-              href={BUY_LINK}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="
-                group relative
-                bg-transparent border-2 border-hell-red
-                text-hell-red
-                font-gothic uppercase
-                overflow-hidden
-                cursor-pointer
-                flex items-center justify-center gap-2
-                hover:text-hell-white
-                hover:border-hell-orange
-                hover:shadow-[0_0_25px_rgba(204,0,0,0.6)]
-                order-1 md:order-2
-                px-8 sm:px-9 md:px-10 lg:px-12
-                py-3 sm:py-3.5 md:py-4 lg:py-5
-                text-[clamp(1.4rem,2.7vw,2.4rem)]
-              "
-            >
-              <span className="absolute inset-0 w-full h-full bg-hell-red -translate-x-full group-hover:translate-x-0 transition-transform duration-300 ease-out" />
-              <span className="relative z-10 flex items-center gap-2">
-                ACQUIRE $666
-              </span>
-            </a>
-
-            {/* SECONDARY: ENTER HELL — bottom on mobile, left on desktop */}
-            <button
-              onClick={handleEnterHell}
-              className="
-                text-gray-500
-                font-terminal
-                flex items-center gap-2
-                group
-                order-2 md:order-1
-                hover:text-[#ffae00]
-                text-[clamp(1.4rem,2.7vw,2.4rem)]
-              "
-            >
-              [ ENTER HELL ]
-              <TrendingDown className="w-5 h-5 md:w-6 md:h-6 group-hover:translate-y-1 transition-transform" />
-            </button>
-          </motion.div>
         </div>
+
+        {/* SUBTITLE / BODY – readable, secondary */}
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 0.6 }}
+          className="
+            mt-4
+            font-terminal text-gray-300
+            max-w-[40rem]
+            mx-auto md:mx-0
+            space-y-1.5
+          "
+        >
+          <p
+            className="
+              leading-relaxed
+              text-sm
+              sm:text-base
+              md:text-lg
+              lg:text-xl
+            "
+          >
+            The first cryptocurrency powered by{" "}
+            <span className="text-[#ffae00] font-semibold">
+              Proof-of-Suffering
+            </span>
+            {" — the only consensus mechanism traders truly understand."}
+          </p>
+        </motion.div>
+
+        {/* BUTTONS */}
+        <motion.div
+          initial={{ opacity: 0, y: 32 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 1.1 }}
+          className="
+            mt-8 md:mt-10
+            flex flex-col md:flex-row
+            gap-4 md:gap-6
+            justify-center md:justify-end
+            items-center
+            w-full md:max-w-[40rem]
+            mx-auto md:mx-0
+          "
+        >
+          {/* PRIMARY CTA – elegant, bold, not chunky */}
+          <a
+            href={BUY_LINK}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="
+              group relative
+              bg-transparent border border-hell-red
+              text-hell-red
+              font-gothic uppercase
+              overflow-hidden
+              cursor-pointer
+              flex items-center justify-center gap-2
+              hover:text-hell-white
+              hover:border-hell-orange
+              hover:shadow-[0_0_18px_rgba(204,0,0,0.6)]
+              order-1 md:order-2
+              px-6 sm:px-7 md:px-8
+              py-2.5 sm:py-3
+              text-sm
+              sm:text-base
+              md:text-lg
+            "
+          >
+            <span className="absolute inset-0 w-full h-full bg-hell-red -translate-x-full group-hover:translate-x-0 transition-transform duration-300 ease-out" />
+            <span className="relative z-10 flex items-center gap-2">
+              ACQUIRE $666
+            </span>
+          </a>
+
+          {/* SECONDARY CTA – same visual weight in text, different style */}
+          <button
+            onClick={handleEnterHell}
+            className="
+              text-gray-500
+              font-terminal
+              flex items-center gap-2
+              group
+              order-2 md:order-1
+              hover:text-[#ffae00]
+              text-sm
+              sm:text-base
+              md:text-lg
+            "
+          >
+            [ ENTER HELL ]
+            <TrendingDown className="w-4 h-4 md:w-5 md:h-5 group-hover:translate-y-1 transition-transform" />
+          </button>
+        </motion.div>
       </motion.div>
 
-      {/* Bottom fog under content */}
+      {/* Bottom fog */}
       <div className="absolute bottom-0 w-full h-32 bg-gradient-to-t from-hell-black to-transparent z-20 pointer-events-none" />
     </section>
   );
