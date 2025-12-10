@@ -59,7 +59,7 @@ export const Navbar = ({ onTriggerPaperHands }: { onTriggerPaperHands: () => voi
     setMobileMenuOpen(false);
   };
 
-  // --- ORIGINAL ADAPTIVE LOGIC ---
+  // --- ADAPTIVE "MORE" BUTTON LOGIC ---
   const checkOverflow = useCallback(() => {
     if (!containerRef.current || !ghostRef.current) return;
     
@@ -124,10 +124,7 @@ export const Navbar = ({ onTriggerPaperHands }: { onTriggerPaperHands: () => voi
           : "bg-transparent border-b border-transparent py-4 md:py-6"
       )}
     >
-      {/* CRITICAL FIX: Added 'relative z-[60]'. 
-        This keeps the Logo, Buttons, and Hamburger ON TOP of the mobile menu (z-50),
-        so they never disappear.
-      */}
+      {/* HEADER CONTAINER (Z-60 to sit above menu) */}
       <div className="relative z-[60] w-full lg:w-[70%] max-w-[1920px] mx-auto px-4 md:px-0 flex justify-between items-center">
         
         {/* LOGO */}
@@ -170,6 +167,7 @@ export const Navbar = ({ onTriggerPaperHands }: { onTriggerPaperHands: () => voi
             ))}
           </div>
           
+          {/* MORE BUTTON */}
           <div 
             ref={moreRef}
             className={cn(
@@ -237,33 +235,29 @@ export const Navbar = ({ onTriggerPaperHands }: { onTriggerPaperHands: () => voi
             ACQUIRE $666
           </a>
 
+          {/* HAMBURGER TOGGLE */}
           <button className="lg:hidden text-hell-white" onClick={() => setMobileMenuOpen(!mobileMenuOpen)}>
             {mobileMenuOpen ? <X size={28} /> : <Menu size={28} />}
           </button>
         </div>
       </div>
 
-      {/* MOBILE MENU OVERLAY
-        - FIXED at z-[50] (Behind the header z-60)
-        - 'fixed inset-0' ensures full coverage
-        - onClick handler restored to close menu when tapping outside
-      */}
+      {/* MOBILE MENU OVERLAY (Z-50) */}
       <AnimatePresence>
         {mobileMenuOpen && (
           <motion.div
-            initial={{ opacity: 0, height: 0 }}
-            animate={{ opacity: 1, height: "100svh" }} // Using 100svh for reliability
-            exit={{ opacity: 0, height: 0 }}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            // CLICK OUTSIDE: Closes the menu
             onClick={() => setMobileMenuOpen(false)}
-            className="lg:hidden fixed inset-0 bg-hell-black/95 backdrop-blur-xl border-b border-hell-red/50 overflow-hidden shadow-2xl z-[50]"
+            // Fixed inset-0 ensures it covers entire screen even on scroll
+            className="lg:hidden fixed inset-0 bg-hell-black/95 backdrop-blur-xl border-b border-hell-red/50 overflow-hidden shadow-2xl z-[50] cursor-pointer"
           >
             <div className="p-6 h-full flex flex-col justify-between items-center overflow-hidden pt-[100px] pb-[40px]">
               
-              {/* Links - Stop propagation so clicking a link doesn't double-trigger (though harmless here) */}
-              <div 
-                className="flex flex-col flex-grow justify-around items-center w-full gap-y-0"
-                onClick={(e) => e.stopPropagation()} 
-              >
+              {/* LINKS: Removed stopPropagation so clicking empty space bubbles up */}
+              <div className="flex flex-col flex-grow justify-around items-center w-full gap-y-0">
                 {NAV_LINKS_DATA.map((link) => (
                   <a 
                     key={link.name} 
@@ -276,11 +270,8 @@ export const Navbar = ({ onTriggerPaperHands }: { onTriggerPaperHands: () => voi
                 ))}
               </div>
               
-              <div 
-                className="w-full flex flex-col items-center shrink-0 pt-4 border-t border-gray-900"
-                onClick={(e) => e.stopPropagation()}
-              >
-                <div className="w-16 h-1 bg-hell-red/50 mb-4 shrink-0"></div>
+              {/* BUTTON: Removed stopPropagation here too */}
+              <div className="w-full flex flex-col items-center shrink-0 pt-4 border-t border-gray-900">
                 <a 
                   href={BUY_LINK}
                   target="_blank" 
