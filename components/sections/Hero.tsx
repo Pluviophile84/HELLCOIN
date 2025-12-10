@@ -1,291 +1,84 @@
 "use client";
-import { useState, useEffect, useRef, useCallback } from "react";
-import { Menu, X, ChevronDown, ChevronUp } from "lucide-react";
-import { cn } from "../../lib/utils";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion, useScroll, useTransform } from "framer-motion";
+import { useRef } from "react";
+import { TrendingDown, Flame } from "lucide-react";
 
-const BUY_LINK = "https://raydium.io/swap"; 
-const NAV_LINKS_DATA = [
-  { name: "GENESIS", href: "#genesis" },
-  { name: "COMMANDMENTS", href: "#commandments" },
-  { name: "NINE TYPES", href: "#nine-types" },
-  { name: "MATH", href: "#math" },
-  { name: "RITUAL", href: "#ritual" },
-  { name: "HELLMAP", href: "#hellmap" },
-  { name: "HALL OF PAIN", href: "#hall-of-pain" },
-  { name: "REVELATION", href: "#revelation" },
-  { name: "THE PIT", href: "#the-pit" },
-];
+export const Hero = () => {
+  const ref = useRef(null);
+  const { scrollYProgress } = useScroll({ target: ref, offset: ["start start", "end start"] });
+  const yText = useTransform(scrollYProgress, [0, 1], ["0%", "50%"]);
+  const opacityText = useTransform(scrollYProgress, [0, 0.5], [1, 0]);
 
-export const Navbar = ({ onTriggerPaperHands }: { onTriggerPaperHands: () => void }) => {
-  const [isScrolled, setIsScrolled] = useState(false);
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const [moreMenuOpen, setMoreMenuOpen] = useState(false);
-  
-  const containerRef = useRef<HTMLDivElement>(null);
-  const ghostRef = useRef<HTMLDivElement>(null); 
-  const [visibleCount, setVisibleCount] = useState(NAV_LINKS_DATA.length);
-  const [isCalculated, setIsCalculated] = useState(false);
-  const moreRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    const handleScroll = () => { setIsScrolled(window.scrollY > 50); };
-    window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
-
-  useEffect(() => {
-    // Lock body scroll when menu is open
-    document.body.style.overflow = mobileMenuOpen ? "hidden" : "unset";
-  }, [mobileMenuOpen]);
-
-  const handleNavClick = (e: React.MouseEvent<HTMLAnchorElement>, href: string) => {
-    e.preventDefault();
-    setMobileMenuOpen(false);
-    setMoreMenuOpen(false);
-    const targetId = href.replace("#", "");
-    const elem = document.getElementById(targetId);
-    if (elem) elem.scrollIntoView({ behavior: "smooth" });
-  };
-
-  const scrollToTop = () => {
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-  };
-
-  const checkOverflow = useCallback(() => {
-    if (!containerRef.current || !ghostRef.current) return;
-    
-    const containerWidth = containerRef.current.clientWidth; 
-    const moreButtonWidth = 60; 
-    let currentWidth = 0;
-    let visible = 0;
-
-    const ghostChildren = Array.from(ghostRef.current.children) as HTMLElement[];
-
-    for (let i = 0; i < ghostChildren.length; i++) {
-      const linkWidth = ghostChildren[i].offsetWidth + 24; 
-      if (currentWidth + linkWidth + (i < ghostChildren.length - 1 ? moreButtonWidth : 0) >= containerWidth) {
-        break;
-      }
-      currentWidth += linkWidth;
-      visible++;
+  const handleAbandonHope = () => {
+    const genesisSection = document.getElementById("genesis");
+    if (genesisSection) {
+      genesisSection.scrollIntoView({ behavior: "smooth" });
     }
-    
-    setVisibleCount(visible);
-    setIsCalculated(true);
-  }, []);
+  };
 
-  useEffect(() => {
-    checkOverflow();
-    const resizeObserver = new ResizeObserver(() => {
-      window.requestAnimationFrame(() => {
-        checkOverflow();
-      });
-    });
-
-    if (containerRef.current) resizeObserver.observe(containerRef.current);
-    window.addEventListener('resize', checkOverflow);
-    return () => {
-      resizeObserver.disconnect();
-      window.removeEventListener('resize', checkOverflow);
-    };
-  }, [checkOverflow]);
-
-  const visibleLinks = NAV_LINKS_DATA.slice(0, visibleCount);
-  const hiddenLinks = NAV_LINKS_DATA.slice(visibleCount);
-  const showMoreButton = hiddenLinks.length > 0;
-
-  useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
-      if (moreMenuOpen && moreRef.current && !moreRef.current.contains(event.target as Node)) {
-        setMoreMenuOpen(false);
-      }
-    };
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => document.removeEventListener("mousedown", handleClickOutside);
-  }, [moreMenuOpen]);
-
-  const linkStyles = "font-terminal text-sm xl:text-base text-hell-white hover:text-[#ffae00] transition-colors uppercase tracking-widest relative group cursor-pointer font-bold whitespace-nowrap";
-  const linkUnderline = "absolute -bottom-1 left-0 w-0 h-0.5 bg-hell-orange transition-all group-hover:w-full";
+  const BUY_LINK = "https://raydium.io/swap";
 
   return (
-    <nav 
-      className={cn(
-        "fixed top-0 w-full transition-all duration-300 ease-in-out",
-        // FIX: Increased Z-Index to 50 to ensure Nav stays on top of everything
-        "z-50", 
-        isScrolled 
-          ? "bg-hell-black/95 backdrop-blur-md border-b border-hell-red/30 py-2 md:py-2 shadow-lg shadow-hell-red/5" 
-          : "bg-transparent border-b border-transparent py-4 md:py-6"
-      )}
-    >
-      {/* FIX: Added 'relative z-50' to this container. 
-         This forces the Logo, Links, and Hamburger Button to sit ABOVE the mobile menu overlay (which is z-40).
-      */}
-      <div className="relative z-50 w-full lg:w-[70%] max-w-[1920px] mx-auto px-4 md:px-0 flex justify-between items-center transition-all duration-300">
-        
-        {/* LOGO */}
-        <div 
-          onClick={scrollToTop}
-          className="flex items-center gap-2 md:gap-3 group cursor-pointer shrink-0 transition-transform active:scale-95 mr-4"
-        >
-          <img 
-            src="/GOAPE.png" 
-            alt="Hellcoin" 
-            className={cn(
-              "rounded-full border border-hell-orange object-cover transition-all duration-300",
-              isScrolled ? "w-8 h-8 md:w-8 md:h-8" : "w-8 h-8 md:w-10 md:h-10 lg:w-12 lg:h-12"
-            )}
-          />
-          <span className="font-gothic text-xl md:text-2xl lg:text-3xl text-hell-orange tracking-wide text-glow">HELLCOIN</span>
-        </div>
-
-        {/* --- DESKTOP NAV --- */}
-        <div ref={containerRef} className="relative hidden lg:flex items-center gap-6 justify-end flex-grow min-w-0 mr-4">
-          <div ref={ghostRef} className="absolute top-0 left-0 flex gap-4 xl:gap-6 invisible pointer-events-none" aria-hidden="true">
-             {NAV_LINKS_DATA.map((link) => (
-               <span key={link.name} className={linkStyles}>{link.name}</span>
-             ))}
-          </div>
-
-          <div 
-            className={cn(
-              "flex gap-4 xl:gap-6 transition-opacity duration-200",
-              isCalculated ? "opacity-100" : "opacity-0"
-            )}
-          >
-            {visibleLinks.map((link) => (
-              <a 
-                key={link.name} 
-                href={link.href}
-                onClick={(e) => handleNavClick(e, link.href)}
-                className={linkStyles}
-              >
-                {link.name}
-                <span className={linkUnderline}></span>
-              </a>
-            ))}
-          </div>
-          
-          <div 
-            ref={moreRef}
-            className={cn(
-              "relative h-full flex items-center shrink-0 transition-opacity duration-200",
-               isCalculated && showMoreButton ? "opacity-100" : "opacity-0 pointer-events-none"
-            )}
-            onMouseEnter={() => setMoreMenuOpen(true)}
-            onMouseLeave={() => setMoreMenuOpen(false)}
-          >
-              <button 
-                onClick={() => setMoreMenuOpen(!moreMenuOpen)}
-                className={cn(
-                  "flex items-center gap-1 font-terminal text-sm xl:text-base transition-colors uppercase cursor-pointer border px-2 py-1 shrink-0",
-                  moreMenuOpen ? "text-hell-red border-hell-red" : "text-[#ffae00] border-hell-red/50 hover:text-hell-red"
-                )}
-              >
-                MORE
-                {moreMenuOpen ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
-              </button>
-
-              <AnimatePresence>
-                {moreMenuOpen && (
-                  <motion.div
-                    initial={{ opacity: 0, y: 10 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0, y: 10 }}
-                    className="absolute top-full left-0 pt-4 z-50 min-w-[200px]" 
-                  >
-                    <div className="bg-hell-black border border-hell-red/50 shadow-xl p-5 flex flex-col gap-4">
-                      {hiddenLinks.map((link) => (
-                        <a 
-                          key={link.name} 
-                          href={link.href}
-                          onClick={(e) => handleNavClick(e, link.href)}
-                          className={linkStyles}
-                        >
-                          {link.name}
-                          <span className={linkUnderline}></span>
-                        </a>
-                      ))}
-                    </div>
-                  </motion.div>
-                )}
-              </AnimatePresence>
-          </div>
-        </div>
-        
-        {/* --- ACTIONS --- */}
-        <div className="flex items-center gap-2 md:gap-4 shrink-0">
-          <button 
-            onClick={onTriggerPaperHands}
-            className="flex items-center gap-2 px-2 md:px-3 py-1 border border-pink-300 rounded text-pink-100 font-terminal text-[10px] md:text-sm font-bold hover:bg-pink-500/20 hover:text-white transition-colors shadow-[0_0_10px_rgba(255,192,203,0.3)] whitespace-nowrap"
-          >
-            <span className="w-2 h-2 rounded-full bg-pink-200 animate-pulse shadow-[0_0_5px_#fff]"></span>
-            <span className="hidden md:inline">HEAVEN MODE</span>
-            <span className="md:hidden">HEAVEN</span>
-          </button>
-          
-          <a 
-            href={BUY_LINK}
-            target="_blank" 
-            rel="noopener noreferrer"
-            className="hidden md:block bg-hell-red hover:bg-hell-orange text-hell-white font-gothic text-base lg:text-lg px-4 lg:px-6 py-1 lg:py-2 rounded shadow-[0_0_15px_rgba(204,0,0,0.5)] transition-all transform hover:scale-105 border border-hell-orange/50 text-center whitespace-nowrap"
-          >
-            ACQUIRE $666
-          </a>
-
-          {/* Hamburger Menu Toggle - Stays visible because parent has z-50 */}
-          <button className="lg:hidden text-hell-white" onClick={() => setMobileMenuOpen(!mobileMenuOpen)}>
-            {mobileMenuOpen ? <X size={28} /> : <Menu size={28} />}
-          </button>
-        </div>
+    <section ref={ref} className="relative h-screen-safe min-h-[600px] w-full flex items-center justify-center overflow-hidden">
+      <div className="absolute inset-0 z-0">
+        <img src="/banner.png" className="absolute inset-0 w-full h-full object-cover object-left opacity-100" alt="Hellcoin Throne" />
+        <div className="absolute inset-0 bg-gradient-to-t from-hell-black via-hell-black/80 to-transparent"></div>
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-transparent via-hell-black/40 to-hell-black"></div>
       </div>
 
-      {/* MOBILE MENU */}
-      <AnimatePresence>
-        {mobileMenuOpen && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            onClick={() => setMobileMenuOpen(false)}
-            // FIX: z-[40] puts this BEHIND the navbar content (which is z-50)
-            // This ensures the Logo and Close button remain visible and clickable on top of the black background.
-            className="lg:hidden fixed inset-0 bg-hell-black/95 backdrop-blur-xl border-b border-hell-red/50 overflow-hidden shadow-2xl z-[40] cursor-pointer"
-          >
-            <motion.div 
-               initial={{ height: 0 }}
-               animate={{ height: "100svh" }}
-               exit={{ height: 0 }}
-               className="p-6 h-full flex flex-col justify-between items-center overflow-hidden pt-[100px] pb-[40px] cursor-default"
-            >
-              <div className="flex flex-col flex-grow justify-around items-center w-full gap-y-0">
-                {NAV_LINKS_DATA.map((link) => (
-                  <a 
-                    key={link.name} 
-                    href={link.href} 
-                    onClick={(e) => handleNavClick(e, link.href)}
-                    className="font-terminal text-xl md:text-2xl text-hell-white hover:text-hell-orange tracking-widest cursor-pointer font-bold shrink-0 py-1" 
-                  >
-                    {link.name}
-                  </a>
-                ))}
-              </div>
-              <div className="w-full flex flex-col items-center shrink-0 pt-4 border-t border-gray-900">
-                <a 
-                  href={BUY_LINK}
-                  target="_blank" 
-                  rel="noopener noreferrer"
-                  onClick={(e) => e.stopPropagation()}
-                  className="bg-hell-red text-hell-white font-gothic text-2xl py-3 px-12 rounded shadow-[0_0_20px_rgba(204,0,0,0.6)]"
-                >
-                  ACQUIRE $666
-                </a>
-              </div>
-            </motion.div>
-          </motion.div>
-        )}
-      </AnimatePresence>
-    </nav>
+      {/* FIX: Increased padding to 'md:pr-[10%] lg:pr-[15%]' to force center alignment */}
+      <motion.div 
+        style={{ y: yText, opacity: opacityText }} 
+        className="relative z-10 px-fluid-gap md:pr-[10%] lg:pr-[15%] max-w-[1920px] w-full mx-auto flex flex-col items-center md:items-end text-center md:text-right"
+      >
+        <motion.h1 
+          initial={{ scale: 0.9, opacity: 0 }} 
+          animate={{ scale: 1, opacity: 1 }} 
+          transition={{ type: "spring", duration: 1.5 }} 
+          className="font-gothic text-fluid-hero leading-[0.9] text-hell-white text-glow drop-shadow-2xl mb-8 w-full"
+        >
+          BORN IN THE <span className="text-hell-red">RED.</span><br />
+          FORGED BY <span className="text-[#ffae00]">REGRET.</span>
+        </motion.h1>
+
+        <motion.div 
+          initial={{ opacity: 0 }} 
+          animate={{ opacity: 1 }} 
+          transition={{ delay: 0.5 }} 
+          className="font-terminal text-fluid-body text-gray-300 max-w-4xl md:max-w-5xl mx-auto md:mx-0 space-y-2 md:space-y-0"
+        >
+          <p className="leading-relaxed">
+            The first cryptocurrency powered by <span className="block md:inline text-[#ffae00] text-2xl md:text-3xl my-2 md:my-0 font-bold md:font-normal">Proof-of-Suffering</span>
+          </p>
+          <p className="text-gray-300">the only consensus mechanism traders truly understand.</p>
+        </motion.div>
+
+        <motion.p 
+          initial={{ opacity: 0 }} 
+          animate={{ opacity: 1 }} 
+          transition={{ delay: 1.0 }} 
+          className="font-terminal text-hell-red text-lg md:text-2xl mt-8 tracking-widest uppercase animate-pulse md:max-w-5xl"
+        >
+          WHEN THE MARKET BURNS, WE TREND
+        </motion.p>
+
+        <motion.div 
+          initial={{ opacity: 0, y: 50 }} 
+          animate={{ opacity: 1, y: 0 }} 
+          transition={{ delay: 1.4 }} 
+          className="mt-12 flex flex-col md:flex-row gap-6 md:gap-8 justify-center md:justify-end items-center w-full md:max-w-5xl"
+        >
+          <button onClick={handleAbandonHope} className="text-gray-500 font-terminal text-xl md:text-2xl hover:text-[#ffae00] transition-colors flex items-center gap-2 group order-1 md:order-none">
+            [ ABANDON HOPE ]
+            <TrendingDown className="w-5 h-5 group-hover:translate-y-1 transition-transform" />
+          </button>
+          <a href={BUY_LINK} target="_blank" rel="noopener noreferrer" className="group relative px-8 py-4 bg-transparent border-2 border-hell-red text-hell-red font-gothic text-2xl md:text-3xl uppercase overflow-hidden transition-all hover:text-hell-white hover:border-hell-orange hover:shadow-[0_0_30px_rgba(204,0,0,0.6)] order-2 md:order-none cursor-pointer flex items-center gap-2">
+            <span className="absolute inset-0 w-full h-full bg-hell-red -translate-x-full group-hover:translate-x-0 transition-transform duration-300 ease-out"></span>
+            <span className="relative z-10 flex items-center gap-2">ACQUIRE $666 <Flame size={28} /></span>
+          </a>
+        </motion.div>
+      </motion.div>
+      <div className="absolute bottom-0 w-full h-32 bg-gradient-to-t from-hell-black to-transparent z-20"></div>
+    </section>
   );
 };
