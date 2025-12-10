@@ -19,30 +19,35 @@ const NAV_LINKS_DATA = [
   { name: "THE PIT", href: "#the-pit" },
 ];
 
-// Put these OUTSIDE the component to keep the function body clean
+// Shared styles
 const linkStyles =
   "font-terminal text-sm xl:text-base text-hell-white hover:text-[#ffae00] transition-colors uppercase tracking-widest relative group cursor-pointer font-bold whitespace-nowrap";
 
 const linkUnderline =
   "absolute -bottom-1 left-0 w-0 h-0.5 bg-hell-orange transition-all group-hover:w-full";
 
-export const Navbar = ({
+// Layout constants for desktop overflow logic
+const GAP_WIDTH = 24; // px between links
+const MORE_BUTTON_WIDTH = 72; // px reserved for MORE button when needed
+
+export function Navbar({
   onTriggerPaperHands,
 }: {
   onTriggerPaperHands: () => void;
-}) => {
+}) {
   const [isScrolled, setIsScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [moreMenuOpen, setMoreMenuOpen] = useState(false);
 
-  const containerRef = useRef<HTMLDivElement | null>(null);
-  const ghostRef = useRef<HTMLDivElement | null>(null);
+  // Desktop overflow refs/state
+  const containerRef = useRef<HTMLDivElement | null>(null); // center zone for links
+  const ghostRef = useRef<HTMLDivElement | null>(null); // invisible row to measure widths
   const moreRef = useRef<HTMLDivElement | null>(null);
 
   const [visibleCount, setVisibleCount] = useState(NAV_LINKS_DATA.length);
   const [isCalculated, setIsCalculated] = useState(false);
 
-  // Scroll listener (shrink nav on scroll)
+  // Scroll shrink
   useEffect(() => {
     const handleScroll = () => {
       setIsScrolled(window.scrollY > 50);
@@ -52,7 +57,7 @@ export const Navbar = ({
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  // Lock body scroll when mobile menu is open
+  // Lock body scroll on mobile menu
   useEffect(() => {
     document.body.style.overflow = mobileMenuOpen ? "hidden" : "unset";
     return () => {
@@ -60,7 +65,7 @@ export const Navbar = ({
     };
   }, [mobileMenuOpen]);
 
-  // Smooth scroll handler
+  // Smooth scroll for anchors
   const handleNavClick = (
     e: React.MouseEvent<HTMLAnchorElement>,
     href: string
@@ -83,19 +88,12 @@ export const Navbar = ({
     setMobileMenuOpen(false);
   };
 
-  // DESKTOP NAV: calculate how many links fit in the center zone
+  // DESKTOP: calculate how many links fit in the center zone
   const checkOverflow = useCallback(() => {
     if (!containerRef.current || !ghostRef.current) return;
 
-    // Safety margin so links never hug logo/actions
-    const SAFETY_MARGIN = 40;
-    const GAP_WIDTH = 24;
-    const MORE_BUTTON_WIDTH = 64;
-
-    const rawContainerWidth = containerRef.current.clientWidth;
-    const containerWidth = Math.max(rawContainerWidth - SAFETY_MARGIN, 0);
-
-    if (containerWidth === 0) return;
+    const containerWidth = containerRef.current.clientWidth;
+    if (containerWidth <= 0) return;
 
     const ghostChildren = Array.from(
       ghostRef.current.children
@@ -138,14 +136,14 @@ export const Navbar = ({
     setIsCalculated(true);
   }, []);
 
-  // Observe desktop nav size changes
+  // Observe desktop container + ghost for resize
   useEffect(() => {
     checkOverflow();
 
     const observers: ResizeObserver[] = [];
 
     if (typeof ResizeObserver !== "undefined") {
-      const createObserver = (el: HTMLElement | null) => {
+      const observeEl = (el: HTMLElement | null) => {
         if (!el) return;
         const ro = new ResizeObserver(() => {
           window.requestAnimationFrame(() => checkOverflow());
@@ -154,8 +152,8 @@ export const Navbar = ({
         observers.push(ro);
       };
 
-      createObserver(containerRef.current);
-      createObserver(ghostRef.current);
+      observeEl(containerRef.current);
+      observeEl(ghostRef.current);
     }
 
     window.addEventListener("resize", checkOverflow);
@@ -204,9 +202,9 @@ export const Navbar = ({
         )}
       />
 
-      {/* 70% WIDTH CONTENT ROW */}
+      {/* MAIN ROW (70% WIDTH ON DESKTOP) */}
       <div className="relative z-[100] w-full lg:w-[70%] max-w-[1920px] mx-auto px-4 md:px-0 flex items-center gap-3 md:gap-4 lg:gap-6 transition-all duration-300">
-        {/* LOGO (LEFT, STATIC) */}
+        {/* LOGO (LEFT) */}
         <button
           type="button"
           onClick={scrollToTop}
@@ -231,7 +229,7 @@ export const Navbar = ({
         {/* DESKTOP NAV (CENTER ZONE, lg+ ONLY) */}
         <div
           ref={containerRef}
-          className="relative hidden lg:flex items-center justify-center flex-1 min-w-0"
+          className="relative hidden lg:flex items-center justify-center flex-1 min-w-0 px-4"
         >
           {/* Ghost row for measuring widths */}
           <div
@@ -249,7 +247,7 @@ export const Navbar = ({
           {/* Visible links + MORE (centered) */}
           <div
             className={cn(
-              "flex gap-4 xl:gap-6 transition-opacity duration-200 items-center",
+              "flex gap-4 xl:gap-6 items-center transition-opacity duration-200",
               isCalculated ? "opacity-100" : "opacity-0"
             )}
           >
@@ -355,23 +353,23 @@ export const Navbar = ({
         </div>
       </div>
 
-      {/* HAMBURGER NAVIGATION MODE (SCROLLABLE OVERLAY) */}
+      {/* HAMBURGER NAVIGATION MODE (CLEAN, SCROLLABLE OVERLAY) */}
       <AnimatePresence>
         {mobileMenuOpen && (
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            // Any click that reaches here closes the menu
             onClick={() => setMobileMenuOpen(false)}
-            className="lg:hidden fixed inset-0 bg-hell-black/95 backdrop-blur-xl border-b border-hell-red/50 overflow-y-auto shadow-2xl z-[95] cursor-pointer"
+            className="lg:hidden fixed inset-0 z-[95] bg-hell-black/95 backdrop-blur-xl border-b border-hell-red/50 overflow-y-auto cursor-pointer"
           >
             <motion.div
-              initial={{ height: 0 }}
-              animate={{ height: "100svh" }}
-              exit={{ height: 0 }}
-              // min-h so it can grow taller than viewport if content is long
-              className="p-6 min-h-[100svh] flex flex-col justify-between items-center pt-[100px] pb-[40px] cursor-default"
+              initial={{ y: -20, opacity: 0 }}
+              animate={{ y: 0, opacity: 1 }}
+              exit={{ y: -20, opacity: 0 }}
+              transition={{ type: "spring", stiffness: 260, damping: 25 }}
+              onClick={(e) => e.stopPropagation()}
+              className="max-w-[480px] mx-auto w-full min-h-[100svh] p-6 pt-[100px] pb-10 flex flex-col justify-between items-center cursor-default"
             >
               <div className="flex flex-col flex-grow justify-around items-center w-full gap-y-0">
                 {NAV_LINKS_DATA.map((link) => (
@@ -402,4 +400,4 @@ export const Navbar = ({
       </AnimatePresence>
     </nav>
   );
-};
+}
