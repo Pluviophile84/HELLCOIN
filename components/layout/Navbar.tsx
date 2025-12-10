@@ -353,7 +353,7 @@ export function Navbar({
         </div>
       </div>
 
-      {/* HAMBURGER NAVIGATION MODE (CLEAN, SCROLLABLE OVERLAY) */}
+      {/* HAMBURGER NAVIGATION MODE (COMPACT, SCROLLABLE OVERLAY) */}
       <AnimatePresence>
         {mobileMenuOpen && (
           <motion.div
@@ -369,22 +369,23 @@ export function Navbar({
               exit={{ y: -20, opacity: 0 }}
               transition={{ type: "spring", stiffness: 260, damping: 25 }}
               onClick={(e) => e.stopPropagation()}
-              className="max-w-[480px] mx-auto w-full min-h-[100svh] p-6 pt-[100px] pb-10 flex flex-col justify-between items-center cursor-default"
+              className="max-w-[480px] mx-auto w-full min-h-[100svh] p-6 pt-[100px] pb-10 flex flex-col gap-6 cursor-default"
             >
-              <div className="flex flex-col flex-grow justify-around items-center w-full gap-y-0">
+              {/* Links: single column on very small, 2 columns on sm+ */}
+              <div className="w-full grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
                 {NAV_LINKS_DATA.map((link) => (
                   <a
                     key={link.name}
                     href={link.href}
                     onClick={(e) => handleNavClick(e, link.href)}
-                    className="font-terminal text-xl md:text-2xl text-hell-white hover:text-hell-orange tracking-widest cursor-pointer font-bold shrink-0 py-1"
+                    className="font-terminal text-lg text-center text-hell-white hover:text-hell-orange tracking-widest cursor-pointer font-bold py-1"
                   >
                     {link.name}
                   </a>
                 ))}
               </div>
 
-              <div className="w-full flex flex-col items-center shrink-0 pt-4 border-t border-gray-900">
+              <div className="w-full flex flex-col items-center pt-4 border-t border-gray-900">
                 <a
                   href={BUY_LINK}
                   target="_blank"
