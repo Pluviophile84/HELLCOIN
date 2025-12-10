@@ -26,7 +26,7 @@ const linkStyles =
 const linkUnderline =
   "absolute -bottom-1 left-0 w-0 h-0.5 bg-hell-orange transition-all group-hover:w-full";
 
-// Layout constants for desktop overflow logic
+// Desktop layout constants
 const GAP_WIDTH = 24; // px between links
 const MORE_BUTTON_WIDTH = 72; // px reserved for MORE button when needed
 
@@ -353,7 +353,7 @@ export function Navbar({
         </div>
       </div>
 
-      {/* HAMBURGER NAVIGATION MODE (COMPACT, SCROLLABLE OVERLAY) */}
+      {/* HAMBURGER NAVIGATION MODE (ONE COLUMN, SCROLL ONLY IF NEEDED) */}
       <AnimatePresence>
         {mobileMenuOpen && (
           <motion.div
@@ -361,18 +361,18 @@ export function Navbar({
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             onClick={() => setMobileMenuOpen(false)}
-            className="lg:hidden fixed inset-0 z-[95] bg-hell-black/95 backdrop-blur-xl border-b border-hell-red/50 overflow-y-auto cursor-pointer"
+            className="lg:hidden fixed inset-0 z-[95] bg-hell-black/95 backdrop-blur-xl border-b border-hell-red/50 overflow-y-auto"
           >
             <motion.div
               initial={{ y: -20, opacity: 0 }}
               animate={{ y: 0, opacity: 1 }}
               exit={{ y: -20, opacity: 0 }}
               transition={{ type: "spring", stiffness: 260, damping: 25 }}
-              onClick={(e) => e.stopPropagation()}
-              className="max-w-[480px] mx-auto w-full min-h-[100svh] p-6 pt-[100px] pb-10 flex flex-col gap-6 cursor-default"
+              // NO stopPropagation: tap anywhere that's not a link will bubble and close
+              className="max-w-[480px] mx-auto w-full p-6 pt-20 pb-8 flex flex-col gap-6"
             >
-              {/* Links: single column on very small, 2 columns on sm+ */}
-              <div className="w-full grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
+              {/* One column list, compact */}
+              <div className="w-full flex flex-col gap-3">
                 {NAV_LINKS_DATA.map((link) => (
                   <a
                     key={link.name}
