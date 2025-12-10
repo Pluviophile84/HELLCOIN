@@ -40,7 +40,7 @@ export const Navbar = ({ onTriggerPaperHands }: { onTriggerPaperHands: () => voi
 
   const handleNavClick = (e: React.MouseEvent<HTMLAnchorElement>, href: string) => {
     e.preventDefault();
-    setMobileMenuOpen(false); // Explicitly close menu
+    setMobileMenuOpen(false); 
     setMoreMenuOpen(false);
     const targetId = href.replace("#", "");
     const elem = document.getElementById(targetId);
@@ -108,14 +108,25 @@ export const Navbar = ({ onTriggerPaperHands }: { onTriggerPaperHands: () => voi
   return (
     <nav 
       className={cn(
-        // Z-90 ensures it is high, but below the PaperHands overlay (z-9999)
         "fixed top-0 w-full z-[90] transition-all duration-300 ease-in-out",
-        isScrolled 
-          ? "bg-hell-black/95 backdrop-blur-md border-b border-hell-red/30 py-4 md:py-2 shadow-lg shadow-hell-red/5" 
-          : "bg-transparent border-b border-transparent py-4 md:py-6"
+        // REMOVED: backdrop-blur and bg-colors from here to fix the scroll bug
+        isScrolled ? "py-4 md:py-2" : "py-4 md:py-6"
       )}
     >
-      {/* HEADER: Z-100 ensures Logo/Buttons sit ON TOP of the mobile menu overlay (z-95) */}
+      {/* --- BACKGROUND PLATE --- 
+        This acts as the background. We separate it so the 'backdrop-blur' 
+        doesn't break the 'fixed' positioning of the mobile menu.
+      */}
+      <div 
+        className={cn(
+          "absolute inset-0 w-full h-full transition-all duration-300 pointer-events-none",
+          isScrolled 
+            ? "bg-hell-black/95 backdrop-blur-md border-b border-hell-red/30 shadow-lg shadow-hell-red/5" 
+            : "bg-transparent border-b border-transparent"
+        )}
+      />
+
+      {/* HEADER CONTENT (Logo, Buttons) - Z-100 to stay above Mobile Menu */}
       <div className="relative z-[100] w-full lg:w-[70%] max-w-[1920px] mx-auto px-4 md:px-0 flex justify-between items-center transition-all duration-300">
         
         {/* LOGO */}
@@ -239,14 +250,14 @@ export const Navbar = ({ onTriggerPaperHands }: { onTriggerPaperHands: () => voi
             exit={{ opacity: 0 }}
             // 1. CLICKING BACKGROUND CLOSES MENU
             onClick={() => setMobileMenuOpen(false)}
-            // Z-95 sits BETWEEN the Navbar Background (Z-90) and the Header Buttons (Z-100)
+            // Z-Index 95 puts it BETWEEN the Background (0) and Header (100)
             className="lg:hidden fixed inset-0 bg-hell-black/95 backdrop-blur-xl border-b border-hell-red/50 overflow-hidden shadow-2xl z-[95] cursor-pointer"
           >
             <motion.div 
                initial={{ height: 0 }}
                animate={{ height: "100svh" }}
                exit={{ height: 0 }}
-               // 2. CLICKING THE CONTENT AREA STOPS THE CLOSE EVENT (so you don't close when missing a link by 1px)
+               // 2. Stop click propagation on the CONTENT itself, so you don't close it while trying to click a button
                onClick={(e) => e.stopPropagation()}
                className="p-6 h-full flex flex-col justify-between items-center overflow-hidden pt-[100px] pb-[40px] cursor-default"
             >
@@ -255,7 +266,7 @@ export const Navbar = ({ onTriggerPaperHands }: { onTriggerPaperHands: () => voi
                   <a 
                     key={link.name} 
                     href={link.href} 
-                    // 3. CLICKING A LINK EXPLICITLY CLOSES THE MENU
+                    // 3. Links explicitly close the menu
                     onClick={(e) => handleNavClick(e, link.href)}
                     className="font-terminal text-xl md:text-2xl text-hell-white hover:text-hell-orange tracking-widest cursor-pointer font-bold shrink-0 py-1" 
                   >
