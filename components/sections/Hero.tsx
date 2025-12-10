@@ -130,7 +130,7 @@ export const Hero = () => {
           >
             <span className="absolute inset-0 w-full h-full bg-hell-red -translate-x-full group-hover:translate-x-0 transition-transform duration-300 ease-out" />
             <span className="relative z-10 flex items-center gap-2">
-              ACQUIRE $666 <Flame size={24} className="md:size-7" />
+              ACQUIRE $666 
             </span>
           </a>
         </motion.div>
