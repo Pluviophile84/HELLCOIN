@@ -19,7 +19,6 @@ export const Hero = () => {
   const BUY_LINK = "https://raydium.io/swap";
 
   return (
-    // HYBRID FIX 1: Use 'min-h' to prevent crushing on landscape mobile, and 'h-screen-safe' for mobile UI
     <section ref={ref} className="relative h-screen-safe min-h-[600px] w-full flex items-center justify-center overflow-hidden">
       <div className="absolute inset-0 z-0">
         <img src="/banner.png" className="absolute inset-0 w-full h-full object-cover object-left opacity-100" alt="Hellcoin Throne" />
@@ -27,12 +26,11 @@ export const Hero = () => {
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-transparent via-hell-black/40 to-hell-black"></div>
       </div>
 
-      {/* HYBRID FIX 2: Added 'px-fluid-gap' for consistent side spacing on all screens */}
+      {/* FIX: Added 'md:pr-20' to push content slightly towards center */}
       <motion.div 
         style={{ y: yText, opacity: opacityText }} 
-        className="relative z-10 px-fluid-gap max-w-[1800px] w-full mx-auto flex flex-col items-center md:items-end text-center md:text-right"
+        className="relative z-10 px-fluid-gap md:pr-20 max-w-[1800px] w-full mx-auto flex flex-col items-center md:items-end text-center md:text-right"
       >
-        {/* HYBRID FIX 3: Replaced 'text-6xl md:text-9xl' with fluid class */}
         <motion.h1 
           initial={{ scale: 0.9, opacity: 0 }} 
           animate={{ scale: 1, opacity: 1 }} 
@@ -70,7 +68,6 @@ export const Hero = () => {
           transition={{ delay: 1.4 }} 
           className="mt-12 flex flex-col md:flex-row gap-6 md:gap-8 justify-center md:justify-end items-center w-full md:max-w-5xl"
         >
-          {/* Button order logic preserved */}
           <button onClick={handleAbandonHope} className="text-gray-500 font-terminal text-xl md:text-2xl hover:text-[#ffae00] transition-colors flex items-center gap-2 group order-1 md:order-none">
             [ ABANDON HOPE ]
             <TrendingDown className="w-5 h-5 group-hover:translate-y-1 transition-transform" />
