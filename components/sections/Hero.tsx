@@ -1,13 +1,29 @@
 "use client";
 
 import { motion, useScroll, useTransform } from "framer-motion";
-import { useRef } from "react";
+import { useRef, useState, useEffect } from "react";
 import { TrendingDown, Flame } from "lucide-react";
 
 const BUY_LINK = "https://raydium.io/swap";
 
 export const Hero = () => {
   const ref = useRef<HTMLElement | null>(null);
+  const [showTagline, setShowTagline] = useState(false);
+
+  // Show the red tagline only on taller screens (e.g. 390x844),
+  // hide it on short ones (e.g. 360x640) to keep everything inside the hero.
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+
+    const checkHeight = () => {
+      // Tune this threshold if needed; ~720px works well for 390x844 vs 360x640
+      setShowTagline(window.innerHeight >= 720);
+    };
+
+    checkHeight();
+    window.addEventListener("resize", checkHeight);
+    return () => window.removeEventListener("resize", checkHeight);
+  }, []);
 
   const { scrollYProgress } = useScroll({
     target: ref,
@@ -73,15 +89,18 @@ export const Hero = () => {
           </p>
         </motion.div>
 
-        {/* Tagline: hide on very small screens to save vertical space */}
-        <motion.p
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 1.0 }}
-          className="hidden md:block font-terminal text-hell-red text-lg md:text-2xl mt-6 md:mt-8 tracking-widest uppercase animate-pulse md:max-w-5xl"
-        >
-          WHEN THE MARKET BURNS, WE TREND
-        </motion.p>
+        {/* Tagline: only render on taller screens (e.g. 390x844), 
+            hidden on short screens like 360x640 so CTAs fit in the hero */}
+        {showTagline && (
+          <motion.p
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 1.0 }}
+            className="font-terminal text-hell-red text-lg md:text-2xl mt-6 md:mt-8 tracking-widest uppercase animate-pulse md:max-w-5xl"
+          >
+            WHEN THE MARKET BURNS, WE TREND
+          </motion.p>
+        )}
 
         <motion.div
           initial={{ opacity: 0, y: 50 }}
@@ -112,7 +131,7 @@ export const Hero = () => {
         </motion.div>
       </motion.div>
 
-      {/* BOTTOM FADE – hidden on very small screens so it doesn't darken the CTA */}
+      {/* BOTTOM FADE – hidden on very small widths so it doesn't darken the CTA there */}
       <div className="absolute bottom-0 w-full h-24 md:h-32 bg-gradient-to-t from-hell-black to-transparent z-20 pointer-events-none hidden sm:block" />
     </section>
   );
