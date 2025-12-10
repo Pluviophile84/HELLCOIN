@@ -51,7 +51,6 @@ export const Navbar = ({ onTriggerPaperHands }: { onTriggerPaperHands: () => voi
 
   const checkOverflow = useCallback(() => {
     if (!containerRef.current) return;
-    // Hybrid Fix: Reduced buffer from 80 to 50 for tighter fit
     const containerWidth = containerRef.current.clientWidth; 
     const moreButtonWidth = 50; 
     let currentWidth = 0;
@@ -60,7 +59,7 @@ export const Navbar = ({ onTriggerPaperHands }: { onTriggerPaperHands: () => voi
     for (let i = 0; i < NAV_LINKS_DATA.length; i++) {
       const linkElement = linksRef.current[i];
       if (linkElement) {
-        const linkWidth = linkElement.offsetWidth + 24;
+        const linkWidth = linkElement.offsetWidth + 24; 
         if (currentWidth + linkWidth + moreButtonWidth >= containerWidth) break; 
         currentWidth += linkWidth;
         visible++;
@@ -97,16 +96,20 @@ export const Navbar = ({ onTriggerPaperHands }: { onTriggerPaperHands: () => voi
   return (
     <nav 
       className={cn(
-        "fixed top-0 w-full z-40 border-b transition-all duration-300 py-3 md:py-4",
+        "fixed top-0 w-full z-40 transition-all duration-300 py-3 md:py-4",
         isScrolled 
-          ? "bg-hell-black/90 backdrop-blur-md border-hell-red/30" 
-          : "bg-transparent border-transparent"
+          ? "bg-hell-black/90 backdrop-blur-md border-b border-hell-red/30" 
+          : "bg-transparent border-b border-transparent"
       )}
     >
-      {/* HYBRID FIX: 'px-4' on mobile, 'px-8' on large screens for breathability */}
-      <div className="w-full max-w-[1920px] mx-auto px-4 md:px-8 flex justify-between items-center">
+      {/* FIX APPLIED: 
+         - w-full on mobile
+         - lg:w-[80%] on desktop (80% Constraint)
+         - max-w-[1920px] for safety on ultrawide
+      */}
+      <div className="w-full lg:w-[80%] max-w-[1920px] mx-auto px-4 md:px-0 flex justify-between items-center transition-all duration-300">
         
-        {/* LOGO - Fluid sizing */}
+        {/* LOGO */}
         <div 
           onClick={scrollToTop}
           className="flex items-center gap-2 md:gap-3 group cursor-pointer shrink-0 transition-transform active:scale-95 mr-4"
@@ -116,11 +119,10 @@ export const Navbar = ({ onTriggerPaperHands }: { onTriggerPaperHands: () => voi
             alt="Hellcoin" 
             className="w-8 h-8 md:w-10 md:h-10 lg:w-12 lg:h-12 rounded-full border border-hell-orange object-cover" 
           />
-          {/* HYBRID FIX: Text scales down on tablet */}
           <span className="font-gothic text-xl md:text-2xl lg:text-3xl text-hell-orange tracking-wide text-glow">HELLCOIN</span>
         </div>
 
-        {/* --- DESKTOP NAV --- */}
+        {/* --- DESKTOP NAV (Adaptive "More" Menu) --- */}
         <div ref={containerRef} className="relative hidden lg:flex items-center gap-6 justify-end flex-grow min-w-0 mr-4">
           <div className="flex gap-4 xl:gap-6">
             {visibleLinks.map((link, index) => (
@@ -198,7 +200,6 @@ export const Navbar = ({ onTriggerPaperHands }: { onTriggerPaperHands: () => voi
             href={BUY_LINK}
             target="_blank" 
             rel="noopener noreferrer"
-            // HYBRID FIX: Scales button size on medium screens
             className="hidden md:block bg-hell-red hover:bg-hell-orange text-hell-white font-gothic text-base lg:text-lg px-4 lg:px-6 py-1 lg:py-2 rounded shadow-[0_0_15px_rgba(204,0,0,0.5)] transition-all transform hover:scale-105 border border-hell-orange/50 text-center whitespace-nowrap"
           >
             ACQUIRE $666
@@ -210,12 +211,12 @@ export const Navbar = ({ onTriggerPaperHands }: { onTriggerPaperHands: () => voi
         </div>
       </div>
 
-      {/* MOBILE MENU (Unchanged logic, just keeping it robust) */}
+      {/* MOBILE MENU */}
       <AnimatePresence>
         {mobileMenuOpen && (
           <motion.div
             initial={{ opacity: 0, height: 0 }}
-            animate={{ opacity: 1, height: "100svh" }} // Using svh here too
+            animate={{ opacity: 1, height: "100svh" }} 
             exit={{ opacity: 0, height: 0 }}
             className="lg:hidden fixed top-0 bottom-0 left-0 right-0 bg-hell-black/95 backdrop-blur-xl border-b border-hell-red/50 overflow-hidden shadow-2xl z-[-1]"
           >
