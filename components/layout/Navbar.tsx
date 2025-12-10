@@ -22,6 +22,7 @@ export const Navbar = ({ onTriggerPaperHands }: { onTriggerPaperHands: () => voi
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [moreMenuOpen, setMoreMenuOpen] = useState(false);
   
+  // Containers
   const containerRef = useRef<HTMLDivElement>(null);
   const ghostRef = useRef<HTMLDivElement>(null); 
   const [visibleCount, setVisibleCount] = useState(NAV_LINKS_DATA.length);
@@ -35,7 +36,13 @@ export const Navbar = ({ onTriggerPaperHands }: { onTriggerPaperHands: () => voi
   }, []);
 
   useEffect(() => {
-    document.body.style.overflow = mobileMenuOpen ? "hidden" : "unset";
+    // Original scroll lock logic
+    if (mobileMenuOpen) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "unset";
+    }
+    return () => { document.body.style.overflow = "unset"; };
   }, [mobileMenuOpen]);
 
   const handleNavClick = (e: React.MouseEvent<HTMLAnchorElement>, href: string) => {
@@ -49,8 +56,10 @@ export const Navbar = ({ onTriggerPaperHands }: { onTriggerPaperHands: () => voi
 
   const scrollToTop = () => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
+    setMobileMenuOpen(false);
   };
 
+  // --- ORIGINAL ADAPTIVE LOGIC ---
   const checkOverflow = useCallback(() => {
     if (!containerRef.current || !ghostRef.current) return;
     
@@ -77,13 +86,12 @@ export const Navbar = ({ onTriggerPaperHands }: { onTriggerPaperHands: () => voi
   useEffect(() => {
     checkOverflow();
     const resizeObserver = new ResizeObserver(() => {
-      window.requestAnimationFrame(() => {
-        checkOverflow();
-      });
+      window.requestAnimationFrame(() => checkOverflow());
     });
 
     if (containerRef.current) resizeObserver.observe(containerRef.current);
     window.addEventListener('resize', checkOverflow);
+    
     return () => {
       resizeObserver.disconnect();
       window.removeEventListener('resize', checkOverflow);
@@ -110,13 +118,17 @@ export const Navbar = ({ onTriggerPaperHands }: { onTriggerPaperHands: () => voi
   return (
     <nav 
       className={cn(
-        "fixed top-0 w-full z-50 transition-all duration-300 ease-in-out",
+        "fixed top-0 w-full z-40 transition-all duration-300",
         isScrolled 
-          ? "bg-hell-black/95 backdrop-blur-md border-b border-hell-red/30 py-4 md:py-2 shadow-lg shadow-hell-red/5" 
+          ? "bg-hell-black/90 backdrop-blur-md border-b border-hell-red/30 py-4 md:py-2" 
           : "bg-transparent border-b border-transparent py-4 md:py-6"
       )}
     >
-      <div className="w-full lg:w-[70%] max-w-[1920px] mx-auto px-4 md:px-0 flex justify-between items-center transition-all duration-300">
+      {/* CRITICAL FIX: Added 'relative z-[60]'. 
+        This keeps the Logo, Buttons, and Hamburger ON TOP of the mobile menu (z-50),
+        so they never disappear.
+      */}
+      <div className="relative z-[60] w-full lg:w-[70%] max-w-[1920px] mx-auto px-4 md:px-0 flex justify-between items-center">
         
         {/* LOGO */}
         <div 
@@ -129,25 +141,22 @@ export const Navbar = ({ onTriggerPaperHands }: { onTriggerPaperHands: () => voi
             className={cn(
               "rounded-full border border-hell-orange object-cover transition-all duration-300",
               isScrolled ? "w-8 h-8 md:w-8 md:h-8" : "w-8 h-8 md:w-10 md:h-10 lg:w-12 lg:h-12"
-            )}
+            )} 
           />
           <span className="font-gothic text-xl md:text-2xl lg:text-3xl text-hell-orange tracking-wide text-glow">HELLCOIN</span>
         </div>
 
         {/* --- DESKTOP NAV --- */}
         <div ref={containerRef} className="relative hidden lg:flex items-center gap-6 justify-end flex-grow min-w-0 mr-4">
+          
+          {/* Ghost Measurement Layer */}
           <div ref={ghostRef} className="absolute top-0 left-0 flex gap-4 xl:gap-6 invisible pointer-events-none" aria-hidden="true">
              {NAV_LINKS_DATA.map((link) => (
                <span key={link.name} className={linkStyles}>{link.name}</span>
              ))}
           </div>
 
-          <div 
-            className={cn(
-              "flex gap-4 xl:gap-6 transition-opacity duration-200",
-              isCalculated ? "opacity-100" : "opacity-0"
-            )}
-          >
+          <div className={cn("flex gap-4 xl:gap-6 transition-opacity duration-200", isCalculated ? "opacity-100" : "opacity-0")}>
             {visibleLinks.map((link) => (
               <a 
                 key={link.name} 
@@ -170,44 +179,44 @@ export const Navbar = ({ onTriggerPaperHands }: { onTriggerPaperHands: () => voi
             onMouseEnter={() => setMoreMenuOpen(true)}
             onMouseLeave={() => setMoreMenuOpen(false)}
           >
-              <button 
-                onClick={() => setMoreMenuOpen(!moreMenuOpen)}
-                className={cn(
-                  "flex items-center gap-1 font-terminal text-sm xl:text-base transition-colors uppercase cursor-pointer border px-2 py-1 shrink-0",
-                  moreMenuOpen ? "text-hell-red border-hell-red" : "text-[#ffae00] border-hell-red/50 hover:text-hell-red"
-                )}
-              >
-                MORE
-                {moreMenuOpen ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
-              </button>
+            <button 
+              onClick={() => setMoreMenuOpen(!moreMenuOpen)}
+              className={cn(
+                "flex items-center gap-1 font-terminal text-sm xl:text-base transition-colors uppercase cursor-pointer border px-2 py-1 shrink-0",
+                moreMenuOpen ? "text-hell-red border-hell-red" : "text-[#ffae00] border-hell-red/50 hover:text-hell-red"
+              )}
+            >
+              MORE
+              {moreMenuOpen ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
+            </button>
 
-              <AnimatePresence>
-                {moreMenuOpen && (
-                  <motion.div
-                    initial={{ opacity: 0, y: 10 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0, y: 10 }}
-                    className="absolute top-full left-0 pt-4 z-50 min-w-[200px]" 
-                  >
-                    <div className="bg-hell-black border border-hell-red/50 shadow-xl p-5 flex flex-col gap-4">
-                      {hiddenLinks.map((link) => (
-                        <a 
-                          key={link.name} 
-                          href={link.href}
-                          onClick={(e) => handleNavClick(e, link.href)}
-                          className={linkStyles}
-                        >
-                          {link.name}
-                          <span className={linkUnderline}></span>
-                        </a>
-                      ))}
-                    </div>
-                  </motion.div>
-                )}
-              </AnimatePresence>
+            <AnimatePresence>
+              {moreMenuOpen && (
+                <motion.div
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: 10 }}
+                  className="absolute top-full left-0 pt-4 z-50 min-w-[200px]" 
+                >
+                  <div className="bg-hell-black border border-hell-red/50 shadow-xl p-5 flex flex-col gap-4">
+                    {hiddenLinks.map((link) => (
+                      <a 
+                        key={link.name} 
+                        href={link.href}
+                        onClick={(e) => handleNavClick(e, link.href)}
+                        className={linkStyles}
+                      >
+                        {link.name}
+                        <span className={linkUnderline}></span>
+                      </a>
+                    ))}
+                  </div>
+                </motion.div>
+              )}
+            </AnimatePresence>
           </div>
         </div>
-        
+
         {/* --- ACTIONS --- */}
         <div className="flex items-center gap-2 md:gap-4 shrink-0">
           <button 
@@ -228,56 +237,33 @@ export const Navbar = ({ onTriggerPaperHands }: { onTriggerPaperHands: () => voi
             ACQUIRE $666
           </a>
 
-          {/* HAMBURGER TOGGLE */}
           <button className="lg:hidden text-hell-white" onClick={() => setMobileMenuOpen(!mobileMenuOpen)}>
-            <Menu size={28} />
+            {mobileMenuOpen ? <X size={28} /> : <Menu size={28} />}
           </button>
         </div>
       </div>
 
-      {/* MOBILE MENU - Full Screen Overlay */}
+      {/* MOBILE MENU OVERLAY
+        - FIXED at z-[50] (Behind the header z-60)
+        - 'fixed inset-0' ensures full coverage
+        - onClick handler restored to close menu when tapping outside
+      */}
       <AnimatePresence>
         {mobileMenuOpen && (
           <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            // Close when clicking the background
+            initial={{ opacity: 0, height: 0 }}
+            animate={{ opacity: 1, height: "100svh" }} // Using 100svh for reliability
+            exit={{ opacity: 0, height: 0 }}
             onClick={() => setMobileMenuOpen(false)}
-            // FIX: z-60 puts it ON TOP of the Navbar (z-50)
-            className="lg:hidden fixed inset-0 bg-hell-black/95 backdrop-blur-xl border-b border-hell-red/50 overflow-hidden shadow-2xl z-60 cursor-pointer"
+            className="lg:hidden fixed inset-0 bg-hell-black/95 backdrop-blur-xl border-b border-hell-red/50 overflow-hidden shadow-2xl z-[50]"
           >
-             {/* --- MOBILE HEADER WITH CLOSE BUTTON --- */}
-             {/* This replicates the header position so the 'X' appears exactly where the 'Menu' icon was */}
-             <div className="absolute top-0 w-full px-4 py-4 flex justify-between items-center z-50">
-                {/* Replicated Logo for visual consistency */}
-                <div className="flex items-center gap-2">
-                   <img src="/GOAPE.png" alt="Hellcoin" className="w-8 h-8 rounded-full border border-hell-orange object-cover" />
-                   <span className="font-gothic text-xl text-hell-orange tracking-wide text-glow">HELLCOIN</span>
-                </div>
-                {/* THE CLOSE BUTTON */}
-                <div className="flex items-center gap-2">
-                  {/* Keep Heaven Button visible in menu for easy access */}
-                  <button 
-                    onClick={(e) => { e.stopPropagation(); onTriggerPaperHands(); }}
-                    className="flex items-center gap-2 px-2 py-1 border border-pink-300 rounded text-pink-100 font-terminal text-[10px] font-bold shadow-[0_0_10px_rgba(255,192,203,0.3)]"
-                  >
-                    <span className="w-2 h-2 rounded-full bg-pink-200 animate-pulse"></span>
-                    HEAVEN
-                  </button>
-                  <button onClick={() => setMobileMenuOpen(false)} className="text-hell-white">
-                    <X size={28} />
-                  </button>
-                </div>
-             </div>
-
-            <motion.div 
-               initial={{ height: 0 }}
-               animate={{ height: "100svh" }}
-               exit={{ height: 0 }}
-               className="p-6 h-full flex flex-col justify-between items-center overflow-hidden pt-[100px] pb-[40px] cursor-default"
-            >
-              <div className="flex flex-col flex-grow justify-around items-center w-full gap-y-0">
+            <div className="p-6 h-full flex flex-col justify-between items-center overflow-hidden pt-[100px] pb-[40px]">
+              
+              {/* Links - Stop propagation so clicking a link doesn't double-trigger (though harmless here) */}
+              <div 
+                className="flex flex-col flex-grow justify-around items-center w-full gap-y-0"
+                onClick={(e) => e.stopPropagation()} 
+              >
                 {NAV_LINKS_DATA.map((link) => (
                   <a 
                     key={link.name} 
@@ -289,18 +275,22 @@ export const Navbar = ({ onTriggerPaperHands }: { onTriggerPaperHands: () => voi
                   </a>
                 ))}
               </div>
-              <div className="w-full flex flex-col items-center shrink-0 pt-4 border-t border-gray-900">
+              
+              <div 
+                className="w-full flex flex-col items-center shrink-0 pt-4 border-t border-gray-900"
+                onClick={(e) => e.stopPropagation()}
+              >
+                <div className="w-16 h-1 bg-hell-red/50 mb-4 shrink-0"></div>
                 <a 
                   href={BUY_LINK}
                   target="_blank" 
                   rel="noopener noreferrer"
-                  onClick={(e) => e.stopPropagation()}
                   className="bg-hell-red text-hell-white font-gothic text-2xl py-3 px-12 rounded shadow-[0_0_20px_rgba(204,0,0,0.6)]"
                 >
                   ACQUIRE $666
                 </a>
               </div>
-            </motion.div>
+            </div>
           </motion.div>
         )}
       </AnimatePresence>
