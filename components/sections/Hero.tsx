@@ -1,4 +1,5 @@
 "use client";
+
 import { motion, useScroll, useTransform } from "framer-motion";
 import { useRef } from "react";
 import { TrendingDown, Flame } from "lucide-react";
@@ -7,6 +8,7 @@ const BUY_LINK = "https://raydium.io/swap";
 
 export const Hero = () => {
   const ref = useRef<HTMLElement | null>(null);
+
   const { scrollYProgress } = useScroll({
     target: ref,
     offset: ["start start", "end start"],
@@ -31,8 +33,8 @@ export const Hero = () => {
       <div className="absolute inset-0 z-0">
         <img
           src="/banner.png"
-          className="absolute inset-0 w-full h-full object-cover object-left opacity-100"
           alt="Hellcoin Throne"
+          className="absolute inset-0 w-full h-full object-cover object-[30%_center] opacity-100"
         />
         <div className="absolute inset-0 bg-gradient-to-t from-hell-black via-hell-black/80 to-transparent" />
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-transparent via-hell-black/40 to-hell-black" />
@@ -41,7 +43,7 @@ export const Hero = () => {
       {/* HERO CONTENT */}
       <motion.div
         style={{ y: yText, opacity: opacityText }}
-        className="relative z-10 px-fluid-gap md:pr-[10%] lg:pr-[15%] max-w-[1920px] w-full mx-auto flex flex-col items-center md:items-end text-center md:text-right"
+        className="relative z-10 px-fluid-gap md:pr-[10%] lg:pr-[15%] max-w-[1920px] w-full mx-auto flex flex-col items-center md:items-end text-center md:text-right pt-24 md:pt-0"
       >
         <motion.h1
           initial={{ scale: 0.9, opacity: 0 }}
@@ -109,8 +111,8 @@ export const Hero = () => {
         </motion.div>
       </motion.div>
 
-      {/* BOTTOM FADE INTO PAGE */}
-      <div className="absolute bottom-0 w-full h-32 bg-gradient-to-t from-hell-black to-transparent z-20" />
+      {/* BOTTOM FADE INTO PAGE – VISUAL ONLY, DOESN'T BLOCK CLICKS */}
+      <div className="absolute bottom-0 w-full h-32 bg-gradient-to-t from-hell-black to-transparent z-20 pointer-events-none" />
     </section>
   );
 };
