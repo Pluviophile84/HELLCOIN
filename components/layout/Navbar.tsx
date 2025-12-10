@@ -35,6 +35,7 @@ export const Navbar = ({ onTriggerPaperHands }: { onTriggerPaperHands: () => voi
   }, []);
 
   useEffect(() => {
+    // Lock body scroll when menu is open
     document.body.style.overflow = mobileMenuOpen ? "hidden" : "unset";
   }, [mobileMenuOpen]);
 
@@ -110,13 +111,18 @@ export const Navbar = ({ onTriggerPaperHands }: { onTriggerPaperHands: () => voi
   return (
     <nav 
       className={cn(
-        "fixed top-0 w-full z-40 transition-all duration-300 ease-in-out",
+        "fixed top-0 w-full transition-all duration-300 ease-in-out",
+        // FIX: Increased Z-Index to 50 to ensure Nav stays on top of everything
+        "z-50", 
         isScrolled 
           ? "bg-hell-black/95 backdrop-blur-md border-b border-hell-red/30 py-2 md:py-2 shadow-lg shadow-hell-red/5" 
           : "bg-transparent border-b border-transparent py-4 md:py-6"
       )}
     >
-      <div className="w-full lg:w-[70%] max-w-[1920px] mx-auto px-4 md:px-0 flex justify-between items-center transition-all duration-300">
+      {/* FIX: Added 'relative z-50' to this container. 
+         This forces the Logo, Links, and Hamburger Button to sit ABOVE the mobile menu overlay (which is z-40).
+      */}
+      <div className="relative z-50 w-full lg:w-[70%] max-w-[1920px] mx-auto px-4 md:px-0 flex justify-between items-center transition-all duration-300">
         
         {/* LOGO */}
         <div 
@@ -228,30 +234,29 @@ export const Navbar = ({ onTriggerPaperHands }: { onTriggerPaperHands: () => voi
             ACQUIRE $666
           </a>
 
-          <button className="lg:hidden text-hell-white z-50" onClick={() => setMobileMenuOpen(!mobileMenuOpen)}>
+          {/* Hamburger Menu Toggle - Stays visible because parent has z-50 */}
+          <button className="lg:hidden text-hell-white" onClick={() => setMobileMenuOpen(!mobileMenuOpen)}>
             {mobileMenuOpen ? <X size={28} /> : <Menu size={28} />}
           </button>
         </div>
       </div>
 
-      {/* MOBILE MENU - FIXED Z-INDEX & CLICK OUTSIDE */}
+      {/* MOBILE MENU */}
       <AnimatePresence>
         {mobileMenuOpen && (
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            // CLICK OUTSIDE LOGIC: Tapping this wrapper closes the menu
             onClick={() => setMobileMenuOpen(false)}
-            // FIX: Z-INDEX 35 (Above page content, below Nav Text)
-            className="lg:hidden fixed top-0 bottom-0 left-0 right-0 bg-hell-black/95 backdrop-blur-xl border-b border-hell-red/50 overflow-hidden shadow-2xl z-[35] cursor-pointer"
+            // FIX: z-[40] puts this BEHIND the navbar content (which is z-50)
+            // This ensures the Logo and Close button remain visible and clickable on top of the black background.
+            className="lg:hidden fixed inset-0 bg-hell-black/95 backdrop-blur-xl border-b border-hell-red/50 overflow-hidden shadow-2xl z-[40] cursor-pointer"
           >
             <motion.div 
                initial={{ height: 0 }}
                animate={{ height: "100svh" }}
                exit={{ height: 0 }}
-               // IMPORTANT: Removed e.stopPropagation() so clicks here ALSO bubble up and close menu
-               // We only want to stop closing if clicking a specific non-link interactive element (none here)
                className="p-6 h-full flex flex-col justify-between items-center overflow-hidden pt-[100px] pb-[40px] cursor-default"
             >
               <div className="flex flex-col flex-grow justify-around items-center w-full gap-y-0">
@@ -271,7 +276,6 @@ export const Navbar = ({ onTriggerPaperHands }: { onTriggerPaperHands: () => voi
                   href={BUY_LINK}
                   target="_blank" 
                   rel="noopener noreferrer"
-                  // Stop propagation here so clicking the button doesn't trigger the close logic twice (though harmless)
                   onClick={(e) => e.stopPropagation()}
                   className="bg-hell-red text-hell-white font-gothic text-2xl py-3 px-12 rounded shadow-[0_0_20px_rgba(204,0,0,0.6)]"
                 >
