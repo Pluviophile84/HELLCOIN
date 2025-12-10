@@ -8,39 +8,46 @@ module.exports = {
   theme: {
     extend: {
       screens: {
-        // Standard points are fine, but we ensure '3xl' exists for ultrawide
+        // Adds an ultra-wide breakpoint for large monitors (1920px+)
         '3xl': '1920px', 
       },
       colors: {
         hell: {
-          black: '#050505',
-          dark: '#0a0a0a',
-          red: '#cc0000',
-          orange: '#ff3300',
-          gold: '#ffae00',
-          white: '#d4d4d4', 
+          black: '#050505', // Void
+          dark: '#0a0a0a',  // Obsidian
+          red: '#cc0000',   // Blood
+          orange: '#ff3300',// Magma
+          gold: '#ffae00',  // Ember
+          white: '#d4d4d4', // Ash/Stone
         },
       },
       fontFamily: {
         gothic: ['var(--font-pirata)'],
         terminal: ['var(--font-vt323)'], 
       },
-      // --- THE HYBRID FLUID SYSTEM ---
+      // --- HYBRID FLUID TYPOGRAPHY SYSTEM ---
       fontSize: {
-        // Syntax: clamp(MIN, VAL + SCALER, MAX)
-        // This ensures text never gets too small on mobile, or too huge on ultrawide
-        'fluid-hero': 'clamp(3.5rem, 8vw + 1rem, 10rem)',      // Massive Hero Text
-        'fluid-h2': 'clamp(2.5rem, 5vw + 1rem, 6rem)',        // Section Headers
-        'fluid-h3': 'clamp(1.5rem, 3vw + 0.5rem, 3rem)',      // Card Headers
-        'fluid-body': 'clamp(1rem, 1vw + 0.5rem, 1.25rem)',   // Readable Body Text
+        // Massive Hero Text: Scales smoothly, capped at 7rem so it fits your 23" screen
+        'fluid-hero': 'clamp(3rem, 5.5vw + 1rem, 7rem)',      
+        
+        // Section Headers: Clean scaling for "THE TEN COMMANDMENTS", etc.
+        'fluid-h2': 'clamp(2.5rem, 4.5vw + 1rem, 5rem)',     
+        
+        // Card Headers: For things like "THE TOP BUYER"
+        'fluid-h3': 'clamp(1.5rem, 3vw + 0.5rem, 3rem)',      
+        
+        // Body Text: Starts large (1.25rem/20px) and scales up slightly for readability
+        'fluid-body': 'clamp(1.25rem, 1.5vw + 0.5rem, 1.75rem)', 
       },
       spacing: {
-        'fluid-gap': 'clamp(1.5rem, 4vw, 4rem)',              // Fluid padding/margins
+        // Unified spacing that shrinks on mobile and expands on desktop
+        'fluid-gap': 'clamp(1.5rem, 4vw, 4rem)',              
       },
       height: {
-        'screen-safe': '100svh', // Fixes mobile address bar scroll jump
+        // Fixes the mobile browser address bar jump issue
+        'screen-safe': '100svh', 
       },
-      // -------------------------------
+      // --------------------------------------
       animation: {
         'spin-slow': 'spin 60s linear infinite',
         'pulse-fast': 'pulse 1.5s cubic-bezier(0.4, 0, 0.6, 1) infinite',
@@ -61,7 +68,7 @@ module.exports = {
     },
   },
   plugins: [
-    // Simple plugin to hide scrollbars
+    // Custom utility to hide scrollbars while keeping scroll functionality
     function ({ addUtilities }) {
       addUtilities({
         '.scrollbar-hide': {
