@@ -41,7 +41,7 @@ export const Navbar = ({
   const [visibleCount, setVisibleCount] = useState(NAV_LINKS_DATA.length);
   const [isCalculated, setIsCalculated] = useState(false);
 
-  // Scroll shrink
+  // Shrink / style change on scroll
   useEffect(() => {
     const handleScroll = () => {
       setIsScrolled(window.scrollY > 50);
@@ -51,7 +51,7 @@ export const Navbar = ({
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  // Body scroll lock on mobile menu
+  // Lock body scroll when mobile menu is open
   useEffect(() => {
     document.body.style.overflow = mobileMenuOpen ? "hidden" : "unset";
     return () => {
@@ -59,7 +59,7 @@ export const Navbar = ({
     };
   }, [mobileMenuOpen]);
 
-  // Smooth scroll
+  // Smooth scroll handler
   const handleNavClick = (
     e: ReactMouseEvent<HTMLAnchorElement>,
     href: string
@@ -82,11 +82,11 @@ export const Navbar = ({
     setMobileMenuOpen(false);
   };
 
-  // DESKTOP NAV OVERFLOW CALC (center zone only)
+  // DESKTOP NAV: calculate how many links fit in the center zone
   const checkOverflow = useCallback(() => {
     if (!containerRef.current || !ghostRef.current) return;
 
-    // Safety so links never hug logo/actions
+    // Safety margin so links never hug logo/actions
     const SAFETY_MARGIN = 40;
     const GAP_WIDTH = 24;
     const MORE_BUTTON_WIDTH = 64;
@@ -137,7 +137,7 @@ export const Navbar = ({
     setIsCalculated(true);
   }, []);
 
-  // Observe width changes (desktop nav only)
+  // Observe desktop nav size changes
   useEffect(() => {
     checkOverflow();
 
@@ -169,7 +169,7 @@ export const Navbar = ({
   const hiddenLinks = NAV_LINKS_DATA.slice(visibleCount);
   const showMoreButton = hiddenLinks.length > 0;
 
-  // Click-outside for MORE dropdown (desktop)
+  // Click-outside for MORE (desktop)
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (
@@ -237,7 +237,7 @@ export const Navbar = ({
           ref={containerRef}
           className="relative hidden lg:flex items-center justify-center flex-1 min-w-0"
         >
-          {/* Ghost row for measuring */}
+          {/* Ghost row for measuring widths */}
           <div
             ref={ghostRef}
             className="absolute top-0 left-0 flex gap-4 xl:gap-6 invisible pointer-events-none"
@@ -326,7 +326,7 @@ export const Navbar = ({
           </div>
         </div>
 
-        {/* ACTIONS (RIGHT CLUSTER) - MOBILE + DESKTOP, SPACED VIA ml-auto */}
+        {/* ACTIONS (RIGHT CLUSTER) */}
         <div className="flex items-center gap-2 md:gap-4 shrink-0 ml-auto">
           <button
             type="button"
@@ -347,7 +347,7 @@ export const Navbar = ({
             ACQUIRE $666
           </a>
 
-          {/* HAMBURGER TOGGLE (MOBILE/TABLET ONLY) */}
+          {/* HAMBURGER TOGGLE (MOBILE/TABLET) */}
           <button
             type="button"
             className="lg:hidden text-hell-white"
@@ -359,49 +359,20 @@ export const Navbar = ({
         </div>
       </div>
 
-      {/* HAMBURGER NAVIGATION MODE (unchanged behavior) */}
+      {/* HAMBURGER NAVIGATION MODE (SCROLLABLE OVERLAY) */}
       <AnimatePresence>
         {mobileMenuOpen && (
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
+            // Any click that reaches here closes the menu
             onClick={() => setMobileMenuOpen(false)}
-            className="lg:hidden fixed inset-0 bg-hell-black/95 backdrop-blur-xl border-b border-hell-red/50 overflow-hidden shadow-2xl z-[95] cursor-pointer"
+            className="lg:hidden fixed inset-0 bg-hell-black/95 backdrop-blur-xl border-b border-hell-red/50 overflow-y-auto shadow-2xl z-[95] cursor-pointer"
           >
             <motion.div
               initial={{ height: 0 }}
               animate={{ height: "100svh" }}
               exit={{ height: 0 }}
-              className="p-6 h-full flex flex-col justify-between items-center overflow-hidden pt-[100px] pb-[40px] cursor-default"
-            >
-              <div className="flex flex-col flex-grow justify-around items-center w-full gap-y-0">
-                {NAV_LINKS_DATA.map((link) => (
-                  <a
-                    key={link.name}
-                    href={link.href}
-                    onClick={(e) => handleNavClick(e, link.href)}
-                    className="font-terminal text-xl md:text-2xl text-hell-white hover:text-hell-orange tracking-widest cursor-pointer font-bold shrink-0 py-1"
-                  >
-                    {link.name}
-                  </a>
-                ))}
-              </div>
-
-              <div className="w-full flex flex-col items-center shrink-0 pt-4 border-t border-gray-900">
-                <a
-                  href={BUY_LINK}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="bg-hell-red text-hell-white font-gothic text-2xl py-3 px-12 rounded shadow-[0_0_20px_rgba(204,0,0,0.6)]"
-                >
-                  ACQUIRE $666
-                </a>
-              </div>
-            </motion.div>
-          </motion.div>
-        )}
-      </AnimatePresence>
-    </nav>
-  );
-};
+              // min-h so it can grow taller than viewport if content is long
+              className="p-6 min-h-[100svh] flex flex-col justify-between items-center pt-[100px] pb-[40px] cursor-default"
