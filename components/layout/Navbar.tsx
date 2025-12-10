@@ -22,11 +22,11 @@ export const Navbar = ({ onTriggerPaperHands }: { onTriggerPaperHands: () => voi
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [moreMenuOpen, setMoreMenuOpen] = useState(false);
   
-  // Containers
+  // Containers & Calculation State
   const containerRef = useRef<HTMLDivElement>(null);
-  const ghostRef = useRef<HTMLDivElement>(null); // For measuring hidden items
-  
+  const ghostRef = useRef<HTMLDivElement>(null); 
   const [visibleCount, setVisibleCount] = useState(NAV_LINKS_DATA.length);
+  const [isCalculated, setIsCalculated] = useState(false); // Fixes the "flash"
   const moreRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -57,43 +57,41 @@ export const Navbar = ({ onTriggerPaperHands }: { onTriggerPaperHands: () => voi
     if (!containerRef.current || !ghostRef.current) return;
     
     const containerWidth = containerRef.current.clientWidth; 
-    const moreButtonWidth = 60; // Slightly larger buffer
+    const moreButtonWidth = 60; 
     let currentWidth = 0;
     let visible = 0;
 
-    // Measure the GHOST children (which are always present)
     const ghostChildren = Array.from(ghostRef.current.children) as HTMLElement[];
 
     for (let i = 0; i < ghostChildren.length; i++) {
       const linkWidth = ghostChildren[i].offsetWidth + 24; // Width + Gap
       
-      // If adding this link exceeds space, stop.
-      // We reserve space for the "MORE" button as soon as we skip one.
       if (currentWidth + linkWidth + (i < ghostChildren.length - 1 ? moreButtonWidth : 0) >= containerWidth) {
         break;
       }
-      
       currentWidth += linkWidth;
       visible++;
     }
     
     setVisibleCount(visible);
+    setIsCalculated(true); // Mark calculation as done to show links
   }, []);
 
   useEffect(() => {
-    // Initial check
     checkOverflow();
-    
     const resizeObserver = new ResizeObserver(() => {
-      // Wrap in requestAnimationFrame to avoid "ResizeObserver loop limit exceeded"
       window.requestAnimationFrame(() => {
         checkOverflow();
       });
     });
 
     if (containerRef.current) resizeObserver.observe(containerRef.current);
+    window.addEventListener('resize', checkOverflow);
     
-    return () => resizeObserver.disconnect();
+    return () => {
+      resizeObserver.disconnect();
+      window.removeEventListener('resize', checkOverflow);
+    };
   }, [checkOverflow]);
 
   const visibleLinks = NAV_LINKS_DATA.slice(0, visibleCount);
@@ -110,20 +108,21 @@ export const Navbar = ({ onTriggerPaperHands }: { onTriggerPaperHands: () => voi
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, [moreMenuOpen]);
 
-  // Shared Link Styles for consistency
   const linkStyles = "font-terminal text-sm xl:text-base text-hell-white hover:text-[#ffae00] transition-colors uppercase tracking-widest relative group cursor-pointer font-bold whitespace-nowrap";
   const linkUnderline = "absolute -bottom-1 left-0 w-0 h-0.5 bg-hell-orange transition-all group-hover:w-full";
 
   return (
     <nav 
       className={cn(
-        "fixed top-0 w-full z-40 transition-all duration-300 py-3 md:py-4",
+        "fixed top-0 w-full z-40 transition-all duration-300 ease-in-out",
+        // ANIMATION FIX: Padding shrinks when scrolled (py-6 -> py-2)
         isScrolled 
-          ? "bg-hell-black/90 backdrop-blur-md border-b border-hell-red/30" 
-          : "bg-transparent border-b border-transparent"
+          ? "bg-hell-black/95 backdrop-blur-md border-b border-hell-red/30 py-2 md:py-2 shadow-lg shadow-hell-red/5" 
+          : "bg-transparent border-b border-transparent py-4 md:py-6"
       )}
     >
-      <div className="w-full lg:w-[80%] max-w-[1920px] mx-auto px-4 md:px-0 flex justify-between items-center transition-all duration-300">
+      {/* WIDTH FIX: lg:w-[70%] */}
+      <div className="w-full lg:w-[70%] max-w-[1920px] mx-auto px-4 md:px-0 flex justify-between items-center transition-all duration-300">
         
         {/* LOGO */}
         <div 
@@ -133,7 +132,11 @@ export const Navbar = ({ onTriggerPaperHands }: { onTriggerPaperHands: () => voi
           <img 
             src="/GOAPE.png" 
             alt="Hellcoin" 
-            className="w-8 h-8 md:w-10 md:h-10 lg:w-12 lg:h-12 rounded-full border border-hell-orange object-cover" 
+            className={cn(
+              "rounded-full border border-hell-orange object-cover transition-all duration-300",
+              // Logo also shrinks slightly on scroll
+              isScrolled ? "w-8 h-8 md:w-8 md:h-8" : "w-8 h-8 md:w-10 md:h-10 lg:w-12 lg:h-12"
+            )}
           />
           <span className="font-gothic text-xl md:text-2xl lg:text-3xl text-hell-orange tracking-wide text-glow">HELLCOIN</span>
         </div>
@@ -141,15 +144,20 @@ export const Navbar = ({ onTriggerPaperHands }: { onTriggerPaperHands: () => voi
         {/* --- DESKTOP NAV --- */}
         <div ref={containerRef} className="relative hidden lg:flex items-center gap-6 justify-end flex-grow min-w-0 mr-4">
           
-          {/* GHOST CONTAINER (Invisible, for measurement only) */}
+          {/* GHOST CONTAINER */}
           <div ref={ghostRef} className="absolute top-0 left-0 flex gap-4 xl:gap-6 invisible pointer-events-none" aria-hidden="true">
              {NAV_LINKS_DATA.map((link) => (
                <span key={link.name} className={linkStyles}>{link.name}</span>
              ))}
           </div>
 
-          {/* VISIBLE LINKS */}
-          <div className="flex gap-4 xl:gap-6">
+          {/* VISIBLE LINKS - GLITCH FIX: Opacity 0 until calculated */}
+          <div 
+            className={cn(
+              "flex gap-4 xl:gap-6 transition-opacity duration-200",
+              isCalculated ? "opacity-100" : "opacity-0"
+            )}
+          >
             {visibleLinks.map((link) => (
               <a 
                 key={link.name} 
@@ -164,13 +172,16 @@ export const Navbar = ({ onTriggerPaperHands }: { onTriggerPaperHands: () => voi
           </div>
           
           {/* MORE BUTTON */}
-          {showMoreButton && (
-            <div 
-              ref={moreRef}
-              className="relative h-full flex items-center shrink-0"
-              onMouseEnter={() => setMoreMenuOpen(true)}
-              onMouseLeave={() => setMoreMenuOpen(false)}
-            >
+          <div 
+            ref={moreRef}
+            className={cn(
+              "relative h-full flex items-center shrink-0 transition-opacity duration-200",
+               // Only show if calculated AND needs button
+               isCalculated && showMoreButton ? "opacity-100" : "opacity-0 pointer-events-none"
+            )}
+            onMouseEnter={() => setMoreMenuOpen(true)}
+            onMouseLeave={() => setMoreMenuOpen(false)}
+          >
               <button 
                 onClick={() => setMoreMenuOpen(!moreMenuOpen)}
                 className={cn(
@@ -188,7 +199,6 @@ export const Navbar = ({ onTriggerPaperHands }: { onTriggerPaperHands: () => voi
                     initial={{ opacity: 0, y: 10 }}
                     animate={{ opacity: 1, y: 0 }}
                     exit={{ opacity: 0, y: 10 }}
-                    // FIX: Changed right-0 to left-0 to open on the right side
                     className="absolute top-full left-0 pt-4 z-50 min-w-[200px]" 
                   >
                     <div className="bg-hell-black border border-hell-red/50 shadow-xl p-5 flex flex-col gap-4">
@@ -197,7 +207,6 @@ export const Navbar = ({ onTriggerPaperHands }: { onTriggerPaperHands: () => voi
                           key={link.name} 
                           href={link.href}
                           onClick={(e) => handleNavClick(e, link.href)}
-                          // FIX: Applied exact same styling as top links
                           className={linkStyles}
                         >
                           {link.name}
@@ -208,8 +217,7 @@ export const Navbar = ({ onTriggerPaperHands }: { onTriggerPaperHands: () => voi
                   </motion.div>
                 )}
               </AnimatePresence>
-            </div>
-          )}
+          </div>
         </div>
         
 
@@ -243,12 +251,24 @@ export const Navbar = ({ onTriggerPaperHands }: { onTriggerPaperHands: () => voi
       <AnimatePresence>
         {mobileMenuOpen && (
           <motion.div
-            initial={{ opacity: 0, height: 0 }}
-            animate={{ opacity: 1, height: "100svh" }} 
-            exit={{ opacity: 0, height: 0 }}
-            className="lg:hidden fixed top-0 bottom-0 left-0 right-0 bg-hell-black/95 backdrop-blur-xl border-b border-hell-red/50 overflow-hidden shadow-2xl z-[-1]"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            // OUTSIDE CLICK FIX: This div covers the whole screen. Clicking it closes menu.
+            onClick={(e) => {
+               // Only close if clicking the background itself, not the content
+               if (e.target === e.currentTarget) setMobileMenuOpen(false);
+            }}
+            className="lg:hidden fixed top-0 bottom-0 left-0 right-0 bg-hell-black/95 backdrop-blur-xl border-b border-hell-red/50 overflow-hidden shadow-2xl z-[-1] cursor-pointer"
           >
-            <div className="p-6 h-full flex flex-col justify-between items-center overflow-hidden pt-[100px] pb-[40px]">
+            {/* Inner Content - Stop Propagation so clicking links doesn't double-fire close (though links handle close anyway) */}
+            <motion.div 
+               initial={{ height: 0 }}
+               animate={{ height: "100svh" }}
+               exit={{ height: 0 }}
+               className="p-6 h-full flex flex-col justify-between items-center overflow-hidden pt-[100px] pb-[40px] cursor-default"
+               onClick={(e) => e.stopPropagation()} 
+            >
               <div className="flex flex-col flex-grow justify-around items-center w-full gap-y-0">
                 {NAV_LINKS_DATA.map((link) => (
                   <a 
@@ -271,7 +291,7 @@ export const Navbar = ({ onTriggerPaperHands }: { onTriggerPaperHands: () => voi
                   ACQUIRE $666
                 </a>
               </div>
-            </div>
+            </motion.div>
           </motion.div>
         )}
       </AnimatePresence>
