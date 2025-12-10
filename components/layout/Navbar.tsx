@@ -22,7 +22,6 @@ export const Navbar = ({ onTriggerPaperHands }: { onTriggerPaperHands: () => voi
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [moreMenuOpen, setMoreMenuOpen] = useState(false);
   
-  // Containers
   const containerRef = useRef<HTMLDivElement>(null);
   const ghostRef = useRef<HTMLDivElement>(null); 
   const [visibleCount, setVisibleCount] = useState(NAV_LINKS_DATA.length);
@@ -36,18 +35,12 @@ export const Navbar = ({ onTriggerPaperHands }: { onTriggerPaperHands: () => voi
   }, []);
 
   useEffect(() => {
-    // Original scroll lock logic
-    if (mobileMenuOpen) {
-      document.body.style.overflow = "hidden";
-    } else {
-      document.body.style.overflow = "unset";
-    }
-    return () => { document.body.style.overflow = "unset"; };
+    document.body.style.overflow = mobileMenuOpen ? "hidden" : "unset";
   }, [mobileMenuOpen]);
 
   const handleNavClick = (e: React.MouseEvent<HTMLAnchorElement>, href: string) => {
     e.preventDefault();
-    setMobileMenuOpen(false);
+    setMobileMenuOpen(false); // Explicitly close menu
     setMoreMenuOpen(false);
     const targetId = href.replace("#", "");
     const elem = document.getElementById(targetId);
@@ -59,7 +52,6 @@ export const Navbar = ({ onTriggerPaperHands }: { onTriggerPaperHands: () => voi
     setMobileMenuOpen(false);
   };
 
-  // --- ADAPTIVE "MORE" BUTTON LOGIC ---
   const checkOverflow = useCallback(() => {
     if (!containerRef.current || !ghostRef.current) return;
     
@@ -88,10 +80,8 @@ export const Navbar = ({ onTriggerPaperHands }: { onTriggerPaperHands: () => voi
     const resizeObserver = new ResizeObserver(() => {
       window.requestAnimationFrame(() => checkOverflow());
     });
-
     if (containerRef.current) resizeObserver.observe(containerRef.current);
     window.addEventListener('resize', checkOverflow);
-    
     return () => {
       resizeObserver.disconnect();
       window.removeEventListener('resize', checkOverflow);
@@ -118,14 +108,15 @@ export const Navbar = ({ onTriggerPaperHands }: { onTriggerPaperHands: () => voi
   return (
     <nav 
       className={cn(
-        "fixed top-0 w-full z-40 transition-all duration-300",
+        // Z-90 ensures it is high, but below the PaperHands overlay (z-9999)
+        "fixed top-0 w-full z-[90] transition-all duration-300 ease-in-out",
         isScrolled 
-          ? "bg-hell-black/90 backdrop-blur-md border-b border-hell-red/30 py-4 md:py-2" 
+          ? "bg-hell-black/95 backdrop-blur-md border-b border-hell-red/30 py-4 md:py-2 shadow-lg shadow-hell-red/5" 
           : "bg-transparent border-b border-transparent py-4 md:py-6"
       )}
     >
-      {/* HEADER CONTAINER (Z-60 to sit above menu) */}
-      <div className="relative z-[60] w-full lg:w-[70%] max-w-[1920px] mx-auto px-4 md:px-0 flex justify-between items-center">
+      {/* HEADER: Z-100 ensures Logo/Buttons sit ON TOP of the mobile menu overlay (z-95) */}
+      <div className="relative z-[100] w-full lg:w-[70%] max-w-[1920px] mx-auto px-4 md:px-0 flex justify-between items-center transition-all duration-300">
         
         {/* LOGO */}
         <div 
@@ -138,15 +129,13 @@ export const Navbar = ({ onTriggerPaperHands }: { onTriggerPaperHands: () => voi
             className={cn(
               "rounded-full border border-hell-orange object-cover transition-all duration-300",
               isScrolled ? "w-8 h-8 md:w-8 md:h-8" : "w-8 h-8 md:w-10 md:h-10 lg:w-12 lg:h-12"
-            )} 
+            )}
           />
           <span className="font-gothic text-xl md:text-2xl lg:text-3xl text-hell-orange tracking-wide text-glow">HELLCOIN</span>
         </div>
 
         {/* --- DESKTOP NAV --- */}
         <div ref={containerRef} className="relative hidden lg:flex items-center gap-6 justify-end flex-grow min-w-0 mr-4">
-          
-          {/* Ghost Measurement Layer */}
           <div ref={ghostRef} className="absolute top-0 left-0 flex gap-4 xl:gap-6 invisible pointer-events-none" aria-hidden="true">
              {NAV_LINKS_DATA.map((link) => (
                <span key={link.name} className={linkStyles}>{link.name}</span>
@@ -167,7 +156,6 @@ export const Navbar = ({ onTriggerPaperHands }: { onTriggerPaperHands: () => voi
             ))}
           </div>
           
-          {/* MORE BUTTON */}
           <div 
             ref={moreRef}
             className={cn(
@@ -214,7 +202,7 @@ export const Navbar = ({ onTriggerPaperHands }: { onTriggerPaperHands: () => voi
             </AnimatePresence>
           </div>
         </div>
-
+        
         {/* --- ACTIONS --- */}
         <div className="flex items-center gap-2 md:gap-4 shrink-0">
           <button 
@@ -242,26 +230,32 @@ export const Navbar = ({ onTriggerPaperHands }: { onTriggerPaperHands: () => voi
         </div>
       </div>
 
-      {/* MOBILE MENU OVERLAY (Z-50) */}
+      {/* MOBILE MENU OVERLAY */}
       <AnimatePresence>
         {mobileMenuOpen && (
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            // CLICK OUTSIDE: Closes the menu
+            // 1. CLICKING BACKGROUND CLOSES MENU
             onClick={() => setMobileMenuOpen(false)}
-            // Fixed inset-0 ensures it covers entire screen even on scroll
-            className="lg:hidden fixed inset-0 bg-hell-black/95 backdrop-blur-xl border-b border-hell-red/50 overflow-hidden shadow-2xl z-[50] cursor-pointer"
+            // Z-95 sits BETWEEN the Navbar Background (Z-90) and the Header Buttons (Z-100)
+            className="lg:hidden fixed inset-0 bg-hell-black/95 backdrop-blur-xl border-b border-hell-red/50 overflow-hidden shadow-2xl z-[95] cursor-pointer"
           >
-            <div className="p-6 h-full flex flex-col justify-between items-center overflow-hidden pt-[100px] pb-[40px]">
-              
-              {/* LINKS: Removed stopPropagation so clicking empty space bubbles up */}
+            <motion.div 
+               initial={{ height: 0 }}
+               animate={{ height: "100svh" }}
+               exit={{ height: 0 }}
+               // 2. CLICKING THE CONTENT AREA STOPS THE CLOSE EVENT (so you don't close when missing a link by 1px)
+               onClick={(e) => e.stopPropagation()}
+               className="p-6 h-full flex flex-col justify-between items-center overflow-hidden pt-[100px] pb-[40px] cursor-default"
+            >
               <div className="flex flex-col flex-grow justify-around items-center w-full gap-y-0">
                 {NAV_LINKS_DATA.map((link) => (
                   <a 
                     key={link.name} 
                     href={link.href} 
+                    // 3. CLICKING A LINK EXPLICITLY CLOSES THE MENU
                     onClick={(e) => handleNavClick(e, link.href)}
                     className="font-terminal text-xl md:text-2xl text-hell-white hover:text-hell-orange tracking-widest cursor-pointer font-bold shrink-0 py-1" 
                   >
@@ -270,7 +264,6 @@ export const Navbar = ({ onTriggerPaperHands }: { onTriggerPaperHands: () => voi
                 ))}
               </div>
               
-              {/* BUTTON: Removed stopPropagation here too */}
               <div className="w-full flex flex-col items-center shrink-0 pt-4 border-t border-gray-900">
                 <a 
                   href={BUY_LINK}
@@ -281,7 +274,7 @@ export const Navbar = ({ onTriggerPaperHands }: { onTriggerPaperHands: () => voi
                   ACQUIRE $666
                 </a>
               </div>
-            </div>
+            </motion.div>
           </motion.div>
         )}
       </AnimatePresence>
