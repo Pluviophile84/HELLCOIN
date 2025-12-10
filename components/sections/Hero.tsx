@@ -43,13 +43,13 @@ export const Hero = () => {
       {/* HERO CONTENT */}
       <motion.div
         style={{ y: yText, opacity: opacityText }}
-        className="relative z-10 px-fluid-gap md:pr-[10%] lg:pr-[15%] max-w-[1920px] w-full mx-auto flex flex-col items-center md:items-end text-center md:text-right pt-24 md:pt-0"
+        className="relative z-10 px-fluid-gap md:pr-[10%] lg:pr-[15%] max-w-[1920px] w-full mx-auto flex flex-col items-center md:items-end text-center md:text-right pt-20 md:pt-0"
       >
         <motion.h1
           initial={{ scale: 0.9, opacity: 0 }}
           animate={{ scale: 1, opacity: 1 }}
           transition={{ type: "spring", duration: 1.5 }}
-          className="font-gothic text-fluid-hero leading-[0.9] text-hell-white text-glow drop-shadow-2xl mb-8 w-full"
+          className="font-gothic text-fluid-hero leading-[0.9] text-hell-white text-glow drop-shadow-2xl mb-6 md:mb-8 w-full"
         >
           BORN IN THE <span className="text-hell-red">RED.</span>
           <br />
@@ -64,7 +64,7 @@ export const Hero = () => {
         >
           <p className="leading-relaxed">
             The first cryptocurrency powered by{" "}
-            <span className="block md:inline text-[#ffae00] text-2xl md:text-3xl my-2 md:my-0 font-bold md:font-normal">
+            <span className="block md:inline text-[#ffae00] text-xl md:text-3xl my-2 md:my-0 font-bold md:font-normal">
               Proof-of-Suffering
             </span>
           </p>
@@ -73,11 +73,12 @@ export const Hero = () => {
           </p>
         </motion.div>
 
+        {/* Tagline: hide on very small screens to save vertical space */}
         <motion.p
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 1.0 }}
-          className="font-terminal text-hell-red text-lg md:text-2xl mt-8 tracking-widest uppercase animate-pulse md:max-w-5xl"
+          className="hidden md:block font-terminal text-hell-red text-lg md:text-2xl mt-6 md:mt-8 tracking-widest uppercase animate-pulse md:max-w-5xl"
         >
           WHEN THE MARKET BURNS, WE TREND
         </motion.p>
@@ -86,12 +87,12 @@ export const Hero = () => {
           initial={{ opacity: 0, y: 50 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 1.4 }}
-          className="mt-12 flex flex-col md:flex-row gap-6 md:gap-8 justify-center md:justify-end items-center w-full md:max-w-5xl"
+          className="mt-8 md:mt-12 flex flex-col md:flex-row gap-5 md:gap-8 justify-center md:justify-end items-center w-full md:max-w-5xl"
         >
           <button
             type="button"
             onClick={handleAbandonHope}
-            className="text-gray-500 font-terminal text-xl md:text-2xl hover:text-[#ffae00] transition-colors flex items-center gap-2 group order-1 md:order-none"
+            className="text-gray-500 font-terminal text-lg md:text-2xl hover:text-[#ffae00] transition-colors flex items-center gap-2 group order-1 md:order-none"
           >
             [ ABANDON HOPE ]
             <TrendingDown className="w-5 h-5 group-hover:translate-y-1 transition-transform" />
@@ -101,18 +102,18 @@ export const Hero = () => {
             href={BUY_LINK}
             target="_blank"
             rel="noopener noreferrer"
-            className="group relative px-8 py-4 bg-transparent border-2 border-hell-red text-hell-red font-gothic text-2xl md:text-3xl uppercase overflow-hidden transition-all hover:text-hell-white hover:border-hell-orange hover:shadow-[0_0_30px_rgba(204,0,0,0.6)] order-2 md:order-none cursor-pointer flex items-center gap-2"
+            className="group relative px-7 py-3 md:px-8 md:py-4 bg-transparent border-2 border-hell-red text-xl md:text-3xl text-hell-red font-gothic uppercase overflow-hidden transition-all hover:text-hell-white hover:border-hell-orange hover:shadow-[0_0_30px_rgba(204,0,0,0.6)] order-2 md:order-none cursor-pointer flex items-center gap-2"
           >
             <span className="absolute inset-0 w-full h-full bg-hell-red -translate-x-full group-hover:translate-x-0 transition-transform duration-300 ease-out" />
             <span className="relative z-10 flex items-center gap-2">
-              ACQUIRE $666 <Flame size={28} />
+              ACQUIRE $666 <Flame size={24} className="md:size-7" />
             </span>
           </a>
         </motion.div>
       </motion.div>
 
-      {/* BOTTOM FADE INTO PAGE – VISUAL ONLY, DOESN'T BLOCK CLICKS */}
-      <div className="absolute bottom-0 w-full h-32 bg-gradient-to-t from-hell-black to-transparent z-20 pointer-events-none" />
+      {/* BOTTOM FADE – hidden on very small screens so it doesn't darken the CTA */}
+      <div className="absolute bottom-0 w-full h-24 md:h-32 bg-gradient-to-t from-hell-black to-transparent z-20 pointer-events-none hidden sm:block" />
     </section>
   );
 };
