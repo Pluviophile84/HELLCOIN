@@ -41,7 +41,7 @@ export const Navbar = ({
   const [visibleCount, setVisibleCount] = useState(NAV_LINKS_DATA.length);
   const [isCalculated, setIsCalculated] = useState(false);
 
-  // Shrink nav on scroll
+  // Scroll shrink
   useEffect(() => {
     const handleScroll = () => {
       setIsScrolled(window.scrollY > 50);
@@ -59,7 +59,7 @@ export const Navbar = ({
     };
   }, [mobileMenuOpen]);
 
-  // Smooth scroll handler
+  // Smooth scroll
   const handleNavClick = (
     e: ReactMouseEvent<HTMLAnchorElement>,
     href: string
@@ -82,11 +82,11 @@ export const Navbar = ({
     setMobileMenuOpen(false);
   };
 
-  // Calculate visible links before overflow (center zone only)
+  // DESKTOP NAV OVERFLOW CALC (center zone only)
   const checkOverflow = useCallback(() => {
     if (!containerRef.current || !ghostRef.current) return;
 
-    // Stronger safety margin so links never hug logo/actions
+    // Safety so links never hug logo/actions
     const SAFETY_MARGIN = 40;
     const GAP_WIDTH = 24;
     const MORE_BUTTON_WIDTH = 64;
@@ -137,7 +137,7 @@ export const Navbar = ({
     setIsCalculated(true);
   }, []);
 
-  // Observe width changes (container + ghost row)
+  // Observe width changes (desktop nav only)
   useEffect(() => {
     checkOverflow();
 
@@ -169,7 +169,7 @@ export const Navbar = ({
   const hiddenLinks = NAV_LINKS_DATA.slice(visibleCount);
   const showMoreButton = hiddenLinks.length > 0;
 
-  // Click-outside for MORE dropdown
+  // Click-outside for MORE dropdown (desktop)
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (
@@ -209,7 +209,7 @@ export const Navbar = ({
       />
 
       {/* 70% WIDTH CONTENT ROW */}
-      <div className="relative z-[100] w-full lg:w-[70%] max-w-[1920px] mx-auto px-4 md:px-0 flex items-center justify-between lg:justify-normal gap-3 md:gap-4 lg:gap-6 transition-all duration-300">
+      <div className="relative z-[100] w-full lg:w-[70%] max-w-[1920px] mx-auto px-4 md:px-0 flex items-center gap-3 md:gap-4 lg:gap-6 transition-all duration-300">
         {/* LOGO (LEFT, STATIC) */}
         <button
           type="button"
@@ -326,8 +326,8 @@ export const Navbar = ({
           </div>
         </div>
 
-        {/* ACTIONS (RIGHT CLUSTER) */}
-        <div className="flex items-center gap-2 md:gap-4 shrink-0">
+        {/* ACTIONS (RIGHT CLUSTER) - MOBILE + DESKTOP, SPACED VIA ml-auto */}
+        <div className="flex items-center gap-2 md:gap-4 shrink-0 ml-auto">
           <button
             type="button"
             onClick={onTriggerPaperHands}
@@ -347,7 +347,7 @@ export const Navbar = ({
             ACQUIRE $666
           </a>
 
-          {/* MOBILE TOGGLE */}
+          {/* HAMBURGER TOGGLE (MOBILE/TABLET ONLY) */}
           <button
             type="button"
             className="lg:hidden text-hell-white"
@@ -359,14 +359,13 @@ export const Navbar = ({
         </div>
       </div>
 
-      {/* MOBILE MENU OVERLAY */}
+      {/* HAMBURGER NAVIGATION MODE (unchanged behavior) */}
       <AnimatePresence>
         {mobileMenuOpen && (
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            // Any click that reaches here closes the menu
             onClick={() => setMobileMenuOpen(false)}
             className="lg:hidden fixed inset-0 bg-hell-black/95 backdrop-blur-xl border-b border-hell-red/50 overflow-hidden shadow-2xl z-[95] cursor-pointer"
           >
