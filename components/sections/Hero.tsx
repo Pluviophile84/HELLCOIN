@@ -26,10 +26,10 @@ export const Hero = () => {
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-transparent via-hell-black/40 to-hell-black"></div>
       </div>
 
-      {/* FIX: Added 'md:pr-20' to push content slightly towards center */}
+      {/* FIX: Increased padding to 'md:pr-[10%] lg:pr-[15%]' to force center alignment */}
       <motion.div 
         style={{ y: yText, opacity: opacityText }} 
-        className="relative z-10 px-fluid-gap md:pr-20 max-w-[1800px] w-full mx-auto flex flex-col items-center md:items-end text-center md:text-right"
+        className="relative z-10 px-fluid-gap md:pr-[10%] lg:pr-[15%] max-w-[1920px] w-full mx-auto flex flex-col items-center md:items-end text-center md:text-right"
       >
         <motion.h1 
           initial={{ scale: 0.9, opacity: 0 }} 
