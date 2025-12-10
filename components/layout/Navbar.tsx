@@ -86,7 +86,8 @@ export const Navbar = ({
   const checkOverflow = useCallback(() => {
     if (!containerRef.current || !ghostRef.current) return;
 
-    const SAFETY_MARGIN = 16;
+    // Stronger safety margin so links never hug logo/actions
+    const SAFETY_MARGIN = 40;
     const GAP_WIDTH = 24;
     const MORE_BUTTON_WIDTH = 64;
 
@@ -128,7 +129,7 @@ export const Navbar = ({
     }
 
     let finalVisible = Math.max(0, Math.min(visible, NAV_LINKS_DATA.length));
-    if (finalVisible === 0 && containerWidth > 120) {
+    if (finalVisible === 0 && containerWidth > 140) {
       finalVisible = 1;
     }
 
@@ -208,7 +209,7 @@ export const Navbar = ({
       />
 
       {/* 70% WIDTH CONTENT ROW */}
-      <div className="relative z-[100] w-full lg:w-[70%] max-w-[1920px] mx-auto px-4 md:px-0 flex items-center gap-4 md:gap-6 transition-all duration-300">
+      <div className="relative z-[100] w-full lg:w-[70%] max-w-[1920px] mx-auto px-4 md:px-0 flex items-center justify-between lg:justify-normal gap-3 md:gap-4 lg:gap-6 transition-all duration-300">
         {/* LOGO (LEFT, STATIC) */}
         <button
           type="button"
@@ -231,10 +232,10 @@ export const Navbar = ({
           </span>
         </button>
 
-        {/* DESKTOP NAV (CENTER ZONE) */}
+        {/* DESKTOP NAV (CENTER ZONE, lg+ ONLY) */}
         <div
           ref={containerRef}
-          className="relative hidden lg:flex items-center justify-center flex-1 min-w-0 px-2"
+          className="relative hidden lg:flex items-center justify-center flex-1 min-w-0"
         >
           {/* Ghost row for measuring */}
           <div
@@ -325,7 +326,7 @@ export const Navbar = ({
           </div>
         </div>
 
-        {/* ACTIONS (RIGHT, STATIC) */}
+        {/* ACTIONS (RIGHT CLUSTER) */}
         <div className="flex items-center gap-2 md:gap-4 shrink-0">
           <button
             type="button"
