@@ -89,16 +89,21 @@ export const Hero = () => {
           </p>
         </motion.div>
 
-        {/* Tagline: only render on taller screens (e.g. 390x844), 
-            hidden on short screens like 360x640 so CTAs fit in the hero */}
+        {/* Tagline: only render on taller screens.
+           On mobile, force a break so "WE TREND" is always on its own centered line. */}
         {showTagline && (
           <motion.p
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ delay: 1.0 }}
-            className="font-terminal text-hell-red text-lg md:text-2xl mt-6 md:mt-8 tracking-widest uppercase animate-pulse md:max-w-5xl"
+            className="font-terminal text-hell-red text-lg md:text-2xl mt-6 md:mt-8 tracking-widest uppercase animate-pulse md:max-w-5xl text-center md:text-right"
           >
-            WHEN THE MARKET BURNS, WE TREND
+            <span className="block md:inline">
+              WHEN THE MARKET BURNS,
+            </span>{" "}
+            <span className="block md:inline md:ml-2 text-center">
+              WE TREND
+            </span>
           </motion.p>
         )}
 
