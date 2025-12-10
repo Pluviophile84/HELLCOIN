@@ -21,8 +21,11 @@ export const Navbar = ({ onTriggerPaperHands }: { onTriggerPaperHands: () => voi
   const [isScrolled, setIsScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [moreMenuOpen, setMoreMenuOpen] = useState(false);
+  
+  // Containers
   const containerRef = useRef<HTMLDivElement>(null);
-  const linksRef = useRef<(HTMLAnchorElement | null)[]>([]);
+  const ghostRef = useRef<HTMLDivElement>(null); // For measuring hidden items
+  
   const [visibleCount, setVisibleCount] = useState(NAV_LINKS_DATA.length);
   const moreRef = useRef<HTMLDivElement>(null);
 
@@ -49,34 +52,48 @@ export const Navbar = ({ onTriggerPaperHands }: { onTriggerPaperHands: () => voi
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
+  // --- ROBUST MEASUREMENT LOGIC ---
   const checkOverflow = useCallback(() => {
-    if (!containerRef.current) return;
+    if (!containerRef.current || !ghostRef.current) return;
+    
     const containerWidth = containerRef.current.clientWidth; 
-    const moreButtonWidth = 50; 
+    const moreButtonWidth = 60; // Slightly larger buffer
     let currentWidth = 0;
     let visible = 0;
 
-    for (let i = 0; i < NAV_LINKS_DATA.length; i++) {
-      const linkElement = linksRef.current[i];
-      if (linkElement) {
-        const linkWidth = linkElement.offsetWidth + 24; 
-        if (currentWidth + linkWidth + moreButtonWidth >= containerWidth) break; 
-        currentWidth += linkWidth;
-        visible++;
+    // Measure the GHOST children (which are always present)
+    const ghostChildren = Array.from(ghostRef.current.children) as HTMLElement[];
+
+    for (let i = 0; i < ghostChildren.length; i++) {
+      const linkWidth = ghostChildren[i].offsetWidth + 24; // Width + Gap
+      
+      // If adding this link exceeds space, stop.
+      // We reserve space for the "MORE" button as soon as we skip one.
+      if (currentWidth + linkWidth + (i < ghostChildren.length - 1 ? moreButtonWidth : 0) >= containerWidth) {
+        break;
       }
+      
+      currentWidth += linkWidth;
+      visible++;
     }
-    setVisibleCount(Math.max(visible, 0));
+    
+    setVisibleCount(visible);
   }, []);
 
   useEffect(() => {
+    // Initial check
     checkOverflow();
-    const observer = new ResizeObserver(() => checkOverflow());
-    if (containerRef.current) observer.observe(containerRef.current);
-    window.addEventListener('resize', checkOverflow);
-    return () => {
-      observer.disconnect();
-      window.removeEventListener('resize', checkOverflow);
-    };
+    
+    const resizeObserver = new ResizeObserver(() => {
+      // Wrap in requestAnimationFrame to avoid "ResizeObserver loop limit exceeded"
+      window.requestAnimationFrame(() => {
+        checkOverflow();
+      });
+    });
+
+    if (containerRef.current) resizeObserver.observe(containerRef.current);
+    
+    return () => resizeObserver.disconnect();
   }, [checkOverflow]);
 
   const visibleLinks = NAV_LINKS_DATA.slice(0, visibleCount);
@@ -93,6 +110,10 @@ export const Navbar = ({ onTriggerPaperHands }: { onTriggerPaperHands: () => voi
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, [moreMenuOpen]);
 
+  // Shared Link Styles for consistency
+  const linkStyles = "font-terminal text-sm xl:text-base text-hell-white hover:text-[#ffae00] transition-colors uppercase tracking-widest relative group cursor-pointer font-bold whitespace-nowrap";
+  const linkUnderline = "absolute -bottom-1 left-0 w-0 h-0.5 bg-hell-orange transition-all group-hover:w-full";
+
   return (
     <nav 
       className={cn(
@@ -102,11 +123,6 @@ export const Navbar = ({ onTriggerPaperHands }: { onTriggerPaperHands: () => voi
           : "bg-transparent border-b border-transparent"
       )}
     >
-      {/* FIX APPLIED: 
-         - w-full on mobile
-         - lg:w-[80%] on desktop (80% Constraint)
-         - max-w-[1920px] for safety on ultrawide
-      */}
       <div className="w-full lg:w-[80%] max-w-[1920px] mx-auto px-4 md:px-0 flex justify-between items-center transition-all duration-300">
         
         {/* LOGO */}
@@ -122,23 +138,32 @@ export const Navbar = ({ onTriggerPaperHands }: { onTriggerPaperHands: () => voi
           <span className="font-gothic text-xl md:text-2xl lg:text-3xl text-hell-orange tracking-wide text-glow">HELLCOIN</span>
         </div>
 
-        {/* --- DESKTOP NAV (Adaptive "More" Menu) --- */}
+        {/* --- DESKTOP NAV --- */}
         <div ref={containerRef} className="relative hidden lg:flex items-center gap-6 justify-end flex-grow min-w-0 mr-4">
+          
+          {/* GHOST CONTAINER (Invisible, for measurement only) */}
+          <div ref={ghostRef} className="absolute top-0 left-0 flex gap-4 xl:gap-6 invisible pointer-events-none" aria-hidden="true">
+             {NAV_LINKS_DATA.map((link) => (
+               <span key={link.name} className={linkStyles}>{link.name}</span>
+             ))}
+          </div>
+
+          {/* VISIBLE LINKS */}
           <div className="flex gap-4 xl:gap-6">
-            {visibleLinks.map((link, index) => (
+            {visibleLinks.map((link) => (
               <a 
                 key={link.name} 
-                ref={el => { linksRef.current[index] = el; }} 
                 href={link.href}
                 onClick={(e) => handleNavClick(e, link.href)}
-                className="font-terminal text-sm xl:text-base text-hell-white hover:text-[#ffae00] transition-colors uppercase tracking-widest relative group cursor-pointer font-bold whitespace-nowrap"
+                className={linkStyles}
               >
                 {link.name}
-                <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-hell-orange transition-all group-hover:w-full"></span>
+                <span className={linkUnderline}></span>
               </a>
             ))}
           </div>
           
+          {/* MORE BUTTON */}
           {showMoreButton && (
             <div 
               ref={moreRef}
@@ -163,7 +188,8 @@ export const Navbar = ({ onTriggerPaperHands }: { onTriggerPaperHands: () => voi
                     initial={{ opacity: 0, y: 10 }}
                     animate={{ opacity: 1, y: 0 }}
                     exit={{ opacity: 0, y: 10 }}
-                    className="absolute top-full right-0 pt-4 w-56 z-50" 
+                    // FIX: Changed right-0 to left-0 to open on the right side
+                    className="absolute top-full left-0 pt-4 z-50 min-w-[200px]" 
                   >
                     <div className="bg-hell-black border border-hell-red/50 shadow-xl p-5 flex flex-col gap-4">
                       {hiddenLinks.map((link) => (
@@ -171,9 +197,11 @@ export const Navbar = ({ onTriggerPaperHands }: { onTriggerPaperHands: () => voi
                           key={link.name} 
                           href={link.href}
                           onClick={(e) => handleNavClick(e, link.href)}
-                          className="font-terminal text-base text-hell-white hover:text-[#ffae00] transition-colors uppercase tracking-widest relative group cursor-pointer font-bold w-fit"
+                          // FIX: Applied exact same styling as top links
+                          className={linkStyles}
                         >
                           {link.name}
+                          <span className={linkUnderline}></span>
                         </a>
                       ))}
                     </div>
