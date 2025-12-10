@@ -65,7 +65,7 @@ export const Navbar = ({
     href: string
   ) => {
     e.preventDefault();
-    // Stop mobile overlay click handler (so it doesn't close twice)
+    // Stop mobile overlay click handler (so it doesn't double trigger)
     e.stopPropagation();
 
     setMobileMenuOpen(false);
@@ -87,51 +87,85 @@ export const Navbar = ({
   const checkOverflow = useCallback(() => {
     if (!containerRef.current || !ghostRef.current) return;
 
-    const containerWidth = containerRef.current.clientWidth;
-    const moreButtonWidth = 60;
-    let currentWidth = 0;
-    let visible = 0;
+    const SAFETY_MARGIN = 16; // extra breathing room so we don't pack right to the edge
+    const GAP_WIDTH = 24; // matches flex gap for rough spacing
+    const MORE_BUTTON_WIDTH = 80; // reserved space for MORE button (text + border + icon)
+
+    const rawContainerWidth = containerRef.current.clientWidth;
+    const containerWidth = Math.max(rawContainerWidth - SAFETY_MARGIN, 0);
+
+    if (containerWidth === 0) {
+      // nothing we can do yet, try again on next resize
+      return;
+    }
 
     const ghostChildren = Array.from(
       ghostRef.current.children
     ) as HTMLElement[];
 
+    // If for some reason we have no ghost children, bail
+    if (ghostChildren.length === 0) {
+      setVisibleCount(0);
+      setIsCalculated(true);
+      return;
+    }
+
+    let currentWidth = 0;
+    let visible = 0;
+
     for (let i = 0; i < ghostChildren.length; i++) {
-      const linkWidth = ghostChildren[i].offsetWidth + 24;
+      const linkWidth = ghostChildren[i].offsetWidth;
+
+      const gap = i === 0 ? 0 : GAP_WIDTH;
       const needsMoreButton = i < ghostChildren.length - 1;
 
-      if (
-        currentWidth +
-          linkWidth +
-          (needsMoreButton ? moreButtonWidth : 0) >=
-        containerWidth
-      ) {
+      const nextWidth =
+        currentWidth + gap + linkWidth + (needsMoreButton ? MORE_BUTTON_WIDTH : 0);
+
+      if (nextWidth > containerWidth) {
         break;
       }
 
-      currentWidth += linkWidth;
+      currentWidth += gap + linkWidth;
       visible++;
     }
 
-    setVisibleCount(visible);
+    // Ensure we don't go negative or over the array length
+    let finalVisible = Math.max(0, Math.min(visible, NAV_LINKS_DATA.length));
+
+    // If container is ridiculously small but we still have some width, keep at least 1 item visible
+    if (finalVisible === 0 && containerWidth > 120) {
+      finalVisible = 1;
+    }
+
+    setVisibleCount(finalVisible);
     setIsCalculated(true);
   }, []);
 
-  // Observe width changes
+  // Observe width changes (container + ghost row)
   useEffect(() => {
     checkOverflow();
 
-    if (!containerRef.current || typeof ResizeObserver === "undefined") return;
+    const observers: ResizeObserver[] = [];
 
-    const resizeObserver = new ResizeObserver(() => {
-      window.requestAnimationFrame(() => checkOverflow());
-    });
+    if (typeof ResizeObserver !== "undefined") {
+      const createObserver = (el: HTMLElement | null) => {
+        if (!el) return;
+        const ro = new ResizeObserver(() => {
+          window.requestAnimationFrame(() => checkOverflow());
+        });
+        ro.observe(el);
+        observers.push(ro);
+      };
 
-    resizeObserver.observe(containerRef.current);
+      createObserver(containerRef.current);
+      createObserver(ghostRef.current);
+    }
+
     window.addEventListener("resize", checkOverflow);
 
     return () => {
-      resizeObserver.disconnect();
+      observers.forEach((ro) => ro.disconnect());
       window.removeEventListener("resize", checkOverflow);
     };
   }, [checkOverflow]);
@@ -345,7 +379,6 @@ export const Navbar = ({
               initial={{ height: 0 }}
               animate={{ height: "100svh" }}
               exit={{ height: 0 }}
-              // no stopPropagation here: only links stop it
               className="p-6 h-full flex flex-col justify-between items-center overflow-hidden pt-[100px] pb-[40px] cursor-default"
             >
               <div className="flex flex-col flex-grow justify-around items-center w-full gap-y-0">
@@ -366,7 +399,6 @@ export const Navbar = ({
                   href={BUY_LINK}
                   target="_blank"
                   rel="noopener noreferrer"
-                  // let this also close via overlay click (no stopPropagation)
                   className="bg-hell-red text-hell-white font-gothic text-2xl py-3 px-12 rounded shadow-[0_0_20px_rgba(204,0,0,0.6)]"
                 >
                   ACQUIRE $666
