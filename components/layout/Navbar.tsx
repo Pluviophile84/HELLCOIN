@@ -35,7 +35,6 @@ export const Navbar = ({ onTriggerPaperHands }: { onTriggerPaperHands: () => voi
   }, []);
 
   useEffect(() => {
-    // Lock body scroll when menu is open
     document.body.style.overflow = mobileMenuOpen ? "hidden" : "unset";
   }, [mobileMenuOpen]);
 
@@ -111,18 +110,16 @@ export const Navbar = ({ onTriggerPaperHands }: { onTriggerPaperHands: () => voi
   return (
     <nav 
       className={cn(
-        "fixed top-0 w-full transition-all duration-300 ease-in-out",
-        // FIX: Increased Z-Index to 50 to ensure Nav stays on top of everything
-        "z-50", 
+        // FIX: z-[100] ensures the navbar base is above almost everything
+        "fixed top-0 w-full z-[100] transition-all duration-300 ease-in-out",
+        // FIX: 'py-4 md:py-2' keeps mobile static (py-4) while desktop shrinks (py-2)
         isScrolled 
-          ? "bg-hell-black/95 backdrop-blur-md border-b border-hell-red/30 py-2 md:py-2 shadow-lg shadow-hell-red/5" 
+          ? "bg-hell-black/95 backdrop-blur-md border-b border-hell-red/30 py-4 md:py-2 shadow-lg shadow-hell-red/5" 
           : "bg-transparent border-b border-transparent py-4 md:py-6"
       )}
     >
-      {/* FIX: Added 'relative z-50' to this container. 
-         This forces the Logo, Links, and Hamburger Button to sit ABOVE the mobile menu overlay (which is z-40).
-      */}
-      <div className="relative z-50 w-full lg:w-[70%] max-w-[1920px] mx-auto px-4 md:px-0 flex justify-between items-center transition-all duration-300">
+      {/* FIX: z-[102] forces the logo/buttons to sit ON TOP of the mobile menu overlay (which is z-[101]) */}
+      <div className="relative z-[102] w-full lg:w-[70%] max-w-[1920px] mx-auto px-4 md:px-0 flex justify-between items-center transition-all duration-300">
         
         {/* LOGO */}
         <div 
@@ -134,6 +131,7 @@ export const Navbar = ({ onTriggerPaperHands }: { onTriggerPaperHands: () => voi
             alt="Hellcoin" 
             className={cn(
               "rounded-full border border-hell-orange object-cover transition-all duration-300",
+              // FIX: Logo resize only happens on 'md' (desktop) screens
               isScrolled ? "w-8 h-8 md:w-8 md:h-8" : "w-8 h-8 md:w-10 md:h-10 lg:w-12 lg:h-12"
             )}
           />
@@ -234,8 +232,7 @@ export const Navbar = ({ onTriggerPaperHands }: { onTriggerPaperHands: () => voi
             ACQUIRE $666
           </a>
 
-          {/* Hamburger Menu Toggle - Stays visible because parent has z-50 */}
-          <button className="lg:hidden text-hell-white" onClick={() => setMobileMenuOpen(!mobileMenuOpen)}>
+          <button className="lg:hidden text-hell-white z-50" onClick={() => setMobileMenuOpen(!mobileMenuOpen)}>
             {mobileMenuOpen ? <X size={28} /> : <Menu size={28} />}
           </button>
         </div>
@@ -248,10 +245,11 @@ export const Navbar = ({ onTriggerPaperHands }: { onTriggerPaperHands: () => voi
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
+            // CLICK OUTSIDE: Closes the menu
             onClick={() => setMobileMenuOpen(false)}
-            // FIX: z-[40] puts this BEHIND the navbar content (which is z-50)
-            // This ensures the Logo and Close button remain visible and clickable on top of the black background.
-            className="lg:hidden fixed inset-0 bg-hell-black/95 backdrop-blur-xl border-b border-hell-red/50 overflow-hidden shadow-2xl z-[40] cursor-pointer"
+            // FIX: z-[101] places this menu BEHIND the buttons (z-102) but ABOVE the navbar background (z-100)
+            // 'fixed inset-0' ensures it covers the entire screen, even when scrolled
+            className="lg:hidden fixed inset-0 bg-hell-black/95 backdrop-blur-xl border-b border-hell-red/50 overflow-hidden shadow-2xl z-[101] cursor-pointer"
           >
             <motion.div 
                initial={{ height: 0 }}
@@ -276,6 +274,7 @@ export const Navbar = ({ onTriggerPaperHands }: { onTriggerPaperHands: () => voi
                   href={BUY_LINK}
                   target="_blank" 
                   rel="noopener noreferrer"
+                  // Stop propagation so clicking the button doesn't trigger the "close" click on the parent div
                   onClick={(e) => e.stopPropagation()}
                   className="bg-hell-red text-hell-white font-gothic text-2xl py-3 px-12 rounded shadow-[0_0_20px_rgba(204,0,0,0.6)]"
                 >
