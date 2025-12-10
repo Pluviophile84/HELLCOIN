@@ -110,16 +110,13 @@ export const Navbar = ({ onTriggerPaperHands }: { onTriggerPaperHands: () => voi
   return (
     <nav 
       className={cn(
-        // FIX: z-[100] ensures the navbar base is above almost everything
-        "fixed top-0 w-full z-[100] transition-all duration-300 ease-in-out",
-        // FIX: 'py-4 md:py-2' keeps mobile static (py-4) while desktop shrinks (py-2)
+        "fixed top-0 w-full z-50 transition-all duration-300 ease-in-out",
         isScrolled 
           ? "bg-hell-black/95 backdrop-blur-md border-b border-hell-red/30 py-4 md:py-2 shadow-lg shadow-hell-red/5" 
           : "bg-transparent border-b border-transparent py-4 md:py-6"
       )}
     >
-      {/* FIX: z-[102] forces the logo/buttons to sit ON TOP of the mobile menu overlay (which is z-[101]) */}
-      <div className="relative z-[102] w-full lg:w-[70%] max-w-[1920px] mx-auto px-4 md:px-0 flex justify-between items-center transition-all duration-300">
+      <div className="w-full lg:w-[70%] max-w-[1920px] mx-auto px-4 md:px-0 flex justify-between items-center transition-all duration-300">
         
         {/* LOGO */}
         <div 
@@ -131,7 +128,6 @@ export const Navbar = ({ onTriggerPaperHands }: { onTriggerPaperHands: () => voi
             alt="Hellcoin" 
             className={cn(
               "rounded-full border border-hell-orange object-cover transition-all duration-300",
-              // FIX: Logo resize only happens on 'md' (desktop) screens
               isScrolled ? "w-8 h-8 md:w-8 md:h-8" : "w-8 h-8 md:w-10 md:h-10 lg:w-12 lg:h-12"
             )}
           />
@@ -232,25 +228,49 @@ export const Navbar = ({ onTriggerPaperHands }: { onTriggerPaperHands: () => voi
             ACQUIRE $666
           </a>
 
-          <button className="lg:hidden text-hell-white z-50" onClick={() => setMobileMenuOpen(!mobileMenuOpen)}>
-            {mobileMenuOpen ? <X size={28} /> : <Menu size={28} />}
+          {/* HAMBURGER TOGGLE */}
+          <button className="lg:hidden text-hell-white" onClick={() => setMobileMenuOpen(!mobileMenuOpen)}>
+            <Menu size={28} />
           </button>
         </div>
       </div>
 
-      {/* MOBILE MENU */}
+      {/* MOBILE MENU - Full Screen Overlay */}
       <AnimatePresence>
         {mobileMenuOpen && (
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            // CLICK OUTSIDE: Closes the menu
+            // Close when clicking the background
             onClick={() => setMobileMenuOpen(false)}
-            // FIX: z-[101] places this menu BEHIND the buttons (z-102) but ABOVE the navbar background (z-100)
-            // 'fixed inset-0' ensures it covers the entire screen, even when scrolled
-            className="lg:hidden fixed inset-0 bg-hell-black/95 backdrop-blur-xl border-b border-hell-red/50 overflow-hidden shadow-2xl z-[101] cursor-pointer"
+            // FIX: z-60 puts it ON TOP of the Navbar (z-50)
+            className="lg:hidden fixed inset-0 bg-hell-black/95 backdrop-blur-xl border-b border-hell-red/50 overflow-hidden shadow-2xl z-60 cursor-pointer"
           >
+             {/* --- MOBILE HEADER WITH CLOSE BUTTON --- */}
+             {/* This replicates the header position so the 'X' appears exactly where the 'Menu' icon was */}
+             <div className="absolute top-0 w-full px-4 py-4 flex justify-between items-center z-50">
+                {/* Replicated Logo for visual consistency */}
+                <div className="flex items-center gap-2">
+                   <img src="/GOAPE.png" alt="Hellcoin" className="w-8 h-8 rounded-full border border-hell-orange object-cover" />
+                   <span className="font-gothic text-xl text-hell-orange tracking-wide text-glow">HELLCOIN</span>
+                </div>
+                {/* THE CLOSE BUTTON */}
+                <div className="flex items-center gap-2">
+                  {/* Keep Heaven Button visible in menu for easy access */}
+                  <button 
+                    onClick={(e) => { e.stopPropagation(); onTriggerPaperHands(); }}
+                    className="flex items-center gap-2 px-2 py-1 border border-pink-300 rounded text-pink-100 font-terminal text-[10px] font-bold shadow-[0_0_10px_rgba(255,192,203,0.3)]"
+                  >
+                    <span className="w-2 h-2 rounded-full bg-pink-200 animate-pulse"></span>
+                    HEAVEN
+                  </button>
+                  <button onClick={() => setMobileMenuOpen(false)} className="text-hell-white">
+                    <X size={28} />
+                  </button>
+                </div>
+             </div>
+
             <motion.div 
                initial={{ height: 0 }}
                animate={{ height: "100svh" }}
@@ -274,7 +294,6 @@ export const Navbar = ({ onTriggerPaperHands }: { onTriggerPaperHands: () => voi
                   href={BUY_LINK}
                   target="_blank" 
                   rel="noopener noreferrer"
-                  // Stop propagation so clicking the button doesn't trigger the "close" click on the parent div
                   onClick={(e) => e.stopPropagation()}
                   className="bg-hell-red text-hell-white font-gothic text-2xl py-3 px-12 rounded shadow-[0_0_20px_rgba(204,0,0,0.6)]"
                 >
