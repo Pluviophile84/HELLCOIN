@@ -22,11 +22,10 @@ export const Navbar = ({ onTriggerPaperHands }: { onTriggerPaperHands: () => voi
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [moreMenuOpen, setMoreMenuOpen] = useState(false);
   
-  // Containers & Calculation State
   const containerRef = useRef<HTMLDivElement>(null);
   const ghostRef = useRef<HTMLDivElement>(null); 
   const [visibleCount, setVisibleCount] = useState(NAV_LINKS_DATA.length);
-  const [isCalculated, setIsCalculated] = useState(false); // Fixes the "flash"
+  const [isCalculated, setIsCalculated] = useState(false);
   const moreRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -52,7 +51,6 @@ export const Navbar = ({ onTriggerPaperHands }: { onTriggerPaperHands: () => voi
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
-  // --- ROBUST MEASUREMENT LOGIC ---
   const checkOverflow = useCallback(() => {
     if (!containerRef.current || !ghostRef.current) return;
     
@@ -64,8 +62,7 @@ export const Navbar = ({ onTriggerPaperHands }: { onTriggerPaperHands: () => voi
     const ghostChildren = Array.from(ghostRef.current.children) as HTMLElement[];
 
     for (let i = 0; i < ghostChildren.length; i++) {
-      const linkWidth = ghostChildren[i].offsetWidth + 24; // Width + Gap
-      
+      const linkWidth = ghostChildren[i].offsetWidth + 24; 
       if (currentWidth + linkWidth + (i < ghostChildren.length - 1 ? moreButtonWidth : 0) >= containerWidth) {
         break;
       }
@@ -74,7 +71,7 @@ export const Navbar = ({ onTriggerPaperHands }: { onTriggerPaperHands: () => voi
     }
     
     setVisibleCount(visible);
-    setIsCalculated(true); // Mark calculation as done to show links
+    setIsCalculated(true);
   }, []);
 
   useEffect(() => {
@@ -87,7 +84,6 @@ export const Navbar = ({ onTriggerPaperHands }: { onTriggerPaperHands: () => voi
 
     if (containerRef.current) resizeObserver.observe(containerRef.current);
     window.addEventListener('resize', checkOverflow);
-    
     return () => {
       resizeObserver.disconnect();
       window.removeEventListener('resize', checkOverflow);
@@ -115,13 +111,11 @@ export const Navbar = ({ onTriggerPaperHands }: { onTriggerPaperHands: () => voi
     <nav 
       className={cn(
         "fixed top-0 w-full z-40 transition-all duration-300 ease-in-out",
-        // ANIMATION FIX: Padding shrinks when scrolled (py-6 -> py-2)
         isScrolled 
           ? "bg-hell-black/95 backdrop-blur-md border-b border-hell-red/30 py-2 md:py-2 shadow-lg shadow-hell-red/5" 
           : "bg-transparent border-b border-transparent py-4 md:py-6"
       )}
     >
-      {/* WIDTH FIX: lg:w-[70%] */}
       <div className="w-full lg:w-[70%] max-w-[1920px] mx-auto px-4 md:px-0 flex justify-between items-center transition-all duration-300">
         
         {/* LOGO */}
@@ -134,7 +128,6 @@ export const Navbar = ({ onTriggerPaperHands }: { onTriggerPaperHands: () => voi
             alt="Hellcoin" 
             className={cn(
               "rounded-full border border-hell-orange object-cover transition-all duration-300",
-              // Logo also shrinks slightly on scroll
               isScrolled ? "w-8 h-8 md:w-8 md:h-8" : "w-8 h-8 md:w-10 md:h-10 lg:w-12 lg:h-12"
             )}
           />
@@ -143,15 +136,12 @@ export const Navbar = ({ onTriggerPaperHands }: { onTriggerPaperHands: () => voi
 
         {/* --- DESKTOP NAV --- */}
         <div ref={containerRef} className="relative hidden lg:flex items-center gap-6 justify-end flex-grow min-w-0 mr-4">
-          
-          {/* GHOST CONTAINER */}
           <div ref={ghostRef} className="absolute top-0 left-0 flex gap-4 xl:gap-6 invisible pointer-events-none" aria-hidden="true">
              {NAV_LINKS_DATA.map((link) => (
                <span key={link.name} className={linkStyles}>{link.name}</span>
              ))}
           </div>
 
-          {/* VISIBLE LINKS - GLITCH FIX: Opacity 0 until calculated */}
           <div 
             className={cn(
               "flex gap-4 xl:gap-6 transition-opacity duration-200",
@@ -171,12 +161,10 @@ export const Navbar = ({ onTriggerPaperHands }: { onTriggerPaperHands: () => voi
             ))}
           </div>
           
-          {/* MORE BUTTON */}
           <div 
             ref={moreRef}
             className={cn(
               "relative h-full flex items-center shrink-0 transition-opacity duration-200",
-               // Only show if calculated AND needs button
                isCalculated && showMoreButton ? "opacity-100" : "opacity-0 pointer-events-none"
             )}
             onMouseEnter={() => setMoreMenuOpen(true)}
@@ -220,7 +208,6 @@ export const Navbar = ({ onTriggerPaperHands }: { onTriggerPaperHands: () => voi
           </div>
         </div>
         
-
         {/* --- ACTIONS --- */}
         <div className="flex items-center gap-2 md:gap-4 shrink-0">
           <button 
@@ -241,33 +228,31 @@ export const Navbar = ({ onTriggerPaperHands }: { onTriggerPaperHands: () => voi
             ACQUIRE $666
           </a>
 
-          <button className="lg:hidden text-hell-white" onClick={() => setMobileMenuOpen(!mobileMenuOpen)}>
+          <button className="lg:hidden text-hell-white z-50" onClick={() => setMobileMenuOpen(!mobileMenuOpen)}>
             {mobileMenuOpen ? <X size={28} /> : <Menu size={28} />}
           </button>
         </div>
       </div>
 
-      {/* MOBILE MENU */}
+      {/* MOBILE MENU - FIXED Z-INDEX & CLICK OUTSIDE */}
       <AnimatePresence>
         {mobileMenuOpen && (
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            // OUTSIDE CLICK FIX: This div covers the whole screen. Clicking it closes menu.
-            onClick={(e) => {
-               // Only close if clicking the background itself, not the content
-               if (e.target === e.currentTarget) setMobileMenuOpen(false);
-            }}
-            className="lg:hidden fixed top-0 bottom-0 left-0 right-0 bg-hell-black/95 backdrop-blur-xl border-b border-hell-red/50 overflow-hidden shadow-2xl z-[-1] cursor-pointer"
+            // CLICK OUTSIDE LOGIC: Tapping this wrapper closes the menu
+            onClick={() => setMobileMenuOpen(false)}
+            // FIX: Z-INDEX 35 (Above page content, below Nav Text)
+            className="lg:hidden fixed top-0 bottom-0 left-0 right-0 bg-hell-black/95 backdrop-blur-xl border-b border-hell-red/50 overflow-hidden shadow-2xl z-[35] cursor-pointer"
           >
-            {/* Inner Content - Stop Propagation so clicking links doesn't double-fire close (though links handle close anyway) */}
             <motion.div 
                initial={{ height: 0 }}
                animate={{ height: "100svh" }}
                exit={{ height: 0 }}
+               // IMPORTANT: Removed e.stopPropagation() so clicks here ALSO bubble up and close menu
+               // We only want to stop closing if clicking a specific non-link interactive element (none here)
                className="p-6 h-full flex flex-col justify-between items-center overflow-hidden pt-[100px] pb-[40px] cursor-default"
-               onClick={(e) => e.stopPropagation()} 
             >
               <div className="flex flex-col flex-grow justify-around items-center w-full gap-y-0">
                 {NAV_LINKS_DATA.map((link) => (
@@ -286,6 +271,8 @@ export const Navbar = ({ onTriggerPaperHands }: { onTriggerPaperHands: () => voi
                   href={BUY_LINK}
                   target="_blank" 
                   rel="noopener noreferrer"
+                  // Stop propagation here so clicking the button doesn't trigger the close logic twice (though harmless)
+                  onClick={(e) => e.stopPropagation()}
                   className="bg-hell-red text-hell-white font-gothic text-2xl py-3 px-12 rounded shadow-[0_0_20px_rgba(204,0,0,0.6)]"
                 >
                   ACQUIRE $666
