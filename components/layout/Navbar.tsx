@@ -65,7 +65,6 @@ export const Navbar = ({
     href: string
   ) => {
     e.preventDefault();
-    // Stop mobile overlay click handler (so it doesn't double trigger)
     e.stopPropagation();
 
     setMobileMenuOpen(false);
@@ -83,27 +82,23 @@ export const Navbar = ({
     setMobileMenuOpen(false);
   };
 
-  // Calculate visible links before overflow
+  // Calculate visible links before overflow (center zone only)
   const checkOverflow = useCallback(() => {
     if (!containerRef.current || !ghostRef.current) return;
 
-    const SAFETY_MARGIN = 16; // extra breathing room so we don't pack right to the edge
-    const GAP_WIDTH = 24; // matches flex gap for rough spacing
-    const MORE_BUTTON_WIDTH = 80; // reserved space for MORE button (text + border + icon)
+    const SAFETY_MARGIN = 16;
+    const GAP_WIDTH = 24;
+    const MORE_BUTTON_WIDTH = 64;
 
     const rawContainerWidth = containerRef.current.clientWidth;
     const containerWidth = Math.max(rawContainerWidth - SAFETY_MARGIN, 0);
 
-    if (containerWidth === 0) {
-      // nothing we can do yet, try again on next resize
-      return;
-    }
+    if (containerWidth === 0) return;
 
     const ghostChildren = Array.from(
       ghostRef.current.children
     ) as HTMLElement[];
 
-    // If for some reason we have no ghost children, bail
     if (ghostChildren.length === 0) {
       setVisibleCount(0);
       setIsCalculated(true);
@@ -115,12 +110,14 @@ export const Navbar = ({
 
     for (let i = 0; i < ghostChildren.length; i++) {
       const linkWidth = ghostChildren[i].offsetWidth;
-
       const gap = i === 0 ? 0 : GAP_WIDTH;
       const needsMoreButton = i < ghostChildren.length - 1;
 
       const nextWidth =
-        currentWidth + gap + linkWidth + (needsMoreButton ? MORE_BUTTON_WIDTH : 0);
+        currentWidth +
+        gap +
+        linkWidth +
+        (needsMoreButton ? MORE_BUTTON_WIDTH : 0);
 
       if (nextWidth > containerWidth) {
         break;
@@ -130,10 +127,7 @@ export const Navbar = ({
       visible++;
     }
 
-    // Ensure we don't go negative or over the array length
     let finalVisible = Math.max(0, Math.min(visible, NAV_LINKS_DATA.length));
-
-    // If container is ridiculously small but we still have some width, keep at least 1 item visible
     if (finalVisible === 0 && containerWidth > 120) {
       finalVisible = 1;
     }
@@ -213,13 +207,13 @@ export const Navbar = ({
         )}
       />
 
-      {/* CONTENT */}
-      <div className="relative z-[100] w-full lg:w-[70%] max-w-[1920px] mx-auto px-4 md:px-0 flex justify-between items-center transition-all duration-300">
-        {/* LOGO */}
+      {/* 70% WIDTH CONTENT ROW */}
+      <div className="relative z-[100] w-full lg:w-[70%] max-w-[1920px] mx-auto px-4 md:px-0 flex items-center gap-4 md:gap-6 transition-all duration-300">
+        {/* LOGO (LEFT, STATIC) */}
         <button
           type="button"
           onClick={scrollToTop}
-          className="flex items-center gap-2 md:gap-3 group cursor-pointer shrink-0 transition-transform active:scale-95 mr-4"
+          className="flex items-center gap-2 md:gap-3 group cursor-pointer shrink-0 transition-transform active:scale-95"
           aria-label="Scroll to top"
         >
           <img
@@ -237,10 +231,10 @@ export const Navbar = ({
           </span>
         </button>
 
-        {/* DESKTOP NAV */}
+        {/* DESKTOP NAV (CENTER ZONE) */}
         <div
           ref={containerRef}
-          className="relative hidden lg:flex items-center gap-6 justify-end flex-grow min-w-0 mr-4"
+          className="relative hidden lg:flex items-center justify-center flex-1 min-w-0 px-2"
         >
           {/* Ghost row for measuring */}
           <div
@@ -255,10 +249,10 @@ export const Navbar = ({
             ))}
           </div>
 
-          {/* Visible links */}
+          {/* Visible links + MORE (centered) */}
           <div
             className={cn(
-              "flex gap-4 xl:gap-6 transition-opacity duration-200",
+              "flex gap-4 xl:gap-6 transition-opacity duration-200 items-center",
               isCalculated ? "opacity-100" : "opacity-0"
             )}
           >
@@ -273,65 +267,65 @@ export const Navbar = ({
                 <span className={linkUnderline} />
               </a>
             ))}
-          </div>
 
-          {/* MORE (hover to open) */}
-          <div
-            ref={moreRef}
-            className={cn(
-              "relative h-full flex items-center shrink-0 transition-opacity duration-200",
-              isCalculated && showMoreButton
-                ? "opacity-100"
-                : "opacity-0 pointer-events-none"
-            )}
-            onMouseEnter={() => setMoreMenuOpen(true)}
-            onMouseLeave={() => setMoreMenuOpen(false)}
-          >
-            <button
-              type="button"
-              className={cn(
-                "flex items-center gap-1 font-terminal text-sm xl:text-base transition-colors uppercase cursor-pointer border px-2 py-1 shrink-0",
-                moreMenuOpen
-                  ? "text-hell-red border-hell-red"
-                  : "text-[#ffae00] border-hell-red/50 hover:text-hell-red"
-              )}
-              aria-haspopup="true"
-              aria-expanded={moreMenuOpen}
-            >
-              MORE
-              {moreMenuOpen ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
-            </button>
-
-            <AnimatePresence>
-              {moreMenuOpen && (
-                <motion.div
-                  initial={{ opacity: 0, y: 10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: 10 }}
-                  className="absolute top-full left-0 pt-4 z-50 min-w-[200px]"
-                  role="menu"
+            {showMoreButton && (
+              <div
+                ref={moreRef}
+                className="relative h-full flex items-center shrink-0"
+                onMouseEnter={() => setMoreMenuOpen(true)}
+                onMouseLeave={() => setMoreMenuOpen(false)}
+              >
+                <button
+                  type="button"
+                  className={cn(
+                    "flex items-center gap-1 font-terminal text-sm xl:text-base transition-colors uppercase cursor-pointer border px-2 py-1 shrink-0",
+                    moreMenuOpen
+                      ? "text-hell-red border-hell-red"
+                      : "text-[#ffae00] border-hell-red/50 hover:text-hell-red"
+                  )}
+                  aria-haspopup="true"
+                  aria-expanded={moreMenuOpen}
                 >
-                  <div className="bg-hell-black border border-hell-red/50 shadow-xl p-5 flex flex-col gap-4">
-                    {hiddenLinks.map((link) => (
-                      <a
-                        key={link.name}
-                        href={link.href}
-                        onClick={(e) => handleNavClick(e, link.href)}
-                        className={linkStyles}
-                        role="menuitem"
-                      >
-                        {link.name}
-                        <span className={linkUnderline} />
-                      </a>
-                    ))}
-                  </div>
-                </motion.div>
-              )}
-            </AnimatePresence>
+                  MORE
+                  {moreMenuOpen ? (
+                    <ChevronUp size={16} />
+                  ) : (
+                    <ChevronDown size={16} />
+                  )}
+                </button>
+
+                <AnimatePresence>
+                  {moreMenuOpen && (
+                    <motion.div
+                      initial={{ opacity: 0, y: 10 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={{ opacity: 0, y: 10 }}
+                      className="absolute top-full left-0 pt-4 z-50 min-w-[200px]"
+                      role="menu"
+                    >
+                      <div className="bg-hell-black border border-hell-red/50 shadow-xl p-5 flex flex-col gap-4">
+                        {hiddenLinks.map((link) => (
+                          <a
+                            key={link.name}
+                            href={link.href}
+                            onClick={(e) => handleNavClick(e, link.href)}
+                            className={linkStyles}
+                            role="menuitem"
+                          >
+                            {link.name}
+                            <span className={linkUnderline} />
+                          </a>
+                        ))}
+                      </div>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+              </div>
+            )}
           </div>
         </div>
 
-        {/* ACTIONS */}
+        {/* ACTIONS (RIGHT, STATIC) */}
         <div className="flex items-center gap-2 md:gap-4 shrink-0">
           <button
             type="button"
@@ -371,7 +365,7 @@ export const Navbar = ({
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            // ANY click that bubbles here will close the menu
+            // Any click that reaches here closes the menu
             onClick={() => setMobileMenuOpen(false)}
             className="lg:hidden fixed inset-0 bg-hell-black/95 backdrop-blur-xl border-b border-hell-red/50 overflow-hidden shadow-2xl z-[95] cursor-pointer"
           >
