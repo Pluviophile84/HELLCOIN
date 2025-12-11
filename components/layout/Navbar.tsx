@@ -19,16 +19,14 @@ const NAV_LINKS_DATA = [
   { name: "THE PIT", href: "#the-pit" },
 ];
 
-// Shared styles
 const linkStyles =
   "font-terminal text-xs sm:text-sm xl:text-base 2xl:text-lg text-hell-white hover:text-[#ffae00] transition-colors uppercase tracking-widest relative group cursor-pointer font-bold whitespace-nowrap";
 
 const linkUnderline =
   "absolute -bottom-1 left-0 w-0 h-0.5 bg-hell-orange transition-all group-hover:w-full";
 
-// Desktop layout constants
-const GAP_WIDTH = 24; // px between links
-const MORE_BUTTON_WIDTH = 72; // px reserved for MORE button when needed
+const GAP_WIDTH = 24;
+const MORE_BUTTON_WIDTH = 72;
 
 export function Navbar({
   onTriggerPaperHands,
@@ -39,25 +37,20 @@ export function Navbar({
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [moreMenuOpen, setMoreMenuOpen] = useState(false);
 
-  // Desktop overflow refs/state
-  const containerRef = useRef<HTMLDivElement | null>(null); // center zone for links
-  const ghostRef = useRef<HTMLDivElement | null>(null); // invisible row to measure widths
+  const containerRef = useRef<HTMLDivElement | null>(null);
+  const ghostRef = useRef<HTMLDivElement | null>(null);
   const moreRef = useRef<HTMLDivElement | null>(null);
 
   const [visibleCount, setVisibleCount] = useState(NAV_LINKS_DATA.length);
   const [isCalculated, setIsCalculated] = useState(false);
 
-  // Scroll shrink
   useEffect(() => {
-    const handleScroll = () => {
-      setIsScrolled(window.scrollY > 50);
-    };
+    const handleScroll = () => setIsScrolled(window.scrollY > 50);
     window.addEventListener("scroll", handleScroll);
     handleScroll();
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  // Lock body scroll on mobile menu
   useEffect(() => {
     document.body.style.overflow = mobileMenuOpen ? "hidden" : "unset";
     return () => {
@@ -65,14 +58,12 @@ export function Navbar({
     };
   }, [mobileMenuOpen]);
 
-  // Smooth scroll for anchors
   const handleNavClick = (
     e: React.MouseEvent<HTMLAnchorElement>,
     href: string
   ) => {
     e.preventDefault();
     e.stopPropagation();
-
     setMobileMenuOpen(false);
     setMoreMenuOpen(false);
 
@@ -88,7 +79,6 @@ export function Navbar({
     setMobileMenuOpen(false);
   };
 
-  // DESKTOP (xl+): calculate how many links fit in the center zone
   const checkOverflow = useCallback(() => {
     if (!containerRef.current || !ghostRef.current) return;
 
@@ -99,7 +89,7 @@ export function Navbar({
       ghostRef.current.children
     ) as HTMLElement[];
 
-    if (ghostChildren.length === 0) {
+    if (!ghostChildren.length) {
       setVisibleCount(0);
       setIsCalculated(true);
       return;
@@ -119,22 +109,17 @@ export function Navbar({
         linkWidth +
         (needsMoreButton ? MORE_BUTTON_WIDTH : 0);
 
-      if (nextWidth > containerWidth) {
-        break;
-      }
+      if (nextWidth > containerWidth) break;
 
       currentWidth += gap + linkWidth;
       visible++;
     }
 
-    // No more "force at least 1" hack – if there's no room, we show 0 links
     const finalVisible = Math.max(0, Math.min(visible, NAV_LINKS_DATA.length));
-
     setVisibleCount(finalVisible);
     setIsCalculated(true);
   }, []);
 
-  // Observe desktop container + ghost for resize
   useEffect(() => {
     checkOverflow();
 
@@ -166,7 +151,6 @@ export function Navbar({
   const hiddenLinks = NAV_LINKS_DATA.slice(visibleCount);
   const showMoreButton = hiddenLinks.length > 0;
 
-  // Click-outside for MORE (desktop)
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (
@@ -186,7 +170,7 @@ export function Navbar({
     <nav
       className={cn(
         "fixed top-0 w-full z-[90] transition-all duration-300 ease-in-out",
-        isScrolled ? "py-4 md:py-2" : "py-4 md:py-6"
+        isScrolled ? "py-3 md:py-2" : "py-4 md:py-5"
       )}
       aria-label="Main navigation"
     >
@@ -200,9 +184,9 @@ export function Navbar({
         )}
       />
 
-      {/* MAIN ROW (70% WIDTH ON DESKTOP) */}
-      <div className="relative z-[100] w-full xl:w-[70%] max-w-[1920px] mx-auto px-4 md:px-0 flex items-center gap-3 md:gap-4 xl:gap-6 transition-all duration-300">
-        {/* LOGO (LEFT) */}
+      {/* Main row – shared safe side spacing via px-fluid-gap */}
+      <div className="relative z-[100] w-full md:w-[70%] max-w-[1920px] mx-auto px-fluid-gap flex items-center gap-3 md:gap-4 xl:gap-6 transition-all duration-300">
+        {/* LOGO */}
         <button
           type="button"
           onClick={scrollToTop}
@@ -224,12 +208,12 @@ export function Navbar({
           </span>
         </button>
 
-        {/* DESKTOP NAV (CENTER ZONE, xl+ ONLY) */}
+        {/* DESKTOP NAV (xl+ only) */}
         <div
           ref={containerRef}
           className="relative hidden xl:flex items-center justify-center flex-1 min-w-0 px-4"
         >
-          {/* Ghost row for measuring widths */}
+          {/* ghost row for measurement */}
           <div
             ref={ghostRef}
             className="absolute top-0 left-0 flex gap-4 2xl:gap-6 invisible pointer-events-none"
@@ -242,7 +226,6 @@ export function Navbar({
             ))}
           </div>
 
-          {/* Visible links + MORE (centered) */}
           <div
             className={cn(
               "flex gap-4 2xl:gap-6 items-center transition-opacity duration-200",
@@ -318,9 +301,9 @@ export function Navbar({
           </div>
         </div>
 
-        {/* ACTIONS (RIGHT CLUSTER) */}
+        {/* ACTIONS */}
         <div className="flex items-center gap-2 md:gap-4 shrink-0 ml-auto">
-          {/* HEAVEN MODE – visible in both mobile and desktop */}
+          {/* Heaven mode – always visible */}
           <button
             type="button"
             onClick={onTriggerPaperHands}
@@ -331,7 +314,7 @@ export function Navbar({
             <span className="md:hidden">HEAVEN</span>
           </button>
 
-          {/* BUY BUTTON – DESKTOP ONLY (xl+) */}
+          {/* BUY – desktop only */}
           <a
             href={BUY_LINK}
             target="_blank"
@@ -341,7 +324,7 @@ export function Navbar({
             ACQUIRE $666
           </a>
 
-          {/* HAMBURGER TOGGLE – MOBILE/TABLET ONLY (<xl) */}
+          {/* Hamburger – only below xl */}
           <button
             type="button"
             className="xl:hidden text-hell-white"
@@ -353,7 +336,7 @@ export function Navbar({
         </div>
       </div>
 
-      {/* HAMBURGER NAVIGATION MODE (ONE COLUMN, SCROLL ONLY IF NEEDED) */}
+      {/* MOBILE / TABLET NAV (hamburger) */}
       <AnimatePresence>
         {mobileMenuOpen && (
           <motion.div
@@ -370,7 +353,6 @@ export function Navbar({
               transition={{ type: "spring", stiffness: 260, damping: 25 }}
               className="max-w-[480px] mx-auto w-full p-6 pt-20 pb-8 flex flex-col gap-6"
             >
-              {/* One column list, compact */}
               <div className="w-full flex flex-col gap-3">
                 {NAV_LINKS_DATA.map((link) => (
                   <a
