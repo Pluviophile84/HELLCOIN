@@ -21,7 +21,7 @@ const NAV_LINKS_DATA = [
 
 // Shared styles
 const linkStyles =
-  "font-terminal text-sm xl:text-base text-hell-white hover:text-[#ffae00] transition-colors uppercase tracking-widest relative group cursor-pointer font-bold whitespace-nowrap";
+  "font-terminal text-xs sm:text-sm xl:text-base 2xl:text-lg text-hell-white hover:text-[#ffae00] transition-colors uppercase tracking-widest relative group cursor-pointer font-bold whitespace-nowrap";
 
 const linkUnderline =
   "absolute -bottom-1 left-0 w-0 h-0.5 bg-hell-orange transition-all group-hover:w-full";
@@ -88,7 +88,7 @@ export function Navbar({
     setMobileMenuOpen(false);
   };
 
-  // DESKTOP: calculate how many links fit in the center zone
+  // DESKTOP (xl+): calculate how many links fit in the center zone
   const checkOverflow = useCallback(() => {
     if (!containerRef.current || !ghostRef.current) return;
 
@@ -127,10 +127,8 @@ export function Navbar({
       visible++;
     }
 
-    let finalVisible = Math.max(0, Math.min(visible, NAV_LINKS_DATA.length));
-    if (finalVisible === 0 && containerWidth > 140) {
-      finalVisible = 1;
-    }
+    // No more "force at least 1" hack – if there's no room, we show 0 links
+    const finalVisible = Math.max(0, Math.min(visible, NAV_LINKS_DATA.length));
 
     setVisibleCount(finalVisible);
     setIsCalculated(true);
@@ -203,7 +201,7 @@ export function Navbar({
       />
 
       {/* MAIN ROW (70% WIDTH ON DESKTOP) */}
-      <div className="relative z-[100] w-full lg:w-[70%] max-w-[1920px] mx-auto px-4 md:px-0 flex items-center gap-3 md:gap-4 lg:gap-6 transition-all duration-300">
+      <div className="relative z-[100] w-full xl:w-[70%] max-w-[1920px] mx-auto px-4 md:px-0 flex items-center gap-3 md:gap-4 xl:gap-6 transition-all duration-300">
         {/* LOGO (LEFT) */}
         <button
           type="button"
@@ -218,23 +216,23 @@ export function Navbar({
               "rounded-full border border-hell-orange object-cover transition-all duration-300",
               isScrolled
                 ? "w-8 h-8 md:w-8 md:h-8"
-                : "w-8 h-8 md:w-10 md:h-10 lg:w-12 lg:h-12"
+                : "w-8 h-8 md:w-10 md:h-10 xl:w-12 xl:h-12"
             )}
           />
-          <span className="font-gothic text-xl md:text-2xl lg:text-3xl text-hell-orange tracking-wide text-glow">
+          <span className="font-gothic text-xl md:text-2xl xl:text-3xl 2xl:text-4xl text-hell-orange tracking-wide text-glow">
             HELLCOIN
           </span>
         </button>
 
-        {/* DESKTOP NAV (CENTER ZONE, lg+ ONLY) */}
+        {/* DESKTOP NAV (CENTER ZONE, xl+ ONLY) */}
         <div
           ref={containerRef}
-          className="relative hidden lg:flex items-center justify-center flex-1 min-w-0 px-4"
+          className="relative hidden xl:flex items-center justify-center flex-1 min-w-0 px-4"
         >
           {/* Ghost row for measuring widths */}
           <div
             ref={ghostRef}
-            className="absolute top-0 left-0 flex gap-4 xl:gap-6 invisible pointer-events-none"
+            className="absolute top-0 left-0 flex gap-4 2xl:gap-6 invisible pointer-events-none"
             aria-hidden="true"
           >
             {NAV_LINKS_DATA.map((link) => (
@@ -247,7 +245,7 @@ export function Navbar({
           {/* Visible links + MORE (centered) */}
           <div
             className={cn(
-              "flex gap-4 xl:gap-6 items-center transition-opacity duration-200",
+              "flex gap-4 2xl:gap-6 items-center transition-opacity duration-200",
               isCalculated ? "opacity-100" : "opacity-0"
             )}
           >
@@ -273,7 +271,7 @@ export function Navbar({
                 <button
                   type="button"
                   className={cn(
-                    "flex items-center gap-1 font-terminal text-sm xl:text-base transition-colors uppercase cursor-pointer border px-2 py-1 shrink-0",
+                    "flex items-center gap-1 font-terminal text-sm xl:text-base 2xl:text-lg transition-colors uppercase cursor-pointer border px-2 py-1 shrink-0",
                     moreMenuOpen
                       ? "text-hell-red border-hell-red"
                       : "text-[#ffae00] border-hell-red/50 hover:text-hell-red"
@@ -322,29 +320,31 @@ export function Navbar({
 
         {/* ACTIONS (RIGHT CLUSTER) */}
         <div className="flex items-center gap-2 md:gap-4 shrink-0 ml-auto">
+          {/* HEAVEN MODE – visible in both mobile and desktop */}
           <button
             type="button"
             onClick={onTriggerPaperHands}
-            className="flex items-center gap-2 px-2 md:px-3 py-1 border border-pink-300 rounded text-pink-100 font-terminal text-[10px] md:text-sm font-bold hover:bg-pink-500/20 hover:text-white transition-colors shadow-[0_0_10px_rgba(255,192,203,0.3)] whitespace-nowrap"
+            className="flex items-center gap-2 px-2 md:px-3 py-1 border border-pink-300 rounded text-pink-100 font-terminal text-[10px] md:text-sm xl:text-base font-bold hover:bg-pink-500/20 hover:text-white transition-colors shadow-[0_0_10px_rgba(255,192,203,0.3)] whitespace-nowrap"
           >
             <span className="w-2 h-2 rounded-full bg-pink-200 animate-pulse shadow-[0_0_5px_#fff]" />
             <span className="hidden md:inline">HEAVEN MODE</span>
             <span className="md:hidden">HEAVEN</span>
           </button>
 
+          {/* BUY BUTTON – DESKTOP ONLY (xl+) */}
           <a
             href={BUY_LINK}
             target="_blank"
             rel="noopener noreferrer"
-            className="hidden md:block bg-hell-red hover:bg-hell-orange text-hell-white font-gothic text-base lg:text-lg px-4 lg:px-6 py-1 lg:py-2 rounded shadow-[0_0_15px_rgba(204,0,0,0.5)] transition-all transform hover:scale-105 border border-hell-orange/50 text-center whitespace-nowrap"
+            className="hidden xl:block bg-hell-red hover:bg-hell-orange text-hell-white font-gothic text-base xl:text-lg 2xl:text-xl px-4 xl:px-6 py-1 xl:py-2 rounded shadow-[0_0_15px_rgba(204,0,0,0.5)] transition-all transform hover:scale-105 border border-hell-orange/50 text-center whitespace-nowrap"
           >
             ACQUIRE $666
           </a>
 
-          {/* HAMBURGER TOGGLE (MOBILE/TABLET) */}
+          {/* HAMBURGER TOGGLE – MOBILE/TABLET ONLY (<xl) */}
           <button
             type="button"
-            className="lg:hidden text-hell-white"
+            className="xl:hidden text-hell-white"
             onClick={() => setMobileMenuOpen((prev) => !prev)}
             aria-label="Toggle navigation"
           >
@@ -361,14 +361,13 @@ export function Navbar({
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             onClick={() => setMobileMenuOpen(false)}
-            className="lg:hidden fixed inset-0 z-[95] bg-hell-black/95 backdrop-blur-xl border-b border-hell-red/50 overflow-y-auto"
+            className="xl:hidden fixed inset-0 z-[95] bg-hell-black/95 backdrop-blur-xl border-b border-hell-red/50 overflow-y-auto"
           >
             <motion.div
               initial={{ y: -20, opacity: 0 }}
               animate={{ y: 0, opacity: 1 }}
               exit={{ y: -20, opacity: 0 }}
               transition={{ type: "spring", stiffness: 260, damping: 25 }}
-              // NO stopPropagation: tap anywhere that's not a link will bubble and close
               className="max-w-[480px] mx-auto w-full p-6 pt-20 pb-8 flex flex-col gap-6"
             >
               {/* One column list, compact */}
