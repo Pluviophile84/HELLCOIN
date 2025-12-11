@@ -333,11 +333,18 @@ export function Navbar({
 
         {/* ACTIONS */}
         <div className="flex items-center gap-2 md:gap-4 shrink-0 ml-auto">
-          {/* Heaven mode – always visible */}
+          {/* Heaven mode – always visible, now clamped per range */}
           <button
             type="button"
             onClick={onTriggerPaperHands}
-            className="flex items-center gap-2 px-2 md:px-3 py-1 border border-pink-300 rounded text-pink-100 font-terminal font-bold hover:bg-pink-500/20 hover:text-white transition-colors shadow-[0_0_10px_rgba(255,192,203,0.3)] whitespace-nowrap text-[10px] md:text-sm xl:text-base"
+            className={[
+              "flex items-center gap-2 px-2 md:px-3 py-1 border border-pink-300 rounded text-pink-100 font-terminal font-bold",
+              "hover:bg-pink-500/20 hover:text-white transition-colors shadow-[0_0_10px_rgba(255,192,203,0.3)] whitespace-nowrap",
+              // text clamp per range
+              "text-[clamp(0.62rem,2.3vw,0.8rem)]",
+              "md:text-[clamp(0.75rem,1.6vw,0.95rem)]",
+              "xl:text-[clamp(0.85rem,1.3vw,1.05rem)]",
+            ].join(" ")}
           >
             <span className="w-2 h-2 rounded-full bg-pink-200 animate-pulse shadow-[0_0_5px_#fff]" />
             <span className="hidden md:inline">HEAVEN MODE</span>
