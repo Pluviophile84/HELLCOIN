@@ -10,12 +10,11 @@ export const Hero = () => {
   const ref = useRef<HTMLElement | null>(null);
   const [showTagline, setShowTagline] = useState(false);
 
-  // Show the tagline only on reasonably tall viewports (e.g. tall phones, tablets, desktops)
+  // Only show tagline on reasonably tall viewports (e.g. tall phones, tablets, desktops)
   useEffect(() => {
     if (typeof window === "undefined") return;
 
     const checkHeight = () => {
-      // ~720px keeps tagline off tiny cramped screens (360x640), on for 390x844 and up
       setShowTagline(window.innerHeight >= 720);
     };
 
@@ -60,26 +59,55 @@ export const Hero = () => {
         style={{ y: yText, opacity: opacityText }}
         className="relative z-10 px-fluid-gap md:pr-[10%] lg:pr-[15%] max-w-[1920px] w-full mx-auto flex flex-col items-center md:items-end text-center md:text-right pt-20 md:pt-0"
       >
+        {/* HEADLINE – 5-range clamp */}
         <motion.h1
           initial={{ scale: 0.9, opacity: 0 }}
           animate={{ scale: 1, opacity: 1 }}
           transition={{ type: "spring", duration: 1.5 }}
-          className="font-gothic text-fluid-hero leading-[0.9] text-hell-white text-glow drop-shadow-2xl mb-8 w-full"
+          className={[
+            "font-gothic leading-[0.9] text-hell-white text-glow drop-shadow-2xl mb-8 w-full",
+            // base: smallest phones
+            "text-[clamp(2.2rem,7vw,2.8rem)]",
+            // sm: 640+
+            "sm:text-[clamp(2.4rem,6vw,3.1rem)]",
+            // md: 768+
+            "md:text-[clamp(2.8rem,5vw,3.5rem)]",
+            // lg: 1024+
+            "lg:text-[clamp(3.1rem,4vw,3.9rem)]",
+            // xl+: larger desktops
+            "xl:text-[clamp(3.4rem,3.5vw,4.2rem)]",
+            "2xl:text-[clamp(3.6rem,3vw,4.6rem)]",
+          ].join(" ")}
         >
           BORN IN THE <span className="text-hell-red">RED.</span>
           <br />
           FORGED BY <span className="text-[#ffae00]">REGRET.</span>
         </motion.h1>
 
+        {/* SUBTEXT – 5-range clamp body text */}
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 0.5 }}
-          className="font-terminal text-fluid-body text-gray-300 max-w-4xl md:max-w-5xl mx-auto md:mx-0 space-y-2 md:space-y-0"
+          className={[
+            "font-terminal text-gray-300 max-w-4xl md:max-w-5xl mx-auto md:mx-0 space-y-2 md:space-y-0",
+            "text-[clamp(0.95rem,3.5vw,1.05rem)]",
+            "sm:text-[clamp(1rem,2.8vw,1.1rem)]",
+            "md:text-[clamp(1.05rem,2vw,1.15rem)]",
+            "lg:text-[clamp(1.1rem,1.6vw,1.2rem)]",
+            "2xl:text-[clamp(1.15rem,1.2vw,1.25rem)]",
+          ].join(" ")}
         >
           <p className="leading-relaxed">
             The first cryptocurrency powered by{" "}
-            <span className="block md:inline text-[#ffae00] text-2xl md:text-3xl my-2 md:my-0 font-bold md:font-normal">
+            <span
+              className={[
+                "block md:inline text-[#ffae00] my-2 md:my-0 font-bold md:font-normal",
+                "text-[clamp(1.3rem,4vw,1.6rem)]",
+                "md:text-[clamp(1.5rem,3vw,2rem)]",
+                "2xl:text-[clamp(1.7rem,2.4vw,2.4rem)]",
+              ].join(" ")}
+            >
               Proof-of-Suffering
             </span>
           </p>
@@ -88,24 +116,29 @@ export const Hero = () => {
           </p>
         </motion.div>
 
-        {/* Tagline – only on tall enough screens.
-           Forced break so "WE TREND" is always its own centered line on mobile. */}
+        {/* TAGLINE – only on tall screens, forced break, 5-range clamp */}
         {showTagline && (
           <motion.p
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ delay: 1.0 }}
-            className="font-terminal text-hell-red text-lg md:text-2xl mt-8 tracking-widest uppercase animate-pulse md:max-w-5xl text-center md:text-right"
+            className={[
+              "font-terminal text-hell-red mt-8 tracking-widest uppercase animate-pulse md:max-w-5xl text-center md:text-right",
+              "text-[clamp(0.9rem,3vw,1.05rem)]",
+              "sm:text-[clamp(1rem,2.3vw,1.15rem)]",
+              "md:text-[clamp(1.05rem,2vw,1.2rem)]",
+              "lg:text-[clamp(1.1rem,1.8vw,1.3rem)]",
+              "2xl:text-[clamp(1.2rem,1.4vw,1.4rem)]",
+            ].join(" ")}
           >
-            <span className="block md:inline">
-              WHEN THE MARKET BURNS,
-            </span>{" "}
+            <span className="block md:inline">WHEN THE MARKET BURNS,</span>{" "}
             <span className="block md:inline md:ml-2 text-center">
               WE TREND
             </span>
           </motion.p>
         )}
 
+        {/* CTAs – 5-range clamp on text size */}
         <motion.div
           initial={{ opacity: 0, y: 50 }}
           animate={{ opacity: 1, y: 0 }}
@@ -115,7 +148,12 @@ export const Hero = () => {
           <button
             type="button"
             onClick={handleAbandonHope}
-            className="text-gray-500 font-terminal text-xl md:text-2xl hover:text-[#ffae00] transition-colors flex items-center gap-2 group order-1 md:order-none"
+            className={[
+              "text-gray-500 font-terminal hover:text-[#ffae00] transition-colors flex items-center gap-2 group order-1 md:order-none",
+              "text-[clamp(1rem,3vw,1.2rem)]",
+              "md:text-[clamp(1.1rem,2.2vw,1.4rem)]",
+              "2xl:text-[clamp(1.2rem,1.8vw,1.6rem)]",
+            ].join(" ")}
           >
             [ ABANDON HOPE ]
             <TrendingDown className="w-5 h-5 group-hover:translate-y-1 transition-transform" />
@@ -125,7 +163,15 @@ export const Hero = () => {
             href={BUY_LINK}
             target="_blank"
             rel="noopener noreferrer"
-            className="group relative px-8 py-4 bg-transparent border-2 border-hell-red text-hell-red font-gothic text-2xl md:text-3xl uppercase overflow-hidden transition-all hover:text-hell-white hover:border-hell-orange hover:shadow-[0_0_30px_rgba(204,0,0,0.6)] order-2 md:order-none cursor-pointer flex items-center gap-2"
+            className={[
+              "group relative bg-transparent border-2 border-hell-red text-hell-red font-gothic uppercase overflow-hidden",
+              "transition-all hover:text-hell-white hover:border-hell-orange hover:shadow-[0_0_30px_rgba(204,0,0,0.6)]",
+              "order-2 md:order-none cursor-pointer flex items-center gap-2",
+              "px-8 py-4",
+              "text-[clamp(1.3rem,4vw,1.6rem)]",
+              "md:text-[clamp(1.4rem,3vw,1.9rem)]",
+              "2xl:text-[clamp(1.6rem,2.5vw,2.2rem)]",
+            ].join(" ")}
           >
             <span className="absolute inset-0 w-full h-full bg-hell-red -translate-x-full group-hover:translate-x-0 transition-transform duration-300 ease-out" />
             <span className="relative z-10 flex items-center gap-2">
@@ -135,7 +181,7 @@ export const Hero = () => {
         </motion.div>
       </motion.div>
 
-      {/* Bottom fade – visual only, never blocks clicks */}
+      {/* Bottom fade – visual only, no click blocking */}
       <div className="absolute bottom-0 w-full h-32 bg-gradient-to-t from-hell-black to-transparent z-20 pointer-events-none" />
     </section>
   );
