@@ -16,7 +16,7 @@ export const Hero = () => {
     if (typeof window === "undefined") return;
 
     const checkHeight = () => {
-      // Tune this threshold if needed; ~720px works well for 390x844 vs 360x640
+      // ~720px keeps it off cramped phones, on for taller phones/tablets/laptops
       setShowTagline(window.innerHeight >= 720);
     };
 
@@ -61,26 +61,28 @@ export const Hero = () => {
         style={{ y: yText, opacity: opacityText }}
         className="relative z-10 px-fluid-gap md:pr-[10%] lg:pr-[15%] max-w-[1920px] w-full mx-auto flex flex-col items-center md:items-end text-center md:text-right pt-20 md:pt-0"
       >
+        {/* HEADLINE – anchor for visual hierarchy */}
         <motion.h1
           initial={{ scale: 0.9, opacity: 0 }}
           animate={{ scale: 1, opacity: 1 }}
           transition={{ type: "spring", duration: 1.5 }}
-          className="font-gothic text-fluid-hero leading-[0.9] text-hell-white text-glow drop-shadow-2xl mb-6 md:mb-8 w-full"
+          className="font-gothic text-fluid-hero 2xl:text-[4.75rem] leading-[0.9] text-hell-white text-glow drop-shadow-2xl mb-6 md:mb-8 w-full max-w-[18ch] md:max-w-none"
         >
           BORN IN THE <span className="text-hell-red">RED.</span>
           <br />
           FORGED BY <span className="text-[#ffae00]">REGRET.</span>
         </motion.h1>
 
+        {/* SUBTEXT */}
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 0.5 }}
-          className="font-terminal text-fluid-body text-gray-300 max-w-4xl md:max-w-5xl mx-auto md:mx-0 space-y-2 md:space-y-0"
+          className="font-terminal text-fluid-body 2xl:text-xl text-gray-300 max-w-[32ch] sm:max-w-[40ch] md:max-w-5xl mx-auto md:mx-0 space-y-2 md:space-y-0"
         >
           <p className="leading-relaxed">
             The first cryptocurrency powered by{" "}
-            <span className="block md:inline text-[#ffae00] text-xl md:text-3xl my-2 md:my-0 font-bold md:font-normal">
+            <span className="block md:inline text-[#ffae00] text-lg md:text-3xl 2xl:text-4xl my-2 md:my-0 font-bold md:font-normal">
               Proof-of-Suffering
             </span>
           </p>
@@ -90,13 +92,14 @@ export const Hero = () => {
         </motion.div>
 
         {/* Tagline: only render on taller screens.
-           On mobile, force a break so "WE TREND" is always on its own centered line. */}
+           On mobile, force a break so "WE TREND" is always on its own centered line.
+           Width-limited on small/medium so it never visually outruns the headline. */}
         {showTagline && (
           <motion.p
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ delay: 1.0 }}
-            className="font-terminal text-hell-red text-lg md:text-2xl mt-6 md:mt-8 tracking-widest uppercase animate-pulse md:max-w-5xl text-center md:text-right"
+            className="font-terminal text-hell-red text-sm sm:text-base md:text-lg lg:text-xl mt-6 md:mt-8 tracking-normal sm:tracking-wide lg:tracking-[0.25em] uppercase animate-pulse text-center md:text-right max-w-[20ch] md:max-w-[26ch] lg:max-w-none mx-auto md:mx-0"
           >
             <span className="block md:inline">
               WHEN THE MARKET BURNS,
@@ -107,6 +110,7 @@ export const Hero = () => {
           </motion.p>
         )}
 
+        {/* CTA ROW */}
         <motion.div
           initial={{ opacity: 0, y: 50 }}
           animate={{ opacity: 1, y: 0 }}
@@ -116,7 +120,7 @@ export const Hero = () => {
           <button
             type="button"
             onClick={handleAbandonHope}
-            className="text-gray-500 font-terminal text-lg md:text-2xl hover:text-[#ffae00] transition-colors flex items-center gap-2 group order-1 md:order-none"
+            className="text-gray-500 font-terminal text-base md:text-xl 2xl:text-2xl hover:text-[#ffae00] transition-colors flex items-center gap-2 group order-1 md:order-none"
           >
             [ ABANDON HOPE ]
             <TrendingDown className="w-5 h-5 group-hover:translate-y-1 transition-transform" />
@@ -126,11 +130,11 @@ export const Hero = () => {
             href={BUY_LINK}
             target="_blank"
             rel="noopener noreferrer"
-            className="group relative px-7 py-3 md:px-8 md:py-4 bg-transparent border-2 border-hell-red text-xl md:text-3xl text-hell-red font-gothic uppercase overflow-hidden transition-all hover:text-hell-white hover:border-hell-orange hover:shadow-[0_0_30px_rgba(204,0,0,0.6)] order-2 md:order-none cursor-pointer flex items-center gap-2"
+            className="group relative px-7 py-3 md:px-8 md:py-4 bg-transparent border-2 border-hell-red text-lg md:text-3xl 2xl:text-4xl text-hell-red font-gothic uppercase overflow-hidden transition-all hover:text-hell-white hover:border-hell-orange hover:shadow-[0_0_30px_rgba(204,0,0,0.6)] order-2 md:order-none cursor-pointer flex items-center gap-2"
           >
             <span className="absolute inset-0 w-full h-full bg-hell-red -translate-x-full group-hover:translate-x-0 transition-transform duration-300 ease-out" />
             <span className="relative z-10 flex items-center gap-2">
-              ACQUIRE $666 
+              ACQUIRE $666 <Flame size={24} className="md:size-7" />
             </span>
           </a>
         </motion.div>
