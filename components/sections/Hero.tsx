@@ -32,16 +32,13 @@ export const Hero = () => {
   });
 
   // Full parallax for normal/tall screens
-  const yTextRegular = useTransform(scrollYProgress, [0, 1], ["0%", "50%"]);
+  const yText = useTransform(scrollYProgress, [0, 1], ["0%", "50%"]);
   const opacityText = useTransform(scrollYProgress, [0, 0.5], [1, 0]);
 
-  // Stronger movement for very short screens (no fade)
-  const yTextShort = useTransform(scrollYProgress, [0, 1], ["0%", "25%"]);
-
-  // On short screens: keep movement, kill fade
+  // On short screens: no parallax at all (keep everything fully visible)
   const textStyle: any = isShortHero
-    ? { y: yTextShort, opacity: 1 }
-    : { y: yTextRegular, opacity: opacityText };
+    ? { y: "0%", opacity: 1 }
+    : { y: yText, opacity: opacityText };
 
   const handleAbandonHope = () => {
     const genesisSection = document.getElementById("genesis");
@@ -138,7 +135,7 @@ export const Hero = () => {
           </p>
         </motion.div>
 
-        {/* TAGLINE – same sizing, slightly tighter margins on small */}
+        {/* TAGLINE – only on tall screens */}
         {showTagline && (
           <motion.p
             initial={{ opacity: 0 }}
@@ -163,7 +160,7 @@ export const Hero = () => {
           </motion.p>
         )}
 
-        {/* CTAs – horizontal from sm+, smaller padding at base/sm to avoid giant buttons */}
+        {/* CTAs – horizontal from sm+, slightly smaller padding at base/sm */}
         <motion.div
           initial={{ opacity: 0, y: 50 }}
           animate={{ opacity: 1, y: 0 }}
@@ -192,7 +189,6 @@ export const Hero = () => {
               "group relative bg-transparent border-2 border-hell-red text-hell-red font-gothic uppercase overflow-hidden",
               "transition-all hover:text-hell-white hover:border-hell-orange hover:shadow-[0_0_30px_rgba(204,0,0,0.6)]",
               "order-2 md:order-none cursor-pointer flex items-center gap-2",
-              // slightly smaller buttons at base/sm, full size from md+
               "px-6 py-3 sm:px-6 sm:py-3 md:px-8 md:py-4",
               "text-[clamp(1.3rem,4vw,1.6rem)]",
               "md:text-[clamp(1.4rem,3vw,1.9rem)]",
