@@ -188,7 +188,7 @@ export function Navbar({
     <nav
       className={cn(
         "fixed top-0 w-full z-[90] transition-all duration-300 ease-in-out",
-        isScrolled ? "py-3 md:py-2" : "py-4 md:py-5"
+        isScrolled ? "py-2 md:py-2" : "py-3 md:py-4"
       )}
       aria-label="Main navigation"
     >
