@@ -20,21 +20,20 @@ const NAV_LINKS_DATA = [
 ];
 
 // 5-range clamp on nav link text
-const linkStyles =
-  [
-    "font-terminal text-hell-white hover:text-[#ffae00] transition-colors",
-    "uppercase tracking-widest relative group cursor-pointer font-bold whitespace-nowrap",
-    // base: small phones up to <640
-    "text-[clamp(0.8rem,2.6vw,0.95rem)]",
-    // sm: 640+
-    "sm:text-[clamp(0.85rem,2vw,1.05rem)]",
-    // md: 768+
-    "md:text-[clamp(0.9rem,1.6vw,1.1rem)]",
-    // lg: 1024+
-    "lg:text-[clamp(0.95rem,1.3vw,1.15rem)]",
-    // 2xl: 1536+
-    "2xl:text-[clamp(1.05rem,1vw,1.25rem)]",
-  ].join(" ");
+const linkStyles = [
+  "font-terminal text-hell-white hover:text-[#ffae00] transition-colors",
+  "uppercase tracking-widest relative group cursor-pointer font-bold whitespace-nowrap",
+  // base: small phones up to <640
+  "text-[clamp(0.8rem,2.6vw,0.95rem)]",
+  // sm: 640+
+  "sm:text-[clamp(0.85rem,2vw,1.05rem)]",
+  // md: 768+
+  "md:text-[clamp(0.9rem,1.6vw,1.1rem)]",
+  // lg: 1024+
+  "lg:text-[clamp(0.95rem,1.3vw,1.15rem)]",
+  // 2xl: 1536+
+  "2xl:text-[clamp(1.05rem,1vw,1.25rem)]",
+].join(" ");
 
 const linkUnderline =
   "absolute -bottom-1 left-0 w-0 h-0.5 bg-hell-orange transition-all group-hover:w-full";
@@ -74,10 +73,7 @@ export function Navbar({
     };
   }, [mobileMenuOpen]);
 
-  const handleNavClick = (
-    e: React.MouseEvent<HTMLAnchorElement>,
-    href: string
-  ) => {
+  const handleNavClick = (e: React.MouseEvent<HTMLAnchorElement>, href: string) => {
     e.preventDefault();
     e.stopPropagation();
     setMobileMenuOpen(false);
@@ -102,9 +98,7 @@ export function Navbar({
     const containerWidth = containerRef.current.clientWidth;
     if (containerWidth <= 0) return;
 
-    const ghostChildren = Array.from(
-      ghostRef.current.children
-    ) as HTMLElement[];
+    const ghostChildren = Array.from(ghostRef.current.children) as HTMLElement[];
 
     if (!ghostChildren.length) {
       setVisibleCount(0);
@@ -121,10 +115,7 @@ export function Navbar({
       const needsMoreButton = i < ghostChildren.length - 1;
 
       const nextWidth =
-        currentWidth +
-        gap +
-        linkWidth +
-        (needsMoreButton ? MORE_BUTTON_WIDTH : 0);
+        currentWidth + gap + linkWidth + (needsMoreButton ? MORE_BUTTON_WIDTH : 0);
 
       if (nextWidth > containerWidth) break;
 
@@ -237,7 +228,7 @@ export function Navbar({
         {/* DESKTOP NAV (xl+ only) */}
         <div
           ref={containerRef}
-          className="relative hidden xl:flex items-center justify-center flex-1 min-w-0 px-4"
+          className="relative hidden xl:flex items-center justify	center flex-1 min-w-0 px-4"
         >
           {/* ghost row for measurement */}
           <div
@@ -283,3 +274,134 @@ export function Navbar({
                     "flex items-center gap-1 font-terminal uppercase cursor-pointer border px-2 py-1 shrink-0 transition-colors",
                     [
                       "text-[clamp(0.9rem,1.4vw,1.05rem)]",
+                      "2xl:text-[clamp(1rem,1.2vw,1.15rem)]",
+                    ].join(" "),
+                    moreMenuOpen
+                      ? "text-hell-red border-hell-red"
+                      : "text-[#ffae00] border-hell-red/50 hover:text-hell-red"
+                  )}
+                  aria-haspopup="true"
+                  aria-expanded={moreMenuOpen}
+                >
+                  MORE
+                  {moreMenuOpen ? (
+                    <ChevronUp size={16} />
+                  ) : (
+                    <ChevronDown size={16} />
+                  )}
+                </button>
+
+                <AnimatePresence>
+                  {moreMenuOpen && (
+                    <motion.div
+                      initial={{ opacity: 0, y: 10 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={{ opacity: 0, y: 10 }}
+                      className="absolute top-full left-0 pt-4 z-50 min-w-[200px]"
+                      role="menu"
+                    >
+                      <div className="bg-hell-black border border-hell-red/50 shadow-xl p-5 flex flex-col gap-4">
+                        {hiddenLinks.map((link) => (
+                          <a
+                            key={link.name}
+                            href={link.href}
+                            onClick={(e) => handleNavClick(e, link.href)}
+                            className={linkStyles}
+                            role="menuitem"
+                          >
+                            {link.name}
+                            <span className={linkUnderline} />
+                          </a>
+                        ))}
+                      </div>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+              </div>
+            )}
+          </div>
+        </div>
+
+        {/* ACTIONS */}
+        <div className="flex items-center gap-3 md:gap-4 shrink-0 ml-auto">
+          {/* Heaven mode */}
+          <button
+            type="button"
+            onClick={onTriggerPaperHands}
+            className={[
+              "flex items-center gap-2 px-2 md:px-3 py-1 border border-pink-300 rounded text-pink-100 font-terminal font-bold",
+              "hover:bg-pink-500/20 hover:text-white transition-colors shadow-[0_0_10px_rgba(255,192,203,0.3)] whitespace-nowrap",
+              "text-[clamp(0.62rem,2.3vw,0.8rem)]",
+              "md:text-[clamp(0.75rem,1.6vw,0.95rem)]",
+              "xl:text-[clamp(0.85rem,1.3vw,1.05rem)]",
+            ].join(" ")}
+          >
+            <span className="w-2 h-2 rounded-full bg-pink-200 animate-pulse shadow-[0_0_5px_#fff]" />
+            <span className="hidden md:inline">HEAVEN MODE</span>
+            <span className="md:hidden">HEAVEN</span>
+          </button>
+
+          {/* BUY – desktop only */}
+          <a
+            href={BUY_LINK}
+            target="_blank"
+            rel="noopener noreferrer"
+            className={[
+              "hidden xl:block bg-hell-red hover:bg-hell-orange text-hell-white font-gothic",
+              "px-4 xl:px-6 py-1 xl:py-2 rounded border border-hell-orange/50 text-center whitespace-nowrap",
+              "transition-all transform hover:scale-105 shadow-[0_0_15px_rgba(204,0,0,0.5)]",
+              "text-[clamp(1rem,1.1vw,1.1rem)] 2xl:text-[clamp(1.1rem,0.9vw,1.3rem)]",
+            ].join(" ")}
+          >
+            ACQUIRE $666
+          </a>
+
+          {/* Hamburger – only < xl */}
+          <button
+            type="button"
+            className="xl:hidden text-hell-white p-2"
+            onClick={() => setMobileMenuOpen((prev) => !prev)}
+            aria-label="Toggle navigation"
+          >
+            {mobileMenuOpen ? <X size={28} /> : <Menu size={28} />}
+          </button>
+        </div>
+      </div>
+
+      {/* MOBILE / TABLET NAV (includes Range 3) */}
+      <AnimatePresence>
+        {mobileMenuOpen && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            onClick={() => setMobileMenuOpen(false)}
+            className="xl:hidden fixed inset-0 z-[95] bg-hell-black/95 backdrop-blur-xl border-b border-hell-red/50 overflow-y-auto"
+          >
+            <motion.div
+              initial={{ y: -20, opacity: 0 }}
+              animate={{ y: 0, opacity: 1 }}
+              exit={{ y: -20, opacity: 0 }}
+              transition={{ type: "spring", stiffness: 260, damping: 25 }}
+              className="w-full mx-auto p-6 pt-20 pb-8 flex flex-col gap-6 max-w-[480px] sm:max-w-[520px] md:max-w-[80%] lg:max-w-[70%]"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <div className="w-full flex flex-col gap-3">
+                {NAV_LINKS_DATA.map((link) => (
+                  <a
+                    key={link.name}
+                    href={link.href}
+                    onClick={(e) => handleNavClick(e, link.href)}
+                    className="font-terminal text-lg text-center text-hell-white hover:text-hell-orange tracking-widest cursor-pointer font-bold py-1"
+                  >
+                    {link.name}
+                  </a>
+                ))}
+              </div>
+
+              <div className="w-full flex flex-col items-center pt-4 border-t border-gray-900">
+                <a
+                  href={BUY_LINK}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="bg-hell-red text-hell-white font-gothic text-2xl py-3 px-12 rounded shadow-[0_0_20px_rgba(204,0,_]()
