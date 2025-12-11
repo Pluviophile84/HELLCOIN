@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { Menu, X } from "lucide-react";
 import { cn } from "../../lib/utils";
 
@@ -149,7 +149,7 @@ export function Navbar({ onTriggerPaperHands }: NavbarProps) {
           >
             <span className="w-2 h-2 rounded-full bg-pink-200 animate-pulse shadow-[0_0_5px_#fff]" />
             <span className="hidden md:inline">HEAVEN MODE</span>
-            <span className="md-hidden">HEAVEN</span>
+            <span className="md:hidden">HEAVEN</span>
           </button>
 
           {/* BUY – desktop only (lg+) */}
