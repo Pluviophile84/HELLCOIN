@@ -31,13 +31,17 @@ export const Hero = () => {
     offset: ["start start", "end start"],
   });
 
-  const yText = useTransform(scrollYProgress, [0, 1], ["0%", "50%"]);
+  // Full parallax for normal/tall screens
+  const yTextRegular = useTransform(scrollYProgress, [0, 1], ["0%", "50%"]);
   const opacityText = useTransform(scrollYProgress, [0, 0.5], [1, 0]);
 
-  // On short screens: no parallax drift/fade (keep content stable and visible)
+  // Softer movement for very short screens (no fade)
+  const yTextShort = useTransform(scrollYProgress, [0, 1], ["0%", "15%"]);
+
+  // On short screens: keep movement, kill fade
   const textStyle: any = isShortHero
-    ? { y: "0%", opacity: 1 }
-    : { y: yText, opacity: opacityText };
+    ? { y: yTextShort, opacity: 1 }
+    : { y: yTextRegular, opacity: opacityText };
 
   const handleAbandonHope = () => {
     const genesisSection = document.getElementById("genesis");
@@ -119,7 +123,7 @@ export const Hero = () => {
             <span
               className={[
                 "block sm:inline text-[#ffae00] my-2 sm:my-0 font-bold sm:font-normal",
-                // Proof-of-Suffering sizing (unchanged from tuned version)
+                // Proof-of-Suffering sizing
                 "text-[clamp(1.3rem,5.3vw,1.45rem)]",
                 "sm:text-[clamp(1.3rem,4vw,1.6rem)]",
                 "md:text-[clamp(1.5rem,3vw,2rem)]",
@@ -134,7 +138,7 @@ export const Hero = () => {
           </p>
         </motion.div>
 
-        {/* TAGLINE – same sizes, slightly tighter margins on small */}
+        {/* TAGLINE – same sizing, slightly tighter margins on small */}
         {showTagline && (
           <motion.p
             initial={{ opacity: 0 }}
