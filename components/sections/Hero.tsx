@@ -36,7 +36,7 @@ export const Hero = () => {
   const opacityText = useTransform(scrollYProgress, [0, 0.5], [1, 0]);
 
   // On short screens: no parallax at all (keep everything fully visible)
-  const textStyle: any = isShortHero
+  const textStyle = isShortHero
     ? { y: "0%", opacity: 1 }
     : { y: yText, opacity: opacityText };
 
@@ -106,7 +106,7 @@ export const Hero = () => {
             "font-terminal text-gray-300 max-w-4xl md:max-w-5xl mx-auto sm:mx-0 space-y-2 md:space-y-0",
             // base: body text slightly larger on small phones
             "text-[clamp(1.05rem,4.7vw,1.15rem)]",
-            // sm: 640–767, +~10% (already tuned)
+            // sm: 640–767
             "sm:text-[clamp(1.1rem,3vw,1.2rem)]",
             // md: 768–1023 (RANGE 3 – INCREASED)
             "md:text-[clamp(1.25rem,2.4vw,1.4rem)]",
@@ -120,4 +120,89 @@ export const Hero = () => {
             <span
               className={[
                 "block sm:inline text-[#ffae00] my-2 sm:my-0 font-bold sm:font-normal",
-                // Proo
+                // Proof-of-Suffering sizing (UNCHANGED)
+                "text-[clamp(1.3rem,5.3vw,1.45rem)]",
+                "sm:text-[clamp(1.3rem,4vw,1.6rem)]",
+                "md:text-[clamp(1.5rem,3vw,2rem)]",
+                "2xl:text-[clamp(1.7rem,2.4vw,2.4rem)]",
+              ].join(" ")}
+            >
+              Proof-of-Suffering
+            </span>
+          </p>
+          <p className="text-gray-300">
+            the only consensus mechanism traders truly understand.
+          </p>
+        </motion.div>
+
+        {/* TAGLINE – only on tall screens */}
+        {showTagline && (
+          <motion.p
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 1.0 }}
+            className={[
+              "font-terminal text-hell-red tracking-widest uppercase animate-pulse md:max-w-5xl text-center sm:text-right",
+              "mt-6 sm:mt-6 md:mt-8",
+              "text-[clamp(0.98rem,3vw,1.1rem)]",
+              "sm:text-[clamp(1rem,2.3vw,1.15rem)]",
+              "md:text-[clamp(1.05rem,2vw,1.2rem)]",
+              "lg:text-[clamp(1.1rem,1.8vw,1.3rem)]",
+              "2xl:text-[clamp(1.2rem,1.4vw,1.4rem)]",
+            ].join(" ")}
+          >
+            <span className="block sm:inline">WHEN THE MARKET BURNS,</span>{" "}
+            <span className="block sm:inline sm:ml-2 text-center">
+              WE TREND
+            </span>
+          </motion.p>
+        )}
+
+        {/* CTAs – unchanged */}
+        <motion.div
+          initial={{ opacity: 0, y: 50 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 1.4 }}
+          className="mt-8 sm:mt-6 md:mt-10 flex flex-col sm:flex-row gap-6 md:gap-8 justify-center sm:justify-end items-center w-full md:max-w-5xl"
+        >
+          <button
+            type="button"
+            onClick={handleAbandonHope}
+            className={[
+              "text-gray-500 font-terminal hover:text-[#ffae00] transition-colors flex items-center gap-2 group order-1 md:order-none",
+              "text-[clamp(1rem,3vw,1.2rem)]",
+              "md:text-[clamp(1.1rem,2.2vw,1.4rem)]",
+              "2xl:text-[clamp(1.2rem,1.8vw,1.6rem)]",
+            ].join(" ")}
+          >
+            [ ABANDON HOPE ]
+            <TrendingDown className="w-5 h-5 group-hover:translate-y-1 transition-transform" />
+          </button>
+
+          <a
+            href={BUY_LINK}
+            target="_blank"
+            rel="noopener noreferrer"
+            className={[
+              "group relative bg-transparent border-2 border-hell-red text-hell-red font-gothic uppercase overflow-hidden",
+              "transition-all hover:text-hell-white hover:border-hell-orange hover:shadow-[0_0_30px_rgba(204,0,0,0.6)]",
+              "order-2 md:order-none cursor-pointer flex items-center gap-2",
+              "px-6 py-3 sm:px-6 sm:py-3 md:px-8 md:py-4",
+              "text-[clamp(1.3rem,4vw,1.6rem)]",
+              "md:text-[clamp(1.4rem,3vw,1.9rem)]",
+              "2xl:text-[clamp(1.6rem,2.5vw,2.2rem)]",
+            ].join(" ")}
+          >
+            <span className="absolute inset-0 w-full h-full bg-hell-red -translate-x-full group-hover:translate-x-0 transition-transform duration-300 ease-out" />
+            <span className="relative z-10 flex items-center gap-2">
+              ACQUIRE $666 <Flame size={28} />
+            </span>
+          </a>
+        </motion.div>
+      </motion.div>
+
+      {/* Bottom fade – visual only, no click blocking */}
+      <div className="absolute bottom-0 w-full h-32 bg-gradient-to-t from-hell-black to-transparent z-20 pointer-events-none" />
+    </section>
+  );
+};
