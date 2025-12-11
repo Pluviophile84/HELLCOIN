@@ -59,15 +59,15 @@ export const Hero = () => {
         style={{ y: yText, opacity: opacityText }}
         className="relative z-10 px-fluid-gap md:pr-[10%] lg:pr-[15%] max-w-[1920px] w-full mx-auto flex flex-col items-center md:items-end text-center md:text-right pt-20 md:pt-0"
       >
-        {/* HEADLINE – 5-range clamp */}
+        {/* HEADLINE – Range 1 boost (~+10% min, ~+20% mid/max) */}
         <motion.h1
           initial={{ scale: 0.9, opacity: 0 }}
           animate={{ scale: 1, opacity: 1 }}
           transition={{ type: "spring", duration: 1.5 }}
           className={[
             "font-gothic leading-[0.9] text-hell-white text-glow drop-shadow-2xl mb-8 w-full",
-            // base: smallest phones
-            "text-[clamp(2.2rem,7vw,2.8rem)]",
+            // base: tuned for 360–430 width
+            "text-[clamp(2.4rem,10.8vw,2.65rem)]",
             // sm: 640+
             "sm:text-[clamp(2.4rem,6vw,3.1rem)]",
             // md: 768+
@@ -84,17 +84,22 @@ export const Hero = () => {
           FORGED BY <span className="text-[#ffae00]">REGRET.</span>
         </motion.h1>
 
-        {/* SUBTEXT – 5-range clamp body text */}
+        {/* SUBTEXT – Range 1 body text boosted (except PoS phrase) */}
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 0.5 }}
           className={[
             "font-terminal text-gray-300 max-w-4xl md:max-w-5xl mx-auto md:mx-0 space-y-2 md:space-y-0",
-            "text-[clamp(0.95rem,3.5vw,1.05rem)]",
+            // base: body text ~10–20% bigger on small phones
+            "text-[clamp(1.05rem,4.7vw,1.15rem)]",
+            // sm: 640+
             "sm:text-[clamp(1rem,2.8vw,1.1rem)]",
+            // md: 768+
             "md:text-[clamp(1.05rem,2vw,1.15rem)]",
+            // lg: 1024+
             "lg:text-[clamp(1.1rem,1.6vw,1.2rem)]",
+            // 2xl: 1536+
             "2xl:text-[clamp(1.15rem,1.2vw,1.25rem)]",
           ].join(" ")}
         >
@@ -103,7 +108,11 @@ export const Hero = () => {
             <span
               className={[
                 "block md:inline text-[#ffae00] my-2 md:my-0 font-bold md:font-normal",
-                "text-[clamp(1.3rem,4vw,1.6rem)]",
+                // Proof-of-Suffering:
+                // base: same at 360/390, +~10% only near top of Range 1
+                "text-[clamp(1.3rem,5.3vw,1.45rem)]",
+                // sm+
+                "sm:text-[clamp(1.3rem,4vw,1.6rem)]",
                 "md:text-[clamp(1.5rem,3vw,2rem)]",
                 "2xl:text-[clamp(1.7rem,2.4vw,2.4rem)]",
               ].join(" ")}
@@ -116,7 +125,7 @@ export const Hero = () => {
           </p>
         </motion.div>
 
-        {/* TAGLINE – only on tall screens, forced break, 5-range clamp */}
+        {/* TAGLINE – Range 1 ~+10% bump */}
         {showTagline && (
           <motion.p
             initial={{ opacity: 0 }}
@@ -124,7 +133,9 @@ export const Hero = () => {
             transition={{ delay: 1.0 }}
             className={[
               "font-terminal text-hell-red mt-8 tracking-widest uppercase animate-pulse md:max-w-5xl text-center md:text-right",
-              "text-[clamp(0.9rem,3vw,1.05rem)]",
+              // base: slightly larger across Range 1 (~10% up)
+              "text-[clamp(0.98rem,3vw,1.1rem)]",
+              // sm+
               "sm:text-[clamp(1rem,2.3vw,1.15rem)]",
               "md:text-[clamp(1.05rem,2vw,1.2rem)]",
               "lg:text-[clamp(1.1rem,1.8vw,1.3rem)]",
@@ -138,7 +149,7 @@ export const Hero = () => {
           </motion.p>
         )}
 
-        {/* CTAs – 5-range clamp on text size */}
+        {/* CTAs – left as-is in Range 1 (you said keep buttons the same) */}
         <motion.div
           initial={{ opacity: 0, y: 50 }}
           animate={{ opacity: 1, y: 0 }}
