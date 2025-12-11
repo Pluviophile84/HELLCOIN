@@ -19,8 +19,22 @@ const NAV_LINKS_DATA = [
   { name: "THE PIT", href: "#the-pit" },
 ];
 
+// 5-range clamp on nav link text
 const linkStyles =
-  "font-terminal text-xs sm:text-sm xl:text-base 2xl:text-lg text-hell-white hover:text-[#ffae00] transition-colors uppercase tracking-widest relative group cursor-pointer font-bold whitespace-nowrap";
+  [
+    "font-terminal text-hell-white hover:text-[#ffae00] transition-colors",
+    "uppercase tracking-widest relative group cursor-pointer font-bold whitespace-nowrap",
+    // base: small phones up to <640
+    "text-[clamp(0.8rem,2.6vw,0.95rem)]",
+    // sm: 640+
+    "sm:text-[clamp(0.85rem,2vw,1.05rem)]",
+    // md: 768+
+    "md:text-[clamp(0.9rem,1.6vw,1.1rem)]",
+    // lg: 1024+
+    "lg:text-[clamp(0.95rem,1.3vw,1.15rem)]",
+    // 2xl: 1536+
+    "2xl:text-[clamp(1.05rem,1vw,1.25rem)]",
+  ].join(" ");
 
 const linkUnderline =
   "absolute -bottom-1 left-0 w-0 h-0.5 bg-hell-orange transition-all group-hover:w-full";
@@ -44,6 +58,7 @@ export function Navbar({
   const [visibleCount, setVisibleCount] = useState(NAV_LINKS_DATA.length);
   const [isCalculated, setIsCalculated] = useState(false);
 
+  // Shrink nav on scroll
   useEffect(() => {
     const handleScroll = () => setIsScrolled(window.scrollY > 50);
     window.addEventListener("scroll", handleScroll);
@@ -51,6 +66,7 @@ export function Navbar({
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
+  // Lock body scroll when mobile menu is open
   useEffect(() => {
     document.body.style.overflow = mobileMenuOpen ? "hidden" : "unset";
     return () => {
@@ -79,6 +95,7 @@ export function Navbar({
     setMobileMenuOpen(false);
   };
 
+  // DESKTOP: determine how many links fit in center zone
   const checkOverflow = useCallback(() => {
     if (!containerRef.current || !ghostRef.current) return;
 
@@ -151,6 +168,7 @@ export function Navbar({
   const hiddenLinks = NAV_LINKS_DATA.slice(visibleCount);
   const showMoreButton = hiddenLinks.length > 0;
 
+  // Close MORE menu on outside click
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (
@@ -174,7 +192,7 @@ export function Navbar({
       )}
       aria-label="Main navigation"
     >
-      {/* Background plate */}
+      {/* background plate */}
       <div
         className={cn(
           "absolute inset-0 w-full h-full transition-all duration-300 pointer-events-none",
@@ -184,7 +202,7 @@ export function Navbar({
         )}
       />
 
-      {/* Main row – shared safe side spacing via px-fluid-gap */}
+      {/* main row – safe side spacing via px-fluid-gap, 70% width from md+ */}
       <div className="relative z-[100] w-full md:w-[70%] max-w-[1920px] mx-auto px-fluid-gap flex items-center gap-3 md:gap-4 xl:gap-6 transition-all duration-300">
         {/* LOGO */}
         <button
@@ -203,7 +221,15 @@ export function Navbar({
                 : "w-8 h-8 md:w-10 md:h-10 xl:w-12 xl:h-12"
             )}
           />
-          <span className="font-gothic text-xl md:text-2xl xl:text-3xl 2xl:text-4xl text-hell-orange tracking-wide text-glow">
+          <span
+            className={[
+              "font-gothic text-hell-orange tracking-wide text-glow",
+              "text-[clamp(1.25rem,4vw,1.5rem)]",
+              "md:text-[clamp(1.5rem,3vw,1.9rem)]",
+              "xl:text-[clamp(1.9rem,2.5vw,2.4rem)]",
+              "2xl:text-[clamp(2.1rem,2vw,2.7rem)]",
+            ].join(" ")}
+          >
             HELLCOIN
           </span>
         </button>
@@ -254,7 +280,11 @@ export function Navbar({
                 <button
                   type="button"
                   className={cn(
-                    "flex items-center gap-1 font-terminal text-sm xl:text-base 2xl:text-lg transition-colors uppercase cursor-pointer border px-2 py-1 shrink-0",
+                    "flex items-center gap-1 font-terminal uppercase cursor-pointer border px-2 py-1 shrink-0 transition-colors",
+                    [
+                      "text-[clamp(0.9rem,1.4vw,1.05rem)]",
+                      "2xl:text-[clamp(1rem,1.2vw,1.15rem)]",
+                    ].join(" "),
                     moreMenuOpen
                       ? "text-hell-red border-hell-red"
                       : "text-[#ffae00] border-hell-red/50 hover:text-hell-red"
@@ -307,7 +337,7 @@ export function Navbar({
           <button
             type="button"
             onClick={onTriggerPaperHands}
-            className="flex items-center gap-2 px-2 md:px-3 py-1 border border-pink-300 rounded text-pink-100 font-terminal text-[10px] md:text-sm xl:text-base font-bold hover:bg-pink-500/20 hover:text-white transition-colors shadow-[0_0_10px_rgba(255,192,203,0.3)] whitespace-nowrap"
+            className="flex items-center gap-2 px-2 md:px-3 py-1 border border-pink-300 rounded text-pink-100 font-terminal font-bold hover:bg-pink-500/20 hover:text-white transition-colors shadow-[0_0_10px_rgba(255,192,203,0.3)] whitespace-nowrap text-[10px] md:text-sm xl:text-base"
           >
             <span className="w-2 h-2 rounded-full bg-pink-200 animate-pulse shadow-[0_0_5px_#fff]" />
             <span className="hidden md:inline">HEAVEN MODE</span>
@@ -319,12 +349,17 @@ export function Navbar({
             href={BUY_LINK}
             target="_blank"
             rel="noopener noreferrer"
-            className="hidden xl:block bg-hell-red hover:bg-hell-orange text-hell-white font-gothic text-base xl:text-lg 2xl:text-xl px-4 xl:px-6 py-1 xl:py-2 rounded shadow-[0_0_15px_rgba(204,0,0,0.5)] transition-all transform hover:scale-105 border border-hell-orange/50 text-center whitespace-nowrap"
+            className={[
+              "hidden xl:block bg-hell-red hover:bg-hell-orange text-hell-white font-gothic",
+              "px-4 xl:px-6 py-1 xl:py-2 rounded border border-hell-orange/50 text-center whitespace-nowrap",
+              "transition-all transform hover:scale-105 shadow-[0_0_15px_rgba(204,0,0,0.5)]",
+              "text-[clamp(1rem,1.1vw,1.1rem)] 2xl:text-[clamp(1.1rem,0.9vw,1.3rem)]",
+            ].join(" ")}
           >
             ACQUIRE $666
           </a>
 
-          {/* Hamburger – only below xl */}
+          {/* Hamburger – only < xl */}
           <button
             type="button"
             className="xl:hidden text-hell-white"
@@ -336,7 +371,7 @@ export function Navbar({
         </div>
       </div>
 
-      {/* MOBILE / TABLET NAV (hamburger) */}
+      {/* MOBILE / TABLET NAV */}
       <AnimatePresence>
         {mobileMenuOpen && (
           <motion.div
@@ -352,6 +387,7 @@ export function Navbar({
               exit={{ y: -20, opacity: 0 }}
               transition={{ type: "spring", stiffness: 260, damping: 25 }}
               className="max-w-[480px] mx-auto w-full p-6 pt-20 pb-8 flex flex-col gap-6"
+              onClick={(e) => e.stopPropagation()}
             >
               <div className="w-full flex flex-col gap-3">
                 {NAV_LINKS_DATA.map((link) => (
