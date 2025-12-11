@@ -202,8 +202,8 @@ export function Navbar({
         )}
       />
 
-      {/* main row – safe side spacing via px-fluid-gap, 70% width from md+ */}
-      <div className="relative z-[100] w-full md:w-[70%] max-w-[1920px] mx-auto px-fluid-gap flex items-center gap-3 md:gap-4 xl:gap-6 transition-all duration-300">
+      {/* main row – base has tighter padding, sm+ uses px-fluid-gap */}
+      <div className="relative z-[100] w-full md:w-[70%] max-w-[1920px] mx-auto px-[clamp(0.75rem,4vw,1.5rem)] sm:px-fluid-gap flex items-center gap-3 md:gap-4 xl:gap-6 transition-all duration-300">
         {/* LOGO */}
         <button
           type="button"
@@ -332,8 +332,8 @@ export function Navbar({
         </div>
 
         {/* ACTIONS */}
-        <div className="flex items-center gap-2 md:gap-4 shrink-0 ml-auto">
-          {/* Heaven mode – always visible, now clamped per range */}
+        <div className="flex items-center gap-3 md:gap-4 shrink-0 ml-auto">
+          {/* Heaven mode – always visible, clamped text */}
           <button
             type="button"
             onClick={onTriggerPaperHands}
@@ -366,10 +366,10 @@ export function Navbar({
             ACQUIRE $666
           </a>
 
-          {/* Hamburger – only < xl */}
+          {/* Hamburger – only < xl, bigger tap zone */}
           <button
             type="button"
-            className="xl:hidden text-hell-white"
+            className="xl:hidden text-hell-white p-2"
             onClick={() => setMobileMenuOpen((prev) => !prev)}
             aria-label="Toggle navigation"
           >
