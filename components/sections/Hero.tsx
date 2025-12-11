@@ -9,18 +9,21 @@ const BUY_LINK = "https://raydium.io/swap";
 export const Hero = () => {
   const ref = useRef<HTMLElement | null>(null);
   const [showTagline, setShowTagline] = useState(false);
+  const [isShortHero, setIsShortHero] = useState(false);
 
-  // Only show tagline on reasonably tall viewports (e.g. tall phones, tablets, desktops)
+  // Handle height-based behavior: tagline + "short hero" mode
   useEffect(() => {
     if (typeof window === "undefined") return;
 
-    const checkHeight = () => {
-      setShowTagline(window.innerHeight >= 720);
+    const checkSize = () => {
+      const h = window.innerHeight;
+      setShowTagline(h >= 720);   // Only show tagline on tall viewports
+      setIsShortHero(h <= 480);   // Treat very short screens (like 640x360) specially
     };
 
-    checkHeight();
-    window.addEventListener("resize", checkHeight);
-    return () => window.removeEventListener("resize", checkHeight);
+    checkSize();
+    window.addEventListener("resize", checkSize);
+    return () => window.removeEventListener("resize", checkSize);
   }, []);
 
   const { scrollYProgress } = useScroll({
@@ -30,6 +33,11 @@ export const Hero = () => {
 
   const yText = useTransform(scrollYProgress, [0, 1], ["0%", "50%"]);
   const opacityText = useTransform(scrollYProgress, [0, 0.5], [1, 0]);
+
+  // On short screens: no parallax drift/fade (keep content stable and visible)
+  const textStyle: any = isShortHero
+    ? { y: "0%", opacity: 1 }
+    : { y: yText, opacity: opacityText };
 
   const handleAbandonHope = () => {
     const genesisSection = document.getElementById("genesis");
@@ -56,8 +64,11 @@ export const Hero = () => {
 
       {/* CONTENT */}
       <motion.div
-        style={{ y: yText, opacity: opacityText }}
-        className="relative z-10 px-fluid-gap md:pr-[10%] lg:pr-[15%] max-w-[1920px] w-full mx-auto flex flex-col items-center sm:items-end text-center sm:text-right pt-14 sm:pt-10 md:pt-0"
+        style={textStyle}
+        className={
+          "relative z-10 px-fluid-gap md:pr-[10%] lg:pr-[15%] max-w-[1920px] w-full mx-auto flex flex-col items-center sm:items-end text-center sm:text-right " +
+          (isShortHero ? "pt-10 sm:pt-6 md:pt-0" : "pt-14 sm:pt-10 md:pt-0")
+        }
       >
         {/* HEADLINE – Range 1 tuned, Range 2 bigger */}
         <motion.h1
@@ -68,9 +79,9 @@ export const Hero = () => {
             "font-gothic leading-[0.9] text-hell-white text-glow drop-shadow-2xl w-full",
             // tighter vertical spacing on small heights
             "mb-4 sm:mb-4 md:mb-6",
-            // base: tuned for 360–430 width
+            // base: 360–430
             "text-[clamp(2.4rem,10.8vw,2.65rem)]",
-            // sm: 640–767, stronger for 640×900
+            // sm: 640–767, stronger for 640x900
             "sm:text-[clamp(2.8rem,6.8vw,3.6rem)]",
             // md: 768+
             "md:text-[clamp(2.8rem,5vw,3.5rem)]",
@@ -108,7 +119,7 @@ export const Hero = () => {
             <span
               className={[
                 "block sm:inline text-[#ffae00] my-2 sm:my-0 font-bold sm:font-normal",
-                // Proof-of-Suffering: same pattern as before
+                // Proof-of-Suffering sizing (unchanged from tuned version)
                 "text-[clamp(1.3rem,5.3vw,1.45rem)]",
                 "sm:text-[clamp(1.3rem,4vw,1.6rem)]",
                 "md:text-[clamp(1.5rem,3vw,2rem)]",
@@ -123,7 +134,7 @@ export const Hero = () => {
           </p>
         </motion.div>
 
-        {/* TAGLINE – unchanged sizes, margins slightly tighter at small */}
+        {/* TAGLINE – same sizes, slightly tighter margins on small */}
         {showTagline && (
           <motion.p
             initial={{ opacity: 0 }}
@@ -148,7 +159,7 @@ export const Hero = () => {
           </motion.p>
         )}
 
-        {/* CTAs – now horizontal from sm+, and margins tightened for small heights */}
+        {/* CTAs – horizontal from sm+, smaller padding at small/sm to avoid giant buttons */}
         <motion.div
           initial={{ opacity: 0, y: 50 }}
           animate={{ opacity: 1, y: 0 }}
@@ -177,7 +188,8 @@ export const Hero = () => {
               "group relative bg-transparent border-2 border-hell-red text-hell-red font-gothic uppercase overflow-hidden",
               "transition-all hover:text-hell-white hover:border-hell-orange hover:shadow-[0_0_30px_rgba(204,0,0,0.6)]",
               "order-2 md:order-none cursor-pointer flex items-center gap-2",
-              "px-8 py-4",
+              // slightly smaller buttons at base/sm, full size from md+
+              "px-6 py-3 sm:px-6 sm:py-3 md:px-8 md:py-4",
               "text-[clamp(1.3rem,4vw,1.6rem)]",
               "md:text-[clamp(1.4rem,3vw,1.9rem)]",
               "2xl:text-[clamp(1.6rem,2.5vw,2.2rem)]",
