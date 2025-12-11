@@ -88,7 +88,7 @@ export function Navbar({ onTriggerPaperHands }: NavbarProps) {
       />
 
       {/* main row */}
-      <div className="relative z-[100] w-full md:w-[80%] xl:w-[70%] max-w-[1920px] mx-auto px-[clamp(0.75rem,4vw,1.5rem)] sm:px-fluid-gap flex items-center gap-3 md:gap-4 xl:gap-6 transition-all duration-300">
+      <div className="relative z-[100] w-full md:w-[90%] lg:w-[90%] xl:w-[70%] max-w-[1920px] mx-auto px-[clamp(0.75rem,4vw,1.5rem)] sm:px-fluid-gap flex items-center gap-3 md:gap-4 xl:gap-6 transition-all duration-300">
         {/* LOGO */}
         <button
           type="button"
