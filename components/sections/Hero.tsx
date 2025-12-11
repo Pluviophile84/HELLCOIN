@@ -35,8 +35,8 @@ export const Hero = () => {
   const yTextRegular = useTransform(scrollYProgress, [0, 1], ["0%", "50%"]);
   const opacityText = useTransform(scrollYProgress, [0, 0.5], [1, 0]);
 
-  // Softer movement for very short screens (no fade)
-  const yTextShort = useTransform(scrollYProgress, [0, 1], ["0%", "15%"]);
+  // Stronger movement for very short screens (no fade)
+  const yTextShort = useTransform(scrollYProgress, [0, 1], ["0%", "25%"]);
 
   // On short screens: keep movement, kill fade
   const textStyle: any = isShortHero
@@ -163,7 +163,7 @@ export const Hero = () => {
           </motion.p>
         )}
 
-        {/* CTAs – horizontal from sm+, smaller padding at small/sm to avoid giant buttons */}
+        {/* CTAs – horizontal from sm+, smaller padding at base/sm to avoid giant buttons */}
         <motion.div
           initial={{ opacity: 0, y: 50 }}
           animate={{ opacity: 1, y: 0 }}
