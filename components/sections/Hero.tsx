@@ -57,7 +57,7 @@ export const Hero = () => {
       {/* CONTENT */}
       <motion.div
         style={{ y: yText, opacity: opacityText }}
-        className="relative z-10 px-fluid-gap md:pr-[10%] lg:pr-[15%] max-w-[1920px] w-full mx-auto flex flex-col items-center sm:items-end text-center sm:text-right pt-16 sm:pt-12 md:pt-0"
+        className="relative z-10 px-fluid-gap md:pr-[10%] lg:pr-[15%] max-w-[1920px] w-full mx-auto flex flex-col items-center sm:items-end text-center sm:text-right pt-14 sm:pt-10 md:pt-0"
       >
         {/* HEADLINE – Range 1 tuned, Range 2 bigger */}
         <motion.h1
@@ -66,10 +66,11 @@ export const Hero = () => {
           transition={{ type: "spring", duration: 1.5 }}
           className={[
             "font-gothic leading-[0.9] text-hell-white text-glow drop-shadow-2xl w-full",
+            // tighter vertical spacing on small heights
+            "mb-4 sm:mb-4 md:mb-6",
             // base: tuned for 360–430 width
-            "mb-6 sm:mb-6 md:mb-8",
             "text-[clamp(2.4rem,10.8vw,2.65rem)]",
-            // sm: 640–767, noticeably stronger
+            // sm: 640–767, stronger for 640×900
             "sm:text-[clamp(2.8rem,6.8vw,3.6rem)]",
             // md: 768+
             "md:text-[clamp(2.8rem,5vw,3.5rem)]",
@@ -107,10 +108,8 @@ export const Hero = () => {
             <span
               className={[
                 "block sm:inline text-[#ffae00] my-2 sm:my-0 font-bold sm:font-normal",
-                // Proof-of-Suffering:
-                // base: same at 360/390, +~10% only near top of Range 1
+                // Proof-of-Suffering: same pattern as before
                 "text-[clamp(1.3rem,5.3vw,1.45rem)]",
-                // sm+ unchanged per your request
                 "sm:text-[clamp(1.3rem,4vw,1.6rem)]",
                 "md:text-[clamp(1.5rem,3vw,2rem)]",
                 "2xl:text-[clamp(1.7rem,2.4vw,2.4rem)]",
@@ -124,14 +123,15 @@ export const Hero = () => {
           </p>
         </motion.div>
 
-        {/* TAGLINE – Range 1 and 2 unchanged except earlier ~10% bump in base */}
+        {/* TAGLINE – unchanged sizes, margins slightly tighter at small */}
         {showTagline && (
           <motion.p
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ delay: 1.0 }}
             className={[
-              "font-terminal text-hell-red mt-8 tracking-widest uppercase animate-pulse md:max-w-5xl text-center sm:text-right",
+              "font-terminal text-hell-red tracking-widest uppercase animate-pulse md:max-w-5xl text-center sm:text-right",
+              "mt-6 sm:mt-6 md:mt-8",
               // base
               "text-[clamp(0.98rem,3vw,1.1rem)]",
               // sm+
@@ -148,12 +148,12 @@ export const Hero = () => {
           </motion.p>
         )}
 
-        {/* CTAs – buttons left as-is in Range 1 + 2 */}
+        {/* CTAs – now horizontal from sm+, and margins tightened for small heights */}
         <motion.div
           initial={{ opacity: 0, y: 50 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 1.4 }}
-          className="mt-10 sm:mt-8 md:mt-12 flex flex-col md:flex-row gap-6 md:gap-8 justify-center sm:justify-end items-center w-full md:max-w-5xl"
+          className="mt-8 sm:mt-6 md:mt-10 flex flex-col sm:flex-row gap-6 md:gap-8 justify-center sm:justify-end items-center w-full md:max-w-5xl"
         >
           <button
             type="button"
