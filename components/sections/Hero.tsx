@@ -57,24 +57,25 @@ export const Hero = () => {
       {/* CONTENT */}
       <motion.div
         style={{ y: yText, opacity: opacityText }}
-        className="relative z-10 px-fluid-gap md:pr-[10%] lg:pr-[15%] max-w-[1920px] w-full mx-auto flex flex-col items-center md:items-end text-center md:text-right pt-20 md:pt-0"
+        className="relative z-10 px-fluid-gap md:pr-[10%] lg:pr-[15%] max-w-[1920px] w-full mx-auto flex flex-col items-center sm:items-end text-center sm:text-right pt-16 sm:pt-12 md:pt-0"
       >
-        {/* HEADLINE – Range 1 boost (~+10% min, ~+20% mid/max) */}
+        {/* HEADLINE – Range 1 tuned, Range 2 bigger */}
         <motion.h1
           initial={{ scale: 0.9, opacity: 0 }}
           animate={{ scale: 1, opacity: 1 }}
           transition={{ type: "spring", duration: 1.5 }}
           className={[
-            "font-gothic leading-[0.9] text-hell-white text-glow drop-shadow-2xl mb-8 w-full",
+            "font-gothic leading-[0.9] text-hell-white text-glow drop-shadow-2xl w-full",
             // base: tuned for 360–430 width
+            "mb-6 sm:mb-6 md:mb-8",
             "text-[clamp(2.4rem,10.8vw,2.65rem)]",
-            // sm: 640+
-            "sm:text-[clamp(2.4rem,6vw,3.1rem)]",
+            // sm: 640–767, noticeably stronger
+            "sm:text-[clamp(2.8rem,6.8vw,3.6rem)]",
             // md: 768+
             "md:text-[clamp(2.8rem,5vw,3.5rem)]",
             // lg: 1024+
             "lg:text-[clamp(3.1rem,4vw,3.9rem)]",
-            // xl+: larger desktops
+            // xl+
             "xl:text-[clamp(3.4rem,3.5vw,4.2rem)]",
             "2xl:text-[clamp(3.6rem,3vw,4.6rem)]",
           ].join(" ")}
@@ -84,22 +85,20 @@ export const Hero = () => {
           FORGED BY <span className="text-[#ffae00]">REGRET.</span>
         </motion.h1>
 
-        {/* SUBTEXT – Range 1 body text boosted (except PoS phrase) */}
+        {/* SUBTEXT – Range 1 ok, Range 2 body +10% */}
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 0.5 }}
           className={[
-            "font-terminal text-gray-300 max-w-4xl md:max-w-5xl mx-auto md:mx-0 space-y-2 md:space-y-0",
-            // base: body text ~10–20% bigger on small phones
+            "font-terminal text-gray-300 max-w-4xl md:max-w-5xl mx-auto sm:mx-0 space-y-2 md:space-y-0",
+            // base: body text slightly larger on small phones
             "text-[clamp(1.05rem,4.7vw,1.15rem)]",
-            // sm: 640+
-            "sm:text-[clamp(1rem,2.8vw,1.1rem)]",
-            // md: 768+
+            // sm: 640–767, +~10%
+            "sm:text-[clamp(1.1rem,3vw,1.2rem)]",
+            // md+
             "md:text-[clamp(1.05rem,2vw,1.15rem)]",
-            // lg: 1024+
             "lg:text-[clamp(1.1rem,1.6vw,1.2rem)]",
-            // 2xl: 1536+
             "2xl:text-[clamp(1.15rem,1.2vw,1.25rem)]",
           ].join(" ")}
         >
@@ -107,11 +106,11 @@ export const Hero = () => {
             The first cryptocurrency powered by{" "}
             <span
               className={[
-                "block md:inline text-[#ffae00] my-2 md:my-0 font-bold md:font-normal",
+                "block sm:inline text-[#ffae00] my-2 sm:my-0 font-bold sm:font-normal",
                 // Proof-of-Suffering:
                 // base: same at 360/390, +~10% only near top of Range 1
                 "text-[clamp(1.3rem,5.3vw,1.45rem)]",
-                // sm+
+                // sm+ unchanged per your request
                 "sm:text-[clamp(1.3rem,4vw,1.6rem)]",
                 "md:text-[clamp(1.5rem,3vw,2rem)]",
                 "2xl:text-[clamp(1.7rem,2.4vw,2.4rem)]",
@@ -125,15 +124,15 @@ export const Hero = () => {
           </p>
         </motion.div>
 
-        {/* TAGLINE – Range 1 ~+10% bump */}
+        {/* TAGLINE – Range 1 and 2 unchanged except earlier ~10% bump in base */}
         {showTagline && (
           <motion.p
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ delay: 1.0 }}
             className={[
-              "font-terminal text-hell-red mt-8 tracking-widest uppercase animate-pulse md:max-w-5xl text-center md:text-right",
-              // base: slightly larger across Range 1 (~10% up)
+              "font-terminal text-hell-red mt-8 tracking-widest uppercase animate-pulse md:max-w-5xl text-center sm:text-right",
+              // base
               "text-[clamp(0.98rem,3vw,1.1rem)]",
               // sm+
               "sm:text-[clamp(1rem,2.3vw,1.15rem)]",
@@ -142,19 +141,19 @@ export const Hero = () => {
               "2xl:text-[clamp(1.2rem,1.4vw,1.4rem)]",
             ].join(" ")}
           >
-            <span className="block md:inline">WHEN THE MARKET BURNS,</span>{" "}
-            <span className="block md:inline md:ml-2 text-center">
+            <span className="block sm:inline">WHEN THE MARKET BURNS,</span>{" "}
+            <span className="block sm:inline sm:ml-2 text-center">
               WE TREND
             </span>
           </motion.p>
         )}
 
-        {/* CTAs – left as-is in Range 1 (you said keep buttons the same) */}
+        {/* CTAs – buttons left as-is in Range 1 + 2 */}
         <motion.div
           initial={{ opacity: 0, y: 50 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 1.4 }}
-          className="mt-12 flex flex-col md:flex-row gap-6 md:gap-8 justify-center md:justify-end items-center w-full md:max-w-5xl"
+          className="mt-10 sm:mt-8 md:mt-12 flex flex-col md:flex-row gap-6 md:gap-8 justify-center sm:justify-end items-center w-full md:max-w-5xl"
         >
           <button
             type="button"
