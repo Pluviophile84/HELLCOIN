@@ -149,7 +149,7 @@ export function Navbar({ onTriggerPaperHands }: NavbarProps) {
           >
             <span className="w-2 h-2 rounded-full bg-pink-200 animate-pulse shadow-[0_0_5px_#fff]" />
             <span className="hidden md:inline">HEAVEN MODE</span>
-            <span className="md:hidden">HEAVEN</span>
+            <span className="md-hidden">HEAVEN</span>
           </button>
 
           {/* BUY – desktop only (lg+) */}
@@ -186,7 +186,7 @@ export function Navbar({ onTriggerPaperHands }: NavbarProps) {
           onClick={() => setMobileMenuOpen(false)}
         >
           <div
-            className="w-full mx-auto p-6 pt-20 pb-8 flex flex-col gap-6 max-w-[480px] sm:max-w-[520px] md:max-w-[80%]"
+            className="w-full mx-auto p-6 pt-20 pb-8 flex flex-col gap-6 max-w-[480px] sm:max-w-[520px] md:max-w-none md:w-full"
             onClick={(e) => e.stopPropagation()}
           >
             <div className="w-full flex flex-col gap-3">
