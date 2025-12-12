@@ -11,14 +11,14 @@ export const Hero = () => {
   const [showTagline, setShowTagline] = useState(false);
   const [isShortHero, setIsShortHero] = useState(false);
 
-  // Handle height-based behavior: tagline + "short hero" mode
+  // Height-based behavior: tagline + "short hero" mode
   useEffect(() => {
     if (typeof window === "undefined") return;
 
     const checkSize = () => {
       const h = window.innerHeight;
-      setShowTagline(h >= 720);   // Only show tagline on tall viewports
-      setIsShortHero(h <= 480);   // Treat very short screens (like 640x360) specially
+      setShowTagline(h >= 720); // show tagline only on tall viewports
+      setIsShortHero(h <= 480); // treat very short heights specially
     };
 
     checkSize();
@@ -31,11 +31,10 @@ export const Hero = () => {
     offset: ["start start", "end start"],
   });
 
-  // Full parallax for normal/tall screens
   const yText = useTransform(scrollYProgress, [0, 1], ["0%", "50%"]);
   const opacityText = useTransform(scrollYProgress, [0, 0.5], [1, 0]);
 
-  // On short screens: no parallax at all (keep everything fully visible)
+  // On short screens: kill parallax and fading for safety
   const textStyle = isShortHero
     ? { y: "0%", opacity: 1 }
     : { y: yText, opacity: opacityText };
@@ -71,7 +70,7 @@ export const Hero = () => {
           (isShortHero ? "pt-10 sm:pt-6 md:pt-0" : "pt-14 sm:pt-10 md:pt-0")
         }
       >
-        {/* HEADLINE – md range boosted ~20% */}
+        {/* HEADLINE – lg bumped ~20% */}
         <motion.h1
           initial={{ scale: 0.9, opacity: 0 }}
           animate={{ scale: 1, opacity: 1 }}
@@ -83,10 +82,10 @@ export const Hero = () => {
             "text-[clamp(2.4rem,10.8vw,2.65rem)]",
             // sm: 640–767
             "sm:text-[clamp(2.8rem,6.8vw,3.6rem)]",
-            // md: 768–1023 (RANGE 3 – INCREASED)
+            // md: 768–1023 (already tuned)
             "md:text-[clamp(3.3rem,5.6vw,4.2rem)]",
-            // lg: 1024+
-            "lg:text-[clamp(3.1rem,4vw,3.9rem)]",
+            // lg: 1024–1279 (BUMPED ~20%)
+            "lg:text-[clamp(3.7rem,4.4vw,4.7rem)]",
             // xl+
             "xl:text-[clamp(3.4rem,3.5vw,4.2rem)]",
             "2xl:text-[clamp(3.6rem,3vw,4.6rem)]",
@@ -97,21 +96,23 @@ export const Hero = () => {
           FORGED BY <span className="text-[#ffae00]">REGRET.</span>
         </motion.h1>
 
-        {/* SUBTEXT – md body boosted ~20%, PoS unchanged */}
+        {/* SUBTEXT – lg body bumped ~20%, PoS unchanged */}
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 0.5 }}
           className={[
             "font-terminal text-gray-300 max-w-4xl md:max-w-5xl mx-auto sm:mx-0 space-y-2 md:space-y-0",
-            // base: body text slightly larger on small phones
+            // base: phones
             "text-[clamp(1.05rem,4.7vw,1.15rem)]",
             // sm: 640–767
             "sm:text-[clamp(1.1rem,3vw,1.2rem)]",
-            // md: 768–1023 (RANGE 3 – INCREASED)
+            // md: 768–1023
             "md:text-[clamp(1.25rem,2.4vw,1.4rem)]",
-            // lg+
-            "lg:text-[clamp(1.1rem,1.6vw,1.2rem)]",
+            // lg: 1024–1279 (BUMPED)
+            "lg:text-[clamp(1.3rem,1.9vw,1.45rem)]",
+            // xl+
+            "xl:text-[clamp(1.1rem,1.6vw,1.2rem)]",
             "2xl:text-[clamp(1.15rem,1.2vw,1.25rem)]",
           ].join(" ")}
         >
@@ -135,7 +136,7 @@ export const Hero = () => {
           </p>
         </motion.div>
 
-        {/* TAGLINE – only on tall screens */}
+        {/* TAGLINE – unchanged */}
         {showTagline && (
           <motion.p
             initial={{ opacity: 0 }}
@@ -201,7 +202,7 @@ export const Hero = () => {
         </motion.div>
       </motion.div>
 
-      {/* Bottom fade – visual only, no click blocking */}
+      {/* bottom fade – visual only, no click blocking */}
       <div className="absolute bottom-0 w-full h-32 bg-gradient-to-t from-hell-black to-transparent z-20 pointer-events-none" />
     </section>
   );
