@@ -12,16 +12,22 @@ import { cn } from "../../lib/utils";
 
 const BUY_LINK = "https://raydium.io/swap";
 
-const NAV_LINKS_DATA = [
-  { name: "GENESIS", href: "#genesis" },
-  { name: "COMMANDMENTS", href: "#commandments" },
-  { name: "NINE TYPES", href: "#nine-types" },
-  { name: "MATH", href: "#math" },
-  { name: "RITUAL", href: "#ritual" },
-  { name: "HELLMAP", href: "#hellmap" },
-  { name: "HALL OF PAIN", href: "#hall-of-pain" },
-  { name: "REVELATION", href: "#revelation" },
-  { name: "THE PIT", href: "#the-pit" },
+type NavItem = {
+  name: string;   // full label (mobile menu)
+  short: string;  // compact label (desktop nav)
+  href: string;
+};
+
+const NAV_LINKS_DATA: NavItem[] = [
+  { name: "GENESIS",          short: "GENESIS", href: "#genesis" },
+  { name: "COMMANDMENTS",     short: "LAW",     href: "#commandments" },
+  { name: "NINE TYPES",       short: "TYPES",   href: "#nine-types" },
+  { name: "MATH",             short: "MATH",    href: "#math" },
+  { name: "RITUAL",           short: "RITUAL",  href: "#ritual" },
+  { name: "HELLMAP",          short: "MAP",     href: "#hellmap" },
+  { name: "HALL OF PAIN",     short: "HALL",    href: "#hall-of-pain" },
+  { name: "REVELATION",       short: "LORE",    href: "#revelation" },
+  { name: "THE PIT",          short: "PIT",     href: "#the-pit" },
 ];
 
 type NavbarProps = {
@@ -68,7 +74,7 @@ export const Navbar = ({ onTriggerPaperHands }: NavbarProps) => {
     href: string
   ) => {
     e.preventDefault();
-    e.stopPropagation(); // so mobile overlay click doesn't double fire
+    e.stopPropagation();
     setMobileMenuOpen(false);
     setMoreMenuOpen(false);
 
@@ -153,7 +159,6 @@ export const Navbar = ({ onTriggerPaperHands }: NavbarProps) => {
     <nav
       className={cn(
         "fixed top-0 w-full z-[90] transition-all duration-300 ease-in-out",
-        // disable shrink on mobile; only md+ shrinks
         isScrolled ? "py-3 md:py-2" : "py-3 md:py-4"
       )}
     >
@@ -169,7 +174,7 @@ export const Navbar = ({ onTriggerPaperHands }: NavbarProps) => {
 
       {/* HEADER CONTENT */}
       <div className="relative z-[100] w-full md:w-[90%] lg:w-[70%] max-w-[1920px] mx-auto px-4 md:px-0 flex justify-between items-center transition-all duration-300">
-        {/* LOGO (desktop start ~15% smaller; mobile unchanged) */}
+        {/* LOGO */}
         <button
           type="button"
           onClick={scrollToTop}
@@ -186,26 +191,25 @@ export const Navbar = ({ onTriggerPaperHands }: NavbarProps) => {
                 : "w-8 h-8 md:w-9 md:h-9 lg:w-10 lg:h-10"
             )}
           />
-          {/* 20% bigger on mobile: text-xl -> text-2xl */}
           <span className="font-gothic text-2xl md:text-2xl lg:text-3xl text-hell-orange tracking-wide text-glow">
             HELLCOIN
           </span>
         </button>
 
-        {/* DESKTOP NAV (xl and up) WITH MORE BUTTON */}
+        {/* DESKTOP NAV (xl and up) */}
         <div
           ref={containerRef}
           className="relative hidden xl:flex items-center gap-6 justify-center flex-grow min-w-0 mx-6 px-2"
         >
-          {/* GHOST ROW FOR MEASUREMENT */}
+          {/* GHOST ROW FOR MEASUREMENT (uses short labels) */}
           <div
             ref={ghostRef}
             className="absolute top-0 left-0 flex gap-4 xl:gap-6 invisible pointer-events-none"
             aria-hidden="true"
           >
             {NAV_LINKS_DATA.map((link) => (
-              <span key={link.name} className={linkStyles}>
-                {link.name}
+              <span key={link.href} className={linkStyles}>
+                {link.short}
               </span>
             ))}
           </div>
@@ -219,12 +223,12 @@ export const Navbar = ({ onTriggerPaperHands }: NavbarProps) => {
           >
             {visibleLinks.map((link) => (
               <a
-                key={link.name}
+                key={link.href}
                 href={link.href}
                 onClick={(e) => handleNavClick(e, link.href)}
                 className={linkStyles}
               >
-                {link.name}
+                {link.short}
                 <span className={linkUnderline}></span>
               </a>
             ))}
@@ -271,12 +275,12 @@ export const Navbar = ({ onTriggerPaperHands }: NavbarProps) => {
                   <div className="bg-hell-black border border-hell-red/50 shadow-xl p-5 flex flex-col gap-4">
                     {hiddenLinks.map((link) => (
                       <a
-                        key={link.name}
+                        key={link.href}
                         href={link.href}
                         onClick={(e) => handleNavClick(e, link.href)}
                         className={linkStyles}
                       >
-                        {link.name}
+                        {link.short}
                         <span className={linkUnderline}></span>
                       </a>
                     ))}
@@ -309,7 +313,7 @@ export const Navbar = ({ onTriggerPaperHands }: NavbarProps) => {
             ACQUIRE $666
           </a>
 
-          {/* HAMBURGER – active below xl only, with extra spacing from Heaven button */}
+          {/* HAMBURGER – active below xl only */}
           <button
             type="button"
             className="xl:hidden text-hell-white ml-3 pl-1"
@@ -339,11 +343,11 @@ export const Navbar = ({ onTriggerPaperHands }: NavbarProps) => {
               exit={{ opacity: 0, y: -12 }}
               transition={{ duration: 0.2, ease: "easeOut" }}
             >
-              {/* TOP DIVIDER + LINKS */}
+              {/* TOP DIVIDER + LINKS (full names) */}
               <div className="w-full flex flex-col gap-3 border-t border-gray-900 pt-4">
                 {NAV_LINKS_DATA.map((link) => (
                   <a
-                    key={link.name}
+                    key={link.href}
                     href={link.href}
                     onClick={(e) => handleNavClick(e, link.href)}
                     className="font-terminal text-lg text-center text-hell-white hover:text-hell-orange tracking-widest cursor-pointer font-bold py-1 w-fit mx-auto"
