@@ -153,7 +153,8 @@ export const Navbar = ({ onTriggerPaperHands }: NavbarProps) => {
     <nav
       className={cn(
         "fixed top-0 w-full z-[90] transition-all duration-300 ease-in-out",
-        isScrolled ? "py-2 md:py-2" : "py-3 md:py-4"
+        // disable shrink on mobile; only md+ shrinks
+        isScrolled ? "py-3 md:py-2" : "py-3 md:py-4"
       )}
     >
       {/* BACKGROUND PLATE */}
@@ -168,7 +169,7 @@ export const Navbar = ({ onTriggerPaperHands }: NavbarProps) => {
 
       {/* HEADER CONTENT */}
       <div className="relative z-[100] w-full md:w-[90%] lg:w-[70%] max-w-[1920px] mx-auto px-4 md:px-0 flex justify-between items-center transition-all duration-300">
-        {/* LOGO (original proportions) */}
+        {/* LOGO (original + slightly larger HELLCION on mobile) */}
         <button
           type="button"
           onClick={scrollToTop}
@@ -185,7 +186,8 @@ export const Navbar = ({ onTriggerPaperHands }: NavbarProps) => {
                 : "w-8 h-8 md:w-10 md:h-10 lg:w-12 lg:h-12"
             )}
           />
-          <span className="font-gothic text-xl md:text-2xl lg:text-3xl text-hell-orange tracking-wide text-glow">
+          {/* 20% bigger on mobile: text-xl -> text-2xl */}
+          <span className="font-gothic text-2xl md:text-2xl lg:text-3xl text-hell-orange tracking-wide text-glow">
             HELLCOIN
           </span>
         </button>
@@ -193,7 +195,7 @@ export const Navbar = ({ onTriggerPaperHands }: NavbarProps) => {
         {/* DESKTOP NAV (xl and up) WITH MORE BUTTON */}
         <div
           ref={containerRef}
-          className="relative hidden xl:flex items-center gap-6 justify-end flex-grow min-w-0 mr-4"
+          className="relative hidden xl:flex items-center gap-6 justify-center flex-grow min-w-0 mr-4"
         >
           {/* GHOST ROW FOR MEASUREMENT */}
           <div
@@ -286,7 +288,7 @@ export const Navbar = ({ onTriggerPaperHands }: NavbarProps) => {
           </div>
         </div>
 
-        {/* ACTIONS (unchanged visually from original) */}
+        {/* ACTIONS */}
         <div className="flex items-center gap-2 md:gap-4 shrink-0">
           <button
             type="button"
@@ -307,10 +309,10 @@ export const Navbar = ({ onTriggerPaperHands }: NavbarProps) => {
             ACQUIRE $666
           </a>
 
-          {/* HAMBURGER – active below xl only */}
+          {/* HAMBURGER – active below xl only, with extra spacing from Heaven button */}
           <button
             type="button"
-            className="xl:hidden text-hell-white"
+            className="xl:hidden text-hell-white ml-3 pl-1"
             onClick={() => setMobileMenuOpen((prev) => !prev)}
             aria-label="Toggle navigation"
           >
