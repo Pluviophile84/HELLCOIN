@@ -169,7 +169,7 @@ export const Navbar = ({ onTriggerPaperHands }: NavbarProps) => {
 
       {/* HEADER CONTENT */}
       <div className="relative z-[100] w-full md:w-[90%] lg:w-[70%] max-w-[1920px] mx-auto px-4 md:px-0 flex justify-between items-center transition-all duration-300">
-        {/* LOGO (original + slightly larger HELLCION on mobile) */}
+        {/* LOGO (desktop start ~15% smaller; mobile unchanged) */}
         <button
           type="button"
           onClick={scrollToTop}
@@ -183,7 +183,7 @@ export const Navbar = ({ onTriggerPaperHands }: NavbarProps) => {
               "rounded-full border border-hell-orange object-cover transition-all duration-300",
               isScrolled
                 ? "w-8 h-8 md:w-8 md:h-8"
-                : "w-8 h-8 md:w-10 md:h-10 lg:w-12 lg:h-12"
+                : "w-8 h-8 md:w-9 md:h-9 lg:w-10 lg:h-10"
             )}
           />
           {/* 20% bigger on mobile: text-xl -> text-2xl */}
@@ -195,7 +195,7 @@ export const Navbar = ({ onTriggerPaperHands }: NavbarProps) => {
         {/* DESKTOP NAV (xl and up) WITH MORE BUTTON */}
         <div
           ref={containerRef}
-          className="relative hidden xl:flex items-center gap-6 justify-center flex-grow min-w-0 mr-4"
+          className="relative hidden xl:flex items-center gap-6 justify-center flex-grow min-w-0 mx-6 px-2"
         >
           {/* GHOST ROW FOR MEASUREMENT */}
           <div
@@ -224,8 +224,8 @@ export const Navbar = ({ onTriggerPaperHands }: NavbarProps) => {
                 onClick={(e) => handleNavClick(e, link.href)}
                 className={linkStyles}
               >
-                {link.name}
-                <span className={linkUnderline}></span>
+              {link.name}
+              <span className={linkUnderline}></span>
               </a>
             ))}
           </div>
