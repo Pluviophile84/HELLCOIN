@@ -63,11 +63,15 @@ export function Navbar({ onTriggerPaperHands }: NavbarProps) {
     }
   };
 
-  // shared nav link styles (desktop)
+  // DESKTOP nav link styles (xl+)
   const linkStyles = [
     "font-terminal text-hell-white hover:text-[#ffae00] transition-colors",
     "uppercase tracking-widest cursor-pointer font-bold whitespace-nowrap",
+    // base
     "text-[clamp(0.8rem,2.4vw,0.95rem)]",
+    // bump on big desktop (Range 4+)
+    "xl:text-[clamp(0.95rem,1.2vw,1.1rem)]",
+    "2xl:text-[clamp(1.05rem,1vw,1.2rem)]",
   ].join(" ");
 
   return (
@@ -89,7 +93,7 @@ export function Navbar({ onTriggerPaperHands }: NavbarProps) {
       />
 
       {/* main row */}
-      <div className="relative z-[100] w-full md:w-[90%] lg:w-[90%] xl:w-[70%] max-w-[1920px] mx-auto px-[clamp(0.75rem,4vw,1.5rem)] sm:px-fluid-gap flex items-center gap-3 md:gap-4 xl:gap-6 transition-all duration-300">
+      <div className="relative z-[100] w-full md:w-[90%] lg:w-[90%] xl:w-[75%] 2xl:w-[70%] max-w-[1920px] mx-auto px-[clamp(0.75rem,4vw,1.5rem)] sm:px-fluid-gap flex items-center gap-3 md:gap-4 xl:gap-6 transition-all duration-300">
         {/* LOGO */}
         <button
           type="button"
@@ -103,7 +107,7 @@ export function Navbar({ onTriggerPaperHands }: NavbarProps) {
             className={cn(
               "rounded-full border border-hell-orange object-cover transition-all duration-300",
               isScrolled
-                ? "w-8 h-8 md:w-8 md:h-8"
+                ? "w-8 h-8 md:w-9 md:h-9 xl:w-10 xl:h-10"
                 : "w-8 h-8 md:w-10 md:h-10 xl:w-12 xl:h-12"
             )}
           />
@@ -120,7 +124,7 @@ export function Navbar({ onTriggerPaperHands }: NavbarProps) {
           </span>
         </button>
 
-        {/* DESKTOP NAV – only from xl+ */}
+        {/* DESKTOP NAV – only from xl+ (Range 4+) */}
         <div className="hidden xl:flex flex-1 items-center justify-center gap-6 min-w-0">
           {NAV_LINKS_DATA.map((link) => (
             <a
@@ -180,7 +184,7 @@ export function Navbar({ onTriggerPaperHands }: NavbarProps) {
         </div>
       </div>
 
-      {/* MOBILE / TABLET NAV (animated) */}
+      {/* MOBILE / TABLET NAV (animated, for < xl) */}
       <AnimatePresence>
         {mobileMenuOpen && (
           <motion.div
@@ -193,7 +197,6 @@ export function Navbar({ onTriggerPaperHands }: NavbarProps) {
           >
             <motion.div
               className="w-full mx-auto p-6 pt-20 pb-8 flex flex-col gap-6 max-w-[480px] sm:max-w-[520px] md:max-w-none md:w-full"
-              // let clicks inside bubble so overlay can close when tapping empty space
               initial={{ opacity: 0, y: -12 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -12 }}
