@@ -119,8 +119,8 @@ export function Navbar({ onTriggerPaperHands }: NavbarProps) {
           </span>
         </button>
 
-        {/* DESKTOP NAV – show from lg+ */}
-        <div className="hidden lg:flex flex-1 items-center justify-center gap-6 min-w-0">
+        {/* DESKTOP NAV – now only from xl+ */}
+        <div className="hidden xl:flex flex-1 items-center justify-center gap-6 min-w-0">
           {NAV_LINKS_DATA.map((link) => (
             <a
               key={link.name}
@@ -152,13 +152,13 @@ export function Navbar({ onTriggerPaperHands }: NavbarProps) {
             <span className="md:hidden">HEAVEN</span>
           </button>
 
-          {/* BUY – desktop only (lg+) */}
+          {/* BUY – desktop only (xl+) */}
           <a
             href={BUY_LINK}
             target="_blank"
             rel="noopener noreferrer"
             className={[
-              "hidden lg:block bg-hell-red hover:bg-hell-orange text-hell-white font-gothic",
+              "hidden xl:block bg-hell-red hover:bg-hell-orange text-hell-white font-gothic",
               "px-4 xl:px-6 py-1 xl:py-2 rounded border border-hell-orange/50 text-center whitespace-nowrap",
               "transition-all transform hover:scale-105 shadow-[0_0_15px_rgba(204,0,0,0.5)]",
               "text-[clamp(1rem,1.1vw,1.1rem)] 2xl:text-[clamp(1.1rem,0.9vw,1.3rem)]",
@@ -167,10 +167,10 @@ export function Navbar({ onTriggerPaperHands }: NavbarProps) {
             ACQUIRE $666
           </a>
 
-          {/* Hamburger – < lg */}
+          {/* Hamburger – < xl */}
           <button
             type="button"
-            className="lg:hidden text-hell-white p-2"
+            className="xl:hidden text-hell-white p-2"
             onClick={() => setMobileMenuOpen((prev) => !prev)}
             aria-label="Toggle navigation"
           >
@@ -179,10 +179,10 @@ export function Navbar({ onTriggerPaperHands }: NavbarProps) {
         </div>
       </div>
 
-      {/* MOBILE / TABLET NAV (including Range 3) */}
+      {/* MOBILE / TABLET NAV (including 1024x768) */}
       {mobileMenuOpen && (
         <div
-          className="lg:hidden fixed inset-0 z-[95] bg-hell-black/95 backdrop-blur-xl border-b border-hell-red/50 overflow-y-auto"
+          className="xl:hidden fixed inset-0 z-[95] bg-hell-black/95 backdrop-blur-xl border-b border-hell-red/50 overflow-y-auto"
           onClick={() => setMobileMenuOpen(false)}
         >
           <div
