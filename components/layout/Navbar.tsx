@@ -149,9 +149,9 @@ export const Navbar = ({ onTriggerPaperHands }: NavbarProps) => {
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, [moreMenuOpen]);
 
-  // --- LINK STYLES (10% bigger) ---
+  // --- LINK STYLES (base + 20% bigger on xl = Range 4) ---
   const linkStyles =
-    "font-terminal text-[0.95rem] xl:text-[1.05rem] text-hell-white hover:text-[#ffae00] transition-colors uppercase tracking-widest relative group cursor-pointer font-bold whitespace-nowrap";
+    "font-terminal text-[0.95rem] xl:text-[1.25rem] text-hell-white hover:text-[#ffae00] transition-colors uppercase tracking-widest relative group cursor-pointer font-bold whitespace-nowrap";
   const linkUnderline =
     "absolute -bottom-1 left-0 w-0 h-0.5 bg-hell-orange transition-all group-hover:w-full";
 
