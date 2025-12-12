@@ -1,5 +1,6 @@
-/** @type {import('tailwindcss').Config} */
-module.exports = {
+import type { Config } from "tailwindcss";
+
+const config: Config = {
   content: [
     "./pages/**/*.{js,ts,jsx,tsx,mdx}",
     "./components/**/*.{js,ts,jsx,tsx,mdx}",
@@ -7,10 +8,6 @@ module.exports = {
   ],
   theme: {
     extend: {
-      screens: {
-        // Adds an ultra-wide breakpoint for large monitors (1920px+)
-        '3xl': '1920px', 
-      },
       colors: {
         hell: {
           black: '#050505', // Void
@@ -18,36 +15,16 @@ module.exports = {
           red: '#cc0000',   // Blood
           orange: '#ff3300',// Magma
           gold: '#ffae00',  // Ember
-          white: '#d4d4d4', // Ash/Stone
+          
+          // FIX: Changed from '#e5e5e5' (too bright) to '#d4d4d4' (Ash/Stone)
+          // This removes the "digital" feel and makes it look like ancient stone.
+          white: '#d4d4d4', 
         },
       },
       fontFamily: {
         gothic: ['var(--font-pirata)'],
-        terminal: ['var(--font-vt323)'], 
+        terminal: ['var(--font-vt323)'],
       },
-      // --- HYBRID FLUID TYPOGRAPHY SYSTEM ---
-      fontSize: {
-        // Massive Hero Text: Scales smoothly, capped at 7rem so it fits your 23" screen
-        'fluid-hero': 'clamp(3rem, 5.5vw + 1rem, 7rem)',      
-        
-        // Section Headers: Clean scaling for "THE TEN COMMANDMENTS", etc.
-        'fluid-h2': 'clamp(2.5rem, 4.5vw + 1rem, 5rem)',     
-        
-        // Card Headers: For things like "THE TOP BUYER"
-        'fluid-h3': 'clamp(1.5rem, 3vw + 0.5rem, 3rem)',      
-        
-        // Body Text: Starts large (1.25rem/20px) and scales up slightly for readability
-        'fluid-body': 'clamp(1.25rem, 1.5vw + 0.5rem, 1.75rem)', 
-      },
-      spacing: {
-        // Unified spacing that shrinks on mobile and expands on desktop
-        'fluid-gap': 'clamp(1.5rem, 4vw, 4rem)',              
-      },
-      height: {
-        // Fixes the mobile browser address bar jump issue
-        'screen-safe': '100svh', 
-      },
-      // --------------------------------------
       animation: {
         'spin-slow': 'spin 60s linear infinite',
         'pulse-fast': 'pulse 1.5s cubic-bezier(0.4, 0, 0.6, 1) infinite',
@@ -67,21 +44,6 @@ module.exports = {
       },
     },
   },
-  plugins: [
-    // Custom utility to hide scrollbars while keeping scroll functionality
-    function ({ addUtilities }) {
-      addUtilities({
-        '.scrollbar-hide': {
-          /* IE and Edge */
-          '-ms-overflow-style': 'none',
-          /* Firefox */
-          'scrollbar-width': 'none',
-          /* Safari and Chrome */
-          '&::-webkit-scrollbar': {
-            display: 'none',
-          },
-        },
-      });
-    },
-  ],
+  plugins: [],
 };
+export default config;
