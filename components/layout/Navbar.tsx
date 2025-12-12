@@ -40,7 +40,7 @@ export const Navbar = ({ onTriggerPaperHands }: NavbarProps) => {
   const [visibleCount, setVisibleCount] = useState(NAV_LINKS_DATA.length);
   const [isCalculated, setIsCalculated] = useState(false);
 
-  // --- SCROLL SHRINK ---
+  // --- SCROLL SHRINK (desktop only; mobile stays the same) ---
   useEffect(() => {
     const handleScroll = () => {
       setIsScrolled(window.scrollY > 50);
@@ -143,9 +143,9 @@ export const Navbar = ({ onTriggerPaperHands }: NavbarProps) => {
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, [moreMenuOpen]);
 
-  // --- STYLES FROM ORIGINAL VERSION ---
+  // --- LINK STYLES (10% bigger) ---
   const linkStyles =
-    "font-terminal text-sm xl:text-base text-hell-white hover:text-[#ffae00] transition-colors uppercase tracking-widest relative group cursor-pointer font-bold whitespace-nowrap";
+    "font-terminal text-[0.95rem] xl:text-[1.05rem] text-hell-white hover:text-[#ffae00] transition-colors uppercase tracking-widest relative group cursor-pointer font-bold whitespace-nowrap";
   const linkUnderline =
     "absolute -bottom-1 left-0 w-0 h-0.5 bg-hell-orange transition-all group-hover:w-full";
 
@@ -224,8 +224,8 @@ export const Navbar = ({ onTriggerPaperHands }: NavbarProps) => {
                 onClick={(e) => handleNavClick(e, link.href)}
                 className={linkStyles}
               >
-              {link.name}
-              <span className={linkUnderline}></span>
+                {link.name}
+                <span className={linkUnderline}></span>
               </a>
             ))}
           </div>
@@ -246,18 +246,17 @@ export const Navbar = ({ onTriggerPaperHands }: NavbarProps) => {
               type="button"
               onClick={() => setMoreMenuOpen((prev) => !prev)}
               className={cn(
-                "flex items-center gap-1 font-terminal text-sm xl:text-base transition-colors uppercase cursor-pointer border px-2 py-1 shrink-0",
-                moreMenuOpen
-                  ? "text-hell-red border-hell-red"
-                  : "text-[#ffae00] border-hell-red/50 hover:text-hell-red"
+                linkStyles,
+                "flex items-center gap-1 pl-0 pr-0 border-none !text-hell-white hover:!text-[#ffae00]"
               )}
             >
-              MORE
+              <span>MORE</span>
               {moreMenuOpen ? (
-                <ChevronUp size={16} />
+                <ChevronUp size={14} />
               ) : (
-                <ChevronDown size={16} />
+                <ChevronDown size={14} />
               )}
+              <span className={linkUnderline}></span>
             </button>
 
             <AnimatePresence>
