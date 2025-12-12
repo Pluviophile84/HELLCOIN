@@ -70,7 +70,7 @@ export const Hero = () => {
           (isShortHero ? "pt-10 sm:pt-6 md:pt-0" : "pt-14 sm:pt-10 md:pt-0")
         }
       >
-        {/* HEADLINE – lg bumped ~20% */}
+        {/* HEADLINE – xl/2xl boosted for Range 4 */}
         <motion.h1
           initial={{ scale: 0.9, opacity: 0 }}
           animate={{ scale: 1, opacity: 1 }}
@@ -82,13 +82,14 @@ export const Hero = () => {
             "text-[clamp(2.4rem,10.8vw,2.65rem)]",
             // sm: 640–767
             "sm:text-[clamp(2.8rem,6.8vw,3.6rem)]",
-            // md: 768–1023 (already tuned)
+            // md: 768–1023
             "md:text-[clamp(3.3rem,5.6vw,4.2rem)]",
-            // lg: 1024–1279 (BUMPED ~20%)
+            // lg: 1024–1279 (already bumped)
             "lg:text-[clamp(3.7rem,4.4vw,4.7rem)]",
-            // xl+
-            "xl:text-[clamp(3.4rem,3.5vw,4.2rem)]",
-            "2xl:text-[clamp(3.6rem,3vw,4.6rem)]",
+            // xl: Range 4 – bigger
+            "xl:text-[clamp(4.1rem,3.6vw,5rem)]",
+            // 2xl: upper Range 4 / start of Range 5
+            "2xl:text-[clamp(4.4rem,3.2vw,5.4rem)]",
           ].join(" ")}
         >
           BORN IN THE <span className="text-hell-red">RED.</span>
@@ -96,7 +97,7 @@ export const Hero = () => {
           FORGED BY <span className="text-[#ffae00]">REGRET.</span>
         </motion.h1>
 
-        {/* SUBTEXT – lg body bumped ~20%, PoS unchanged */}
+        {/* SUBTEXT – xl/2xl body boosted, PoS unchanged */}
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
@@ -109,11 +110,12 @@ export const Hero = () => {
             "sm:text-[clamp(1.1rem,3vw,1.2rem)]",
             // md: 768–1023
             "md:text-[clamp(1.25rem,2.4vw,1.4rem)]",
-            // lg: 1024–1279 (BUMPED)
+            // lg: 1024–1279 (bumped)
             "lg:text-[clamp(1.3rem,1.9vw,1.45rem)]",
-            // xl+
-            "xl:text-[clamp(1.1rem,1.6vw,1.2rem)]",
-            "2xl:text-[clamp(1.15rem,1.2vw,1.25rem)]",
+            // xl: Range 4 – bigger body
+            "xl:text-[clamp(1.4rem,1.8vw,1.7rem)]",
+            // 2xl: further bump
+            "2xl:text-[clamp(1.55rem,1.5vw,1.9rem)]",
           ].join(" ")}
         >
           <p className="leading-relaxed">
@@ -136,7 +138,7 @@ export const Hero = () => {
           </p>
         </motion.div>
 
-        {/* TAGLINE – unchanged */}
+        {/* TAGLINE – UNCHANGED */}
         {showTagline && (
           <motion.p
             initial={{ opacity: 0 }}
@@ -159,7 +161,7 @@ export const Hero = () => {
           </motion.p>
         )}
 
-        {/* CTAs – unchanged */}
+        {/* CTAs – UNCHANGED */}
         <motion.div
           initial={{ opacity: 0, y: 50 }}
           animate={{ opacity: 1, y: 0 }}
