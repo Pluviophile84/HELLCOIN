@@ -234,61 +234,58 @@ export const Navbar = ({ onTriggerPaperHands }: NavbarProps) => {
             ))}
           </div>
 
-          {/* MORE BUTTON + DROPDOWN (hover + click) */}
-          <div
-            ref={moreRef}
-            className={cn(
-              "relative h-full flex items-center shrink-0 transition-opacity duration-200",
-              isCalculated && showMoreButton
-                ? "opacity-100"
-                : "opacity-0 pointer-events-none"
-            )}
-            onMouseEnter={() => setMoreMenuOpen(true)}
-            onMouseLeave={() => setMoreMenuOpen(false)}
-          >
-            <button
-              type="button"
-              onClick={() => setMoreMenuOpen((prev) => !prev)}
-              className={cn(
-                linkStyles,
-                "flex items-center gap-1 pl-0 pr-0 border-none !text-hell-white hover:!text-[#ffae00]"
-              )}
+          {/* MORE BUTTON + DROPDOWN (only rendered when needed) */}
+          {isCalculated && showMoreButton && (
+            <div
+              ref={moreRef}
+              className="relative h-full flex items-center shrink-0"
+              onMouseEnter={() => setMoreMenuOpen(true)}
+              onMouseLeave={() => setMoreMenuOpen(false)}
             >
-              <span>MORE</span>
-              {moreMenuOpen ? (
-                <ChevronUp size={14} />
-              ) : (
-                <ChevronDown size={14} />
-              )}
-              <span className={linkUnderline}></span>
-            </button>
+              <button
+                type="button"
+                onClick={() => setMoreMenuOpen((prev) => !prev)}
+                className={cn(
+                  linkStyles,
+                  "flex items-center gap-1 pl-0 pr-0 border-none !text-hell-white hover:!text-[#ffae00]"
+                )}
+              >
+                <span>MORE</span>
+                {moreMenuOpen ? (
+                  <ChevronUp size={14} />
+                ) : (
+                  <ChevronDown size={14} />
+                )}
+                <span className={linkUnderline}></span>
+              </button>
 
-            <AnimatePresence>
-              {moreMenuOpen && (
-                <motion.div
-                  initial={{ opacity: 0, y: 10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: 10 }}
-                  transition={{ duration: 0.18, ease: "easeOut" }}
-                  className="absolute top-full left-0 pt-4 z-50 min-w-[200px]"
-                >
-                  <div className="bg-hell-black border border-hell-red/50 shadow-xl p-5 flex flex-col gap-4">
-                    {hiddenLinks.map((link) => (
-                      <a
-                        key={link.href}
-                        href={link.href}
-                        onClick={(e) => handleNavClick(e, link.href)}
-                        className={linkStyles}
-                      >
-                        {link.short}
-                        <span className={linkUnderline}></span>
-                      </a>
-                    ))}
-                  </div>
-                </motion.div>
-              )}
-            </AnimatePresence>
-          </div>
+              <AnimatePresence>
+                {moreMenuOpen && (
+                  <motion.div
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: 10 }}
+                    transition={{ duration: 0.18, ease: "easeOut" }}
+                    className="absolute top-full left-0 pt-4 z-50 min-w-[200px]"
+                  >
+                    <div className="bg-hell-black border border-hell-red/50 shadow-xl p-5 flex flex-col gap-4">
+                      {hiddenLinks.map((link) => (
+                        <a
+                          key={link.href}
+                          href={link.href}
+                          onClick={(e) => handleNavClick(e, link.href)}
+                          className={linkStyles}
+                        >
+                          {link.short}
+                          <span className={linkUnderline}></span>
+                        </a>
+                      ))}
+                    </div>
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </div>
+          )}
         </div>
 
         {/* ACTIONS */}
