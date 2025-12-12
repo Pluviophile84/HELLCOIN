@@ -28,27 +28,29 @@ type NavbarProps = {
   onTriggerPaperHands: () => void;
 };
 
-export function Navbar({ onTriggerPaperHands }: NavbarProps) {
+export const Navbar = ({ onTriggerPaperHands }: NavbarProps) => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-
-  // DESKTOP MORE STATE
   const [moreMenuOpen, setMoreMenuOpen] = useState(false);
+
   const containerRef = useRef<HTMLDivElement | null>(null);
   const ghostRef = useRef<HTMLDivElement | null>(null);
   const moreRef = useRef<HTMLDivElement | null>(null);
+
   const [visibleCount, setVisibleCount] = useState(NAV_LINKS_DATA.length);
   const [isCalculated, setIsCalculated] = useState(false);
 
-  // shrink nav on scroll
+  // --- SCROLL SHRINK ---
   useEffect(() => {
-    const handleScroll = () => setIsScrolled(window.scrollY > 50);
+    const handleScroll = () => {
+      setIsScrolled(window.scrollY > 50);
+    };
     window.addEventListener("scroll", handleScroll);
     handleScroll();
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  // lock body scroll when mobile menu is open
+  // --- BODY LOCK ON MOBILE MENU ---
   useEffect(() => {
     document.body.style.overflow = mobileMenuOpen ? "hidden" : "unset";
     return () => {
@@ -66,7 +68,7 @@ export function Navbar({ onTriggerPaperHands }: NavbarProps) {
     href: string
   ) => {
     e.preventDefault();
-    e.stopPropagation();
+    e.stopPropagation(); // so mobile overlay click doesn't double fire
     setMobileMenuOpen(false);
     setMoreMenuOpen(false);
 
@@ -77,42 +79,28 @@ export function Navbar({ onTriggerPaperHands }: NavbarProps) {
     }
   };
 
-  // DESKTOP OVERFLOW CALC ("MORE" BUTTON)
+  // --- DESKTOP OVERFLOW CALCULATION (MORE BUTTON) ---
   const checkOverflow = useCallback(() => {
-    const container = containerRef.current;
-    const ghost = ghostRef.current;
+    if (!containerRef.current || !ghostRef.current) return;
 
-    if (!container || !ghost) return;
-
-    const containerWidth = container.clientWidth;
-    if (containerWidth <= 0) return;
-
-    // keep some internal safe space inside the link zone
-    const SAFE_SIDE = 40; // px each side
-    const effectiveWidth = Math.max(containerWidth - SAFE_SIDE * 2, 0);
-
-    const ghostChildren = Array.from(
-      ghost.children
-    ) as HTMLElement[];
-
-    const gapPx = 24; // approximates gap-6
-    const moreButtonWidth = 90; // reserved width for MORE btn if needed
-
-    let used = 0;
+    const containerWidth = containerRef.current.clientWidth;
+    const moreButtonWidth = 60; // reserve for "MORE"
+    let currentWidth = 0;
     let visible = 0;
 
+    const ghostChildren = Array.from(
+      ghostRef.current.children
+    ) as HTMLElement[];
+
     for (let i = 0; i < ghostChildren.length; i++) {
-      const child = ghostChildren[i];
-      const baseWidth = child.offsetWidth;
-      const gap = visible > 0 ? gapPx : 0;
+      const linkWidth = ghostChildren[i].offsetWidth + 24; // add gap
       const reserveMore =
         i < ghostChildren.length - 1 ? moreButtonWidth : 0;
 
-      if (used + gap + baseWidth + reserveMore > effectiveWidth) {
+      if (currentWidth + linkWidth + reserveMore >= containerWidth) {
         break;
       }
-
-      used += gap + baseWidth;
+      currentWidth += linkWidth;
       visible++;
     }
 
@@ -122,13 +110,25 @@ export function Navbar({ onTriggerPaperHands }: NavbarProps) {
 
   useEffect(() => {
     checkOverflow();
+    const resizeObserver = new ResizeObserver(() => {
+      window.requestAnimationFrame(() => checkOverflow());
+    });
+    if (containerRef.current) {
+      resizeObserver.observe(containerRef.current);
+    }
     window.addEventListener("resize", checkOverflow);
+
     return () => {
+      resizeObserver.disconnect();
       window.removeEventListener("resize", checkOverflow);
     };
   }, [checkOverflow]);
 
-  // close MORE dropdown when clicking outside
+  const visibleLinks = NAV_LINKS_DATA.slice(0, visibleCount);
+  const hiddenLinks = NAV_LINKS_DATA.slice(visibleCount);
+  const showMoreButton = hiddenLinks.length > 0;
+
+  // --- CLOSE MORE ON CLICK OUTSIDE ---
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (
@@ -140,17 +140,13 @@ export function Navbar({ onTriggerPaperHands }: NavbarProps) {
       }
     };
     document.addEventListener("mousedown", handleClickOutside);
-    return () =>
-      document.removeEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
   }, [moreMenuOpen]);
 
-  const visibleLinks = NAV_LINKS_DATA.slice(0, visibleCount);
-  const hiddenLinks = NAV_LINKS_DATA.slice(visibleCount);
-  const showMoreButton = hiddenLinks.length > 0;
-
-  const desktopLinkBase =
-    "font-terminal text-sm xl:text-base text-hell-white hover:text-[#ffae00] transition-colors uppercase tracking-widest cursor-pointer font-bold whitespace-nowrap relative group";
-  const desktopUnderline =
+  // --- STYLES FROM ORIGINAL VERSION ---
+  const linkStyles =
+    "font-terminal text-sm xl:text-base text-hell-white hover:text-[#ffae00] transition-colors uppercase tracking-widest relative group cursor-pointer font-bold whitespace-nowrap";
+  const linkUnderline =
     "absolute -bottom-1 left-0 w-0 h-0.5 bg-hell-orange transition-all group-hover:w-full";
 
   return (
@@ -159,9 +155,8 @@ export function Navbar({ onTriggerPaperHands }: NavbarProps) {
         "fixed top-0 w-full z-[90] transition-all duration-300 ease-in-out",
         isScrolled ? "py-2 md:py-2" : "py-3 md:py-4"
       )}
-      aria-label="Main navigation"
     >
-      {/* background plate */}
+      {/* BACKGROUND PLATE */}
       <div
         className={cn(
           "absolute inset-0 w-full h-full transition-all duration-300 pointer-events-none",
@@ -171,13 +166,13 @@ export function Navbar({ onTriggerPaperHands }: NavbarProps) {
         )}
       />
 
-      {/* main row */}
-      <div className="relative z-[100] w-full md:w-[90%] lg:w-[80%] xl:w-[75%] 2xl:w-[70%] max-w-[1920px] mx-auto px-4 md:px-6 flex items-center gap-3 md:gap-4 xl:gap-6 transition-all duration-300">
-        {/* LOGO + TITLE (reverted to simple, consistent behavior) */}
+      {/* HEADER CONTENT */}
+      <div className="relative z-[100] w-full md:w-[90%] lg:w-[70%] max-w-[1920px] mx-auto px-4 md:px-0 flex justify-between items-center transition-all duration-300">
+        {/* LOGO (original proportions) */}
         <button
           type="button"
           onClick={scrollToTop}
-          className="flex items-center gap-2 md:gap-3 group cursor-pointer shrink-0 transition-transform active:scale-95"
+          className="flex items-center gap-2 md:gap-3 group cursor-pointer shrink-0 transition-transform active:scale-95 mr-4"
           aria-label="Scroll to top"
         >
           <img
@@ -186,28 +181,28 @@ export function Navbar({ onTriggerPaperHands }: NavbarProps) {
             className={cn(
               "rounded-full border border-hell-orange object-cover transition-all duration-300",
               isScrolled
-                ? "w-8 h-8 md:w-8 md:h-8 lg:w-10 lg:h-10"
+                ? "w-8 h-8 md:w-8 md:h-8"
                 : "w-8 h-8 md:w-10 md:h-10 lg:w-12 lg:h-12"
             )}
           />
-          <span className="font-gothic text-hell-orange tracking-wide text-glow text-xl md:text-2xl lg:text-3xl">
+          <span className="font-gothic text-xl md:text-2xl lg:text-3xl text-hell-orange tracking-wide text-glow">
             HELLCOIN
           </span>
         </button>
 
-        {/* DESKTOP NAV – xl+ with MORE logic */}
+        {/* DESKTOP NAV (xl and up) WITH MORE BUTTON */}
         <div
           ref={containerRef}
-          className="hidden xl:flex relative flex-1 items-center justify-center min-w-0"
+          className="relative hidden xl:flex items-center gap-6 justify-end flex-grow min-w-0 mr-4"
         >
           {/* GHOST ROW FOR MEASUREMENT */}
           <div
             ref={ghostRef}
-            className="absolute top-0 left-0 flex flex-nowrap gap-6 opacity-0 pointer-events-none -z-10"
+            className="absolute top-0 left-0 flex gap-4 xl:gap-6 invisible pointer-events-none"
             aria-hidden="true"
           >
             {NAV_LINKS_DATA.map((link) => (
-              <span key={link.name} className={desktopLinkBase}>
+              <span key={link.name} className={linkStyles}>
                 {link.name}
               </span>
             ))}
@@ -216,7 +211,7 @@ export function Navbar({ onTriggerPaperHands }: NavbarProps) {
           {/* VISIBLE LINKS */}
           <div
             className={cn(
-              "flex flex-nowrap items-center gap-6 px-6 transition-opacity duration-200",
+              "flex gap-4 xl:gap-6 transition-opacity duration-200",
               isCalculated ? "opacity-100" : "opacity-0"
             )}
           >
@@ -225,23 +220,25 @@ export function Navbar({ onTriggerPaperHands }: NavbarProps) {
                 key={link.name}
                 href={link.href}
                 onClick={(e) => handleNavClick(e, link.href)}
-                className={desktopLinkBase}
+                className={linkStyles}
               >
                 {link.name}
-                <span className={desktopUnderline} />
+                <span className={linkUnderline}></span>
               </a>
             ))}
           </div>
 
-          {/* MORE BUTTON + DROPDOWN */}
+          {/* MORE BUTTON + DROPDOWN (hover + click) */}
           <div
             ref={moreRef}
             className={cn(
-              "relative h-full flex items-center shrink-0 ml-4 transition-opacity duration-200",
+              "relative h-full flex items-center shrink-0 transition-opacity duration-200",
               isCalculated && showMoreButton
                 ? "opacity-100"
                 : "opacity-0 pointer-events-none"
             )}
+            onMouseEnter={() => setMoreMenuOpen(true)}
+            onMouseLeave={() => setMoreMenuOpen(false)}
           >
             <button
               type="button"
@@ -254,7 +251,11 @@ export function Navbar({ onTriggerPaperHands }: NavbarProps) {
               )}
             >
               MORE
-              {moreMenuOpen ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
+              {moreMenuOpen ? (
+                <ChevronUp size={16} />
+              ) : (
+                <ChevronDown size={16} />
+              )}
             </button>
 
             <AnimatePresence>
@@ -264,18 +265,18 @@ export function Navbar({ onTriggerPaperHands }: NavbarProps) {
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, y: 10 }}
                   transition={{ duration: 0.18, ease: "easeOut" }}
-                  className="absolute top-full right-0 pt-3 z-50 min-w-[220px]"
+                  className="absolute top-full left-0 pt-4 z-50 min-w-[200px]"
                 >
-                  <div className="bg-hell-black border border-hell-red/50 shadow-xl p-4 flex flex-col gap-3">
+                  <div className="bg-hell-black border border-hell-red/50 shadow-xl p-5 flex flex-col gap-4">
                     {hiddenLinks.map((link) => (
                       <a
                         key={link.name}
                         href={link.href}
                         onClick={(e) => handleNavClick(e, link.href)}
-                        className={desktopLinkBase}
+                        className={linkStyles}
                       >
                         {link.name}
-                        <span className={desktopUnderline} />
+                        <span className={linkUnderline}></span>
                       </a>
                     ))}
                   </div>
@@ -285,10 +286,86 @@ export function Navbar({ onTriggerPaperHands }: NavbarProps) {
           </div>
         </div>
 
-        {/* ACTIONS (unchanged behavior) */}
-        <div className="flex items-center gap-3 md:gap-4 shrink-0 ml-auto">
-          {/* Heaven mode */}
+        {/* ACTIONS (unchanged visually from original) */}
+        <div className="flex items-center gap-2 md:gap-4 shrink-0">
           <button
             type="button"
             onClick={onTriggerPaperHands}
-            className="flex items-center gap-2 px
+            className="flex items-center gap-2 px-2 md:px-3 py-1 border border-pink-300 rounded text-pink-100 font-terminal text-[10px] md:text-sm font-bold hover:bg-pink-500/20 hover:text-white transition-colors shadow-[0_0_10px_rgba(255,192,203,0.3)] whitespace-nowrap"
+          >
+            <span className="w-2 h-2 rounded-full bg-pink-200 animate-pulse shadow-[0_0_5px_#fff]" />
+            <span className="hidden md:inline">HEAVEN MODE</span>
+            <span className="md:hidden">HEAVEN</span>
+          </button>
+
+          <a
+            href={BUY_LINK}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="hidden md:block bg-hell-red hover:bg-hell-orange text-hell-white font-gothic text-base lg:text-lg px-4 lg:px-6 py-1 lg:py-2 rounded shadow-[0_0_15px_rgba(204,0,0,0.5)] transition-all transform hover:scale-105 border border-hell-orange/50 text-center whitespace-nowrap"
+          >
+            ACQUIRE $666
+          </a>
+
+          {/* HAMBURGER – active below xl only */}
+          <button
+            type="button"
+            className="xl:hidden text-hell-white"
+            onClick={() => setMobileMenuOpen((prev) => !prev)}
+            aria-label="Toggle navigation"
+          >
+            {mobileMenuOpen ? <X size={28} /> : <Menu size={28} />}
+          </button>
+        </div>
+      </div>
+
+      {/* MOBILE / TABLET MENU (all < xl) */}
+      <AnimatePresence>
+        {mobileMenuOpen && (
+          <motion.div
+            className="xl:hidden fixed inset-0 bg-hell-black/95 backdrop-blur-xl border-b border-hell-red/50 overflow-y-auto shadow-2xl z-[95] cursor-pointer"
+            onClick={() => setMobileMenuOpen(false)}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.18, ease: "easeOut" }}
+          >
+            <motion.div
+              className="w-full mx-auto p-6 pt-20 pb-8 flex flex-col gap-6 max-w-[480px] sm:max-w-[520px] md:max-w-none md:w-full cursor-default"
+              initial={{ opacity: 0, y: -12 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -12 }}
+              transition={{ duration: 0.2, ease: "easeOut" }}
+            >
+              {/* TOP DIVIDER + LINKS */}
+              <div className="w-full flex flex-col gap-3 border-t border-gray-900 pt-4">
+                {NAV_LINKS_DATA.map((link) => (
+                  <a
+                    key={link.name}
+                    href={link.href}
+                    onClick={(e) => handleNavClick(e, link.href)}
+                    className="font-terminal text-lg text-center text-hell-white hover:text-hell-orange tracking-widest cursor-pointer font-bold py-1 w-fit mx-auto"
+                  >
+                    {link.name}
+                  </a>
+                ))}
+              </div>
+
+              {/* BOTTOM BUY SECTION */}
+              <div className="w-full flex flex-col items-center pt-4 border-t border-gray-900">
+                <a
+                  href={BUY_LINK}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="bg-hell-red text-hell-white font-gothic text-2xl py-3 px-12 rounded shadow-[0_0_20px_rgba(204,0,0,0.6)]"
+                >
+                  ACQUIRE $666
+                </a>
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </nav>
+  );
+};
