@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect } from "react";
 import { Menu, X } from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
 import { cn } from "../../lib/utils";
 
 const BUY_LINK = "https://raydium.io/swap";
@@ -52,7 +53,7 @@ export function Navbar({ onTriggerPaperHands }: NavbarProps) {
     href: string
   ) => {
     e.preventDefault();
-    e.stopPropagation(); // keep this so overlay onClick doesn't double-fire
+    e.stopPropagation(); // so overlay onClick doesn't double-fire
     setMobileMenuOpen(false);
 
     const targetId = href.replace("#", "");
@@ -62,7 +63,7 @@ export function Navbar({ onTriggerPaperHands }: NavbarProps) {
     }
   };
 
-  // shared nav link styles
+  // shared nav link styles (desktop)
   const linkStyles = [
     "font-terminal text-hell-white hover:text-[#ffae00] transition-colors",
     "uppercase tracking-widest cursor-pointer font-bold whitespace-nowrap",
@@ -179,43 +180,54 @@ export function Navbar({ onTriggerPaperHands }: NavbarProps) {
         </div>
       </div>
 
-      {/* MOBILE / TABLET NAV (including 1024x768) */}
-      {mobileMenuOpen && (
-        <div
-          className="xl:hidden fixed inset-0 z-[95] bg-hell-black/95 backdrop-blur-xl border-b border-hell-red/50 overflow-y-auto"
-          onClick={() => setMobileMenuOpen(false)}
-        >
-          <div
-            className="w-full mx-auto p-6 pt-20 pb-8 flex flex-col gap-6 max-w-[480px] sm:max-w-[520px] md:max-w-none md:w-full"
+      {/* MOBILE / TABLET NAV (animated) */}
+      <AnimatePresence>
+        {mobileMenuOpen && (
+          <motion.div
+            className="xl:hidden fixed inset-0 z-[95] bg-hell-black/95 backdrop-blur-xl border-b border-hell-red/50 overflow-y-auto"
+            onClick={() => setMobileMenuOpen(false)}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.18, ease: "easeOut" }}
           >
-            {/* TOP DIVIDER FOR MENU */}
-            <div className="w-full flex flex-col gap-3 border-t border-gray-900 pt-4">
-              {NAV_LINKS_DATA.map((link) => (
-                <a
-                  key={link.name}
-                  href={link.href}
-                  onClick={(e) => handleNavClick(e, link.href)}
-                  className="font-terminal text-lg text-center text-hell-white hover:text-hell-orange tracking-widest cursor-pointer font-bold py-1 w-fit mx-auto"
-                >
-                  {link.name}
-                </a>
-              ))}
-            </div>
+            <motion.div
+              className="w-full mx-auto p-6 pt-20 pb-8 flex flex-col gap-6 max-w-[480px] sm:max-w-[520px] md:max-w-none md:w-full"
+              // let clicks inside bubble so overlay can close when tapping empty space
+              initial={{ opacity: 0, y: -12 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -12 }}
+              transition={{ duration: 0.2, ease: "easeOut" }}
+            >
+              {/* TOP DIVIDER FOR MENU */}
+              <div className="w-full flex flex-col gap-3 border-t border-gray-900 pt-4">
+                {NAV_LINKS_DATA.map((link) => (
+                  <a
+                    key={link.name}
+                    href={link.href}
+                    onClick={(e) => handleNavClick(e, link.href)}
+                    className="font-terminal text-lg text-center text-hell-white hover:text-hell-orange tracking-widest cursor-pointer font-bold py-1 w-fit mx-auto"
+                  >
+                    {link.name}
+                  </a>
+                ))}
+              </div>
 
-            {/* BOTTOM BUY SECTION */}
-            <div className="w-full flex flex-col items-center pt-4 border-t border-gray-900">
-              <a
-                href={BUY_LINK}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="bg-hell-red text-hell-white font-gothic text-2xl py-3 px-12 rounded shadow-[0_0_20px_rgba(204,0,0,0.6)]"
-              >
-                ACQUIRE $666
-              </a>
-            </div>
-          </div>
-        </div>
-      )}
+              {/* BOTTOM BUY SECTION */}
+              <div className="w-full flex flex-col items-center pt-4 border-t border-gray-900">
+                <a
+                  href={BUY_LINK}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="bg-hell-red text-hell-white font-gothic text-2xl py-3 px-12 rounded shadow-[0_0_20px_rgba(204,0,0,0.6)]"
+                >
+                  ACQUIRE $666
+                </a>
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </nav>
   );
 }
