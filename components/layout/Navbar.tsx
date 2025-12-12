@@ -52,7 +52,7 @@ export function Navbar({ onTriggerPaperHands }: NavbarProps) {
     href: string
   ) => {
     e.preventDefault();
-    e.stopPropagation();
+    e.stopPropagation(); // keep this so overlay onClick doesn't double-fire
     setMobileMenuOpen(false);
 
     const targetId = href.replace("#", "");
@@ -187,7 +187,6 @@ export function Navbar({ onTriggerPaperHands }: NavbarProps) {
         >
           <div
             className="w-full mx-auto p-6 pt-20 pb-8 flex flex-col gap-6 max-w-[480px] sm:max-w-[520px] md:max-w-none md:w-full"
-            onClick={(e) => e.stopPropagation()}
           >
             {/* TOP DIVIDER FOR MENU */}
             <div className="w-full flex flex-col gap-3 border-t border-gray-900 pt-4">
@@ -203,7 +202,7 @@ export function Navbar({ onTriggerPaperHands }: NavbarProps) {
               ))}
             </div>
 
-            {/* BOTTOM BUY SECTION (already had divider) */}
+            {/* BOTTOM BUY SECTION */}
             <div className="w-full flex flex-col items-center pt-4 border-t border-gray-900">
               <a
                 href={BUY_LINK}
