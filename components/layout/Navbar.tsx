@@ -32,7 +32,7 @@ export function Navbar({ onTriggerPaperHands }: NavbarProps) {
   const [isScrolled, setIsScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
-  // --- DESKTOP "MORE" STATE ---
+  // DESKTOP MORE STATE
   const [moreMenuOpen, setMoreMenuOpen] = useState(false);
   const containerRef = useRef<HTMLDivElement | null>(null);
   const ghostRef = useRef<HTMLDivElement | null>(null);
@@ -40,7 +40,7 @@ export function Navbar({ onTriggerPaperHands }: NavbarProps) {
   const [visibleCount, setVisibleCount] = useState(NAV_LINKS_DATA.length);
   const [isCalculated, setIsCalculated] = useState(false);
 
-  // scroll shrink
+  // shrink nav on scroll
   useEffect(() => {
     const handleScroll = () => setIsScrolled(window.scrollY > 50);
     window.addEventListener("scroll", handleScroll);
@@ -66,7 +66,7 @@ export function Navbar({ onTriggerPaperHands }: NavbarProps) {
     href: string
   ) => {
     e.preventDefault();
-    e.stopPropagation(); // avoid overlay double fire
+    e.stopPropagation();
     setMobileMenuOpen(false);
     setMoreMenuOpen(false);
 
@@ -77,7 +77,7 @@ export function Navbar({ onTriggerPaperHands }: NavbarProps) {
     }
   };
 
-  // --- DESKTOP OVERFLOW CALCULATION (MORE BUTTON) ---
+  // DESKTOP OVERFLOW CALC ("MORE" BUTTON)
   const checkOverflow = useCallback(() => {
     const container = containerRef.current;
     const ghost = ghostRef.current;
@@ -87,24 +87,32 @@ export function Navbar({ onTriggerPaperHands }: NavbarProps) {
     const containerWidth = container.clientWidth;
     if (containerWidth <= 0) return;
 
+    // keep some internal safe space inside the link zone
+    const SAFE_SIDE = 40; // px each side
+    const effectiveWidth = Math.max(containerWidth - SAFE_SIDE * 2, 0);
+
     const ghostChildren = Array.from(
       ghost.children
     ) as HTMLElement[];
 
-    const moreButtonWidth = 90; // reserved width for "MORE" button
-    let currentWidth = 0;
+    const gapPx = 24; // approximates gap-6
+    const moreButtonWidth = 90; // reserved width for MORE btn if needed
+
+    let used = 0;
     let visible = 0;
 
     for (let i = 0; i < ghostChildren.length; i++) {
-      const linkWidth = ghostChildren[i].offsetWidth;
+      const child = ghostChildren[i];
+      const baseWidth = child.offsetWidth;
+      const gap = visible > 0 ? gapPx : 0;
       const reserveMore =
         i < ghostChildren.length - 1 ? moreButtonWidth : 0;
 
-      if (currentWidth + linkWidth + reserveMore > containerWidth) {
+      if (used + gap + baseWidth + reserveMore > effectiveWidth) {
         break;
       }
 
-      currentWidth += linkWidth;
+      used += gap + baseWidth;
       visible++;
     }
 
@@ -140,14 +148,10 @@ export function Navbar({ onTriggerPaperHands }: NavbarProps) {
   const hiddenLinks = NAV_LINKS_DATA.slice(visibleCount);
   const showMoreButton = hiddenLinks.length > 0;
 
-  // DESKTOP nav link styles
-  const linkStyles = [
-    "font-terminal text-hell-white hover:text-[#ffae00] transition-colors",
-    "uppercase tracking-widest cursor-pointer font-bold whitespace-nowrap",
-    "text-[clamp(0.8rem,2.4vw,0.95rem)]",
-    "xl:text-[clamp(0.95rem,1.2vw,1.1rem)]",
-    "2xl:text-[clamp(1.05rem,1vw,1.2rem)]",
-  ].join(" ");
+  const desktopLinkBase =
+    "font-terminal text-sm xl:text-base text-hell-white hover:text-[#ffae00] transition-colors uppercase tracking-widest cursor-pointer font-bold whitespace-nowrap relative group";
+  const desktopUnderline =
+    "absolute -bottom-1 left-0 w-0 h-0.5 bg-hell-orange transition-all group-hover:w-full";
 
   return (
     <nav
@@ -168,8 +172,8 @@ export function Navbar({ onTriggerPaperHands }: NavbarProps) {
       />
 
       {/* main row */}
-      <div className="relative z-[100] w-full md:w-[90%] lg:w-[90%] xl:w-[75%] 2xl:w-[70%] max-w-[1920px] mx-auto px-[clamp(0.75rem,4vw,1.5rem)] sm:px-fluid-gap flex items-center gap-3 md:gap-4 xl:gap-6 transition-all duration-300">
-        {/* LOGO */}
+      <div className="relative z-[100] w-full md:w-[90%] lg:w-[80%] xl:w-[75%] 2xl:w-[70%] max-w-[1920px] mx-auto px-4 md:px-6 flex items-center gap-3 md:gap-4 xl:gap-6 transition-all duration-300">
+        {/* LOGO + TITLE (reverted to simple, consistent behavior) */}
         <button
           type="button"
           onClick={scrollToTop}
@@ -182,24 +186,16 @@ export function Navbar({ onTriggerPaperHands }: NavbarProps) {
             className={cn(
               "rounded-full border border-hell-orange object-cover transition-all duration-300",
               isScrolled
-                ? "w-8 h-8 md:w-9 md:h-9 xl:w-10 xl:h-10"
-                : "w-8 h-8 md:w-10 md:h-10 xl:w-12 xl:h-12"
+                ? "w-8 h-8 md:w-8 md:h-8 lg:w-10 lg:h-10"
+                : "w-8 h-8 md:w-10 md:h-10 lg:w-12 lg:h-12"
             )}
           />
-          <span
-            className={[
-              "font-gothic text-hell-orange tracking-wide text-glow",
-              "text-[clamp(1.25rem,4vw,1.5rem)]",
-              "md:text-[clamp(1.5rem,3vw,1.9rem)]",
-              "xl:text-[clamp(1.9rem,2.5vw,2.4rem)]",
-              "2xl:text-[clamp(2.1rem,2vw,2.7rem)]",
-            ].join(" ")}
-          >
+          <span className="font-gothic text-hell-orange tracking-wide text-glow text-xl md:text-2xl lg:text-3xl">
             HELLCOIN
           </span>
         </button>
 
-        {/* DESKTOP NAV – ONLY FROM xl+ WITH "MORE" */}
+        {/* DESKTOP NAV – xl+ with MORE logic */}
         <div
           ref={containerRef}
           className="hidden xl:flex relative flex-1 items-center justify-center min-w-0"
@@ -211,7 +207,7 @@ export function Navbar({ onTriggerPaperHands }: NavbarProps) {
             aria-hidden="true"
           >
             {NAV_LINKS_DATA.map((link) => (
-              <span key={link.name} className={linkStyles}>
+              <span key={link.name} className={desktopLinkBase}>
                 {link.name}
               </span>
             ))}
@@ -220,7 +216,7 @@ export function Navbar({ onTriggerPaperHands }: NavbarProps) {
           {/* VISIBLE LINKS */}
           <div
             className={cn(
-              "flex flex-nowrap items-center gap-6 transition-opacity duration-200",
+              "flex flex-nowrap items-center gap-6 px-6 transition-opacity duration-200",
               isCalculated ? "opacity-100" : "opacity-0"
             )}
           >
@@ -229,9 +225,10 @@ export function Navbar({ onTriggerPaperHands }: NavbarProps) {
                 key={link.name}
                 href={link.href}
                 onClick={(e) => handleNavClick(e, link.href)}
-                className={linkStyles}
+                className={desktopLinkBase}
               >
                 {link.name}
+                <span className={desktopUnderline} />
               </a>
             ))}
           </div>
@@ -275,9 +272,10 @@ export function Navbar({ onTriggerPaperHands }: NavbarProps) {
                         key={link.name}
                         href={link.href}
                         onClick={(e) => handleNavClick(e, link.href)}
-                        className={linkStyles}
+                        className={desktopLinkBase}
                       >
                         {link.name}
+                        <span className={desktopUnderline} />
                       </a>
                     ))}
                   </div>
@@ -287,99 +285,10 @@ export function Navbar({ onTriggerPaperHands }: NavbarProps) {
           </div>
         </div>
 
-        {/* ACTIONS */}
+        {/* ACTIONS (unchanged behavior) */}
         <div className="flex items-center gap-3 md:gap-4 shrink-0 ml-auto">
           {/* Heaven mode */}
           <button
             type="button"
             onClick={onTriggerPaperHands}
-            className={[
-              "flex items-center gap-2 px-2 md:px-3 py-1 border border-pink-300 rounded text-pink-100 font-terminal font-bold",
-              "hover:bg-pink-500/20 hover:text-white transition-colors shadow-[0_0_10px_rgba(255,192,203,0.3)] whitespace-nowrap",
-              "text-[clamp(0.62rem,2.3vw,0.8rem)]",
-              "md:text-[clamp(0.75rem,1.6vw,0.95rem)]",
-              "xl:text-[clamp(0.85rem,1.3vw,1.05rem)]",
-            ].join(" ")}
-          >
-            <span className="w-2 h-2 rounded-full bg-pink-200 animate-pulse shadow-[0_0_5px_#fff]" />
-            <span className="hidden md:inline">HEAVEN MODE</span>
-            <span className="md:hidden">HEAVEN</span>
-          </button>
-
-          {/* BUY – desktop only (xl+) */}
-          <a
-            href={BUY_LINK}
-            target="_blank"
-            rel="noopener noreferrer"
-            className={[
-              "hidden xl:block bg-hell-red hover:bg-hell-orange text-hell-white font-gothic",
-              "px-4 xl:px-6 py-1 xl:py-2 rounded border border-hell-orange/50 text-center whitespace-nowrap",
-              "transition-all transform hover:scale-105 shadow-[0_0_15px_rgba(204,0,0,0.5)]",
-              "text-[clamp(1rem,1.1vw,1.1rem)] 2xl:text-[clamp(1.1rem,0.9vw,1.3rem)]",
-            ].join(" ")}
-          >
-            ACQUIRE $666
-          </a>
-
-          {/* Hamburger – < xl */}
-          <button
-            type="button"
-            className="xl:hidden text-hell-white p-2"
-            onClick={() => setMobileMenuOpen((prev) => !prev)}
-            aria-label="Toggle navigation"
-          >
-            {mobileMenuOpen ? <X size={28} /> : <Menu size={28} />}
-          </button>
-        </div>
-      </div>
-
-      {/* MOBILE / TABLET NAV (animated, < xl) */}
-      <AnimatePresence>
-        {mobileMenuOpen && (
-          <motion.div
-            className="xl:hidden fixed inset-0 z-[95] bg-hell-black/95 backdrop-blur-xl border-b border-hell-red/50 overflow-y-auto"
-            onClick={() => setMobileMenuOpen(false)}
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 0.18, ease: "easeOut" }}
-          >
-            <motion.div
-              className="w-full mx-auto p-6 pt-20 pb-8 flex flex-col gap-6 max-w-[480px] sm:max-w-[520px] md:max-w-none md:w-full"
-              initial={{ opacity: 0, y: -12 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -12 }}
-              transition={{ duration: 0.2, ease: "easeOut" }}
-            >
-              {/* TOP DIVIDER FOR MENU */}
-              <div className="w-full flex flex-col gap-3 border-t border-gray-900 pt-4">
-                {NAV_LINKS_DATA.map((link) => (
-                  <a
-                    key={link.name}
-                    href={link.href}
-                    onClick={(e) => handleNavClick(e, link.href)}
-                    className="font-terminal text-lg text-center text-hell-white hover:text-hell-orange tracking-widest cursor-pointer font-bold py-1 w-fit mx-auto"
-                  >
-                    {link.name}
-                  </a>
-                ))}
-              </div>
-
-              {/* BOTTOM BUY SECTION */}
-              <div className="w-full flex flex-col items-center pt-4 border-t border-gray-900">
-                <a
-                  href={BUY_LINK}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="bg-hell-red text-hell-white font-gothic text-2xl py-3 px-12 rounded shadow-[0_0_20px_rgba(204,0,0,0.6)]"
-                >
-                  ACQUIRE $666
-                </a>
-              </div>
-            </motion.div>
-          </motion.div>
-        )}
-      </AnimatePresence>
-    </nav>
-  );
-}
+            className="flex items-center gap-2 px
