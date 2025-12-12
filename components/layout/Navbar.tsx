@@ -119,7 +119,7 @@ export function Navbar({ onTriggerPaperHands }: NavbarProps) {
           </span>
         </button>
 
-        {/* DESKTOP NAV – now only from xl+ */}
+        {/* DESKTOP NAV – only from xl+ */}
         <div className="hidden xl:flex flex-1 items-center justify-center gap-6 min-w-0">
           {NAV_LINKS_DATA.map((link) => (
             <a
@@ -189,19 +189,21 @@ export function Navbar({ onTriggerPaperHands }: NavbarProps) {
             className="w-full mx-auto p-6 pt-20 pb-8 flex flex-col gap-6 max-w-[480px] sm:max-w-[520px] md:max-w-none md:w-full"
             onClick={(e) => e.stopPropagation()}
           >
-            <div className="w-full flex flex-col gap-3">
+            {/* TOP DIVIDER FOR MENU */}
+            <div className="w-full flex flex-col gap-3 border-t border-gray-900 pt-4">
               {NAV_LINKS_DATA.map((link) => (
                 <a
                   key={link.name}
                   href={link.href}
                   onClick={(e) => handleNavClick(e, link.href)}
-                  className="font-terminal text-lg text-center text-hell-white hover:text-hell-orange tracking-widest cursor-pointer font-bold py-1"
+                  className="font-terminal text-lg text-center text-hell-white hover:text-hell-orange tracking-widest cursor-pointer font-bold py-1 w-fit mx-auto"
                 >
                   {link.name}
                 </a>
               ))}
             </div>
 
+            {/* BOTTOM BUY SECTION (already had divider) */}
             <div className="w-full flex flex-col items-center pt-4 border-t border-gray-900">
               <a
                 href={BUY_LINK}
