@@ -299,11 +299,12 @@ export const Navbar = ({ onTriggerPaperHands }: NavbarProps) => {
             <span className="md:hidden">HEAVEN</span>
           </button>
 
+          {/* BUY ONLY IN DESKTOP MODE (xl+) */}
           <a
             href={BUY_LINK}
             target="_blank"
             rel="noopener noreferrer"
-            className="hidden md:block bg-hell-red hover:bg-hell-orange text-hell-white font-gothic text-base lg:text-lg px-4 lg:px-6 py-1 lg:py-2 rounded shadow-[0_0_15px_rgba(204,0,0,0.5)] transition-all transform hover:scale-105 border border-hell-orange/50 text-center whitespace-nowrap"
+            className="hidden xl:block bg-hell-red hover:bg-hell-orange text-hell-white font-gothic text-base lg:text-lg px-4 lg:px-6 py-1 lg:py-2 rounded shadow-[0_0_15px_rgba(204,0,0,0.5)] transition-all transform hover:scale-105 border border-hell-orange/50 text-center whitespace-nowrap"
           >
             ACQUIRE $666
           </a>
