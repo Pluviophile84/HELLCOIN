@@ -1,40 +1,38 @@
-import React from "react";
+import Image from "next/image";
 
 export const Hero = () => {
   return (
     <section
-      id="top"
+      id="hero"
       className="
         relative 
-        flex items-center justify-center 
         min-h-screen 
-        px-4 pt-24 pb-20 
-        md:pt-28 md:pb-24
+        flex items-center 
+        overflow-hidden 
         bg-hell-black
       "
     >
-      {/* Optional subtle radial glow behind content */}
-      <div className="pointer-events-none absolute inset-0 -z-10">
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,#ff330022,transparent_55%)]" />
+      {/* BACKGROUND BANNER */}
+      <div className="absolute inset-0 -z-10">
+        <Image
+          src="/banner.png"
+          alt="HELLCOIN - Throne of Regret"
+          fill
+          priority
+          className="
+            object-cover 
+            object-[30%_center] 
+            md:object-center
+          "
+        />
+        {/* Dark overlay so text stays readable */}
+        <div className="absolute inset-0 bg-gradient-to-r from-black/85 via-black/70 to-black/10" />
       </div>
 
-      <div className="w-full max-w-6xl mx-auto">
+      {/* CONTENT WRAPPER WITH PADDING FOR NAVBAR */}
+      <div className="relative z-10 w-full max-w-6xl mx-auto px-4 pt-24 pb-16 md:px-6 md:pt-28 md:pb-20">
         <div className="ml-auto max-w-2xl text-right space-y-4 md:space-y-6">
-          {/* PROOF OF SUFFERING LABEL (20% bigger, clamped) */}
-          <p
-            className="
-              font-terminal 
-              tracking-[0.25em] 
-              uppercase 
-              text-hell-gold 
-              mb-2
-              text-[clamp(0.9rem,1.7vw,1.15rem)]
-            "
-          >
-            PROOF OF SUFFERING
-          </p>
-
-          {/* MAIN HEADLINE - BORN IN THE RED. FORGED BY REGRET. */}
+          {/* MAIN HEADER – SAME COPY, SAME FONT FAMILY, JUST CLAMPED */}
           <h1
             className="
               font-gothic 
@@ -48,14 +46,14 @@ export const Hero = () => {
             FORGED BY REGRET.
           </h1>
 
-          {/* WHEN THE MARKET BURNS, WE TREND (controlled break) */}
+          {/* WHEN THE MARKET BURNS – CONTROLLED BREAK */}
           <p
             className="
               font-gothic 
               text-hell-gold 
               uppercase 
-              mt-4
-              text-[clamp(1.4rem,2.7vw,2.1rem)]
+              mt-2
+              text-[clamp(1.3rem,2.6vw,2rem)]
             "
           >
             When the market burns,
@@ -69,22 +67,22 @@ export const Hero = () => {
             </span>
           </p>
 
-          {/* BODY TEXT (20% bigger, clamped) */}
+          {/* BODY TEXT – INCLUDES “PROOF OF SUFFERING”, 20% BIGGER OVERALL */}
           <p
             className="
               font-terminal 
               text-hell-white/80 
+              leading-relaxed 
               max-w-xl 
-              ml-auto 
-              leading-relaxed
-              text-[clamp(1.1rem,2.2vw,1.45rem)]
+              ml-auto
+              text-[clamp(1.05rem,2.1vw,1.4rem)]
             "
           >
             The first cryptocurrency powered by Proof of Suffering. The only
             consensus traders truly understand.
           </p>
 
-          {/* CTA BUTTONS (left to Tailwind breakpoints, no clamp) */}
+          {/* CTA BUTTONS – LEFT UNDER TAILWIND BREAKPOINTS, NO CLAMP */}
           <div className="flex justify-end gap-3 md:gap-4 pt-4 md:pt-6">
             <button
               className="
