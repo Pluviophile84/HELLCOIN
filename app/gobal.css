@@ -2,49 +2,29 @@
 @tailwind components;
 @tailwind utilities;
 
-/* ---- THEME TOKENS ---- */
 :root {
-  /* Main foreground color used for body text */
   --foreground-rgb: 229, 229, 229;
 }
 
-/* ---- BASE PAGE STYLES ---- */
 body {
   color: rgb(var(--foreground-rgb));
-  background: #050505; /* hell.black */
-  /* Intentionally NOT using overflow-x: hidden; 
-     so layout issues show instead of being masked */
+  background: #050505;
+  overflow-x: hidden;
 }
 
-/* ---- CUSTOM SCROLLBAR (WEBKIT) ---- */
-::-webkit-scrollbar {
-  width: 8px;
-}
+/* Custom Scrollbar */
+::-webkit-scrollbar { width: 8px; }
+::-webkit-scrollbar-track { background: #0a0a0a; }
+::-webkit-scrollbar-thumb { background: #cc0000; border-radius: 4px; }
+::-webkit-scrollbar-thumb:hover { background: #ff3300; }
 
-::-webkit-scrollbar-track {
-  background: #0a0a0a; /* hell.dark */
-}
+.text-glow { text-shadow: 0 0 10px rgba(255, 51, 0, 0.7); }
 
-::-webkit-scrollbar-thumb {
-  background: #cc0000; /* hell.red */
-  border-radius: 4px;
-}
-
-::-webkit-scrollbar-thumb:hover {
-  background: #ff3300; /* hell.orange */
-}
-
-/* ---- TEXT GLOW UTILITY ---- */
-.text-glow {
-  text-shadow: 0 0 10px rgba(255, 51, 0, 0.7);
-}
-
-/* ---- HIDE SCROLLBAR FOR HORIZONTAL STRIPS ---- */
+/* Hide Scrollbar for horizontal scrolling areas */
 .scrollbar-hide::-webkit-scrollbar {
-  display: none;
+    display: none;
 }
-
 .scrollbar-hide {
-  -ms-overflow-style: none; /* IE and Edge */
-  scrollbar-width: none;    /* Firefox */
+    -ms-overflow-style: none;
+    scrollbar-width: none;
 }
