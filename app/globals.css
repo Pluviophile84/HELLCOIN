@@ -2,14 +2,19 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Base Body Styles */
-body {
-  color: #e5e5e5;
-  background: #050505;
-  overflow-x: hidden;
+/* --------- Root colors (HELLCOIN theme) --------- */
+:root {
+  --foreground-rgb: 229, 229, 229;
+  --background-hex: #050505;
 }
 
-/* Custom Scrollbar (Webkit) */
+/* --------- Global body styles --------- */
+body {
+  color: rgb(var(--foreground-rgb));
+  background: var(--background-hex);
+}
+
+/* --------- Custom Scrollbar --------- */
 ::-webkit-scrollbar {
   width: 8px;
 }
@@ -27,16 +32,17 @@ body {
   background: #ff3300;
 }
 
-/* Utilities */
+/* --------- Glow utility --------- */
 .text-glow {
   text-shadow: 0 0 10px rgba(255, 51, 0, 0.7);
 }
 
-.scrollbar-hide {
-  -ms-overflow-style: none; /* IE and Edge */
-  scrollbar-width: none; /* Firefox */
+/* --------- Hide scrollbar for horizontal scroll areas --------- */
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
 }
 
-.scrollbar-hide::-webkit-scrollbar {
-  display: none; /* Chrome, Safari and Opera */
+.scrollbar-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
 }
