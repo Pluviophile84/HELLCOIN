@@ -3,43 +3,59 @@
 @tailwind utilities;
 
 :root {
-  --foreground-rgb: 229, 229, 229;
+  --hell-foreground: #e5e5e5;
+  --hell-background: #050505;
 }
 
+/* Base box sizing */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html,
 body {
-  color: rgb(var(--foreground-rgb));
-  background: #050505;
-  /* Ensure horizontal scroll is hidden globally */
-  overflow-x: hidden;
+  height: 100%;
+  margin: 0;
+  padding: 0;
 }
 
-/* Custom Scrollbar */
-::-webkit-scrollbar { 
-  width: 8px; 
-}
-::-webkit-scrollbar-track { 
-  background: #0a0a0a; 
-}
-::-webkit-scrollbar-thumb { 
-  background: #cc0000; 
-  border-radius: 4px; 
-}
-::-webkit-scrollbar-thumb:hover { 
-  background: #ff3300; 
+/* Global body styling */
+body {
+  color: var(--hell-foreground);
+  background: var(--hell-background);
+  -webkit-font-smoothing: antialiased;
 }
 
-/* Text Glow Utility */
-.text-glow { 
-  text-shadow: 0 0 10px rgba(255, 51, 0, 0.7); 
+/* Custom scrollbar (WebKit only) */
+::-webkit-scrollbar {
+  width: 8px;
 }
 
-/* Hide Scrollbar for horizontal scrolling areas (Chrome/Safari) */
+::-webkit-scrollbar-track {
+  background: #0a0a0a;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #cc0000;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #ff3300;
+}
+
+/* Text glow utility */
+.text-glow {
+  text-shadow: 0 0 10px rgba(255, 51, 0, 0.7);
+}
+
+/* Hide scrollbar for horizontal scroll areas */
 .scrollbar-hide::-webkit-scrollbar {
-    display: none;
+  display: none;
 }
 
-/* Hide Scrollbar for IE, Edge and Firefox */
 .scrollbar-hide {
-    -ms-overflow-style: none;  /* IE and Edge */
-    scrollbar-width: none;  /* Firefox */
+  -ms-overflow-style: none;
 }
