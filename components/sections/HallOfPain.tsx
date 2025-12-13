@@ -1,6 +1,6 @@
 "use client";
 import { useState, useEffect } from "react";
-import { Skull, AlertTriangle, XCircle, Filter, ArrowUpDown } from "lucide-react";
+import { AlertTriangle, Filter, ArrowUpDown } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 
 const sinners = [
