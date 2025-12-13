@@ -23,13 +23,19 @@ module.exports = {
         terminal: ["var(--font-vt323)"],
       },
 
-      // HERO TYPOGRAPHY TOKENS
+      // --- HERO TYPOGRAPHY: ALL TEXT CLAMPED HERE ---
       fontSize: {
-        // Main hero headline: fluid between small phones and desktop
-        "fluid-hero": "clamp(2.6rem, 5vw, 4.5rem)",
+        // Main hero headline
+        fluid-hero: "clamp(2.8rem, 5.8vw, 4.8rem)",
 
-        // Hero body copy: fluid but more subtle
-        "fluid-body": "clamp(1rem, 2.4vw, 1.25rem)",
+        // Standard body copy in hero
+        fluid-body: "clamp(1.05rem, 2.6vw, 1.35rem)",
+
+        // Highlight phrase: "Proof-of-Suffering"
+        fluid-highlight: "clamp(1.4rem, 3vw, 2rem)",
+
+        // Tagline: "WHEN THE MARKET BURNS, WE TREND"
+        fluid-tagline: "clamp(1.2rem, 2.8vw, 1.8rem)",
       },
 
       // Horizontal padding that scales with viewport width
