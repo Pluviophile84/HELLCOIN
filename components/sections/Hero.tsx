@@ -65,7 +65,7 @@ export const Hero = () => {
         >
           <p className="leading-relaxed">
             The first cryptocurrency powered by{" "}
-            <span className="block md:inline text-hell-gold text-2xl md:text-3xl my-2 md:my-0 font-bold md:font-normal">
+            <span className="block md:inline text-hell-gold text-fluid-highlight my-2 md:my-0 font-bold md:font-normal">
               Proof-of-Suffering
             </span>
           </p>
@@ -74,17 +74,21 @@ export const Hero = () => {
           </p>
         </motion.div>
 
-        {/* TAGLINE */}
+        {/* TAGLINE WITH CONTROLLED BREAK */}
         <motion.p
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 1.0 }}
-          className="font-terminal text-hell-red text-lg md:text-2xl mt-8 tracking-widest uppercase animate-pulse md:max-w-5xl"
+          className="font-terminal text-hell-red text-fluid-tagline mt-8 tracking-widest uppercase animate-pulse md:max-w-5xl"
         >
-          WHEN THE MARKET BURNS, WE TREND
+          WHEN THE MARKET BURNS,
+          <span className="block md:inline">
+            {" "}
+            WE TREND
+          </span>
         </motion.p>
 
-        {/* CTA ROW */}
+        {/* CTA ROW (BUTTONS LEFT ON TAILWIND BREAKPOINTS) */}
         <motion.div
           initial={{ opacity: 0, y: 50 }}
           animate={{ opacity: 1, y: 0 }}
