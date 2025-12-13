@@ -33,7 +33,7 @@ export const Hero = () => {
         <img
           src="/banner.png"
           alt="Hellcoin Throne"
-          className="absolute inset-0 w-full h-full object-cover object-left opacity-100"
+          className="absolute inset-0 w-full h-full object-cover object-[20%_50%] opacity-100"
         />
         <div className="absolute inset-0 bg-gradient-to-t from-hell-black via-hell-black/80 to-transparent" />
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-transparent via-hell-black/40 to-hell-black" />
@@ -124,7 +124,7 @@ export const Hero = () => {
           <span className="block md:inline md:ml-2">WE TREND</span>
         </motion.p>
 
-        {/* CTAs (LEFT STRICTLY ON TAILWIND SIZING, NO CLAMP) */}
+        {/* CTAs (BUTTON TEXT NOT CLAMPED) */}
         <motion.div
           initial={{ opacity: 0, y: 50 }}
           animate={{ opacity: 1, y: 0 }}
