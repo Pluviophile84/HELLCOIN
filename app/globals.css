@@ -2,29 +2,67 @@
 @tailwind components;
 @tailwind utilities;
 
+/* ROOT THEME TOKENS */
 :root {
-  --foreground-rgb: 229, 229, 229;
+  --hell-foreground: #e5e5e5;
+  --hell-background: #050505;
 }
 
+/* BASE RESET */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html,
 body {
-  color: rgb(var(--foreground-rgb));
-  background: #050505;
-  /* Removed 'overflow-x: hidden' as it's no longer needed */
+  height: 100%;
+  margin: 0;
 }
 
-/* Custom Scrollbar */
-::-webkit-scrollbar { width: 8px; }
-::-webkit-scrollbar-track { background: #0a0a0a; }
-::-webkit-scrollbar-thumb { background: #cc0000; border-radius: 4px; }
-::-webkit-scrollbar-thumb:hover { background: #ff3300; }
+/* GLOBAL BODY STYLING */
+body {
+  color: var(--hell-foreground);
+  background: var(--hell-background);
+  /* overflow-x: hidden;  // Intentionally not used */
+  -webkit-font-smoothing: antialiased;
+}
 
-.text-glow { text-shadow: 0 0 10px rgba(255, 51, 0, 0.7); }
+/* CUSTOM SCROLLBAR (WEBKIT) */
+::-webkit-scrollbar {
+  width: 8px;
+}
 
-/* Hide Scrollbar for horizontal scrolling areas */
+::-webkit-scrollbar-track {
+  background: #0a0a0a;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #cc0000;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #ff3300;
+}
+
+/* TEXT GLOW FOR HERO TITLES ETC */
+.text-glow {
+  text-shadow: 0 0 10px rgba(255, 51, 0, 0.7);
+}
+
+/* HIDE SCROLLBAR FOR HORIZONTAL SCROLL AREAS */
 .scrollbar-hide::-webkit-scrollbar {
-    display: none;
+  display: none;
 }
+
 .scrollbar-hide {
-    -ms-overflow-style: none;
-    scrollbar-width: none;
+  -ms-overflow-style: none; /* IE and Edge */
+  scrollbar-width: none;    /* Firefox */
+}
+
+/* OPTIONAL: SAFE FULL-HEIGHT CLASS IF YOU USE IT ANYWHERE */
+.h-screen-safe {
+  min-height: 100vh;
 }
