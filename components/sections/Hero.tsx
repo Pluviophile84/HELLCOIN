@@ -1,30 +1,10 @@
 "use client";
-
 import { motion, useScroll, useTransform } from "framer-motion";
-import { useRef, useState, useEffect } from "react";
+import { useRef } from "react";
 import { TrendingDown, Flame } from "lucide-react";
-
-const BUY_LINK = "https://raydium.io/swap";
 
 export const Hero = () => {
   const ref = useRef<HTMLElement | null>(null);
-  const [showTagline, setShowTagline] = useState(false);
-  const [isShortHero, setIsShortHero] = useState(false);
-
-  // Height-based behavior: tagline + "short hero" mode
-  useEffect(() => {
-    if (typeof window === "undefined") return;
-
-    const checkSize = () => {
-      const h = window.innerHeight;
-      setShowTagline(h >= 720); // show tagline only on tall viewports
-      setIsShortHero(h <= 480); // treat very short heights specially
-    };
-
-    checkSize();
-    window.addEventListener("resize", checkSize);
-    return () => window.removeEventListener("resize", checkSize);
-  }, []);
 
   const { scrollYProgress } = useScroll({
     target: ref,
@@ -34,11 +14,6 @@ export const Hero = () => {
   const yText = useTransform(scrollYProgress, [0, 1], ["0%", "50%"]);
   const opacityText = useTransform(scrollYProgress, [0, 0.5], [1, 0]);
 
-  // On short screens: kill parallax and fading for safety
-  const textStyle = isShortHero
-    ? { y: "0%", opacity: 1 }
-    : { y: yText, opacity: opacityText };
-
   const handleAbandonHope = () => {
     const genesisSection = document.getElementById("genesis");
     if (genesisSection) {
@@ -46,90 +21,51 @@ export const Hero = () => {
     }
   };
 
+  const BUY_LINK = "https://raydium.io/swap";
+
   return (
     <section
       ref={ref}
       className="relative h-screen-safe min-h-[600px] w-full flex items-center justify-center overflow-hidden"
     >
-      {/* BACKGROUND */}
+      {/* BACKGROUND BANNER */}
       <div className="absolute inset-0 z-0">
         <img
           src="/banner.png"
-          className="absolute inset-0 w-full h-full object-cover object-[30%_center] opacity-100"
           alt="Hellcoin Throne"
+          className="absolute inset-0 w-full h-full object-cover object-[30%_center] opacity-100"
         />
         <div className="absolute inset-0 bg-gradient-to-t from-hell-black via-hell-black/80 to-transparent" />
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-transparent via-hell-black/40 to-hell-black" />
       </div>
 
-      {/* CONTENT */}
+      {/* HERO CONTENT */}
       <motion.div
-        style={textStyle}
-        className={
-          "relative z-10 px-fluid-gap md:pr-[10%] lg:pr-[15%] max-w-[1920px] w-full mx-auto flex flex-col items-center sm:items-end text-center sm:text-right " +
-          (isShortHero ? "pt-10 sm:pt-6 md:pt-0" : "pt-14 sm:pt-10 md:pt-0")
-        }
+        style={{ y: yText, opacity: opacityText }}
+        className="relative z-10 px-fluid-gap md:pr-[10%] lg:pr-[15%] max-w-[1920px] w-full mx-auto flex flex-col items-center md:items-end text-center md:text-right"
       >
-        {/* HEADLINE – xl/2xl boosted for Range 4 */}
+        {/* TITLE */}
         <motion.h1
           initial={{ scale: 0.9, opacity: 0 }}
           animate={{ scale: 1, opacity: 1 }}
           transition={{ type: "spring", duration: 1.5 }}
-          className={[
-            "font-gothic leading-[0.9] text-hell-white text-glow drop-shadow-2xl w-full",
-            "mb-4 sm:mb-4 md:mb-6",
-            // base: 360–430
-            "text-[clamp(2.4rem,10.8vw,2.65rem)]",
-            // sm: 640–767
-            "sm:text-[clamp(2.8rem,6.8vw,3.6rem)]",
-            // md: 768–1023
-            "md:text-[clamp(3.3rem,5.6vw,4.2rem)]",
-            // lg: 1024–1279 (already bumped)
-            "lg:text-[clamp(3.7rem,4.4vw,4.7rem)]",
-            // xl: Range 4 – bigger
-            "xl:text-[clamp(4.1rem,3.6vw,5rem)]",
-            // 2xl: upper Range 4 / start of Range 5
-            "2xl:text-[clamp(4.4rem,3.2vw,5.4rem)]",
-          ].join(" ")}
+          className="font-gothic text-fluid-hero leading-[0.9] text-hell-white text-glow drop-shadow-2xl mb-8 w-full"
         >
           BORN IN THE <span className="text-hell-red">RED.</span>
           <br />
-          FORGED BY <span className="text-[#ffae00]">REGRET.</span>
+          FORGED BY <span className="text-hell-gold">REGRET.</span>
         </motion.h1>
 
-        {/* SUBTEXT – xl/2xl body boosted, PoS unchanged */}
+        {/* SUBTITLE / BODY */}
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 0.5 }}
-          className={[
-            "font-terminal text-gray-300 max-w-4xl md:max-w-5xl mx-auto sm:mx-0 space-y-2 md:space-y-0",
-            // base: phones
-            "text-[clamp(1.05rem,4.7vw,1.15rem)]",
-            // sm: 640–767
-            "sm:text-[clamp(1.1rem,3vw,1.2rem)]",
-            // md: 768–1023
-            "md:text-[clamp(1.25rem,2.4vw,1.4rem)]",
-            // lg: 1024–1279 (bumped)
-            "lg:text-[clamp(1.3rem,1.9vw,1.45rem)]",
-            // xl: Range 4 – bigger body
-            "xl:text-[clamp(1.4rem,1.8vw,1.7rem)]",
-            // 2xl: further bump
-            "2xl:text-[clamp(1.55rem,1.5vw,1.9rem)]",
-          ].join(" ")}
+          className="font-terminal text-fluid-body text-gray-300 max-w-4xl md:max-w-5xl mx-auto md:mx-0 space-y-2 md:space-y-0"
         >
           <p className="leading-relaxed">
             The first cryptocurrency powered by{" "}
-            <span
-              className={[
-                "block sm:inline text-[#ffae00] my-2 sm:my-0 font-bold sm:font-normal",
-                // Proof-of-Suffering sizing (UNCHANGED)
-                "text-[clamp(1.3rem,5.3vw,1.45rem)]",
-                "sm:text-[clamp(1.3rem,4vw,1.6rem)]",
-                "md:text-[clamp(1.5rem,3vw,2rem)]",
-                "2xl:text-[clamp(1.7rem,2.4vw,2.4rem)]",
-              ].join(" ")}
-            >
+            <span className="block md:inline text-hell-gold text-2xl md:text-3xl my-2 md:my-0 font-bold md:font-normal">
               Proof-of-Suffering
             </span>
           </p>
@@ -138,45 +74,26 @@ export const Hero = () => {
           </p>
         </motion.div>
 
-        {/* TAGLINE – UNCHANGED */}
-        {showTagline && (
-          <motion.p
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 1.0 }}
-            className={[
-              "font-terminal text-hell-red tracking-widest uppercase animate-pulse md:max-w-5xl text-center sm:text-right",
-              "mt-6 sm:mt-6 md:mt-8",
-              "text-[clamp(0.98rem,3vw,1.1rem)]",
-              "sm:text-[clamp(1rem,2.3vw,1.15rem)]",
-              "md:text-[clamp(1.05rem,2vw,1.2rem)]",
-              "lg:text-[clamp(1.1rem,1.8vw,1.3rem)]",
-              "2xl:text-[clamp(1.2rem,1.4vw,1.4rem)]",
-            ].join(" ")}
-          >
-            <span className="block sm:inline">WHEN THE MARKET BURNS,</span>{" "}
-            <span className="block sm:inline sm:ml-2 text-center">
-              WE TREND
-            </span>
-          </motion.p>
-        )}
+        {/* TAGLINE */}
+        <motion.p
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 1.0 }}
+          className="font-terminal text-hell-red text-lg md:text-2xl mt-8 tracking-widest uppercase animate-pulse md:max-w-5xl"
+        >
+          WHEN THE MARKET BURNS, WE TREND
+        </motion.p>
 
-        {/* CTAs – UNCHANGED */}
+        {/* CTA ROW */}
         <motion.div
           initial={{ opacity: 0, y: 50 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 1.4 }}
-          className="mt-8 sm:mt-6 md:mt-10 flex flex-col sm:flex-row gap-6 md:gap-8 justify-center sm:justify-end items-center w-full md:max-w-5xl"
+          className="mt-12 flex flex-col md:flex-row gap-6 md:gap-8 justify-center md:justify-end items-center w-full md:max-w-5xl"
         >
           <button
-            type="button"
             onClick={handleAbandonHope}
-            className={[
-              "text-gray-500 font-terminal hover:text-[#ffae00] transition-colors flex items-center gap-2 group order-1 md:order-none",
-              "text-[clamp(1rem,3vw,1.2rem)]",
-              "md:text-[clamp(1.1rem,2.2vw,1.4rem)]",
-              "2xl:text-[clamp(1.2rem,1.8vw,1.6rem)]",
-            ].join(" ")}
+            className="text-gray-500 font-terminal text-xl md:text-2xl hover:text-hell-gold transition-colors flex items-center gap-2 group order-1 md:order-none"
           >
             [ ABANDON HOPE ]
             <TrendingDown className="w-5 h-5 group-hover:translate-y-1 transition-transform" />
@@ -186,15 +103,7 @@ export const Hero = () => {
             href={BUY_LINK}
             target="_blank"
             rel="noopener noreferrer"
-            className={[
-              "group relative bg-transparent border-2 border-hell-red text-hell-red font-gothic uppercase overflow-hidden",
-              "transition-all hover:text-hell-white hover:border-hell-orange hover:shadow-[0_0_30px_rgba(204,0,0,0.6)]",
-              "order-2 md:order-none cursor-pointer flex items-center gap-2",
-              "px-6 py-3 sm:px-6 sm:py-3 md:px-8 md:py-4",
-              "text-[clamp(1.3rem,4vw,1.6rem)]",
-              "md:text-[clamp(1.4rem,3vw,1.9rem)]",
-              "2xl:text-[clamp(1.6rem,2.5vw,2.2rem)]",
-            ].join(" ")}
+            className="group relative px-8 py-4 bg-transparent border-2 border-hell-red text-hell-red font-gothic text-2xl md:text-3xl uppercase overflow-hidden transition-all hover:text-hell-white hover:border-hell-orange hover:shadow-[0_0_30px_rgba(204,0,0,0.6)] order-2 md:order-none cursor-pointer flex items-center gap-2"
           >
             <span className="absolute inset-0 w-full h-full bg-hell-red -translate-x-full group-hover:translate-x-0 transition-transform duration-300 ease-out" />
             <span className="relative z-10 flex items-center gap-2">
@@ -204,8 +113,8 @@ export const Hero = () => {
         </motion.div>
       </motion.div>
 
-      {/* bottom fade – visual only, no click blocking */}
-      <div className="absolute bottom-0 w-full h-32 bg-gradient-to-t from-hell-black to-transparent z-20 pointer-events-none" />
+      {/* BOTTOM FADE INTO PAGE */}
+      <div className="absolute bottom-0 w-full h-32 bg-gradient-to-t from-hell-black to-transparent z-20" />
     </section>
   );
 };
