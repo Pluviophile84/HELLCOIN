@@ -2,63 +2,44 @@
 @tailwind components;
 @tailwind utilities;
 
-/* ROOT THEME TOKENS */
 :root {
-  --hell-foreground: #e5e5e5;
-  --hell-background: #050505;
+  --foreground-rgb: 229, 229, 229;
 }
 
-/* BASE RESET */
-*,
-*::before,
-*::after {
-  box-sizing: border-box;
-}
-
-html,
 body {
-  height: 100%;
-  margin: 0;
+  color: rgb(var(--foreground-rgb));
+  background: #050505;
+  /* Ensure horizontal scroll is hidden globally */
+  overflow-x: hidden;
 }
 
-/* GLOBAL BODY STYLING */
-body {
-  color: var(--hell-foreground);
-  background: var(--hell-background);
-  -webkit-font-smoothing: antialiased;
+/* Custom Scrollbar */
+::-webkit-scrollbar { 
+  width: 8px; 
+}
+::-webkit-scrollbar-track { 
+  background: #0a0a0a; 
+}
+::-webkit-scrollbar-thumb { 
+  background: #cc0000; 
+  border-radius: 4px; 
+}
+::-webkit-scrollbar-thumb:hover { 
+  background: #ff3300; 
 }
 
-/* CUSTOM SCROLLBAR (WEBKIT) */
-::-webkit-scrollbar {
-  width: 8px;
+/* Text Glow Utility */
+.text-glow { 
+  text-shadow: 0 0 10px rgba(255, 51, 0, 0.7); 
 }
 
-::-webkit-scrollbar-track {
-  background: #0a0a0a;
-}
-
-::-webkit-scrollbar-thumb {
-  background: #cc0000;
-  border-radius: 4px;
-}
-
-::-webkit-scrollbar-thumb:hover {
-  background: #ff3300;
-}
-
-/* TEXT GLOW FOR HERO TITLES ETC */
-.text-glow {
-  text-shadow: 0 0 10px rgba(255, 51, 0, 0.7);
-}
-
-/* HIDE SCROLLBAR FOR HORIZONTAL SCROLL AREAS */
+/* Hide Scrollbar for horizontal scrolling areas (Chrome/Safari) */
 .scrollbar-hide::-webkit-scrollbar {
-  display: none;
+    display: none;
 }
 
+/* Hide Scrollbar for IE, Edge and Firefox */
 .scrollbar-hide {
-  -ms-overflow-style: none; /* IE and Edge */
-  /* IMPORTANT: we intentionally drop 'scrollbar-width: none'
-     because the Vercel build pipeline is mis-parsing it as JS
-     and throwing the SyntaxError at line 29. */
+    -ms-overflow-style: none;  /* IE and Edge */
+    scrollbar-width: none;  /* Firefox */
 }
