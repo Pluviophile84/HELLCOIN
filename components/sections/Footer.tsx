@@ -1,5 +1,4 @@
 "use client";
-import { motion } from "framer-motion";
 
 export const Footer = () => {
   const currentYear = new Date().getFullYear();
@@ -51,7 +50,7 @@ export const Footer = () => {
               <span className="text-[#ffae00] text-sm uppercase tracking-widest mb-2 font-bold">
                 PROTOCOL
               </span>
-              <a href="https://x.com" target="_blank" className="text-gray-400 hover:text-hell-red transition-colors">TWITTER (X)</a>
+              <a href="https://x.com" target="_blank" rel="noopener noreferrer" className="text-gray-400 hover:text-hell-red transition-colors">TWITTER (X)</a>
               <a href="#" className="text-gray-400 hover:text-hell-red transition-colors">DEXSCREENER</a>
               <a href="#" className="text-gray-400 hover:text-hell-red transition-colors">CONTRACT</a>
             </div>
