@@ -23,7 +23,7 @@ module.exports = {
         terminal: ["var(--font-vt323)"],
       },
 
-      // --- HERO TYPOGRAPHY + LAYOUT TOKENS ---
+      // HERO TYPOGRAPHY TOKENS
       fontSize: {
         // Main hero headline: fluid between small phones and desktop
         "fluid-hero": "clamp(2.6rem, 5vw, 4.5rem)",
@@ -32,17 +32,11 @@ module.exports = {
         "fluid-body": "clamp(1rem, 2.4vw, 1.25rem)",
       },
 
-      // Safe full-screen hero height (helps avoid weird overflows on short screens)
-      height: {
-        "screen-safe": "min(100vh, 900px)",
-      },
-
       // Horizontal padding that scales with viewport width
       padding: {
         "fluid-gap": "clamp(1.5rem, 5vw, 4.5rem)",
       },
 
-      // --- ANIMATIONS YOU ALREADY USE ---
       animation: {
         "spin-slow": "spin 60s linear infinite",
         "pulse-fast": "pulse 1.5s cubic-bezier(0.4, 0, 0.6, 1) infinite",
