@@ -26,7 +26,7 @@ export const Hero = () => {
   return (
     <section
       ref={ref}
-      className="relative h-screen-safe min-h-[600px] w-full flex items-center justify-center overflow-hidden"
+      className="relative h-screen min-h-[600px] w-full flex items-center justify-center overflow-hidden"
     >
       {/* BACKGROUND BANNER */}
       <div className="absolute inset-0 z-0">
