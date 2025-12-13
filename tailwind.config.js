@@ -3,17 +3,19 @@ module.exports = {
   content: [
     "./app/**/*.{js,ts,jsx,tsx,mdx}",
     "./components/**/*.{js,ts,jsx,tsx,mdx}",
+    "./pages/**/*.{js,ts,jsx,tsx,mdx}",
   ],
   theme: {
     extend: {
       colors: {
         hell: {
-          black: "#050505", // Void
-          dark: "#0a0a0a",  // Obsidian
-          red: "#cc0000",   // Blood
-          orange: "#ff3300",// Magma
-          gold: "#ffae00",  // Ember
-          white: "#d4d4d4", // Ash/Stone
+          black: "#050505",  // Void
+          dark: "#0a0a0a",   // Obsidian
+          red: "#cc0000",    // Blood
+          orange: "#ff3300", // Magma
+          gold: "#ffae00",   // Ember
+          // Slightly ashy white, not digital white
+          white: "#d4d4d4",
         },
       },
       fontFamily: {
