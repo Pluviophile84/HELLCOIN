@@ -25,7 +25,6 @@ body {
 body {
   color: var(--hell-foreground);
   background: var(--hell-background);
-  /* overflow-x: hidden;  // Intentionally not used */
   -webkit-font-smoothing: antialiased;
 }
 
@@ -59,10 +58,7 @@ body {
 
 .scrollbar-hide {
   -ms-overflow-style: none; /* IE and Edge */
-  scrollbar-width: none;    /* Firefox */
-}
-
-/* OPTIONAL: SAFE FULL-HEIGHT CLASS IF YOU USE IT ANYWHERE */
-.h-screen-safe {
-  min-height: 100vh;
+  /* IMPORTANT: we intentionally drop 'scrollbar-width: none'
+     because the Vercel build pipeline is mis-parsing it as JS
+     and throwing the SyntaxError at line 29. */
 }
