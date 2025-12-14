@@ -14,29 +14,28 @@ export const Hero = () => {
   const yText = useTransform(scrollYProgress, [0, 1], ["0%", "50%"]);
   const opacityText = useTransform(scrollYProgress, [0, 0.5], [1, 0]);
 
-  const handleAbandonHope = () => {
+  const scrollToGenesis = () => {
     const genesisSection = document.getElementById("genesis");
     if (genesisSection) {
       genesisSection.scrollIntoView({ behavior: "smooth" });
     }
   };
 
-  const BUY_LINK = "https://raydium.io/swap";
-
   return (
     <section
+      id="hero"
       ref={ref}
-      className="relative h-screen w-full flex items-center justify-center overflow-hidden"
+      className="relative h-screen w-full overflow-hidden bg-hell-black flex items-center"
     >
-      {/* BACKGROUND BANNER + OVERLAYS */}
-      <div className="absolute inset-0 z-0">
+      {/* LEFT SIDE BANNER IMAGE */}
+      <div className="absolute inset-0 w-full h-full z-0">
         <img
           src="/banner.png"
-          alt="Hellcoin Throne"
-          className="absolute inset-0 w-full h-full object-cover object-[30%_center] opacity-100"
+          alt="HELLCOIN Banner"
+          className="absolute left-0 top-0 h-full w-full object-cover object-left"
         />
-        <div className="absolute inset-0 bg-gradient-to-t from-hell-black via-hell-black/80 to-transparent" />
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-transparent via-hell-black/40 to-hell-black" />
+        {/* DARKENING OVERLAY */}
+        <div className="absolute inset-0 bg-gradient-to-r from-black/90 via-black/70 to-black/50" />
       </div>
 
       {/* CONTENT */}
@@ -50,7 +49,7 @@ export const Hero = () => {
           text-center md:text-right
         "
       >
-        {/* MAIN HEADER (CLAMPED) */}
+        {/* MAIN HEADER (CLAMPED VIA TAILWIND CONFIG) */}
         <motion.h1
           initial={{ scale: 0.9, opacity: 0 }}
           animate={{ scale: 1, opacity: 1 }}
@@ -63,7 +62,7 @@ export const Hero = () => {
             drop-shadow-2xl 
             mb-8 
             md:max-w-6xl
-            text-[clamp(2.6rem,5vw,4.8rem)]
+            text-hero-h1
           "
         >
           BORN IN THE <span className="text-hell-red">RED.</span>
@@ -71,7 +70,7 @@ export const Hero = () => {
           FORGED BY <span className="text-[#ffae00]">REGRET.</span>
         </motion.h1>
 
-        {/* BODY TEXT + PROOF-OF-SUFFERING (CLAMPED) */}
+        {/* BODY TEXT + PROOF-OF-SUFFERING (CLAMPED VIA TAILWIND CONFIG) */}
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
@@ -82,7 +81,7 @@ export const Hero = () => {
             max-w-4xl md:max-w-5xl 
             mx-auto md:mx-0 
             space-y-2 md:space-y-0
-            text-[clamp(1.1rem,2.2vw,1.7rem)]
+            text-hero-sub
           "
         >
           <p className="leading-relaxed">
@@ -93,7 +92,7 @@ export const Hero = () => {
                 text-[#ffae00] 
                 my-2 md:my-0 
                 font-bold md:font-normal
-                text-[clamp(1.3rem,2.5vw,2rem)]
+                text-hero-sub-em
               "
             >
               Proof-of-Suffering
@@ -104,7 +103,7 @@ export const Hero = () => {
           </p>
         </motion.div>
 
-        {/* WHEN THE MARKET BURNS (CONTROLLED BREAK + CLAMPED) */}
+        {/* WHEN THE MARKET BURNS (CONTROLLED BREAK + CLAMPED VIA TAILWIND CONFIG) */}
         <motion.p
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
@@ -117,7 +116,7 @@ export const Hero = () => {
             uppercase 
             animate-pulse 
             md:max-w-5xl
-            text-[clamp(1rem,1.8vw,1.6rem)]
+            text-hero-phrase
           "
         >
           <span>WHEN THE MARKET BURNS,</span>{" "}
@@ -139,30 +138,35 @@ export const Hero = () => {
             md:max-w-5xl
           "
         >
+          {/* ABANDON HOPE (SCROLL TO GENESIS) */}
           <button
-            onClick={handleAbandonHope}
+            onClick={scrollToGenesis}
             className="
-              text-gray-500 
-              font-terminal 
-              text-xl md:text-2xl 
-              hover:text-[#ffae00] 
-              transition-colors 
-              flex items-center gap-2 
-              group 
-              order-1 md:order-none
+              px-10 py-4 
+              bg-hell-red 
+              text-hell-white 
+              font-gothic 
+              text-2xl md:text-3xl 
+              uppercase 
+              border-2 border-hell-red 
+              transition-all 
+              hover:bg-hell-orange 
+              hover:border-hell-orange 
+              hover:shadow-[0_0_30px_rgba(255,51,0,0.6)] 
+              active:scale-95
+              cursor-pointer
+              flex items-center gap-2
             "
           >
-            [ ABANDON HOPE ]
-            <TrendingDown className="w-5 h-5 group-hover:translate-y-1 transition-transform" />
+            [ ABANDON HOPE ] <TrendingDown size={28} />
           </button>
 
+          {/* ACQUIRE $666 (RAYDIUM LINK) */}
           <a
-            href={BUY_LINK}
+            href="https://raydium.io/swap"
             target="_blank"
             rel="noopener noreferrer"
             className="
-              group 
-              relative 
               px-8 py-4 
               bg-transparent 
               border-2 border-hell-red 
@@ -180,18 +184,7 @@ export const Hero = () => {
               flex items-center gap-2
             "
           >
-            <span
-              className="
-                absolute inset-0 
-                w-full h-full 
-                bg-hell-red 
-                -translate-x-full 
-                group-hover:translate-x-0 
-                transition-transform 
-                duration-300 
-                ease-out
-              "
-            />
+            <span className="absolute inset-0 bg-hell-red opacity-0 hover:opacity-20 transition-opacity duration-300"></span>
             <span className="relative z-10 flex items-center gap-2">
               ACQUIRE $666 <Flame size={28} />
             </span>
