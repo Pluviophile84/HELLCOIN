@@ -14,28 +14,30 @@ export const Hero = () => {
   const yText = useTransform(scrollYProgress, [0, 1], ["0%", "50%"]);
   const opacityText = useTransform(scrollYProgress, [0, 0.5], [1, 0]);
 
-  const scrollToGenesis = () => {
+  const handleAbandonHope = () => {
     const genesisSection = document.getElementById("genesis");
     if (genesisSection) {
       genesisSection.scrollIntoView({ behavior: "smooth" });
     }
   };
 
+  const BUY_LINK = "https://raydium.io/swap";
+
   return (
     <section
-      id="hero"
       ref={ref}
-      className="relative h-screen w-full overflow-hidden bg-hell-black flex items-center"
+      className="relative h-screen w-full flex items-center justify-center overflow-hidden"
     >
-      {/* LEFT SIDE BANNER IMAGE */}
-      <div className="absolute inset-0 w-full h-full z-0">
+      {/* BACKGROUND BANNER + OVERLAYS */}
+      <div className="absolute inset-0 z-0">
         <img
           src="/banner.png"
-          alt="HELLCOIN Banner"
-          className="absolute left-0 top-0 h-full w-full object-cover object-left"
+          alt="Hellcoin Throne"
+          // Small screens: crop 30% left of center. md+: anchor left.
+          className="absolute inset-0 w-full h-full object-cover object-[30%_center] md:object-left opacity-100"
         />
-        {/* DARKENING OVERLAY */}
-        <div className="absolute inset-0 bg-gradient-to-r from-black/90 via-black/70 to-black/50" />
+        <div className="absolute inset-0 bg-gradient-to-t from-hell-black via-hell-black/80 to-transparent" />
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-transparent via-hell-black/40 to-hell-black" />
       </div>
 
       {/* CONTENT */}
@@ -49,7 +51,7 @@ export const Hero = () => {
           text-center md:text-right
         "
       >
-        {/* MAIN HEADER (CLAMPED VIA TAILWIND CONFIG) */}
+        {/* MAIN HEADER (CLAMPED) */}
         <motion.h1
           initial={{ scale: 0.9, opacity: 0 }}
           animate={{ scale: 1, opacity: 1 }}
@@ -70,7 +72,7 @@ export const Hero = () => {
           FORGED BY <span className="text-[#ffae00]">REGRET.</span>
         </motion.h1>
 
-        {/* BODY TEXT + PROOF-OF-SUFFERING (CLAMPED VIA TAILWIND CONFIG) */}
+        {/* BODY TEXT + PROOF-OF-SUFFERING (CLAMPED) */}
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
@@ -103,7 +105,7 @@ export const Hero = () => {
           </p>
         </motion.div>
 
-        {/* WHEN THE MARKET BURNS (CONTROLLED BREAK + CLAMPED VIA TAILWIND CONFIG) */}
+        {/* WHEN THE MARKET BURNS (CONTROLLED BREAK + CLAMPED) */}
         <motion.p
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
@@ -123,7 +125,7 @@ export const Hero = () => {
           <span className="block md:inline md:ml-2">WE TREND</span>
         </motion.p>
 
-        {/* CTAs (BUTTON TEXT NOT CLAMPED) */}
+        {/* CTAs */}
         <motion.div
           initial={{ opacity: 0, y: 50 }}
           animate={{ opacity: 1, y: 0 }}
@@ -138,35 +140,32 @@ export const Hero = () => {
             md:max-w-5xl
           "
         >
-          {/* ABANDON HOPE (SCROLL TO GENESIS) */}
+          {/* ABANDON HOPE (text-only, no background) */}
           <button
-            onClick={scrollToGenesis}
+            onClick={handleAbandonHope}
             className="
-              px-10 py-4 
-              bg-hell-red 
-              text-hell-white 
-              font-gothic 
-              text-2xl md:text-3xl 
-              uppercase 
-              border-2 border-hell-red 
-              transition-all 
-              hover:bg-hell-orange 
-              hover:border-hell-orange 
-              hover:shadow-[0_0_30px_rgba(255,51,0,0.6)] 
-              active:scale-95
-              cursor-pointer
-              flex items-center gap-2
+              text-gray-500 
+              font-terminal 
+              text-xl md:text-2xl 
+              hover:text-[#ffae00] 
+              transition-colors 
+              flex items-center gap-2 
+              group 
+              order-1 md:order-none
             "
           >
-            [ ABANDON HOPE ] <TrendingDown size={28} />
+            [ ABANDON HOPE ]
+            <TrendingDown className="w-5 h-5 group-hover:translate-y-1 transition-transform" />
           </button>
 
-          {/* ACQUIRE $666 (RAYDIUM LINK) */}
+          {/* ACQUIRE $666 (bordered + hover fill animation) */}
           <a
-            href="https://raydium.io/swap"
+            href={BUY_LINK}
             target="_blank"
             rel="noopener noreferrer"
             className="
+              group 
+              relative 
               px-8 py-4 
               bg-transparent 
               border-2 border-hell-red 
@@ -184,7 +183,19 @@ export const Hero = () => {
               flex items-center gap-2
             "
           >
-            <span className="absolute inset-0 bg-hell-red opacity-0 hover:opacity-20 transition-opacity duration-300"></span>
+            <span
+              className="
+                absolute inset-0 
+                w-full h-full 
+                bg-hell-red 
+                -translate-x-full 
+                group-hover:translate-x-0 
+                transition-transform 
+                duration-300 
+                ease-out
+                pointer-events-none
+              "
+            />
             <span className="relative z-10 flex items-center gap-2">
               ACQUIRE $666 <Flame size={28} />
             </span>
