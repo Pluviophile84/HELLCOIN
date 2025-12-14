@@ -32,45 +32,47 @@ const PTSD_WORDS_SOURCE = [
   "BULLISH",
 ];
 
-// Build a background pool (duplicates are fine, but we keep the count sane)
-const GRID_COUNT = 36;
+const GRID_COUNT = 36; // md+ full density
 
 export const ThePit = () => {
   // Stable set of words for the grid
   const gridWords = useMemo(() => {
-    const base = [...PTSD_WORDS_SOURCE];
-
-    // Repeat until we hit GRID_COUNT
     const out: string[] = [];
-    while (out.length < GRID_COUNT) out.push(...base);
-
-    // Trim to exact count
+    while (out.length < GRID_COUNT) out.push(...PTSD_WORDS_SOURCE);
     return out.slice(0, GRID_COUNT);
   }, []);
 
-  // Stable per-word timing (no re-roll on rerender)
+  // Stable per-word timing (no rerender jitter) + stagger to avoid sync-canceling
   const ghost = useMemo(() => {
     return gridWords.map((_, i) => {
-      const stagger = (i % 12) * 0.18; // spreads pulses
-
+      const stagger = (i % 12) * 0.18;
       return {
-        peak: 0.16 + Math.random() * 0.22, // max opacity
-        s1: 0.86 + Math.random() * 0.08, // min scale
-        s2: 1.03 + Math.random() * 0.18, // max scale
-        duration: 3.0 + Math.random() * 4.2, // cycle length
-        delay: stagger + Math.random() * 1.1, // initial offset
-        repeatDelay: 0.7 + Math.random() * 3.3, // quiet time between cycles
+        peak: 0.18 + Math.random() * 0.26,
+        s1: 0.88 + Math.random() * 0.08,
+        s2: 1.06 + Math.random() * 0.18,
+        duration: 3.0 + Math.random() * 4.2,
+        delay: stagger + Math.random() * 1.0,
+        repeatDelay: 0.6 + Math.random() * 3.2,
       };
     });
   }, [gridWords]);
 
-  // Helper: long phrases should be smaller so they never clip
+  // Bigger on 1080p, still safe on small screens
   const wordSizeClass = (w: string) => {
-    // includes spaces -> usually longer visually
     const isLong = w.length >= 10 || w.includes(" ");
     return isLong
-      ? "text-[clamp(1.1rem,3.4vw,2.75rem)]"
-      : "text-[clamp(1.35rem,4.2vw,3.75rem)]";
+      ? "text-[clamp(1.35rem,3.6vw,3.8rem)]"
+      : "text-[clamp(1.6rem,4.4vw,4.9rem)]";
+  };
+
+  // Reduce density on small screens so words stay big and readable:
+  // base: 24 items (2 cols => 12 rows)
+  // sm:   30 items (3 cols => 10 rows)
+  // md+:  36 items
+  const visibilityClass = (i: number) => {
+    if (i >= 30) return "hidden md:flex";
+    if (i >= 24) return "hidden sm:flex";
+    return "flex";
   };
 
   return (
@@ -78,14 +80,14 @@ export const ThePit = () => {
       id="the-pit"
       className="relative py-32 bg-hell-red overflow-hidden flex items-center justify-center min-h-[900px]"
     >
-      {/* BACKGROUND: GHOST GRID (contained, no overscan, responsive) */}
+      {/* BACKGROUND: GHOST GRID (contained, fills top/bottom, responsive) */}
       <div className="absolute inset-0 z-0 pointer-events-none">
-        {/* Soft padding keeps words away from the edges on all screens */}
-        <div className="absolute inset-0 px-6 py-10 md:px-10 md:py-12 lg:px-12 lg:py-14">
+        {/* Small padding so words never clip at edges */}
+        <div className="absolute inset-0 px-6 py-8 md:px-10 md:py-10 lg:px-12 lg:py-12">
           <div
             className="
               h-full w-full
-              grid content-center place-items-center
+              grid auto-rows-fr place-items-center
               grid-cols-2 gap-x-6 gap-y-6
               sm:grid-cols-3 sm:gap-x-8 sm:gap-y-8
               md:grid-cols-4 md:gap-x-10 md:gap-y-10
@@ -96,17 +98,15 @@ export const ThePit = () => {
             {gridWords.map((word, i) => (
               <div
                 key={`${word}-${i}`}
-                className="
-                  w-full
-                  flex items-center justify-center
-                  h-16 sm:h-18 md:h-20 lg:h-24
-                "
+                className={[
+                  visibilityClass(i),
+                  "w-full items-center justify-center",
+                ].join(" ")}
               >
                 <motion.div
                   className={[
                     "font-gothic font-bold text-black/30",
                     "leading-none tracking-tight text-center",
-                    // IMPORTANT: allow the word to size down rather than clipping
                     "max-w-full",
                     wordSizeClass(word),
                   ].join(" ")}
