@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useMemo, useState } from "react";
+import { useCallback, useLayoutEffect, useMemo, useRef, useState } from "react";
 import { motion, AnimatePresence, PanInfo } from "framer-motion";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 
@@ -13,24 +13,98 @@ const commandments = [
   { id: "VI", title: "DO ZERO RESEARCH", text: "DYOR is for scholars. You follow vibes." },
   { id: "VII", title: "PANIC SELL BOTTOM", text: "Buy when you feel euphoric. Sell when you are crying in the shower." },
   { id: "VIII", title: "MARRY YOUR BAGS", text: "Even if the dev leaves, love never dies. Your portfolio does." },
-  { id: "IX", title: "BUY EVERY NEW COIN", text: "Why wait for due diligence when the ticker exists? Hesitation is how people miss generational scams." },
-  { id: "X", title: "TRUST EVERY INFLUENCER", text: "Nothing screams financial wisdom like a man filming price predictions from inside his car at 3AM." },
+  {
+    id: "IX",
+    title: "BUY EVERY NEW COIN",
+    text: "Why wait for due diligence when the ticker exists? Hesitation is how people miss generational scams.",
+  },
+  {
+    id: "X",
+    title: "TRUST EVERY INFLUENCER",
+    text: "Nothing screams financial wisdom like a man filming price predictions from inside his car at 3AM.",
+  },
 ];
 
+const TOTAL_ROMAN = "X";
+const HEIGHT_BUFFER_PX = 44; // ~1–2 lines of breathing room
+
 export const Commandments = () => {
-  // --- carousel state (mobile/tablet only) ---
-  const [index, setIndex] = useState(0);
+  // mobile/tablet carousel state
+  const [[index, direction], setIndex] = useState<[number, number]>([0, 0]);
   const max = commandments.length;
 
   const current = useMemo(() => commandments[index], [index]);
 
-  const prev = useCallback(() => setIndex((i) => (i - 1 + max) % max), [max]);
-  const next = useCallback(() => setIndex((i) => (i + 1) % max), [max]);
+  const paginate = useCallback(
+    (dir: number) => setIndex(([i]) => [(i + dir + max) % max, dir]),
+    [max]
+  );
+
+  const goTo = useCallback(
+    (i: number) => setIndex(([_, prevDir]) => [i, i > index ? 1 : -1 || prevDir]),
+    [index]
+  );
 
   const onDragEnd = (_: MouseEvent | TouchEvent | PointerEvent, info: PanInfo) => {
-    const swipe = info.offset.x;
-    if (swipe > 80) prev();
-    if (swipe < -80) next();
+    // direction-aware swipe
+    if (info.offset.x > 90) paginate(-1);
+    if (info.offset.x < -90) paginate(1);
+  };
+
+  // --- fixed height for carousel content (no jumping) ---
+  const frameRef = useRef<HTMLDivElement | null>(null);
+  const measureRef = useRef<HTMLDivElement | null>(null);
+  const [fixedHeight, setFixedHeight] = useState<number>(0);
+
+  useLayoutEffect(() => {
+    const frame = frameRef.current;
+    const measure = measureRef.current;
+    if (!frame || !measure) return;
+
+    const compute = () => {
+      const w = frame.getBoundingClientRect().width;
+      if (w > 0) measure.style.width = `${w}px`;
+
+      const slides = measure.querySelectorAll<HTMLElement>("[data-measure-slide='1']");
+      let tallest = 0;
+      slides.forEach((el) => {
+        tallest = Math.max(tallest, el.offsetHeight);
+      });
+
+      if (tallest > 0) setFixedHeight(tallest + HEIGHT_BUFFER_PX);
+    };
+
+    compute();
+
+    // re-measure when fonts finish loading (prevents wrong height due to fallback font)
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const fonts = (document as any).fonts;
+    if (fonts?.ready) fonts.ready.then(() => compute()).catch(() => {});
+
+    const ro = new ResizeObserver(() => compute());
+    ro.observe(frame);
+
+    window.addEventListener("resize", compute);
+    return () => {
+      ro.disconnect();
+      window.removeEventListener("resize", compute);
+    };
+  }, []);
+
+  // animation from the side (based on direction)
+  const slideVariants = {
+    enter: (dir: number) => ({
+      x: dir > 0 ? 120 : -120,
+      opacity: 0,
+    }),
+    center: {
+      x: 0,
+      opacity: 1,
+    }),
+    exit: (dir: number) => ({
+      x: dir > 0 ? -120 : 120,
+      opacity: 0,
+    }),
   };
 
   return (
@@ -47,29 +121,27 @@ export const Commandments = () => {
         </div>
 
         {/* =========================================================
-            TABLET + PHONE: CAROUSEL (uses your uploaded pattern)
-            shown below lg
+            TABLET + PHONE: CAROUSEL (below lg)
            ========================================================= */}
         <div className="lg:hidden">
           <div className="max-w-3xl mx-auto">
             <div className="relative bg-hell-black border border-gray-800 overflow-hidden">
-              {/* subtle inner rail border (same vibe, no rounded corners) */}
               <div className="absolute inset-0 border border-hell-red/10 pointer-events-none" />
 
-              {/* top rail */}
+              {/* Top rail */}
               <div className="flex items-center justify-between px-6 py-4 md:px-10 border-b border-gray-800 bg-black/40">
                 <div className="flex items-center gap-3">
                   <span className="font-gothic text-4xl md:text-5xl text-hell-red">{current.id}</span>
                   <span className="font-terminal text-xs md:text-sm tracking-widest uppercase text-[#ffae00]">
-                    commandment {index + 1} / {max}
+                    {current.id} / {TOTAL_ROMAN}
                   </span>
                 </div>
 
-                {/* desktop-ish arrows for tablet */}
+                {/* arrows (tablet+) */}
                 <div className="hidden md:flex items-center gap-2">
                   <button
                     type="button"
-                    onClick={prev}
+                    onClick={() => paginate(-1)}
                     aria-label="Previous commandment"
                     className="border border-hell-red/30 bg-hell-black px-3 py-2 text-hell-white hover:border-hell-red hover:text-[#ffae00] transition-colors"
                   >
@@ -77,7 +149,7 @@ export const Commandments = () => {
                   </button>
                   <button
                     type="button"
-                    onClick={next}
+                    onClick={() => paginate(1)}
                     aria-label="Next commandment"
                     className="border border-hell-red/30 bg-hell-black px-3 py-2 text-hell-white hover:border-hell-red hover:text-[#ffae00] transition-colors"
                   >
@@ -86,23 +158,46 @@ export const Commandments = () => {
                 </div>
               </div>
 
-              {/* content */}
-              <div className="px-6 py-10 md:px-10 md:py-14">
-                <AnimatePresence mode="wait">
+              {/* Fixed-height content frame */}
+              <div ref={frameRef} className="px-6 py-10 md:px-10 md:py-14" style={{ height: fixedHeight || undefined }}>
+                {/* Hidden measurement slides (same typography + width) */}
+                <div
+                  ref={measureRef}
+                  className="absolute -left-[9999px] top-0 opacity-0 pointer-events-none"
+                  aria-hidden="true"
+                >
+                  {commandments.map((c) => (
+                    <div key={`m-${c.id}`} data-measure-slide="1" className="px-0 py-0">
+                      <h3 className="font-terminal text-2xl md:text-4xl uppercase tracking-wide text-[#FF3C00]">
+                        {c.title}
+                      </h3>
+                      <div className="mt-6 border-l-4 border-hell-red pl-5">
+                        <p className="font-terminal text-lg md:text-2xl text-gray-300 leading-relaxed">{c.text}</p>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+
+                <AnimatePresence mode="wait" initial={false} custom={direction}>
                   <motion.div
                     key={current.id}
-                    initial={{ opacity: 0, y: 16 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0, y: -16 }}
-                    transition={{ duration: 0.25 }}
+                    custom={direction}
+                    variants={slideVariants}
+                    initial="enter"
+                    animate="center"
+                    exit="exit"
+                    transition={{
+                      x: { type: "spring", stiffness: 520, damping: 44 },
+                      opacity: { duration: 0.12 },
+                    }}
                     drag="x"
                     dragConstraints={{ left: 0, right: 0 }}
-                    dragElastic={0.2}
+                    dragElastic={0.14}
                     onDragEnd={onDragEnd}
-                    className="cursor-grab active:cursor-grabbing"
-                    style={{ touchAction: "pan-y" }} // keeps page scroll usable; swipe still works
+                    className="h-full cursor-grab active:cursor-grabbing"
+                    style={{ touchAction: "pan-y" }}
                   >
-                    <h3 className="font-terminal text-2xl md:text-4xl uppercase tracking-wide text-hell-white">
+                    <h3 className="font-terminal text-2xl md:text-4xl uppercase tracking-wide text-[#FF3C00]">
                       {current.title}
                     </h3>
 
@@ -115,40 +210,46 @@ export const Commandments = () => {
                 </AnimatePresence>
               </div>
 
-              {/* mobile arrows + dots */}
-              <div className="md:hidden flex items-center justify-between px-6 py-4 border-t border-gray-800 bg-black/40">
-                <button
-                  type="button"
-                  onClick={prev}
-                  className="border border-hell-red/30 bg-hell-black px-3 py-2 text-hell-white hover:border-hell-red hover:text-[#ffae00] transition-colors"
-                  aria-label="Previous commandment"
-                >
-                  <ChevronLeft size={18} />
-                </button>
-
-                <div className="flex items-center gap-2">
-                  {commandments.map((_, i) => (
-                    <button
-                      key={i}
-                      type="button"
-                      className={[
-                        "w-3 h-3 border border-hell-red/40 transition-colors",
-                        i === index ? "bg-hell-red" : "bg-transparent",
-                      ].join(" ")}
-                      aria-label={`Go to commandment ${i + 1}`}
-                      onClick={() => setIndex(i)}
-                    />
-                  ))}
+              {/* Bottom rail: static phrase + dots + mobile arrows */}
+              <div className="border-t border-gray-800 bg-black/40 px-6 py-4 md:px-10">
+                <div className="font-terminal text-xs md:text-sm tracking-widest uppercase text-gray-500 text-center">
+                  SWIPE LEFT / RIGHT — OR PRETEND YOU READ IT AND DO IT ANYWAY.
                 </div>
 
-                <button
-                  type="button"
-                  onClick={next}
-                  className="border border-hell-red/30 bg-hell-black px-3 py-2 text-hell-white hover:border-hell-red hover:text-[#ffae00] transition-colors"
-                  aria-label="Next commandment"
-                >
-                  <ChevronRight size={18} />
-                </button>
+                <div className="mt-3 flex items-center justify-between md:justify-center gap-4">
+                  <button
+                    type="button"
+                    onClick={() => paginate(-1)}
+                    className="md:hidden border border-hell-red/30 bg-hell-black px-3 py-2 text-hell-white hover:border-hell-red hover:text-[#ffae00] transition-colors"
+                    aria-label="Previous commandment"
+                  >
+                    <ChevronLeft size={18} />
+                  </button>
+
+                  <div className="flex items-center gap-2">
+                    {commandments.map((c, i) => (
+                      <button
+                        key={c.id}
+                        type="button"
+                        aria-label={`Go to commandment ${c.id}`}
+                        onClick={() => setIndex([i, i > index ? 1 : -1])}
+                        className={[
+                          "w-3 h-3 border border-hell-red/40 transition-colors",
+                          i === index ? "bg-hell-red" : "bg-transparent",
+                        ].join(" ")}
+                      />
+                    ))}
+                  </div>
+
+                  <button
+                    type="button"
+                    onClick={() => paginate(1)}
+                    className="md:hidden border border-hell-red/30 bg-hell-black px-3 py-2 text-hell-white hover:border-hell-red hover:text-[#ffae00] transition-colors"
+                    aria-label="Next commandment"
+                  >
+                    <ChevronRight size={18} />
+                  </button>
+                </div>
               </div>
             </div>
           </div>
@@ -156,7 +257,6 @@ export const Commandments = () => {
 
         {/* =========================================================
             LAPTOP + DESKTOP: ORIGINAL GRID (unchanged)
-            shown at lg+
            ========================================================= */}
         <motion.div
           initial="hidden"
@@ -181,17 +281,12 @@ export const Commandments = () => {
                 ${i === 0 || i === 9 ? "md:col-span-2" : ""}
               `}
             >
-              {/* ID Number (Fixed Bright Red) */}
-              <div className="absolute top-4 right-4 font-gothic text-4xl text-hell-red">
-                {c.id}
-              </div>
+              <div className="absolute top-4 right-4 font-gothic text-4xl text-hell-red">{c.id}</div>
 
-              {/* Title */}
               <h3 className="font-terminal text-xl text-[#ffae00] mb-3 group-hover:text-hell-red uppercase font-semibold transition-colors duration-75">
                 {c.title}
               </h3>
 
-              {/* Text */}
               <p className="font-terminal text-lg text-gray-400 group-hover:text-gray-200 transition-colors duration-75">
                 {c.text}
               </p>
