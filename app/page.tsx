@@ -17,7 +17,7 @@ import { Footer } from "@/components/sections/Footer";
 export default function Home() {
   const [paperHands, setPaperHands] = useState(false);
 
-  // Keep callbacks stable so child effects don't re-run due to identity changes.
+  // Triggered by the Navbar
   const triggerHeavenMode = useCallback(() => {
     setPaperHands(true);
   }, []);
