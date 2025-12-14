@@ -34,13 +34,20 @@ const PTSD_WORDS_SOURCE = [
 const PTSD_WORDS = [...PTSD_WORDS_SOURCE, ...PTSD_WORDS_SOURCE, ...PTSD_WORDS_SOURCE];
 
 export const ThePit = () => {
-  // Keep the chaotic vibe, but stop re-renders from re-rolling durations/delays.
-  const anim = useMemo(
+  // Fix: random timing should be stable (no re-roll on re-render), and staggered so words don't "sync-cancel".
+  const ghost = useMemo(
     () =>
-      PTSD_WORDS.map(() => ({
-        duration: 4 + Math.random() * 4,
-        delay: Math.random() * 5,
-      })),
+      PTSD_WORDS.map((_, i) => {
+        const stagger = (i % 12) * 0.22; // spreads pulses so they don't overlap in lockstep
+        return {
+          peak: 0.18 + Math.random() * 0.22, // max opacity per word
+          s1: 0.84 + Math.random() * 0.10, // min scale
+          s2: 1.05 + Math.random() * 0.20, // max scale
+          duration: 3.2 + Math.random() * 4.0, // cycle length
+          delay: stagger + Math.random() * 1.2, // offset start
+          repeatDelay: 0.6 + Math.random() * 2.8, // quiet time between cycles
+        };
+      }),
     []
   );
 
@@ -52,20 +59,25 @@ export const ThePit = () => {
       {/* BACKGROUND: GHOST GRID */}
       <div className="absolute inset-0 z-0 overflow-hidden">
         <div
-          className="absolute top-0 h-full grid content-center p-4
-                        w-[140%] -left-[20%] grid-cols-3 gap-8
+          className="absolute top-0 h-full grid content-center px-6 py-4
+                        w-[120%] -left-[10%] grid-cols-3 gap-8
                         md:w-full md:left-0 md:grid-cols-6 md:gap-12"
         >
           {PTSD_WORDS.map((word, i) => (
             <div key={i} className="flex items-center justify-center w-full h-20 md:h-32">
               <motion.div
                 className="font-gothic font-bold text-black/30 whitespace-nowrap text-5xl md:text-7xl"
-                animate={{ opacity: [0, 0.5, 0], scale: [0.8, 1.1, 0.8] }}
+                animate={{
+                  opacity: [0, ghost[i].peak, 0],
+                  scale: [ghost[i].s1, ghost[i].s2, ghost[i].s1],
+                }}
                 transition={{
-                  duration: anim[i].duration,
+                  duration: ghost[i].duration,
                   repeat: Infinity,
-                  delay: anim[i].delay,
+                  delay: ghost[i].delay,
+                  repeatDelay: ghost[i].repeatDelay,
                   ease: "easeInOut",
+                  times: [0, 0.5, 1],
                 }}
               >
                 {word}
@@ -99,14 +111,15 @@ export const ThePit = () => {
 
             {/* Title */}
             <h2 className="font-gothic text-5xl md:text-8xl text-hell-white mb-8 leading-none">
-              THE CULT OF <br className="md:hidden" /> <span className="text-hell-red">THE BURNED</span>
+              THE CULT OF <br className="md:hidden" />{" "}
+              <span className="text-hell-red">THE BURNED</span>
             </h2>
 
             {/* Meaningful Copy (Updated) */}
             <div className="font-terminal text-lg md:text-xl text-gray-400 mb-12 leading-relaxed max-w-3xl mx-auto space-y-6">
               <p>
-                Welcome to the only corner of crypto where everyone finally stops pretending. Here, we
-                don’t hide our losses — we frame them as{" "}
+                Welcome to the only corner of crypto where everyone finally stops pretending. Here,
+                we don’t hide our losses — we frame them as{" "}
                 <span className="text-white font-bold">character development.</span>
               </p>
 
