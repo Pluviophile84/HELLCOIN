@@ -26,10 +26,12 @@ const commandments = [
 ];
 
 const TOTAL_ROMAN = "X";
-const HEIGHT_BUFFER_PX = 44; // ~1–2 lines of breathing room
+
+// >= 30% more height + some extra breathing room (future-proof)
+const HEIGHT_MULTIPLIER = 1.35;
+const HEIGHT_BUFFER_PX = 72; // ~2+ lines of slack
 
 export const Commandments = () => {
-  // carousel state
   const [[idx, dir], setIdx] = useState<[number, number]>([0, 0]);
   const max = commandments.length;
 
@@ -70,7 +72,10 @@ export const Commandments = () => {
         tallest = Math.max(tallest, el.offsetHeight);
       });
 
-      if (tallest > 0) setFixedHeight(tallest + HEIGHT_BUFFER_PX);
+      if (tallest > 0) {
+        const boosted = Math.ceil(tallest * HEIGHT_MULTIPLIER) + HEIGHT_BUFFER_PX;
+        setFixedHeight(boosted);
+      }
     };
 
     compute();
@@ -99,7 +104,7 @@ export const Commandments = () => {
     center: {
       x: 0,
       opacity: 1,
-    }, // ✅ FIXED (was `}),` which broke build)
+    },
     exit: (direction: number) => ({
       x: direction > 0 ? -120 : 120,
       opacity: 0,
@@ -125,16 +130,22 @@ export const Commandments = () => {
             <div className="relative bg-hell-black border border-gray-800 overflow-hidden">
               <div className="absolute inset-0 border border-hell-red/10 pointer-events-none" />
 
-              {/* Top rail */}
-              <div className="flex items-center justify-between px-6 py-4 md:px-10 border-b border-gray-800 bg-black/40">
-                <div className="flex items-center gap-3">
+              {/* Top rail: left numeral, centered counter, right arrows */}
+              <div className="grid grid-cols-[auto_1fr_auto] items-center px-6 py-4 md:px-10 border-b border-gray-800 bg-black/40">
+                {/* Left: current roman numeral */}
+                <div className="flex items-center">
                   <span className="font-gothic text-4xl md:text-5xl text-hell-red">{current.id}</span>
-                  <span className="font-terminal text-xs md:text-sm tracking-widest uppercase text-[#ffae00]">
+                </div>
+
+                {/* Center: stable counter (does not shift) */}
+                <div className="justify-self-center">
+                  <span className="font-terminal text-sm md:text-base tracking-widest uppercase text-[#ffae00]">
                     {current.id} / {TOTAL_ROMAN}
                   </span>
                 </div>
 
-                <div className="hidden md:flex items-center gap-2">
+                {/* Right: arrows (tablet+) */}
+                <div className="hidden md:flex items-center gap-2 justify-self-end">
                   <button
                     type="button"
                     onClick={() => paginate(-1)}
@@ -152,12 +163,15 @@ export const Commandments = () => {
                     <ChevronRight size={18} />
                   </button>
                 </div>
+
+                {/* keep grid aligned on mobile when arrows are hidden */}
+                <div className="md:hidden justify-self-end w-0 h-0" aria-hidden="true" />
               </div>
 
-              {/* Fixed-height content area */}
+              {/* Fixed-height content area (overflow hidden so it cannot overlap bottom rail) */}
               <div
                 ref={frameRef}
-                className="px-6 py-10 md:px-10 md:py-14"
+                className="px-6 py-10 md:px-10 md:py-14 overflow-hidden"
                 style={{ height: fixedHeight || undefined }}
               >
                 {/* Offscreen measurement (same width + same typography) */}
@@ -168,7 +182,7 @@ export const Commandments = () => {
                 >
                   {commandments.map((c) => (
                     <div key={`m-${c.id}`} data-measure-slide="1">
-                      <h3 className="font-terminal text-2xl md:text-4xl uppercase tracking-wide text-[#FF3C00]">
+                      <h3 className="font-terminal text-2xl md:text-4xl uppercase tracking-wide text-hell-gold">
                         {c.title}
                       </h3>
                       <div className="mt-6 border-l-4 border-hell-red pl-5">
@@ -197,7 +211,7 @@ export const Commandments = () => {
                     className="h-full cursor-grab active:cursor-grabbing"
                     style={{ touchAction: "pan-y" }}
                   >
-                    <h3 className="font-terminal text-2xl md:text-4xl uppercase tracking-wide text-[#FF3C00]">
+                    <h3 className="font-terminal text-2xl md:text-4xl uppercase tracking-wide text-hell-gold">
                       {current.title}
                     </h3>
 
