@@ -1,7 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { AnimatePresence, motion } from "framer-motion";
+import { motion } from "framer-motion";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 
 const commandments = [
@@ -13,31 +13,36 @@ const commandments = [
   { id: "VI", title: "DO ZERO RESEARCH", text: "DYOR is for scholars. You follow vibes." },
   { id: "VII", title: "PANIC SELL BOTTOM", text: "Buy when you feel euphoric. Sell when you are crying in the shower." },
   { id: "VIII", title: "MARRY YOUR BAGS", text: "Even if the dev leaves, love never dies. Your portfolio does." },
-  { id: "IX", title: "BUY EVERY NEW COIN", text: "Why wait for due diligence when the ticker exists? Hesitation is how people miss generational scams." },
-  { id: "X", title: "TRUST EVERY INFLUENCER", text: "Nothing screams financial wisdom like a man filming price predictions from inside his car at 3AM." },
+  {
+    id: "IX",
+    title: "BUY EVERY NEW COIN",
+    text: "Why wait for due diligence when the ticker exists? Hesitation is how people miss generational scams.",
+  },
+  {
+    id: "X",
+    title: "TRUST EVERY INFLUENCER",
+    text: "Nothing screams financial wisdom like a man filming price predictions from inside his car at 3AM.",
+  },
 ];
 
 function CommandmentCard({
   c,
   className = "",
-  "data-measure-card": dataMeasureCard,
 }: {
   c: (typeof commandments)[number];
   className?: string;
-  "data-measure-card"?: string;
 }) {
   return (
     <div
-      data-measure-card={dataMeasureCard}
       className={[
         "bg-hell-black border border-gray-800 p-6 relative group",
         "transition-all duration-75 ease-out",
         "hover:border-hell-red hover:scale-[1.01]",
-        "flex flex-col", // keeps internal layout stable and lets us force equal heights
+        "flex flex-col h-full", // IMPORTANT: allows equal-height behavior
         className,
       ].join(" ")}
     >
-      {/* ID Number (Fixed Bright Red) */}
+      {/* ID Number */}
       <div className="absolute top-4 right-4 font-gothic text-4xl text-hell-red">
         {c.id}
       </div>
@@ -51,79 +56,69 @@ function CommandmentCard({
       <p className="font-terminal text-lg text-gray-400 group-hover:text-gray-200 transition-colors duration-75">
         {c.text}
       </p>
+
+      {/* Spacer (keeps card internals consistent if you add more later) */}
+      <div className="mt-auto" />
     </div>
   );
 }
 
-const swipeConfidenceThreshold = 9000;
-const swipePower = (offset: number, velocity: number) => Math.abs(offset) * velocity;
-
 export const Commandments = () => {
   const total = commandments.length;
-  const [[index, direction], setIndex] = useState<[number, number]>([0, 0]);
 
-  // Mobile/tablet slider frame height (measured as the tallest card at the slider width)
-  const measureHostRef = useRef<HTMLDivElement | null>(null);
-  const [frameHeight, setFrameHeight] = useState<number>(0);
+  // Slider refs
+  const scrollerRef = useRef<HTMLDivElement | null>(null);
+  const cardRefs = useRef<(HTMLDivElement | null)[]>([]);
+  const [active, setActive] = useState(0);
 
-  const current = useMemo(() => {
-    const i = ((index % total) + total) % total;
-    return commandments[i];
-  }, [index, total]);
+  const goTo = useCallback((i: number) => {
+    const idx = ((i % total) + total) % total;
+    const el = cardRefs.current[idx];
+    if (!el) return;
+    el.scrollIntoView({ behavior: "smooth", inline: "center", block: "nearest" });
+  }, [total]);
 
-  const paginate = useCallback((dir: number) => {
-    setIndex(([i]) => [i + dir, dir]);
-  }, []);
+  const prev = useCallback(() => goTo(active - 1), [active, goTo]);
+  const next = useCallback(() => goTo(active + 1), [active, goTo]);
 
-  const sliderVariants = {
-    enter: (dir: number) => ({
-      x: dir > 0 ? 140 : -140,
-      opacity: 0,
-      filter: "blur(1px)",
-    }),
-    center: {
-      x: 0,
-      opacity: 1,
-      filter: "blur(0px)",
-    },
-    exit: (dir: number) => ({
-      x: dir > 0 ? -140 : 140,
-      opacity: 0,
-      filter: "blur(1px)",
-    }),
-  };
-
-  // Measure tallest card at the slider width, so every slide has identical height (no “glitch” jump)
+  // Keep active dot in sync with scroll position (smooth + no jitter)
   useEffect(() => {
-    if (!measureHostRef.current) return;
+    const root = scrollerRef.current;
+    if (!root) return;
 
-    const compute = () => {
-      const host = measureHostRef.current;
-      const cards = host.querySelectorAll<HTMLElement>('[data-measure-card="1"]');
+    const items = cardRefs.current.filter(Boolean) as HTMLDivElement[];
+    if (!items.length) return;
 
-      let max = 0;
-      cards.forEach((el) => {
-        // offsetHeight includes padding/border, perfect for our fixed frame
-        max = Math.max(max, el.offsetHeight);
-      });
+    const io = new IntersectionObserver(
+      (entries) => {
+        // pick the most-visible entry
+        let bestIdx = active;
+        let bestRatio = 0;
 
-      // Safety: avoid thrashing state
-      if (max && Math.abs(max - frameHeight) > 2) setFrameHeight(max);
-      if (!frameHeight && max) setFrameHeight(max);
-    };
+        for (const e of entries) {
+          if (!e.isIntersecting) continue;
+          const idx = items.indexOf(e.target as HTMLDivElement);
+          if (idx === -1) continue;
+          if (e.intersectionRatio > bestRatio) {
+            bestRatio = e.intersectionRatio;
+            bestIdx = idx;
+          }
+        }
 
-    compute();
+        if (bestIdx !== active && bestRatio >= 0.55) setActive(bestIdx);
+      },
+      {
+        root,
+        threshold: [0.25, 0.55, 0.75],
+      }
+    );
 
-    const ro = new ResizeObserver(() => compute());
-    ro.observe(measureHostRef.current);
-
-    window.addEventListener("resize", compute);
-    return () => {
-      ro.disconnect();
-      window.removeEventListener("resize", compute);
-    };
+    items.forEach((el) => io.observe(el));
+    return () => io.disconnect();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [total, active]);
+
+  const current = useMemo(() => commandments[active] ?? commandments[0], [active]);
 
   return (
     <section id="commandments" className="py-24 px-4 bg-hell-dark relative">
@@ -139,97 +134,87 @@ export const Commandments = () => {
         </div>
 
         {/* =========================================================
-            TABLET + PHONE: SLIDER (below lg)
+            TABLET + PHONE: NATIVE SCROLL-SNAP SLIDER (below lg)
+            - Smooth
+            - No layout jumps
+            - No navbar/page yank
            ========================================================= */}
         <div className="lg:hidden">
-          <div className="mx-auto max-w-xl relative">
-            {/* Hidden measurement host (same width as slider) */}
-            <div
-              ref={measureHostRef}
-              className="absolute -left-[9999px] top-0 w-full pointer-events-none opacity-0"
-              aria-hidden="true"
-            >
-              {commandments.map((c) => (
-                <CommandmentCard key={`measure-${c.id}`} c={c} data-measure-card="1" />
-              ))}
-            </div>
-
+          <div className="mx-auto max-w-xl">
             {/* Controls */}
             <div className="flex items-center justify-between mb-4 font-terminal text-sm md:text-base">
               <button
                 type="button"
-                onClick={() => paginate(-1)}
+                onClick={prev}
                 aria-label="Previous commandment"
-                className="inline-flex items-center gap-2 px-4 py-2 border border-gray-800 bg-hell-black text-gray-300 hover:text-hell-white hover:border-hell-red transition-colors duration-75"
+                className="inline-flex items-center gap-2 px-4 py-2 border border-gray-800 bg-hell-black text-gray-300 hover:text-hell-white hover:border-hell-red transition-colors duration-75 select-none"
               >
                 <ChevronLeft size={18} />
                 PREV
               </button>
 
-              <div className="font-terminal text-sm tracking-widest uppercase text-gray-500">
+              <div className="font-terminal text-sm tracking-widest uppercase text-gray-500 select-none">
                 {current.id} / X
               </div>
 
               <button
                 type="button"
-                onClick={() => paginate(1)}
+                onClick={next}
                 aria-label="Next commandment"
-                className="inline-flex items-center gap-2 px-4 py-2 border border-gray-800 bg-hell-black text-gray-300 hover:text-hell-white hover:border-hell-red transition-colors duration-75"
+                className="inline-flex items-center gap-2 px-4 py-2 border border-gray-800 bg-hell-black text-gray-300 hover:text-hell-white hover:border-hell-red transition-colors duration-75 select-none"
               >
                 NEXT
                 <ChevronRight size={18} />
               </button>
             </div>
 
-            {/* Fixed-height slide frame (prevents jump/glitch) */}
+            {/* Scroll-snap track */}
             <div
-              className="relative w-full"
-              style={{
-                height: frameHeight ? `${frameHeight}px` : undefined,
-                minHeight: "320px", // stable fallback before measurement runs
-              }}
+              ref={scrollerRef}
+              className={[
+                "overflow-x-auto overflow-y-hidden",
+                "scroll-smooth",
+                "snap-x snap-mandatory",
+                "overscroll-x-contain", // prevents the page/nav from getting yanked around
+                "touch-pan-x", // makes swipe feel like a real slider
+                "select-none",
+                // spacing
+                "px-1",
+              ].join(" ")}
             >
-              <AnimatePresence initial={false} custom={direction}>
-                <motion.div
-                  key={current.id}
-                  custom={direction}
-                  variants={sliderVariants}
-                  initial="enter"
-                  animate="center"
-                  exit="exit"
-                  transition={{
-                    x: { type: "spring", stiffness: 420, damping: 36 },
-                    opacity: { duration: 0.15 },
-                  }}
-                  drag="x"
-                  dragConstraints={{ left: 0, right: 0 }}
-                  dragElastic={0.9}
-                  onDragEnd={(_, info) => {
-                    const swipe = swipePower(info.offset.x, info.velocity.x);
-                    if (swipe < -swipeConfidenceThreshold) paginate(1);
-                    else if (swipe > swipeConfidenceThreshold) paginate(-1);
-                  }}
-                  style={{ touchAction: "pan-y", height: "100%" }}
-                  className="h-full"
-                >
-                  <CommandmentCard c={current} className="h-full" />
-                </motion.div>
-              </AnimatePresence>
+              {/* Track: stretch => all cards become same height (max card height) */}
+              <div className="flex items-stretch gap-4 py-2">
+                {commandments.map((c, i) => (
+                  <div
+                    key={c.id}
+                    ref={(el) => {
+                      cardRefs.current[i] = el;
+                    }}
+                    className={[
+                      "snap-center shrink-0",
+                      "w-[88%] sm:w-[72%] md:w-[62%]", // consistent width per slide
+                      "h-full",
+                    ].join(" ")}
+                  >
+                    <CommandmentCard c={c} className="h-full" />
+                  </div>
+                ))}
+              </div>
             </div>
 
-            {/* Dots */}
+            {/* Dots (square indicators = sharp corner rule) */}
             <div className="mt-6 flex items-center justify-center gap-2">
               {commandments.map((c, i) => {
-                const active = c.id === current.id;
+                const isActive = i === active;
                 return (
                   <button
                     key={c.id}
                     type="button"
                     aria-label={`Go to commandment ${c.id}`}
-                    onClick={() => setIndex([i, i > index ? 1 : -1])}
+                    onClick={() => goTo(i)}
                     className={[
                       "h-2 w-2 border border-gray-800 transition-colors duration-75",
-                      active ? "bg-hell-red border-hell-red" : "bg-transparent hover:border-hell-red",
+                      isActive ? "bg-hell-red border-hell-red" : "bg-transparent hover:border-hell-red",
                     ].join(" ")}
                   />
                 );
@@ -239,8 +224,7 @@ export const Commandments = () => {
         </div>
 
         {/* =========================================================
-            LAPTOP + DESKTOP: FULL GRID (lg and up)
-            Keep the exact section design; just ensure equal card heights by stretching.
+            LAPTOP + DESKTOP: FULL GRID (lg and up) — all visible
            ========================================================= */}
         <motion.div
           initial="hidden"
