@@ -14,19 +14,16 @@ module.exports = {
           red: "#cc0000", // Blood
           orange: "#ff3300", // Magma
           gold: "#ffae00", // Ember
-          // Slightly ashy white, not digital white
-          white: "#d4d4d4",
+          white: "#d4d4d4", // Ashy white
         },
-
         // Sacred section-title flame color (no gradients)
         flame: "#FF3C00",
       },
-
       fontFamily: {
-        gothic: ["var(--font-pirata)"],
-        terminal: ["var(--font-vt323)"],
+        // Tailwind API stays the same across the whole site:
+        gothic: ["var(--font-gothic)"],
+        terminal: ["var(--font-terminal)"],
       },
-
       // Named clamped sizes for Hero typography (use these instead of inline clamp values in components)
       fontSize: {
         "hero-h1": "clamp(2.6rem, 5vw, 4.8rem)",
@@ -35,14 +32,12 @@ module.exports = {
         "hero-phrase": "clamp(1rem, 1.8vw, 1.6rem)",
         "hero-cta": "clamp(1rem, 1.3vw, 1.25rem)",
       },
-
       animation: {
         "spin-slow": "spin 60s linear infinite",
         "pulse-fast": "pulse 1.5s cubic-bezier(0.4, 0, 0.6, 1) infinite",
         marquee: "marquee 25s linear infinite",
         glitch: "glitch 1s linear infinite",
       },
-
       keyframes: {
         marquee: {
           "0%": { transform: "translateX(0%)" },
