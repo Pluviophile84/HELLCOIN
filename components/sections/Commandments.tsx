@@ -28,36 +28,33 @@ const commandments = [
 function CommandmentCard({
   c,
   className = "",
+  "data-measure": dataMeasure,
 }: {
   c: (typeof commandments)[number];
   className?: string;
+  "data-measure"?: string;
 }) {
   return (
     <div
+      data-measure={dataMeasure}
       className={[
         "bg-hell-black border border-gray-800 p-6 relative group",
         "transition-all duration-75 ease-out",
         "hover:border-hell-red hover:scale-[1.01]",
-        "flex flex-col h-full", // IMPORTANT: allows equal-height behavior
+        "flex flex-col h-full", // IMPORTANT: card can be forced to equal height
         className,
       ].join(" ")}
     >
-      {/* ID Number */}
-      <div className="absolute top-4 right-4 font-gothic text-4xl text-hell-red">
-        {c.id}
-      </div>
+      <div className="absolute top-4 right-4 font-gothic text-4xl text-hell-red">{c.id}</div>
 
-      {/* Title */}
       <h3 className="font-terminal text-xl text-[#ffae00] mb-3 group-hover:text-hell-red uppercase font-semibold transition-colors duration-75">
         {c.title}
       </h3>
 
-      {/* Text */}
       <p className="font-terminal text-lg text-gray-400 group-hover:text-gray-200 transition-colors duration-75">
         {c.text}
       </p>
 
-      {/* Spacer (keeps card internals consistent if you add more later) */}
       <div className="mt-auto" />
     </div>
   );
@@ -66,64 +63,105 @@ function CommandmentCard({
 export const Commandments = () => {
   const total = commandments.length;
 
-  // Slider refs
   const scrollerRef = useRef<HTMLDivElement | null>(null);
-  const cardRefs = useRef<(HTMLDivElement | null)[]>([]);
-  const [active, setActive] = useState(0);
+  const measureRef = useRef<HTMLDivElement | null>(null);
 
-  const goTo = useCallback((i: number) => {
-    const idx = ((i % total) + total) % total;
-    const el = cardRefs.current[idx];
-    if (!el) return;
-    el.scrollIntoView({ behavior: "smooth", inline: "center", block: "nearest" });
-  }, [total]);
+  const [active, setActive] = useState(0);
+  const [frameHeight, setFrameHeight] = useState<number>(0);
+
+  // Slider width behavior (consistent feel)
+  const slideWidthClass = "w-[92%] sm:w-[78%] md:w-[66%]";
+
+  const goTo = useCallback(
+    (i: number) => {
+      const root = scrollerRef.current;
+      if (!root) return;
+
+      const idx = ((i % total) + total) % total;
+      const el = root.querySelector<HTMLElement>(`[data-slide="${idx}"]`);
+      if (!el) return;
+
+      el.scrollIntoView({ behavior: "smooth", inline: "center", block: "nearest" });
+    },
+    [total]
+  );
 
   const prev = useCallback(() => goTo(active - 1), [active, goTo]);
   const next = useCallback(() => goTo(active + 1), [active, goTo]);
 
-  // Keep active dot in sync with scroll position (smooth + no jitter)
+  // Measure tallest card at the slider width so ALL slides get identical height (no jump/glitch)
+  useEffect(() => {
+    const host = measureRef.current;
+    if (!host) return;
+
+    const compute = () => {
+      const cards = host.querySelectorAll<HTMLElement>('[data-measure="1"]');
+      let max = 0;
+      cards.forEach((el) => {
+        max = Math.max(max, el.offsetHeight);
+      });
+      if (max && Math.abs(max - frameHeight) > 2) setFrameHeight(max);
+      if (!frameHeight && max) setFrameHeight(max);
+    };
+
+    compute();
+    const ro = new ResizeObserver(() => compute());
+    ro.observe(host);
+    window.addEventListener("resize", compute);
+
+    return () => {
+      ro.disconnect();
+      window.removeEventListener("resize", compute);
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  // Keep active dot synced to scroll position (no IntersectionObserver jank, no fighting the page)
   useEffect(() => {
     const root = scrollerRef.current;
     if (!root) return;
 
-    const items = cardRefs.current.filter(Boolean) as HTMLDivElement[];
-    if (!items.length) return;
+    let raf = 0;
+    const onScroll = () => {
+      cancelAnimationFrame(raf);
+      raf = requestAnimationFrame(() => {
+        const children = Array.from(root.querySelectorAll<HTMLElement>("[data-slide]"));
+        if (!children.length) return;
 
-    const io = new IntersectionObserver(
-      (entries) => {
-        // pick the most-visible entry
+        const rootRect = root.getBoundingClientRect();
+        const rootCenter = rootRect.left + rootRect.width / 2;
+
         let bestIdx = active;
-        let bestRatio = 0;
+        let bestDist = Infinity;
 
-        for (const e of entries) {
-          if (!e.isIntersecting) continue;
-          const idx = items.indexOf(e.target as HTMLDivElement);
-          if (idx === -1) continue;
-          if (e.intersectionRatio > bestRatio) {
-            bestRatio = e.intersectionRatio;
+        children.forEach((el) => {
+          const r = el.getBoundingClientRect();
+          const center = r.left + r.width / 2;
+          const dist = Math.abs(center - rootCenter);
+          const idx = Number(el.getAttribute("data-slide") || "0");
+          if (dist < bestDist) {
+            bestDist = dist;
             bestIdx = idx;
           }
-        }
+        });
 
-        if (bestIdx !== active && bestRatio >= 0.55) setActive(bestIdx);
-      },
-      {
-        root,
-        threshold: [0.25, 0.55, 0.75],
-      }
-    );
+        if (bestIdx !== active) setActive(bestIdx);
+      });
+    };
 
-    items.forEach((el) => io.observe(el));
-    return () => io.disconnect();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [total, active]);
+    root.addEventListener("scroll", onScroll, { passive: true });
+    return () => {
+      cancelAnimationFrame(raf);
+      root.removeEventListener("scroll", onScroll);
+    };
+  }, [active]);
 
   const current = useMemo(() => commandments[active] ?? commandments[0], [active]);
 
   return (
     <section id="commandments" className="py-24 px-4 bg-hell-dark relative">
       <div className="max-w-7xl mx-auto">
-        {/* --- HEADER --- */}
+        {/* Header */}
         <div className="text-center mb-16 flex flex-col items-center gap-2">
           <span className="font-terminal text-[#ffae00] text-lg md:text-xl tracking-widest uppercase">
             LAW OF THE LAND
@@ -133,14 +171,26 @@ export const Commandments = () => {
           </h2>
         </div>
 
-        {/* =========================================================
-            TABLET + PHONE: NATIVE SCROLL-SNAP SLIDER (below lg)
-            - Smooth
-            - No layout jumps
-            - No navbar/page yank
-           ========================================================= */}
+        {/* =========================
+            Tablet + Phone: Slider
+           ========================= */}
         <div className="lg:hidden">
-          <div className="mx-auto max-w-xl">
+          <div className="mx-auto max-w-xl relative">
+            {/* Hidden measurement host (same width as slides) */}
+            <div
+              ref={measureRef}
+              className="absolute -left-[9999px] top-0 w-full opacity-0 pointer-events-none"
+              aria-hidden="true"
+            >
+              <div className="flex flex-col gap-4">
+                {commandments.map((c) => (
+                  <div key={`m-${c.id}`} className={slideWidthClass}>
+                    <CommandmentCard c={c} data-measure="1" />
+                  </div>
+                ))}
+              </div>
+            </div>
+
             {/* Controls */}
             <div className="flex items-center justify-between mb-4 font-terminal text-sm md:text-base">
               <button
@@ -168,41 +218,49 @@ export const Commandments = () => {
               </button>
             </div>
 
-            {/* Scroll-snap track */}
+            {/* Fixed-height frame to prevent “jumping” */}
             <div
-              ref={scrollerRef}
-              className={[
-                "overflow-x-auto overflow-y-hidden",
-                "scroll-smooth",
-                "snap-x snap-mandatory",
-                "overscroll-x-contain", // prevents the page/nav from getting yanked around
-                "touch-pan-x", // makes swipe feel like a real slider
-                "select-none",
-                // spacing
-                "px-1",
-              ].join(" ")}
+              className="relative w-full"
+              style={{
+                height: frameHeight ? `${frameHeight}px` : undefined,
+                minHeight: "340px", // stable fallback before measurement
+              }}
             >
-              {/* Track: stretch => all cards become same height (max card height) */}
-              <div className="flex items-stretch gap-4 py-2">
-                {commandments.map((c, i) => (
-                  <div
-                    key={c.id}
-                    ref={(el) => {
-                      cardRefs.current[i] = el;
-                    }}
-                    className={[
-                      "snap-center shrink-0",
-                      "w-[88%] sm:w-[72%] md:w-[62%]", // consistent width per slide
-                      "h-full",
-                    ].join(" ")}
-                  >
-                    <CommandmentCard c={c} className="h-full" />
-                  </div>
-                ))}
+              <div
+                ref={scrollerRef}
+                className={[
+                  "h-full w-full",
+                  "overflow-x-auto overflow-y-hidden",
+                  "snap-x snap-mandatory",
+                  "scroll-smooth",
+                  "overscroll-x-contain",
+                  "px-1",
+                  // Hide scrollbar so you don’t get “two paginations”
+                  "[&::-webkit-scrollbar]:hidden [scrollbar-width:none] [-ms-overflow-style:none]",
+                ].join(" ")}
+                style={{
+                  // allow vertical page scroll; horizontal swipe stays inside the scroller
+                  touchAction: "pan-y",
+                }}
+              >
+                <div className="flex items-stretch gap-4 h-full">
+                  {commandments.map((c, i) => (
+                    <div
+                      key={c.id}
+                      data-slide={i}
+                      className={[
+                        "snap-center shrink-0 h-full",
+                        slideWidthClass,
+                      ].join(" ")}
+                    >
+                      <CommandmentCard c={c} className="h-full" />
+                    </div>
+                  ))}
+                </div>
               </div>
             </div>
 
-            {/* Dots (square indicators = sharp corner rule) */}
+            {/* Single pagination: square dots only */}
             <div className="mt-6 flex items-center justify-center gap-2">
               {commandments.map((c, i) => {
                 const isActive = i === active;
@@ -223,16 +281,14 @@ export const Commandments = () => {
           </div>
         </div>
 
-        {/* =========================================================
-            LAPTOP + DESKTOP: FULL GRID (lg and up) — all visible
-           ========================================================= */}
+        {/* =========================
+            Laptop + Desktop: Grid
+           ========================= */}
         <motion.div
           initial="hidden"
           whileInView="visible"
           viewport={{ once: true }}
-          variants={{
-            visible: { transition: { staggerChildren: 0.1 } },
-          }}
+          variants={{ visible: { transition: { staggerChildren: 0.1 } } }}
           className="hidden lg:grid grid-cols-3 xl:grid-cols-4 gap-6 items-stretch"
         >
           {commandments.map((c, i) => (
