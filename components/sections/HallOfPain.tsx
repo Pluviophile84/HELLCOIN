@@ -86,7 +86,7 @@ export const HallOfPain = () => {
           <span className="font-terminal text-[#ffae00] text-xl md:text-2xl tracking-widest uppercase">
             PROOF OF SUFFERING
           </span>
-          <h2 className="font-gothic text-6xl md:text-8xl text-flame">
+          <h2 className="font-gothic text-6xl md:text-8xl text-hell-white">
             HALL OF PAIN
           </h2>
         </div>

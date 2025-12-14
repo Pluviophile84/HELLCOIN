@@ -3,79 +3,120 @@ import { motion } from "framer-motion";
 
 export const Revelation = () => {
   return (
-    <section id="revelation" className="py-32 bg-hell-black overflow-hidden relative">
-      <div className="max-w-6xl mx-auto px-4 text-center relative z-10">
+    <section id="revelation" className="relative min-h-screen flex flex-col md:flex-row bg-hell-black overflow-hidden">
+      
+      {/* --- LEFT SIDE: THE LIE --- */}
+      <div className="md:w-1/2 p-8 md:p-12 flex flex-col items-center justify-center border-r border-hell-red/20 relative group overflow-hidden min-h-[50vh] md:min-h-auto">
+        
+        {/* Background Image - UPDATED SOURCE */}
+        <img 
+          src="/GOAPE-Edited.png" 
+          alt="The Devil"
+          className="absolute inset-0 w-full h-full object-cover opacity-50 grayscale group-hover:grayscale-0 transition-all duration-700 transform group-hover:scale-110"
+        />
+        {/* Heavy Overlay for Text Readability */}
+        <div className="absolute inset-0 bg-black/80"></div>
 
-        <motion.div
-          initial={{ opacity: 0, y: 40 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8 }}
-          viewport={{ once: true }}
-          className="mb-12"
-        >
-          <span className="font-terminal text-[#ffae00] text-xl md:text-2xl tracking-widest uppercase">
-            THE REVELATION
-          </span>
+        <div className="relative z-10 text-center w-full max-w-md">
+          
+          {/* HEADER MATCHING GENESIS STYLE */}
+          <div className="mb-6 flex flex-col items-center gap-2">
+            {/* SUB-LINE: Full Brightness Gold */}
+            <span className="font-terminal text-[#ffae00] text-lg md:text-xl tracking-widest uppercase">
+              DECEPTION DETECTED
+            </span>
+            {/* TITLE: Full Brightness White/Red */}
+            <motion.h3 
+              initial={{ opacity: 0 }}
+              whileInView={{ opacity: 1 }}
+              className="font-gothic text-6xl md:text-8xl tracking-wide"
+            >
+              <span className="text-hell-white">THE</span> <span className="text-hell-red">LIE</span>
+            </motion.h3>
+          </div>
+          
+          {/* The List of Lies - High Visibility (Gray-300) */}
+          <div className="font-terminal text-lg md:text-2xl text-gray-300 space-y-3 leading-relaxed">
+            <p>"Utility." "Roadmaps." "Communities."</p>
+            <p>“Dev is doxxed.”</p>
+            <p>“Influencer-backed.”</p>
+            <p>“Strong fundamentals.”</p>
+            <p>“Early entry.” “Holding the floor.”</p>
+            <p className="text-hell-red">“This time it’s different.”</p>
+            <p>“Memecoins don’t rug — they ‘restart.’”</p>
+          </div>
 
-          <h2 className="font-gothic text-5xl md:text-8xl text-flame leading-none">
-            THE TRUTH <br /> HAS BEEN SPOKEN
-          </h2>
-        </motion.div>
-
-        {/* Text Block */}
-        <motion.div
-          initial={{ opacity: 0, y: 60 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          transition={{ duration: 1 }}
-          viewport={{ once: true }}
-          className="max-w-4xl mx-auto space-y-10"
-        >
-          <p className="font-terminal text-gray-300 text-xl md:text-2xl leading-relaxed">
-            Most memecoins pretend they’re a revolution.
-            <br />
-            A “movement.” A “community.” A “new paradigm.”
-          </p>
-
-          <p className="font-terminal text-gray-400 text-lg md:text-xl leading-relaxed">
-            But the market doesn’t care about your roadmap.
-            <br />
-            It cares about one thing:
-          </p>
-
-          <p className="font-gothic text-5xl md:text-7xl text-hell-red leading-none">
-            PAIN.
-          </p>
-
-          <p className="font-terminal text-gray-300 text-xl md:text-2xl leading-relaxed">
-            Every candle is a confession.
-            <br />
-            Every chart is a trial.
-            <br />
-            Every holder is either a survivor…
-            <br />
-            or a lesson.
-          </p>
-
-          <p className="font-terminal text-gray-400 text-lg md:text-xl leading-relaxed">
-            HELLCOIN does not promise salvation.
-            <br />
-            It only promises what crypto always delivers:
-          </p>
-
-          <p className="font-gothic text-4xl md:text-6xl text-[#ffae00] leading-none">
-            CHARACTER DEVELOPMENT.
-          </p>
-
-          <p className="font-terminal text-gray-500 text-base md:text-lg uppercase tracking-widest pt-6">
-            Proof-of-Suffering is not a gimmick. It is the only honest consensus.
-          </p>
-        </motion.div>
+          <div className="mt-8 border-t border-gray-800 pt-6">
+            <p className="font-terminal text-gray-200 text-lg">
+              Every illusion needed to convert <br/>
+              <span className="text-hell-red">hope into fertilizer.</span>
+            </p>
+          </div>
+        </div>
       </div>
 
-      {/* Background Embers / Glow */}
-      <div className="absolute inset-0 pointer-events-none opacity-25">
-        <div className="absolute top-1/3 right-1/4 w-[520px] h-[520px] bg-hell-red blur-[150px]" />
-        <div className="absolute bottom-0 left-0 w-[700px] h-[700px] bg-hell-orange blur-[180px]" />
+      {/* --- RIGHT SIDE: THE TRUTH --- */}
+      <div className="md:w-1/2 p-8 md:p-12 bg-hell-black flex flex-col justify-center relative border-t md:border-t-0 md:border-l border-hell-red/20">
+        <motion.div
+          initial={{ x: 100, opacity: 0 }}
+          whileInView={{ x: 0, opacity: 1 }}
+          transition={{ duration: 0.8 }}
+          className="max-w-lg mx-auto w-full"
+        >
+          {/* HEADER - UPDATED ALIGNMENT (Centered) */}
+          <div className="mb-8 flex flex-col items-center gap-2 text-center">
+            <span className="font-terminal text-[#ffae00] text-lg md:text-xl tracking-widest uppercase">
+               THE TRUTH
+            </span>
+            <h2 className="font-gothic text-5xl md:text-8xl text-hell-white leading-none">
+              REALITY <span className="text-hell-red">CHECK.</span>
+            </h2>
+          </div>
+
+          {/* THE MANIFESTO */}
+          <div className="space-y-6 font-terminal text-lg md:text-xl text-gray-300 leading-relaxed">
+            
+            <p className="border-l-2 border-hell-red pl-4 text-white text-xl md:text-2xl">
+              Crypto is <span className="text-[#ffae00]">revolutionary</span>; degens made it a casino, and bad actors made it a buffet.
+            </p>
+
+            <ul className="space-y-4">
+              <li className="flex gap-3">
+                <span className="text-hell-red">{">"}</span>
+                <span>No one has alpha — only confidence disorders.</span>
+              </li>
+              <li className="flex gap-3">
+                <span className="text-hell-red">{">"}</span>
+                <span>Influencers aren’t guides; they’re exit liquidity with followers.</span>
+              </li>
+              <li className="flex gap-3">
+                <span className="text-hell-red">{">"}</span>
+                <span>Utility is optional. <span className="text-[#ffae00]">Delusion is mandatory.</span></span>
+              </li>
+              <li className="flex gap-3">
+                <span className="text-hell-red">{">"}</span>
+                <span>Volume is dopamine wearing a business suit.</span>
+              </li>
+              <li className="flex gap-3">
+                <span className="text-hell-red">{">"}</span>
+                <span>Every community is a therapy group for people who bought the top.</span>
+              </li>
+              <li className="flex gap-3">
+                <span className="text-hell-red">{">"}</span>
+                <span>Memecoins don’t die — they simply stop being mentioned.</span>
+              </li>
+            </ul>
+
+            {/* GOLD BOX */}
+            <div className="mt-10 p-6 border border-[#ffae00]/30 bg-[#ffae00]/5 w-full">
+              <p className="text-center text-white text-xl md:text-2xl leading-tight">
+                <span className="font-gothic text-hell-red text-3xl md:text-4xl block mb-2">HELLCOIN</span> 
+                is the only project honest enough to admit it — and bold enough to expose it.
+              </p>
+            </div>
+
+          </div>
+        </motion.div>
       </div>
     </section>
   );

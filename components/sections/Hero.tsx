@@ -33,7 +33,7 @@ export const Hero = () => {
         <img
           src="/banner.png"
           alt="Hellcoin Throne"
-          // Small screens: crop 30% left of center. md+: anchor left.
+          // On small screens, bias the crop slightly left of center (30%). On md+, keep it anchored left.
           className="absolute inset-0 w-full h-full object-cover object-[30%_center] md:object-left opacity-100"
         />
         <div className="absolute inset-0 bg-gradient-to-t from-hell-black via-hell-black/80 to-transparent" />
@@ -125,7 +125,7 @@ export const Hero = () => {
           <span className="block md:inline md:ml-2">WE TREND</span>
         </motion.p>
 
-        {/* CTAs */}
+        {/* CTAs (BUTTON TEXT NOT CLAMPED) */}
         <motion.div
           initial={{ opacity: 0, y: 50 }}
           animate={{ opacity: 1, y: 0 }}
@@ -140,7 +140,6 @@ export const Hero = () => {
             md:max-w-5xl
           "
         >
-          {/* ABANDON HOPE (text-only, no background) */}
           <button
             onClick={handleAbandonHope}
             className="
@@ -158,7 +157,6 @@ export const Hero = () => {
             <TrendingDown className="w-5 h-5 group-hover:translate-y-1 transition-transform" />
           </button>
 
-          {/* ACQUIRE $666 (bordered + hover fill animation) */}
           <a
             href={BUY_LINK}
             target="_blank"

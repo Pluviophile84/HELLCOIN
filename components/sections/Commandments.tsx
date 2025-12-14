@@ -24,7 +24,7 @@ export const Commandments = () => {
           <span className="font-terminal text-[#ffae00] text-lg md:text-xl tracking-widest uppercase">
           LAW OF THE LAND
           </span>
-          <h2 className="font-gothic text-6xl md:text-8xl text-flame">
+          <h2 className="font-gothic text-6xl md:text-8xl text-hell-white">
             THE TEN <span className="text-hell-red">COMMANDMENTS</span>
           </h2>
         </div>
