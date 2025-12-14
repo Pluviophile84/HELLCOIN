@@ -32,46 +32,54 @@ const PTSD_WORDS_SOURCE = [
   "BULLISH",
 ];
 
-const GRID_COUNT = 36; // md+ full density
+// Density per breakpoint (keeps words big on small screens)
+const GRID_COUNT_MD_UP = 36;
+const GRID_COUNT_SM = 24;
+const GRID_COUNT_BASE = 16;
 
 export const ThePit = () => {
-  // Stable set of words for the grid
+  // Stable word pool (md+ density)
   const gridWords = useMemo(() => {
     const out: string[] = [];
-    while (out.length < GRID_COUNT) out.push(...PTSD_WORDS_SOURCE);
-    return out.slice(0, GRID_COUNT);
+    while (out.length < GRID_COUNT_MD_UP) out.push(...PTSD_WORDS_SOURCE);
+    return out.slice(0, GRID_COUNT_MD_UP);
   }, []);
 
-  // Stable per-word timing (no rerender jitter) + stagger to avoid sync-canceling
+  // Stable per-word timing (no rerender jitter) + stagger so ghosts don't sync-cancel
   const ghost = useMemo(() => {
     return gridWords.map((_, i) => {
       const stagger = (i % 12) * 0.18;
       return {
-        peak: 0.18 + Math.random() * 0.26,
+        peak: 0.18 + Math.random() * 0.28,
         s1: 0.88 + Math.random() * 0.08,
         s2: 1.06 + Math.random() * 0.18,
-        duration: 3.0 + Math.random() * 4.2,
+        duration: 3.0 + Math.random() * 4.4,
         delay: stagger + Math.random() * 1.0,
-        repeatDelay: 0.6 + Math.random() * 3.2,
+        repeatDelay: 0.7 + Math.random() * 3.2,
       };
     });
   }, [gridWords]);
 
-  // Bigger on 1080p, still safe on small screens
-  const wordSizeClass = (w: string) => {
+  // Keep long phrases from overflowing; allow them to wrap instead of clipping.
+  // This is the key mobile fix: big text + contained.
+  const wordClasses = (w: string) => {
     const isLong = w.length >= 10 || w.includes(" ");
-    return isLong
-      ? "text-[clamp(1.35rem,3.6vw,3.8rem)]"
-      : "text-[clamp(1.6rem,4.4vw,4.9rem)]";
+    return [
+      "font-gothic font-bold text-black/30 leading-none tracking-tight text-center",
+      "max-w-full",
+      isLong
+        ? "whitespace-normal px-1 text-[clamp(1.55rem,6.0vw,3.8rem)]"
+        : "whitespace-nowrap text-[clamp(1.85rem,7.2vw,5.1rem)]",
+    ].join(" ");
   };
 
-  // Reduce density on small screens so words stay big and readable:
-  // base: 24 items (2 cols => 12 rows)
-  // sm:   30 items (3 cols => 10 rows)
-  // md+:  36 items
+  // Breakpoint-based visibility (less items on smaller screens => bigger words)
   const visibilityClass = (i: number) => {
-    if (i >= 30) return "hidden md:flex";
-    if (i >= 24) return "hidden sm:flex";
+    // base shows 16 (1 col => 16 rows)
+    if (i >= GRID_COUNT_BASE) return "hidden sm:flex";
+    // sm shows 24
+    if (i >= GRID_COUNT_SM) return "hidden md:flex";
+    // md+ shows 36
     return "flex";
   };
 
@@ -80,19 +88,19 @@ export const ThePit = () => {
       id="the-pit"
       className="relative py-32 bg-hell-red overflow-hidden flex items-center justify-center min-h-[900px]"
     >
-      {/* BACKGROUND: GHOST GRID (contained, fills top/bottom, responsive) */}
+      {/* BACKGROUND: GHOST GRID (contained, fills top/bottom, mobile-friendly) */}
       <div className="absolute inset-0 z-0 pointer-events-none">
-        {/* Small padding so words never clip at edges */}
-        <div className="absolute inset-0 px-6 py-8 md:px-10 md:py-10 lg:px-12 lg:py-12">
+        {/* Padding ensures containment: never half-out */}
+        <div className="absolute inset-0 px-6 py-8 sm:px-8 sm:py-10 md:px-10 md:py-10 lg:px-12 lg:py-12">
           <div
             className="
               h-full w-full
               grid auto-rows-fr place-items-center
-              grid-cols-2 gap-x-6 gap-y-6
-              sm:grid-cols-3 sm:gap-x-8 sm:gap-y-8
-              md:grid-cols-4 md:gap-x-10 md:gap-y-10
-              lg:grid-cols-5 lg:gap-x-12 lg:gap-y-12
-              xl:grid-cols-6
+              grid-cols-1 gap-y-5
+              sm:grid-cols-2 sm:gap-x-10 sm:gap-y-8
+              md:grid-cols-3 md:gap-x-12 md:gap-y-10
+              lg:grid-cols-4 lg:gap-x-12 lg:gap-y-12
+              xl:grid-cols-5
             "
           >
             {gridWords.map((word, i) => (
@@ -104,12 +112,7 @@ export const ThePit = () => {
                 ].join(" ")}
               >
                 <motion.div
-                  className={[
-                    "font-gothic font-bold text-black/30",
-                    "leading-none tracking-tight text-center",
-                    "max-w-full",
-                    wordSizeClass(word),
-                  ].join(" ")}
+                  className={wordClasses(word)}
                   animate={{
                     opacity: [0, ghost[i].peak, 0],
                     scale: [ghost[i].s1, ghost[i].s2, ghost[i].s1],
