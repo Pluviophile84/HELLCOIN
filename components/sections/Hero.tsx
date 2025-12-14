@@ -112,7 +112,7 @@ export const Hero = () => {
           transition={{ delay: 1.0 }}
           className="
             font-terminal 
-            text-hell-red 
+            text-flame 
             mt-8 
             tracking-widest 
             uppercase 
