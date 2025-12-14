@@ -70,7 +70,7 @@ export const NineTypes = () => {
           <span className="font-terminal text-[#ffae00] text-xl tracking-widest uppercase">
             CHOOSE YOUR FIGHTER
           </span>
-          <h2 className="font-gothic text-5xl md:text-8xl text-hell-white tracking-wide">
+          <h2 className="font-gothic text-5xl md:text-8xl text-flame tracking-wide">
             THE NINE CIRCLES
           </h2>
         </div>
