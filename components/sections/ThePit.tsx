@@ -32,8 +32,7 @@ const PTSD_WORDS_SOURCE = [
   "BULLISH",
 ];
 
-// Total ghosts (md+). Mobile will automatically show fewer via responsive visibility classes.
-const GRID_COUNT = 42;
+const GRID_COUNT = 48;
 
 export const ThePit = () => {
   // Stable word pool
@@ -46,40 +45,26 @@ export const ThePit = () => {
   // Stable per-word timing so ghosts don't sync/cancel each other
   const ghost = useMemo(() => {
     return gridWords.map((_, i) => {
-      const stagger = (i % 14) * 0.16; // spreads pulses more across the grid
+      const stagger = (i % 16) * 0.14;
       return {
-        peak: 0.10 + Math.random() * 0.18, // keep subtle (overlay layer)
-        s1: 0.90 + Math.random() * 0.06,
-        s2: 1.06 + Math.random() * 0.16,
-        duration: 2.8 + Math.random() * 4.6,
+        peak: 0.14 + Math.random() * 0.22,
+        s1: 0.88 + Math.random() * 0.08,
+        s2: 1.06 + Math.random() * 0.18,
+        duration: 3.0 + Math.random() * 4.4,
         delay: stagger + Math.random() * 1.0,
-        repeatDelay: 0.6 + Math.random() * 3.4,
+        repeatDelay: 0.6 + Math.random() * 3.2,
       };
     });
   }, [gridWords]);
 
-  // Make long phrases wrap and stay contained on narrow screens
   const wordClasses = (w: string) => {
     const isLong = w.length >= 10 || w.includes(" ");
     return [
-      "font-gothic font-bold text-black/30 leading-none tracking-tight text-center",
-      "max-w-full",
+      "font-gothic font-bold text-black/30 leading-none tracking-tight text-center max-w-full",
       isLong
-        ? // wraps + slightly smaller so it never clips on 2-column mobile grid
-          "whitespace-normal px-1 max-w-[44vw] text-[clamp(1.25rem,4.8vw,3.0rem)]"
-        : // bigger on phones, still scales up on desktop
-          "whitespace-nowrap text-[clamp(1.6rem,6.2vw,4.6rem)]",
+        ? "whitespace-normal px-1 max-w-[15ch] text-[clamp(1.25rem,2.0vw,2.4rem)]"
+        : "whitespace-nowrap text-[clamp(1.6rem,2.8vw,3.6rem)]",
     ].join(" ");
-  };
-
-  // Density control: keep mobile readable + not tiny
-  // base: show 18 items
-  // sm: show 28 items
-  // md+: show all
-  const visibilityClass = (i: number) => {
-    if (i >= 28) return "hidden md:flex";
-    if (i >= 18) return "hidden sm:flex";
-    return "flex";
   };
 
   return (
@@ -87,27 +72,20 @@ export const ThePit = () => {
       id="the-pit"
       className="relative py-32 bg-hell-red overflow-hidden flex items-center justify-center min-h-[900px]"
     >
-      {/* GHOST WORDS (overlay layer so they remain visible even behind the black box)
-          Still subtle: low opacity + fades in/out.
-          Fully contained: padding + no overscan + no negative offsets. */}
-      <div className="absolute inset-0 z-[15] pointer-events-none">
-        <div className="absolute inset-0 px-5 py-7 sm:px-8 sm:py-10 md:px-10 md:py-10 lg:px-12 lg:py-12">
+      {/* BACKGROUND: GHOST GRID (Desktop/Laptop only) */}
+      <div className="absolute inset-0 z-0 pointer-events-none hidden md:block">
+        <div className="absolute inset-0 px-10 py-10 lg:px-12 lg:py-12">
           <div
             className="
               h-full w-full
               grid auto-rows-fr place-items-center
-              grid-cols-2 gap-x-6 gap-y-6
-              sm:grid-cols-3 sm:gap-x-10 sm:gap-y-8
-              md:grid-cols-4 md:gap-x-12 md:gap-y-10
+              grid-cols-4 gap-x-12 gap-y-10
               lg:grid-cols-5 lg:gap-x-12 lg:gap-y-12
               xl:grid-cols-6
             "
           >
             {gridWords.map((word, i) => (
-              <div
-                key={`${word}-${i}`}
-                className={[visibilityClass(i), "w-full items-center justify-center"].join(" ")}
-              >
+              <div key={`${word}-${i}`} className="w-full flex items-center justify-center">
                 <motion.div
                   className={wordClasses(word)}
                   animate={{
