@@ -29,29 +29,11 @@ module.exports = {
 
       // Named clamped sizes for Hero typography (use these instead of inline clamp values in components)
       fontSize: {
-        // H1: “BORN IN THE RED. FORGED BY REGRET.”
-        "hero-h1": [
-          "clamp(2.75rem, 6vw, 6rem)",
-          { lineHeight: "0.9", letterSpacing: "-0.02em" },
-        ],
-
-        // Subtext under H1
-        "hero-sub": [
-          "clamp(1rem, 1.6vw, 1.5rem)",
-          { lineHeight: "1.4" },
-        ],
-
-        // “WHEN THE MARKET BURNS, WE TREND”
-        "hero-phrase": [
-          "clamp(0.95rem, 1.2vw, 1.25rem)",
-          { lineHeight: "1.2", letterSpacing: "0.14em" },
-        ],
-
-        // CTA label sizing (optional utility)
-        "hero-cta": [
-          "clamp(1rem, 1.3vw, 1.25rem)",
-          { lineHeight: "1.1", letterSpacing: "0.06em" },
-        ],
+        "hero-h1": "clamp(2.6rem, 5vw, 4.8rem)",
+        "hero-sub": "clamp(1.1rem, 2.2vw, 1.7rem)",
+        "hero-sub-em": "clamp(1.3rem, 2.5vw, 2rem)",
+        "hero-phrase": "clamp(1rem, 1.8vw, 1.6rem)",
+        "hero-cta": "clamp(1rem, 1.3vw, 1.25rem)",
       },
 
       animation: {
