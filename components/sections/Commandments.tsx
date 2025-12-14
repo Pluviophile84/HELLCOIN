@@ -1,8 +1,15 @@
 "use client";
 
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { motion } from "framer-motion";
 import { ChevronLeft, ChevronRight } from "lucide-react";
+import {
+  useCallback,
+  useEffect,
+  useLayoutEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 
 const commandments = [
   { id: "I", title: "BUY THE TOP", text: "Wait for the candle to touch heaven. Then enter hell." },
@@ -13,19 +20,11 @@ const commandments = [
   { id: "VI", title: "DO ZERO RESEARCH", text: "DYOR is for scholars. You follow vibes." },
   { id: "VII", title: "PANIC SELL BOTTOM", text: "Buy when you feel euphoric. Sell when you are crying in the shower." },
   { id: "VIII", title: "MARRY YOUR BAGS", text: "Even if the dev leaves, love never dies. Your portfolio does." },
-  {
-    id: "IX",
-    title: "BUY EVERY NEW COIN",
-    text: "Why wait for due diligence when the ticker exists? Hesitation is how people miss generational scams.",
-  },
-  {
-    id: "X",
-    title: "TRUST EVERY INFLUENCER",
-    text: "Nothing screams financial wisdom like a man filming price predictions from inside his car at 3AM.",
-  },
+  { id: "IX", title: "BUY EVERY NEW COIN", text: "Why wait for due diligence when the ticker exists? Hesitation is how people miss generational scams." },
+  { id: "X", title: "TRUST EVERY INFLUENCER", text: "Nothing screams financial wisdom like a man filming price predictions from inside his car at 3AM." },
 ];
 
-function CommandmentCard({
+function Card({
   c,
   className = "",
   "data-measure": dataMeasure,
@@ -41,11 +40,13 @@ function CommandmentCard({
         "bg-hell-black border border-gray-800 p-6 relative group",
         "transition-all duration-75 ease-out",
         "hover:border-hell-red hover:scale-[1.01]",
-        "flex flex-col h-full", // IMPORTANT: card can be forced to equal height
+        "flex flex-col h-full",
         className,
       ].join(" ")}
     >
-      <div className="absolute top-4 right-4 font-gothic text-4xl text-hell-red">{c.id}</div>
+      <div className="absolute top-4 right-4 font-gothic text-4xl text-hell-red">
+        {c.id}
+      </div>
 
       <h3 className="font-terminal text-xl text-[#ffae00] mb-3 group-hover:text-hell-red uppercase font-semibold transition-colors duration-75">
         {c.title}
@@ -64,34 +65,47 @@ export const Commandments = () => {
   const total = commandments.length;
 
   const scrollerRef = useRef<HTMLDivElement | null>(null);
-  const measureRef = useRef<HTMLDivElement | null>(null);
+  const measureLaneRef = useRef<HTMLDivElement | null>(null);
 
   const [active, setActive] = useState(0);
   const [frameHeight, setFrameHeight] = useState<number>(0);
 
-  // Slider width behavior (consistent feel)
-  const slideWidthClass = "w-[92%] sm:w-[78%] md:w-[66%]";
+  // slide width (consistent with your design, just a mobile slider constraint)
+  const slideWidthClass = "w-[92%] sm:w-[78%] md:w-[64%]";
 
-  const goTo = useCallback(
-    (i: number) => {
+  const current = useMemo(() => commandments[active] ?? commandments[0], [active]);
+
+  const scrollToIndex = useCallback(
+    (idxRaw: number) => {
       const root = scrollerRef.current;
       if (!root) return;
 
-      const idx = ((i % total) + total) % total;
+      const idx = ((idxRaw % total) + total) % total;
       const el = root.querySelector<HTMLElement>(`[data-slide="${idx}"]`);
       if (!el) return;
 
-      el.scrollIntoView({ behavior: "smooth", inline: "center", block: "nearest" });
+      // Center the slide without triggering vertical page scroll
+      const rootRect = root.getBoundingClientRect();
+      const elRect = el.getBoundingClientRect();
+
+      const rootCenter = rootRect.left + rootRect.width / 2;
+      const elCenter = elRect.left + elRect.width / 2;
+      const delta = elCenter - rootCenter;
+
+      root.scrollTo({
+        left: root.scrollLeft + delta,
+        behavior: "smooth",
+      });
     },
     [total]
   );
 
-  const prev = useCallback(() => goTo(active - 1), [active, goTo]);
-  const next = useCallback(() => goTo(active + 1), [active, goTo]);
+  const prev = useCallback(() => scrollToIndex(active - 1), [active, scrollToIndex]);
+  const next = useCallback(() => scrollToIndex(active + 1), [active, scrollToIndex]);
 
-  // Measure tallest card at the slider width so ALL slides get identical height (no jump/glitch)
-  useEffect(() => {
-    const host = measureRef.current;
+  // Measure tallest card at slider width -> lock frame height to that (prevents jump/glitch)
+  useLayoutEffect(() => {
+    const host = measureLaneRef.current;
     if (!host) return;
 
     const compute = () => {
@@ -100,33 +114,44 @@ export const Commandments = () => {
       cards.forEach((el) => {
         max = Math.max(max, el.offsetHeight);
       });
-      if (max && Math.abs(max - frameHeight) > 2) setFrameHeight(max);
-      if (!frameHeight && max) setFrameHeight(max);
+      if (max) setFrameHeight(max);
     };
 
+    // Run immediately, then again after fonts settle
     compute();
+    const raf = requestAnimationFrame(compute);
+
+    // If browser supports font loading API, re-measure once fonts are ready
+    // (prevents wrong height due to fallback font)
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const fonts = (document as any).fonts;
+    if (fonts?.ready) {
+      fonts.ready.then(() => compute()).catch(() => {});
+    }
+
     const ro = new ResizeObserver(() => compute());
     ro.observe(host);
-    window.addEventListener("resize", compute);
 
+    window.addEventListener("resize", compute);
     return () => {
+      cancelAnimationFrame(raf);
       ro.disconnect();
       window.removeEventListener("resize", compute);
     };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  // Keep active dot synced to scroll position (no IntersectionObserver jank, no fighting the page)
+  // Track active slide by center proximity while user swipes (smooth, no IO jank)
   useEffect(() => {
     const root = scrollerRef.current;
     if (!root) return;
 
     let raf = 0;
-    const onScroll = () => {
+
+    const updateActive = () => {
       cancelAnimationFrame(raf);
       raf = requestAnimationFrame(() => {
-        const children = Array.from(root.querySelectorAll<HTMLElement>("[data-slide]"));
-        if (!children.length) return;
+        const slides = Array.from(root.querySelectorAll<HTMLElement>("[data-slide]"));
+        if (!slides.length) return;
 
         const rootRect = root.getBoundingClientRect();
         const rootCenter = rootRect.left + rootRect.width / 2;
@@ -134,34 +159,32 @@ export const Commandments = () => {
         let bestIdx = active;
         let bestDist = Infinity;
 
-        children.forEach((el) => {
+        for (const el of slides) {
           const r = el.getBoundingClientRect();
           const center = r.left + r.width / 2;
           const dist = Math.abs(center - rootCenter);
-          const idx = Number(el.getAttribute("data-slide") || "0");
+          const idx = Number(el.getAttribute("data-slide") ?? "0");
           if (dist < bestDist) {
             bestDist = dist;
             bestIdx = idx;
           }
-        });
+        }
 
         if (bestIdx !== active) setActive(bestIdx);
       });
     };
 
-    root.addEventListener("scroll", onScroll, { passive: true });
+    root.addEventListener("scroll", updateActive, { passive: true });
     return () => {
       cancelAnimationFrame(raf);
-      root.removeEventListener("scroll", onScroll);
+      root.removeEventListener("scroll", updateActive);
     };
   }, [active]);
-
-  const current = useMemo(() => commandments[active] ?? commandments[0], [active]);
 
   return (
     <section id="commandments" className="py-24 px-4 bg-hell-dark relative">
       <div className="max-w-7xl mx-auto">
-        {/* Header */}
+        {/* --- HEADER --- */}
         <div className="text-center mb-16 flex flex-col items-center gap-2">
           <span className="font-terminal text-[#ffae00] text-lg md:text-xl tracking-widest uppercase">
             LAW OF THE LAND
@@ -171,24 +194,22 @@ export const Commandments = () => {
           </h2>
         </div>
 
-        {/* =========================
-            Tablet + Phone: Slider
-           ========================= */}
+        {/* =========================================================
+            TABLET + PHONE: SLIDER (below lg)
+           ========================================================= */}
         <div className="lg:hidden">
           <div className="mx-auto max-w-xl relative">
-            {/* Hidden measurement host (same width as slides) */}
+            {/* hidden measurement lane (same max width + same slide widths) */}
             <div
-              ref={measureRef}
+              ref={measureLaneRef}
               className="absolute -left-[9999px] top-0 w-full opacity-0 pointer-events-none"
               aria-hidden="true"
             >
-              <div className="flex flex-col gap-4">
-                {commandments.map((c) => (
-                  <div key={`m-${c.id}`} className={slideWidthClass}>
-                    <CommandmentCard c={c} data-measure="1" />
-                  </div>
-                ))}
-              </div>
+              {commandments.map((c) => (
+                <div key={`m-${c.id}`} className={slideWidthClass}>
+                  <Card c={c} data-measure="1" />
+                </div>
+              ))}
             </div>
 
             {/* Controls */}
@@ -218,29 +239,18 @@ export const Commandments = () => {
               </button>
             </div>
 
-            {/* Fixed-height frame to prevent “jumping” */}
+            {/* Fixed-height frame (exactly tallest card) */}
             <div
               className="relative w-full"
               style={{
                 height: frameHeight ? `${frameHeight}px` : undefined,
-                minHeight: "340px", // stable fallback before measurement
               }}
             >
               <div
                 ref={scrollerRef}
-                className={[
-                  "h-full w-full",
-                  "overflow-x-auto overflow-y-hidden",
-                  "snap-x snap-mandatory",
-                  "scroll-smooth",
-                  "overscroll-x-contain",
-                  "px-1",
-                  // Hide scrollbar so you don’t get “two paginations”
-                  "[&::-webkit-scrollbar]:hidden [scrollbar-width:none] [-ms-overflow-style:none]",
-                ].join(" ")}
+                className="hc-commandments-scroller h-full w-full overflow-x-auto overflow-y-hidden snap-x snap-mandatory scroll-smooth overscroll-x-contain px-1"
                 style={{
-                  // allow vertical page scroll; horizontal swipe stays inside the scroller
-                  touchAction: "pan-y",
+                  WebkitOverflowScrolling: "touch",
                 }}
               >
                 <div className="flex items-stretch gap-4 h-full">
@@ -251,16 +261,19 @@ export const Commandments = () => {
                       className={[
                         "snap-center shrink-0 h-full",
                         slideWidthClass,
+                        // subtle “smoothness” feedback while swiping (transform doesn't affect layout)
+                        "transition-transform duration-300 ease-out",
+                        i === active ? "scale-100" : "scale-[0.985]",
                       ].join(" ")}
                     >
-                      <CommandmentCard c={c} className="h-full" />
+                      <Card c={c} className="h-full" />
                     </div>
                   ))}
                 </div>
               </div>
             </div>
 
-            {/* Single pagination: square dots only */}
+            {/* Single pagination: square dots ONLY */}
             <div className="mt-6 flex items-center justify-center gap-2">
               {commandments.map((c, i) => {
                 const isActive = i === active;
@@ -269,7 +282,7 @@ export const Commandments = () => {
                     key={c.id}
                     type="button"
                     aria-label={`Go to commandment ${c.id}`}
-                    onClick={() => goTo(i)}
+                    onClick={() => scrollToIndex(i)}
                     className={[
                       "h-2 w-2 border border-gray-800 transition-colors duration-75",
                       isActive ? "bg-hell-red border-hell-red" : "bg-transparent hover:border-hell-red",
@@ -278,18 +291,31 @@ export const Commandments = () => {
                 );
               })}
             </div>
+
+            {/* scrollbar hide (only for this scroller) */}
+            <style jsx>{`
+              .hc-commandments-scroller {
+                scrollbar-width: none; /* Firefox */
+                -ms-overflow-style: none; /* IE/Edge legacy */
+              }
+              .hc-commandments-scroller::-webkit-scrollbar {
+                display: none; /* Chrome/Safari */
+              }
+            `}</style>
           </div>
         </div>
 
-        {/* =========================
-            Laptop + Desktop: Grid
-           ========================= */}
+        {/* =========================================================
+            LAPTOP + DESKTOP: FULL GRID (lg and up) — unchanged layout
+           ========================================================= */}
         <motion.div
           initial="hidden"
           whileInView="visible"
           viewport={{ once: true }}
-          variants={{ visible: { transition: { staggerChildren: 0.1 } } }}
-          className="hidden lg:grid grid-cols-3 xl:grid-cols-4 gap-6 items-stretch"
+          variants={{
+            visible: { transition: { staggerChildren: 0.1 } },
+          }}
+          className="hidden lg:grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 items-stretch"
         >
           {commandments.map((c, i) => (
             <motion.div
@@ -300,10 +326,10 @@ export const Commandments = () => {
               }}
               className={[
                 "h-full",
-                i === 0 || i === 9 ? "xl:col-span-2" : "",
+                i === 0 || i === 9 ? "md:col-span-2" : "",
               ].join(" ")}
             >
-              <CommandmentCard c={c} className="h-full" />
+              <Card c={c} className="h-full" />
             </motion.div>
           ))}
         </motion.div>
