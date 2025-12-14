@@ -18,7 +18,7 @@ export default function RootLayout({
       className={`${fontGothic.variable} ${fontTerminal.variable} scroll-smooth`}
     >
       {/* Default body font becomes Crimson (via font-terminal) so no silent fallback to sans */}
-      <body className="font-terminal scanlines bg-hell-black">{children}</body>
+      <body className="font-terminal bg-hell-black">{children}</body>
     </html>
   );
 }
