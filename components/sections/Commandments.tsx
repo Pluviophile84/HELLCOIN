@@ -1,7 +1,7 @@
 "use client";
 
-import { useCallback, useLayoutEffect, useMemo, useRef, useState } from "react";
-import { AnimatePresence, motion } from "framer-motion";
+import { useCallback, useMemo, useState } from "react";
+import { motion, AnimatePresence, PanInfo } from "framer-motion";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 
 const commandments = [
@@ -13,157 +13,30 @@ const commandments = [
   { id: "VI", title: "DO ZERO RESEARCH", text: "DYOR is for scholars. You follow vibes." },
   { id: "VII", title: "PANIC SELL BOTTOM", text: "Buy when you feel euphoric. Sell when you are crying in the shower." },
   { id: "VIII", title: "MARRY YOUR BAGS", text: "Even if the dev leaves, love never dies. Your portfolio does." },
-  {
-    id: "IX",
-    title: "BUY EVERY NEW COIN",
-    text: "Why wait for due diligence when the ticker exists? Hesitation is how people miss generational scams.",
-  },
-  {
-    id: "X",
-    title: "TRUST EVERY INFLUENCER",
-    text: "Nothing screams financial wisdom like a man filming price predictions from inside his car at 3AM.",
-  },
+  { id: "IX", title: "BUY EVERY NEW COIN", text: "Why wait for due diligence when the ticker exists? Hesitation is how people miss generational scams." },
+  { id: "X", title: "TRUST EVERY INFLUENCER", text: "Nothing screams financial wisdom like a man filming price predictions from inside his car at 3AM." },
 ];
 
-function CommandmentCard({
-  c,
-  className = "",
-  "data-measure": dataMeasure,
-}: {
-  c: (typeof commandments)[number];
-  className?: string;
-  "data-measure"?: string;
-}) {
-  return (
-    <div
-      data-measure={dataMeasure}
-      className={[
-        "bg-hell-black border border-gray-800 p-6 relative group",
-        "transition-all duration-75 ease-out",
-        "hover:border-hell-red hover:scale-[1.01]",
-        "flex flex-col h-full",
-        className,
-      ].join(" ")}
-    >
-      <div className="absolute top-4 right-4 font-gothic text-4xl text-hell-red">{c.id}</div>
-
-      <h3 className="font-terminal text-xl text-[#ffae00] mb-3 group-hover:text-hell-red uppercase font-semibold transition-colors duration-75">
-        {c.title}
-      </h3>
-
-      <p className="font-terminal text-lg text-gray-400 group-hover:text-gray-200 transition-colors duration-75">
-        {c.text}
-      </p>
-
-      <div className="mt-auto" />
-    </div>
-  );
-}
-
 export const Commandments = () => {
-  const total = commandments.length;
-  const [[index, direction], setIndex] = useState<[number, number]>([0, 0]);
+  // --- carousel state (mobile/tablet only) ---
+  const [index, setIndex] = useState(0);
+  const max = commandments.length;
 
-  // Mobile/tablet frame height locked to tallest card (measured at same width)
-  const measureHostRef = useRef<HTMLDivElement | null>(null);
-  const sliderFrameRef = useRef<HTMLDivElement | null>(null);
-  const [frameHeight, setFrameHeight] = useState<number>(0);
+  const current = useMemo(() => commandments[index], [index]);
 
-  // Swipe tracking
-  const touchStart = useRef<{ x: number; y: number } | null>(null);
+  const prev = useCallback(() => setIndex((i) => (i - 1 + max) % max), [max]);
+  const next = useCallback(() => setIndex((i) => (i + 1) % max), [max]);
 
-  const current = useMemo(() => {
-    const i = ((index % total) + total) % total;
-    return commandments[i];
-  }, [index, total]);
-
-  const paginate = useCallback(
-    (dir: number) => setIndex(([i]) => [i + dir, dir]),
-    []
-  );
-
-  // Measure tallest card at the same width as the actual slider frame (so height is correct, not huge)
-  useLayoutEffect(() => {
-    const measureHost = measureHostRef.current;
-    const sliderFrame = sliderFrameRef.current;
-    if (!measureHost || !sliderFrame) return;
-
-    const compute = () => {
-      // force measurement lane to match slider width exactly
-      const w = sliderFrame.getBoundingClientRect().width;
-      if (w > 0) measureHost.style.width = `${w}px`;
-
-      const cards = measureHost.querySelectorAll<HTMLElement>('[data-measure="1"]');
-      let max = 0;
-      cards.forEach((el) => {
-        max = Math.max(max, el.offsetHeight);
-      });
-
-      if (max > 0) setFrameHeight(max);
-    };
-
-    compute();
-
-    // Fonts can change text metrics after first paint
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const fonts = (document as any).fonts;
-    if (fonts?.ready) fonts.ready.then(() => compute()).catch(() => {});
-
-    const ro = new ResizeObserver(() => compute());
-    ro.observe(sliderFrame);
-
-    window.addEventListener("resize", compute);
-    return () => {
-      ro.disconnect();
-      window.removeEventListener("resize", compute);
-    };
-  }, []);
-
-  // Swipe handlers (no scrollbar, no drag fighting the page)
-  const onTouchStart = (e: React.TouchEvent) => {
-    const t = e.touches[0];
-    touchStart.current = { x: t.clientX, y: t.clientY };
-  };
-
-  const onTouchEnd = (e: React.TouchEvent) => {
-    const start = touchStart.current;
-    touchStart.current = null;
-    if (!start) return;
-
-    const t = e.changedTouches[0];
-    const dx = t.clientX - start.x;
-    const dy = t.clientY - start.y;
-
-    // Only treat as swipe if it's mostly horizontal and crosses threshold
-    const absX = Math.abs(dx);
-    const absY = Math.abs(dy);
-
-    if (absX < 55) return;
-    if (absX < absY * 1.25) return;
-
-    // swipe left -> next, swipe right -> prev
-    paginate(dx < 0 ? 1 : -1);
-  };
-
-  const slideVariants = {
-    enter: (dir: number) => ({
-      x: dir > 0 ? 80 : -80,
-      opacity: 0,
-    }),
-    center: {
-      x: 0,
-      opacity: 1,
-    }),
-    exit: (dir: number) => ({
-      x: dir > 0 ? -80 : 80,
-      opacity: 0,
-    }),
+  const onDragEnd = (_: MouseEvent | TouchEvent | PointerEvent, info: PanInfo) => {
+    const swipe = info.offset.x;
+    if (swipe > 80) prev();
+    if (swipe < -80) next();
   };
 
   return (
     <section id="commandments" className="py-24 px-4 bg-hell-dark relative">
       <div className="max-w-7xl mx-auto">
-        {/* Header (kept consistent with your existing style) */}
+        {/* --- HEADER (unchanged) --- */}
         <div className="text-center mb-16 flex flex-col items-center gap-2">
           <span className="font-terminal text-[#ffae00] text-lg md:text-xl tracking-widest uppercase">
             LAW OF THE LAND
@@ -173,111 +46,126 @@ export const Commandments = () => {
           </h2>
         </div>
 
-        {/* ======================
-            Tablet + Phone: Carousel
-           ====================== */}
+        {/* =========================================================
+            TABLET + PHONE: CAROUSEL (uses your uploaded pattern)
+            shown below lg
+           ========================================================= */}
         <div className="lg:hidden">
-          <div className="mx-auto w-full max-w-2xl relative">
-            {/* Measurement lane (invisible, same width as slider frame; used only to compute max height) */}
-            <div
-              ref={measureHostRef}
-              className="absolute left-0 top-0 opacity-0 pointer-events-none -z-10"
-              aria-hidden="true"
-            >
-              <div className="flex flex-col gap-4">
-                {commandments.map((c) => (
-                  <CommandmentCard key={`m-${c.id}`} c={c} data-measure="1" />
-                ))}
-              </div>
-            </div>
+          <div className="max-w-3xl mx-auto">
+            <div className="relative bg-hell-black border border-gray-800 overflow-hidden">
+              {/* subtle inner rail border (same vibe, no rounded corners) */}
+              <div className="absolute inset-0 border border-hell-red/10 pointer-events-none" />
 
-            {/* Controls */}
-            <div className="flex items-center justify-between mb-4 font-terminal text-sm md:text-base">
-              <button
-                type="button"
-                onClick={() => paginate(-1)}
-                aria-label="Previous commandment"
-                className="inline-flex items-center gap-2 px-4 py-2 border border-gray-800 bg-hell-black text-gray-300 hover:text-hell-white hover:border-hell-red transition-colors duration-75 select-none"
-              >
-                <ChevronLeft size={18} />
-                PREV
-              </button>
+              {/* top rail */}
+              <div className="flex items-center justify-between px-6 py-4 md:px-10 border-b border-gray-800 bg-black/40">
+                <div className="flex items-center gap-3">
+                  <span className="font-gothic text-4xl md:text-5xl text-hell-red">{current.id}</span>
+                  <span className="font-terminal text-xs md:text-sm tracking-widest uppercase text-[#ffae00]">
+                    commandment {index + 1} / {max}
+                  </span>
+                </div>
 
-              <div className="font-terminal text-sm tracking-widest uppercase text-gray-500 select-none">
-                {current.id} / X
-              </div>
-
-              <button
-                type="button"
-                onClick={() => paginate(1)}
-                aria-label="Next commandment"
-                className="inline-flex items-center gap-2 px-4 py-2 border border-gray-800 bg-hell-black text-gray-300 hover:text-hell-white hover:border-hell-red transition-colors duration-75 select-none"
-              >
-                NEXT
-                <ChevronRight size={18} />
-              </button>
-            </div>
-
-            {/* Frame (full-size card, not thin) */}
-            <div
-              ref={sliderFrameRef}
-              className="relative w-full"
-              style={{
-                height: frameHeight ? `${frameHeight}px` : undefined,
-              }}
-              onTouchStart={onTouchStart}
-              onTouchEnd={onTouchEnd}
-            >
-              <AnimatePresence initial={false} custom={direction}>
-                <motion.div
-                  key={current.id}
-                  custom={direction}
-                  variants={slideVariants}
-                  initial="enter"
-                  animate="center"
-                  exit="exit"
-                  transition={{
-                    x: { type: "spring", stiffness: 420, damping: 34 },
-                    opacity: { duration: 0.12 },
-                  }}
-                  className="absolute inset-0"
-                >
-                  {/* Full width/height card inside frame */}
-                  <CommandmentCard c={current} className="h-full" />
-                </motion.div>
-              </AnimatePresence>
-            </div>
-
-            {/* Single pagination: square dots only */}
-            <div className="mt-6 flex items-center justify-center gap-2">
-              {commandments.map((c, i) => {
-                const active = c.id === current.id;
-                return (
+                {/* desktop-ish arrows for tablet */}
+                <div className="hidden md:flex items-center gap-2">
                   <button
-                    key={c.id}
                     type="button"
-                    aria-label={`Go to commandment ${c.id}`}
-                    onClick={() => setIndex([i, i > index ? 1 : -1])}
-                    className={[
-                      "h-2 w-2 border border-gray-800 transition-colors duration-75",
-                      active ? "bg-hell-red border-hell-red" : "bg-transparent hover:border-hell-red",
-                    ].join(" ")}
-                  />
-                );
-              })}
+                    onClick={prev}
+                    aria-label="Previous commandment"
+                    className="border border-hell-red/30 bg-hell-black px-3 py-2 text-hell-white hover:border-hell-red hover:text-[#ffae00] transition-colors"
+                  >
+                    <ChevronLeft size={18} />
+                  </button>
+                  <button
+                    type="button"
+                    onClick={next}
+                    aria-label="Next commandment"
+                    className="border border-hell-red/30 bg-hell-black px-3 py-2 text-hell-white hover:border-hell-red hover:text-[#ffae00] transition-colors"
+                  >
+                    <ChevronRight size={18} />
+                  </button>
+                </div>
+              </div>
+
+              {/* content */}
+              <div className="px-6 py-10 md:px-10 md:py-14">
+                <AnimatePresence mode="wait">
+                  <motion.div
+                    key={current.id}
+                    initial={{ opacity: 0, y: 16 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -16 }}
+                    transition={{ duration: 0.25 }}
+                    drag="x"
+                    dragConstraints={{ left: 0, right: 0 }}
+                    dragElastic={0.2}
+                    onDragEnd={onDragEnd}
+                    className="cursor-grab active:cursor-grabbing"
+                    style={{ touchAction: "pan-y" }} // keeps page scroll usable; swipe still works
+                  >
+                    <h3 className="font-terminal text-2xl md:text-4xl uppercase tracking-wide text-hell-white">
+                      {current.title}
+                    </h3>
+
+                    <div className="mt-6 border-l-4 border-hell-red pl-5">
+                      <p className="font-terminal text-lg md:text-2xl text-gray-300 leading-relaxed">
+                        {current.text}
+                      </p>
+                    </div>
+                  </motion.div>
+                </AnimatePresence>
+              </div>
+
+              {/* mobile arrows + dots */}
+              <div className="md:hidden flex items-center justify-between px-6 py-4 border-t border-gray-800 bg-black/40">
+                <button
+                  type="button"
+                  onClick={prev}
+                  className="border border-hell-red/30 bg-hell-black px-3 py-2 text-hell-white hover:border-hell-red hover:text-[#ffae00] transition-colors"
+                  aria-label="Previous commandment"
+                >
+                  <ChevronLeft size={18} />
+                </button>
+
+                <div className="flex items-center gap-2">
+                  {commandments.map((_, i) => (
+                    <button
+                      key={i}
+                      type="button"
+                      className={[
+                        "w-3 h-3 border border-hell-red/40 transition-colors",
+                        i === index ? "bg-hell-red" : "bg-transparent",
+                      ].join(" ")}
+                      aria-label={`Go to commandment ${i + 1}`}
+                      onClick={() => setIndex(i)}
+                    />
+                  ))}
+                </div>
+
+                <button
+                  type="button"
+                  onClick={next}
+                  className="border border-hell-red/30 bg-hell-black px-3 py-2 text-hell-white hover:border-hell-red hover:text-[#ffae00] transition-colors"
+                  aria-label="Next commandment"
+                >
+                  <ChevronRight size={18} />
+                </button>
+              </div>
             </div>
           </div>
         </div>
 
-        {/* ======================
-            Laptop + Desktop: Grid (all visible)
-           ====================== */}
+        {/* =========================================================
+            LAPTOP + DESKTOP: ORIGINAL GRID (unchanged)
+            shown at lg+
+           ========================================================= */}
         <motion.div
           initial="hidden"
           whileInView="visible"
           viewport={{ once: true }}
-          variants={{ visible: { transition: { staggerChildren: 0.1 } } }}
-          className="hidden lg:grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 items-stretch"
+          variants={{
+            visible: { transition: { staggerChildren: 0.1 } },
+          }}
+          className="hidden lg:grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6"
         >
           {commandments.map((c, i) => (
             <motion.div
@@ -286,9 +174,27 @@ export const Commandments = () => {
                 hidden: { opacity: 0, y: 50 },
                 visible: { opacity: 1, y: 0 },
               }}
-              className={[i === 0 || i === 9 ? "md:col-span-2" : "", "h-full"].join(" ")}
+              className={`
+                bg-hell-black border border-gray-800 p-6 relative group
+                transition-all duration-75 ease-out
+                hover:border-hell-red hover:scale-[1.01]
+                ${i === 0 || i === 9 ? "md:col-span-2" : ""}
+              `}
             >
-              <CommandmentCard c={c} className="h-full" />
+              {/* ID Number (Fixed Bright Red) */}
+              <div className="absolute top-4 right-4 font-gothic text-4xl text-hell-red">
+                {c.id}
+              </div>
+
+              {/* Title */}
+              <h3 className="font-terminal text-xl text-[#ffae00] mb-3 group-hover:text-hell-red uppercase font-semibold transition-colors duration-75">
+                {c.title}
+              </h3>
+
+              {/* Text */}
+              <p className="font-terminal text-lg text-gray-400 group-hover:text-gray-200 transition-colors duration-75">
+                {c.text}
+              </p>
             </motion.div>
           ))}
         </motion.div>
