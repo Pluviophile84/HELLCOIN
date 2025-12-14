@@ -1,69 +1,60 @@
 "use client";
-
 import { motion } from "framer-motion";
 
-const STEPS = [
-  { title: "ENTRY", text: "You found the coin. You feel powerful. You are not." },
-  { title: "FOMO", text: "You buy the top with confidence. The chart laughs." },
-  { title: "COPE", text: "You convince yourself it's a healthy correction." },
-  { title: "BARGAIN", text: "You promise to take profit next time. You won't." },
-  { title: "REKT", text: "The liquidation email arrives. It reads like scripture." },
-];
-
 export const Hellmap = () => {
-  return (
-    <section id="hellmap" className="py-28 bg-hell-black overflow-hidden relative">
-      <div className="max-w-6xl mx-auto px-4 relative z-10">
-        <motion.div
-          initial={{ opacity: 0, y: 40 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8 }}
-          viewport={{ once: true }}
-          className="mb-14 text-center"
-        >
-          <span className="font-terminal text-[#ffae00] text-xl md:text-2xl tracking-widest uppercase">
-            HELL MAP
-          </span>
-          <h2 className="font-gothic text-5xl md:text-8xl text-hell-white leading-none">
-            THE
-            <br />
-            DESCENT
-          </h2>
-        </motion.div>
+ const phases = [
+ { title: "THE 'FAIR LAUNCH' TRAP", sub: "Liquidity locked in hell.", details: ["Contract deployed at 3:33 AM", "First 666 holders cursed", "Liquidity burnt as offering"] },
+ { title: "PHASE 1337: DELUSIONAL HODLING", sub: "We promise utility, we deliver damage.", details: ["Hit $666k Market Cap (12 secs)", "Partnership with therapy apps", "CEX Listing (Rejected)"] },
+ { title: "PHASE ???: TOTAL COLLAPSE", sub: "It's not a bear market if it never goes up.", details: ["HELLCOIN becomes legal tender", "Financial system replaced by memes", "Socialism achieved via poverty"] },
+ ];
 
-        <div className="relative border-l-4 border-hell-red/60 pl-8 md:pl-12 space-y-10">
-          {STEPS.map((s, i) => (
-            <motion.div
-              key={s.title}
-              initial={{ opacity: 0, x: -40 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.7, delay: 0.06 * i }}
-              viewport={{ once: true }}
-              className="relative"
-            >
-              <div className="absolute left-[-10px] top-2 w-6 h-6 bg-hell-black border-4 border-hell-red z-10"></div>
-
-              <div className="border border-hell-red/20 bg-hell-dark p-8 shadow-[0_0_40px_rgba(204,0,0,0.12)]">
-                <div className="flex items-start gap-3">
-                  <div className="w-2 h-2 bg-hell-red mt-2.5 shrink-0"></div>
-                  <div>
-                    <h3 className="font-gothic text-3xl text-hell-orange">{s.title}</h3>
-                    <p className="font-terminal text-gray-300 text-lg leading-relaxed mt-2">
-                      {s.text}
-                    </p>
-                  </div>
-                </div>
-              </div>
-            </motion.div>
-          ))}
-        </div>
-      </div>
-
-      {/* Embers */}
-      <div className="absolute inset-0 pointer-events-none opacity-20">
-        <div className="absolute top-1/3 left-1/4 w-[520px] h-[520px] bg-hell-red blur-[160px]" />
-        <div className="absolute bottom-0 right-0 w-[700px] h-[700px] bg-hell-orange blur-[200px]" />
-      </div>
-    </section>
-  );
+ return (
+ <section id="hellmap" className="py-32 bg-hell-black relative">
+ <div className="max-w-4xl mx-auto px-4">
+ 
+ {/* --- HEADER --- */}
+ <div className="flex flex-col items-center gap-2 mb-20">
+ <span className="font-terminal text-[#ffae00] text-xl tracking-widest uppercase">
+ ROADMAP TO RUIN
+ </span>
+ <h2 className="font-gothic text-6xl md:text-8xl text-center text-hell-white">
+ THE HELLMAP
+ </h2>
+ </div>
+ 
+ {/* TIMELINE */}
+ <div className="relative border-l-4 border-hell-red/30 ml-4 md:ml-0 space-y-20">
+ {phases.map((phase, i) => (
+ <motion.div 
+ key={i} 
+ initial={{ opacity: 0, x: -20 }}
+ whileInView={{ opacity: 1, x: 0 }}
+ transition={{ delay: i * 0.2 }}
+ className="relative pl-12 md:pl-24"
+ >
+ {/* Timeline Marker */}
+ <div className="absolute left-[-10px] top-2 w-6 h-6 bg-hell-black border-4 border-hell-red z-10"></div>
+ 
+ {/* FIX: Standardized Title Size (text-xl md:text-2xl) */}
+ <h3 className="font-terminal font-semibold text-xl md:text-2xl text-[#ffae00] mb-2">
+ {phase.title}
+ </h3>
+ 
+ <p className="font-terminal text-xl text-hell-red mb-6">"{phase.sub}"</p>
+ 
+ <ul className="space-y-3">
+ {phase.details.map((d, idx) => (
+ <li key={idx} className="font-terminal text-xl text-gray-400 flex items-start gap-3">
+ {/* List marker (Red Dot) */}
+ <div className="w-2 h-2 bg-hell-red mt-2.5 shrink-0"></div>
+ <span>{d}</span>
+ </li>
+ ))}
+ </ul>
+ </motion.div>
+ ))}
+ </div>
+ </div>
+ </section>
+ );
 };
