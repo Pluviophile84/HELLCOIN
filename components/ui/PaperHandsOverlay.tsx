@@ -1,7 +1,7 @@
 "use client";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { cn } from "../../lib/utils";
-import { AlertTriangle, Flame } from "lucide-react";
+import { AlertTriangle } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 
 interface PaperHandsProps {
@@ -16,13 +16,17 @@ export const PaperHandsOverlay = ({ isActive, onClose }: PaperHandsProps) => {
   const [progress, setProgress] = useState(0);
 
   // Generate MORE flame particles for intensity (50 flames)
-  const flames = Array.from({ length: 50 }).map((_, i) => ({
-    id: i,
-    left: `${Math.random() * 100}%`,
-    delay: Math.random() * 0.5, // Start quickly
-    duration: 0.5 + Math.random() * 1.5, // Faster movement
-    size: 40 + Math.random() * 60, // Bigger flames
-  }));
+  const flames = useMemo(
+    () =>
+      Array.from({ length: 50 }).map((_, i) => ({
+        id: i,
+        left: `${Math.random() * 100}%`,
+        delay: Math.random() * 0.5, // Start quickly
+        duration: 0.5 + Math.random() * 1.5, // Faster movement
+        size: 40 + Math.random() * 60, // Bigger flames
+      })),
+    []
+  );
 
   // --- SCROLL LOCK EFFECT ---
   // Prevents the background website from scrolling ONLY during the immersive phases
@@ -39,40 +43,44 @@ export const PaperHandsOverlay = ({ isActive, onClose }: PaperHandsProps) => {
 
   // Handle the main sequence (Heaven -> Burning -> Reality)
   useEffect(() => {
-    let timer1: NodeJS.Timeout;
-    let timer2: NodeJS.Timeout;
+    if (!isActive) return;
 
-    if (isActive) {
-      setPhase("heaven");
-      // 1. Reset progress instantly
-      setProgress(0);
-      
-      // 2. Start animation after tiny delay to ensure browser sees the 0
-      setTimeout(() => setProgress(100), 50);
+    let progressTimer: ReturnType<typeof setTimeout> | undefined;
+    let timer1: ReturnType<typeof setTimeout> | undefined;
+    let timer2: ReturnType<typeof setTimeout> | undefined;
 
-      // STEP 1: TRANSITION TO BURNING (After 5s)
-      timer1 = setTimeout(() => {
-        setPhase("burning");
-      }, 5000);
+    setPhase("heaven");
+    // 1. Reset progress instantly
+    setProgress(0);
 
-      // STEP 2: CLOSE OVERLAY & SHOW REALITY CHECK (After another 4s)
-      timer2 = setTimeout(() => {
-        onClose(); 
-        setPhase("reality"); 
-      }, 9000); // 5s + 4s
-    } else {
-      // Reset when inactive, but preserve 'reality' phase so the separate effect handles it
-      if (phase !== "reality") {
-        setPhase("idle");
-        setProgress(0);
-      }
-    }
+    // 2. Start animation after tiny delay to ensure browser sees the 0
+    progressTimer = setTimeout(() => setProgress(100), 50);
+
+    // STEP 1: TRANSITION TO BURNING (After 5s)
+    timer1 = setTimeout(() => {
+      setPhase("burning");
+    }, 5000);
+
+    // STEP 2: SHOW REALITY CHECK + CLOSE OVERLAY (After another 4s)
+    timer2 = setTimeout(() => {
+      setPhase("reality");
+      onClose();
+    }, 9000); // 5s + 4s
 
     return () => {
-      clearTimeout(timer1);
-      clearTimeout(timer2);
+      if (progressTimer) clearTimeout(progressTimer);
+      if (timer1) clearTimeout(timer1);
+      if (timer2) clearTimeout(timer2);
     };
   }, [isActive, onClose]);
+
+  // Reset when inactive, but preserve 'reality' phase so the separate effect handles it
+  useEffect(() => {
+    if (!isActive && phase !== "reality") {
+      setPhase("idle");
+      setProgress(0);
+    }
+  }, [isActive, phase]);
 
   // Separate effect to handle the "Nice Try" toast lifespan
   useEffect(() => {
