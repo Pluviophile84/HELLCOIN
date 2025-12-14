@@ -27,11 +27,12 @@ const commandments = [
 
 const TOTAL_ROMAN = "X";
 
-// >= 30% more height + some extra breathing room (future-proof)
+// >= 30% more height + extra breathing room for future longer text
 const HEIGHT_MULTIPLIER = 1.35;
-const HEIGHT_BUFFER_PX = 72; // ~2+ lines of slack
+const HEIGHT_BUFFER_PX = 72;
 
 export const Commandments = () => {
+  // carousel state (mobile/tablet)
   const [[idx, dir], setIdx] = useState<[number, number]>([0, 0]);
   const max = commandments.length;
 
@@ -52,7 +53,7 @@ export const Commandments = () => {
     if (info.offset.x < -90) paginate(1);
   };
 
-  // fixed height for carousel content
+  // fixed height for carousel content (prevents jumping + prevents overlap)
   const frameRef = useRef<HTMLDivElement | null>(null);
   const measureRef = useRef<HTMLDivElement | null>(null);
   const [fixedHeight, setFixedHeight] = useState<number>(0);
@@ -80,7 +81,7 @@ export const Commandments = () => {
 
     compute();
 
-    // fonts can load after first paint
+    // fonts can load after first paint, changing height
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const fonts = (document as any).fonts;
     if (fonts?.ready) fonts.ready.then(() => compute()).catch(() => {});
@@ -124,31 +125,33 @@ export const Commandments = () => {
           </h2>
         </div>
 
-        {/* Mobile/Tablet carousel */}
+        {/* =========================================================
+            TABLET + PHONE: CAROUSEL (below lg)
+           ========================================================= */}
         <div className="lg:hidden">
           <div className="max-w-3xl mx-auto">
             <div className="relative bg-hell-black border border-gray-800 overflow-hidden">
               <div className="absolute inset-0 border border-hell-red/10 pointer-events-none" />
 
-              {/* Top rail: left numeral, centered counter, right arrows */}
-              <div className="grid grid-cols-[auto_1fr_auto] items-center px-6 py-4 md:px-10 border-b border-gray-800 bg-black/40">
+              {/* Top rail: left numeral + TRUE centered counter (absolute) + right arrows */}
+              <div className="relative flex items-center px-6 py-4 md:px-10 border-b border-gray-800 bg-black/40">
                 {/* Left: current roman numeral */}
                 <div className="flex items-center">
                   <span className="font-gothic text-4xl md:text-5xl text-hell-red">{current.id}</span>
                 </div>
 
-                {/* Center: stable counter (does not shift) */}
-                <div className="justify-self-center">
-                 <span className="font-terminal text-sm md:text-base tracking-widest uppercase text-[#ffae00] tabular-nums">
-                  <span className="inline-block w-[3ch] text-center">{current.id}</span>
-                  <span className="inline-block w-[3ch] text-center">/</span>
-                  <span className="inline-block w-[3ch] text-center">{TOTAL_ROMAN}</span>
-               </span>
-            </div>
-
+                {/* Center: rock-solid counter (cannot shift when left width changes) */}
+                <div className="absolute left-1/2 -translate-x-1/2">
+                  <span className="font-terminal text-sm md:text-base tracking-widest uppercase text-[#ffae00] whitespace-nowrap">
+                    {/* 5ch covers "VIIII" as well as "VIII" etc */}
+                    <span className="inline-block w-[5ch] text-center tabular-nums">{current.id}</span>
+                    <span className="inline-block w-[3ch] text-center">/</span>
+                    <span className="inline-block w-[5ch] text-center tabular-nums">{TOTAL_ROMAN}</span>
+                  </span>
+                </div>
 
                 {/* Right: arrows (tablet+) */}
-                <div className="hidden md:flex items-center gap-2 justify-self-end">
+                <div className="ml-auto hidden md:flex items-center gap-2">
                   <button
                     type="button"
                     onClick={() => paginate(-1)}
@@ -166,18 +169,15 @@ export const Commandments = () => {
                     <ChevronRight size={18} />
                   </button>
                 </div>
-
-                {/* keep grid aligned on mobile when arrows are hidden */}
-                <div className="md:hidden justify-self-end w-0 h-0" aria-hidden="true" />
               </div>
 
-              {/* Fixed-height content area (overflow hidden so it cannot overlap bottom rail) */}
+              {/* Fixed-height content area (overflow hidden prevents overlap into bottom rail) */}
               <div
                 ref={frameRef}
                 className="px-6 py-10 md:px-10 md:py-14 overflow-hidden"
                 style={{ height: fixedHeight || undefined }}
               >
-                {/* Offscreen measurement (same width + same typography) */}
+                {/* Offscreen measurement slides (same width + same typography) */}
                 <div
                   ref={measureRef}
                   className="absolute -left-[9999px] top-0 opacity-0 pointer-events-none"
@@ -227,7 +227,7 @@ export const Commandments = () => {
                 </AnimatePresence>
               </div>
 
-              {/* Bottom rail (static phrase + dots + mobile arrows) */}
+              {/* Bottom rail: static phrase + dots + mobile arrows */}
               <div className="border-t border-gray-800 bg-black/40 px-6 py-4 md:px-10">
                 <div className="font-terminal text-xs md:text-sm tracking-widest uppercase text-gray-500 text-center">
                   SWIPE LEFT / RIGHT — OR PRETEND YOU READ IT AND DO IT ANYWAY.
@@ -272,7 +272,9 @@ export const Commandments = () => {
           </div>
         </div>
 
-        {/* Desktop grid (unchanged) */}
+        {/* =========================================================
+            DESKTOP (lg+): ORIGINAL GRID (unchanged)
+           ========================================================= */}
         <motion.div
           initial="hidden"
           whileInView="visible"
