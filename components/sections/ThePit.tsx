@@ -1,4 +1,5 @@
 "use client";
+
 import { useMemo } from "react";
 import { motion } from "framer-motion";
 
@@ -31,63 +32,106 @@ const PTSD_WORDS_SOURCE = [
   "BULLISH",
 ];
 
-const PTSD_WORDS = [...PTSD_WORDS_SOURCE, ...PTSD_WORDS_SOURCE, ...PTSD_WORDS_SOURCE];
+// Build a background pool (duplicates are fine, but we keep the count sane)
+const GRID_COUNT = 36;
 
 export const ThePit = () => {
-  // Fix: random timing should be stable (no re-roll on re-render), and staggered so words don't "sync-cancel".
-  const ghost = useMemo(
-    () =>
-      PTSD_WORDS.map((_, i) => {
-        const stagger = (i % 12) * 0.22; // spreads pulses so they don't overlap in lockstep
-        return {
-          peak: 0.18 + Math.random() * 0.22, // max opacity per word
-          s1: 0.84 + Math.random() * 0.10, // min scale
-          s2: 1.05 + Math.random() * 0.20, // max scale
-          duration: 3.2 + Math.random() * 4.0, // cycle length
-          delay: stagger + Math.random() * 1.2, // offset start
-          repeatDelay: 0.6 + Math.random() * 2.8, // quiet time between cycles
-        };
-      }),
-    []
-  );
+  // Stable set of words for the grid
+  const gridWords = useMemo(() => {
+    const base = [...PTSD_WORDS_SOURCE];
+
+    // Repeat until we hit GRID_COUNT
+    const out: string[] = [];
+    while (out.length < GRID_COUNT) out.push(...base);
+
+    // Trim to exact count
+    return out.slice(0, GRID_COUNT);
+  }, []);
+
+  // Stable per-word timing (no re-roll on rerender)
+  const ghost = useMemo(() => {
+    return gridWords.map((_, i) => {
+      const stagger = (i % 12) * 0.18; // spreads pulses
+
+      return {
+        peak: 0.16 + Math.random() * 0.22, // max opacity
+        s1: 0.86 + Math.random() * 0.08, // min scale
+        s2: 1.03 + Math.random() * 0.18, // max scale
+        duration: 3.0 + Math.random() * 4.2, // cycle length
+        delay: stagger + Math.random() * 1.1, // initial offset
+        repeatDelay: 0.7 + Math.random() * 3.3, // quiet time between cycles
+      };
+    });
+  }, [gridWords]);
+
+  // Helper: long phrases should be smaller so they never clip
+  const wordSizeClass = (w: string) => {
+    // includes spaces -> usually longer visually
+    const isLong = w.length >= 10 || w.includes(" ");
+    return isLong
+      ? "text-[clamp(1.1rem,3.4vw,2.75rem)]"
+      : "text-[clamp(1.35rem,4.2vw,3.75rem)]";
+  };
 
   return (
     <section
       id="the-pit"
       className="relative py-32 bg-hell-red overflow-hidden flex items-center justify-center min-h-[900px]"
     >
-      {/* BACKGROUND: GHOST GRID */}
-      <div className="absolute inset-0 z-0 overflow-hidden">
-        <div
-          className="absolute top-0 h-full grid content-center px-6 py-4
-                        w-[120%] -left-[10%] grid-cols-3 gap-8
-                        md:w-full md:left-0 md:grid-cols-6 md:gap-12"
-        >
-          {PTSD_WORDS.map((word, i) => (
-            <div key={i} className="flex items-center justify-center w-full h-20 md:h-32">
-              <motion.div
-                className="font-gothic font-bold text-black/30 whitespace-nowrap text-5xl md:text-7xl"
-                animate={{
-                  opacity: [0, ghost[i].peak, 0],
-                  scale: [ghost[i].s1, ghost[i].s2, ghost[i].s1],
-                }}
-                transition={{
-                  duration: ghost[i].duration,
-                  repeat: Infinity,
-                  delay: ghost[i].delay,
-                  repeatDelay: ghost[i].repeatDelay,
-                  ease: "easeInOut",
-                  times: [0, 0.5, 1],
-                }}
+      {/* BACKGROUND: GHOST GRID (contained, no overscan, responsive) */}
+      <div className="absolute inset-0 z-0 pointer-events-none">
+        {/* Soft padding keeps words away from the edges on all screens */}
+        <div className="absolute inset-0 px-6 py-10 md:px-10 md:py-12 lg:px-12 lg:py-14">
+          <div
+            className="
+              h-full w-full
+              grid content-center place-items-center
+              grid-cols-2 gap-x-6 gap-y-6
+              sm:grid-cols-3 sm:gap-x-8 sm:gap-y-8
+              md:grid-cols-4 md:gap-x-10 md:gap-y-10
+              lg:grid-cols-5 lg:gap-x-12 lg:gap-y-12
+              xl:grid-cols-6
+            "
+          >
+            {gridWords.map((word, i) => (
+              <div
+                key={`${word}-${i}`}
+                className="
+                  w-full
+                  flex items-center justify-center
+                  h-16 sm:h-18 md:h-20 lg:h-24
+                "
               >
-                {word}
-              </motion.div>
-            </div>
-          ))}
+                <motion.div
+                  className={[
+                    "font-gothic font-bold text-black/30",
+                    "leading-none tracking-tight text-center",
+                    // IMPORTANT: allow the word to size down rather than clipping
+                    "max-w-full",
+                    wordSizeClass(word),
+                  ].join(" ")}
+                  animate={{
+                    opacity: [0, ghost[i].peak, 0],
+                    scale: [ghost[i].s1, ghost[i].s2, ghost[i].s1],
+                  }}
+                  transition={{
+                    duration: ghost[i].duration,
+                    delay: ghost[i].delay,
+                    repeat: Infinity,
+                    repeatDelay: ghost[i].repeatDelay,
+                    ease: "easeInOut",
+                    times: [0, 0.5, 1],
+                  }}
+                >
+                  {word}
+                </motion.div>
+              </div>
+            ))}
+          </div>
         </div>
       </div>
 
-      {/* FOREGROUND: THE MEDIEVAL DECREE */}
+      {/* FOREGROUND: THE MEDIEVAL DECREE (unchanged) */}
       <div className="relative z-10 flex flex-col items-center max-w-4xl w-full px-4">
         {/* Header Label */}
         <div className="mb-12">
@@ -115,7 +159,7 @@ export const ThePit = () => {
               <span className="text-hell-red">THE BURNED</span>
             </h2>
 
-            {/* Meaningful Copy (Updated) */}
+            {/* Copy */}
             <div className="font-terminal text-lg md:text-xl text-gray-400 mb-12 leading-relaxed max-w-3xl mx-auto space-y-6">
               <p>
                 Welcome to the only corner of crypto where everyone finally stops pretending. Here,
