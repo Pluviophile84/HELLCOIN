@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { useCallback, useState } from "react";
 import { Navbar } from "@/components/layout/Navbar";
 import { PaperHandsOverlay } from "@/components/ui/PaperHandsOverlay";
 import { Hero } from "@/components/sections/Hero";
@@ -17,21 +17,25 @@ import { Footer } from "@/components/sections/Footer";
 export default function Home() {
   const [paperHands, setPaperHands] = useState(false);
 
-  // Triggered by the Navbar
-  const triggerHeavenMode = () => {
+  // Keep callbacks stable so child effects don't re-run due to identity changes.
+  const triggerHeavenMode = useCallback(() => {
     setPaperHands(true);
-  };
+  }, []);
+
+  const closeHeavenMode = useCallback(() => {
+    setPaperHands(false);
+  }, []);
 
   return (
     <main className="min-h-screen bg-hell-black text-hell-white selection:bg-hell-red selection:text-white">
       {/* 1. The Full Screen Overlay */}
-      <PaperHandsOverlay isActive={paperHands} onClose={() => setPaperHands(false)} />
-      
+      <PaperHandsOverlay isActive={paperHands} onClose={closeHeavenMode} />
+
       {/* 2. The Original Navbar (Self-contained) */}
-      <Navbar onTriggerPaperHands={triggerHeavenMode} /> 
+      <Navbar onTriggerPaperHands={triggerHeavenMode} />
 
       {/* --- PAGE SECTIONS --- */}
-      <div> 
+      <div>
         <Hero />
         <Genesis />
         <Commandments />
