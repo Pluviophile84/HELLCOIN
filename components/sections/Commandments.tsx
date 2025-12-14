@@ -139,10 +139,13 @@ export const Commandments = () => {
 
                 {/* Center: stable counter (does not shift) */}
                 <div className="justify-self-center">
-                  <span className="font-terminal text-sm md:text-base tracking-widest uppercase text-[#ffae00]">
-                    {current.id} / {TOTAL_ROMAN}
-                  </span>
-                </div>
+                 <span className="font-terminal text-sm md:text-base tracking-widest uppercase text-[#ffae00] tabular-nums">
+                  <span className="inline-block w-[3ch] text-center">{current.id}</span>
+                  <span className="inline-block w-[3ch] text-center">/</span>
+                  <span className="inline-block w-[3ch] text-center">{TOTAL_ROMAN}</span>
+               </span>
+            </div>
+
 
                 {/* Right: arrows (tablet+) */}
                 <div className="hidden md:flex items-center gap-2 justify-self-end">
