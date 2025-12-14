@@ -9,7 +9,7 @@ const commandments = [
   { id: "II", title: "NEVER TAKE PROFITS", text: "Watch $50 become $5,000. Then watch $5,000 become a funny story." },
   { id: "III", title: "USE 100X LEVERAGE", text: "Why lose over years when you can lose in a single heartbeat?" },
   { id: "IV", title: "TRUST THE ANIME GIRL", text: "If the founder has a cute profile picture, you must trust them with your life savings." },
-  { id: "V", title: "CLICK EVERY LINK", text: "Security is for cowards. If it says 'Claim Airdrop', connect instantly." },
+  { id: "V", title: "CLICK EVERY LINK", text: "Security is for cowards. If it says “Claim Airdrop,” connect instantly." },
   { id: "VI", title: "DO ZERO RESEARCH", text: "DYOR is for scholars. You follow vibes." },
   { id: "VII", title: "PANIC SELL BOTTOM", text: "Buy when you feel euphoric. Sell when you are crying in the shower." },
   { id: "VIII", title: "MARRY YOUR BAGS", text: "Even if the dev leaves, love never dies. Your portfolio does." },
@@ -21,7 +21,7 @@ const commandments = [
   {
     id: "X",
     title: "TRUST EVERY INFLUENCER",
-    text: "Nothing screams financial wisdom like a man filming price predictions from inside his car at 3AM.",
+    text: "Nothing screams wisdom like a man filming price predictions from inside his car at 3AM.",
   },
 ];
 
@@ -29,29 +29,28 @@ const TOTAL_ROMAN = "X";
 const HEIGHT_BUFFER_PX = 44; // ~1–2 lines of breathing room
 
 export const Commandments = () => {
-  // mobile/tablet carousel state
-  const [[index, direction], setIndex] = useState<[number, number]>([0, 0]);
+  // carousel state
+  const [[idx, dir], setIdx] = useState<[number, number]>([0, 0]);
   const max = commandments.length;
 
-  const current = useMemo(() => commandments[index], [index]);
+  const current = useMemo(() => commandments[idx], [idx]);
 
   const paginate = useCallback(
-    (dir: number) => setIndex(([i]) => [(i + dir + max) % max, dir]),
+    (delta: number) => {
+      setIdx(([i]) => {
+        const next = (i + delta + max) % max;
+        return [next, delta >= 0 ? 1 : -1];
+      });
+    },
     [max]
   );
 
-  const goTo = useCallback(
-    (i: number) => setIndex(([_, prevDir]) => [i, i > index ? 1 : -1 || prevDir]),
-    [index]
-  );
-
   const onDragEnd = (_: MouseEvent | TouchEvent | PointerEvent, info: PanInfo) => {
-    // direction-aware swipe
     if (info.offset.x > 90) paginate(-1);
     if (info.offset.x < -90) paginate(1);
   };
 
-  // --- fixed height for carousel content (no jumping) ---
+  // fixed height for carousel content
   const frameRef = useRef<HTMLDivElement | null>(null);
   const measureRef = useRef<HTMLDivElement | null>(null);
   const [fixedHeight, setFixedHeight] = useState<number>(0);
@@ -76,7 +75,7 @@ export const Commandments = () => {
 
     compute();
 
-    // re-measure when fonts finish loading (prevents wrong height due to fallback font)
+    // fonts can load after first paint
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const fonts = (document as any).fonts;
     if (fonts?.ready) fonts.ready.then(() => compute()).catch(() => {});
@@ -91,18 +90,18 @@ export const Commandments = () => {
     };
   }, []);
 
-  // animation from the side (based on direction)
+  // side-swipe animation
   const slideVariants = {
-    enter: (dir: number) => ({
-      x: dir > 0 ? 120 : -120,
+    enter: (direction: number) => ({
+      x: direction > 0 ? 120 : -120,
       opacity: 0,
     }),
     center: {
       x: 0,
       opacity: 1,
-    }),
-    exit: (dir: number) => ({
-      x: dir > 0 ? -120 : 120,
+    }, // ✅ FIXED (was `}),` which broke build)
+    exit: (direction: number) => ({
+      x: direction > 0 ? -120 : 120,
       opacity: 0,
     }),
   };
@@ -110,7 +109,7 @@ export const Commandments = () => {
   return (
     <section id="commandments" className="py-24 px-4 bg-hell-dark relative">
       <div className="max-w-7xl mx-auto">
-        {/* --- HEADER (unchanged) --- */}
+        {/* Header (unchanged) */}
         <div className="text-center mb-16 flex flex-col items-center gap-2">
           <span className="font-terminal text-[#ffae00] text-lg md:text-xl tracking-widest uppercase">
             LAW OF THE LAND
@@ -120,9 +119,7 @@ export const Commandments = () => {
           </h2>
         </div>
 
-        {/* =========================================================
-            TABLET + PHONE: CAROUSEL (below lg)
-           ========================================================= */}
+        {/* Mobile/Tablet carousel */}
         <div className="lg:hidden">
           <div className="max-w-3xl mx-auto">
             <div className="relative bg-hell-black border border-gray-800 overflow-hidden">
@@ -137,7 +134,6 @@ export const Commandments = () => {
                   </span>
                 </div>
 
-                {/* arrows (tablet+) */}
                 <div className="hidden md:flex items-center gap-2">
                   <button
                     type="button"
@@ -158,16 +154,20 @@ export const Commandments = () => {
                 </div>
               </div>
 
-              {/* Fixed-height content frame */}
-              <div ref={frameRef} className="px-6 py-10 md:px-10 md:py-14" style={{ height: fixedHeight || undefined }}>
-                {/* Hidden measurement slides (same typography + width) */}
+              {/* Fixed-height content area */}
+              <div
+                ref={frameRef}
+                className="px-6 py-10 md:px-10 md:py-14"
+                style={{ height: fixedHeight || undefined }}
+              >
+                {/* Offscreen measurement (same width + same typography) */}
                 <div
                   ref={measureRef}
                   className="absolute -left-[9999px] top-0 opacity-0 pointer-events-none"
                   aria-hidden="true"
                 >
                   {commandments.map((c) => (
-                    <div key={`m-${c.id}`} data-measure-slide="1" className="px-0 py-0">
+                    <div key={`m-${c.id}`} data-measure-slide="1">
                       <h3 className="font-terminal text-2xl md:text-4xl uppercase tracking-wide text-[#FF3C00]">
                         {c.title}
                       </h3>
@@ -178,10 +178,10 @@ export const Commandments = () => {
                   ))}
                 </div>
 
-                <AnimatePresence mode="wait" initial={false} custom={direction}>
+                <AnimatePresence mode="wait" initial={false} custom={dir}>
                   <motion.div
                     key={current.id}
-                    custom={direction}
+                    custom={dir}
                     variants={slideVariants}
                     initial="enter"
                     animate="center"
@@ -210,7 +210,7 @@ export const Commandments = () => {
                 </AnimatePresence>
               </div>
 
-              {/* Bottom rail: static phrase + dots + mobile arrows */}
+              {/* Bottom rail (static phrase + dots + mobile arrows) */}
               <div className="border-t border-gray-800 bg-black/40 px-6 py-4 md:px-10">
                 <div className="font-terminal text-xs md:text-sm tracking-widest uppercase text-gray-500 text-center">
                   SWIPE LEFT / RIGHT — OR PRETEND YOU READ IT AND DO IT ANYWAY.
@@ -232,10 +232,10 @@ export const Commandments = () => {
                         key={c.id}
                         type="button"
                         aria-label={`Go to commandment ${c.id}`}
-                        onClick={() => setIndex([i, i > index ? 1 : -1])}
+                        onClick={() => setIdx(([curr]) => [i, i > curr ? 1 : -1])}
                         className={[
                           "w-3 h-3 border border-hell-red/40 transition-colors",
-                          i === index ? "bg-hell-red" : "bg-transparent",
+                          i === idx ? "bg-hell-red" : "bg-transparent",
                         ].join(" ")}
                       />
                     ))}
@@ -255,16 +255,12 @@ export const Commandments = () => {
           </div>
         </div>
 
-        {/* =========================================================
-            LAPTOP + DESKTOP: ORIGINAL GRID (unchanged)
-           ========================================================= */}
+        {/* Desktop grid (unchanged) */}
         <motion.div
           initial="hidden"
           whileInView="visible"
           viewport={{ once: true }}
-          variants={{
-            visible: { transition: { staggerChildren: 0.1 } },
-          }}
+          variants={{ visible: { transition: { staggerChildren: 0.1 } } }}
           className="hidden lg:grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6"
         >
           {commandments.map((c, i) => (
