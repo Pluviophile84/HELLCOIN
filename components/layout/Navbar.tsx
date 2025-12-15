@@ -8,6 +8,7 @@ import React, {
 } from "react";
 import { Menu, X, ChevronDown, ChevronUp } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
+import { lockBodyScroll, unlockBodyScroll } from "../../lib/bodyScrollLock";
 import { cn } from "../../lib/utils";
 
 const BUY_LINK = "https://raydium.io/swap";
@@ -58,11 +59,16 @@ export const Navbar = ({ onTriggerPaperHands }: NavbarProps) => {
 
   // --- BODY LOCK ON MOBILE MENU ---
   useEffect(() => {
-    document.body.style.overflow = mobileMenuOpen ? "hidden" : "unset";
-    return () => {
-      document.body.style.overflow = "unset";
-    };
-  }, [mobileMenuOpen]);
+  if (mobileMenuOpen) {
+    lockBodyScroll("navbar:mobile-menu");
+  } else {
+    unlockBodyScroll("navbar:mobile-menu");
+  }
+  return () => {
+    unlockBodyScroll("navbar:mobile-menu");
+  };
+}, [mobileMenuOpen]);
+
 
   const scrollToTop = () => {
     window.scrollTo({ top: 0, behavior: "smooth" });
