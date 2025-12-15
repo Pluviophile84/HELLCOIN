@@ -5,7 +5,8 @@ const siteUrl = (() => {
     process.env.NEXT_PUBLIC_SITE_URL ||
     (process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : undefined);
 
-  return envUrl || "http://localhost:3000";
+  const fallback = "https://hellcoin.fun";
+  return (envUrl || fallback).replace(/\/+$/, "");
 })();
 
 export default function sitemap(): MetadataRoute.Sitemap {
@@ -18,3 +19,4 @@ export default function sitemap(): MetadataRoute.Sitemap {
     },
   ];
 }
+
