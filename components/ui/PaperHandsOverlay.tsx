@@ -1,6 +1,7 @@
 "use client";
 import { useEffect, useMemo, useState } from "react";
 import { cn } from "../../lib/utils";
+import { lockBodyScroll, unlockBodyScroll } from "../../lib/bodyScrollLock";
 import { AlertTriangle } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 
@@ -31,15 +32,19 @@ export const PaperHandsOverlay = ({ isActive, onClose }: PaperHandsProps) => {
   // --- SCROLL LOCK EFFECT ---
   // Prevents the background website from scrolling ONLY during the immersive phases
   useEffect(() => {
-    // FIX: Only lock scroll if active OR if we are in 'heaven'/'burning'. 
-    // Unlock immediately when we hit 'reality' (toast only) or 'idle'.
-    if (isActive || (phase === "heaven" || phase === "burning")) {
-      document.body.style.overflow = "hidden";
-    } else {
-      document.body.style.overflow = "unset";
-    }
-    return () => { document.body.style.overflow = "unset"; };
-  }, [isActive, phase]);
+  const shouldLock = isActive || phase === "heaven" || phase === "burning";
+
+  if (shouldLock) {
+    lockBodyScroll("overlay:paperhands");
+  } else {
+    unlockBodyScroll("overlay:paperhands");
+  }
+
+  return () => {
+    unlockBodyScroll("overlay:paperhands");
+  };
+}, [isActive, phase]);
+
 
   // Handle the main sequence (Heaven -> Burning -> Reality)
   useEffect(() => {
