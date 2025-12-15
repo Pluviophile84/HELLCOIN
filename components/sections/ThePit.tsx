@@ -1,7 +1,7 @@
 "use client";
 
 import { useMemo } from "react";
-import { motion } from "framer-motion";
+import { motion, useReducedMotion } from "framer-motion";
 
 const X_LINK = "https://x.com/YOUR_PROFILE";
 
@@ -35,6 +35,7 @@ const PTSD_WORDS_SOURCE = [
 const GRID_COUNT = 48;
 
 export const ThePit = () => {
+  const reduceMotion = useReducedMotion();
   // Stable word pool
   const gridWords = useMemo(() => {
     const out: string[] = [];
@@ -88,18 +89,27 @@ export const ThePit = () => {
               <div key={`${word}-${i}`} className="w-full flex items-center justify-center">
                 <motion.div
                   className={wordClasses(word)}
-                  animate={{
-                    opacity: [0, ghost[i].peak, 0],
-                    scale: [ghost[i].s1, ghost[i].s2, ghost[i].s1],
-                  }}
-                  transition={{
-                    duration: ghost[i].duration,
-                    delay: ghost[i].delay,
-                    repeat: Infinity,
-                    repeatDelay: ghost[i].repeatDelay,
-                    ease: "easeInOut",
-                    times: [0, 0.5, 1],
-                  }}
+                  style={{ willChange: reduceMotion ? undefined : "opacity, transform" }}
+                  animate={
+                    reduceMotion
+                      ? { opacity: 0.12, scale: 1 }
+                      : {
+                          opacity: [0, ghost[i].peak, 0],
+                          scale: [ghost[i].s1, ghost[i].s2, ghost[i].s1],
+                        }
+                  }
+                  transition={
+                    reduceMotion
+                      ? { duration: 0.01 }
+                      : {
+                          duration: ghost[i].duration,
+                          delay: ghost[i].delay,
+                          repeat: Infinity,
+                          repeatDelay: ghost[i].repeatDelay,
+                          ease: "easeInOut",
+                          times: [0, 0.5, 1],
+                        }
+                  }
                 >
                   {word}
                 </motion.div>
