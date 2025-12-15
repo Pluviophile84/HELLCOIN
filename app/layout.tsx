@@ -3,6 +3,7 @@ import "./globals.css";
 import { fontGothic, fontTerminal } from "./fonts";
 
 export const metadata: Metadata = {
+  metadataBase: new URL("https://hellcoin.fun"),
   title: "HELLCOIN ($666) - Born in the Red",
   description: "The official currency of eternal regret.",
   openGraph: {
