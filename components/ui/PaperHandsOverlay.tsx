@@ -245,4 +245,3 @@ export const PaperHandsOverlay = ({ isActive, onClose }: PaperHandsProps) => {
     </>
   );
 };
-

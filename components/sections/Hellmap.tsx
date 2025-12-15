@@ -63,10 +63,7 @@ export const Hellmap = () => {
                 {phase.title}
               </h3>
 
-              <p className="mb-6 font-terminal text-xl text-hell-red">
-                &ldquo;{phase.sub}&rdquo;
-              </p>
-
+              <p className="mb-6 font-terminal text-xl text-hell-red">&ldquo;{phase.sub}&rdquo;</p>
 
               <ul className="space-y-3">
                 {phase.details.map((d, idx) => (
