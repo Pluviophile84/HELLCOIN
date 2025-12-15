@@ -106,7 +106,6 @@ export const Commandments = () => {
     compute();
 
     // fonts can load after first paint, changing height
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const fonts = (document as any).fonts;
     if (fonts?.ready) fonts.ready.then(() => compute()).catch(() => {});
 

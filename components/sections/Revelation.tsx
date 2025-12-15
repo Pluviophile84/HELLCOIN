@@ -42,14 +42,15 @@ export const Revelation = () => {
 
           {/* The List of Lies */}
           <div className="space-y-3 font-terminal text-lg leading-relaxed text-hell-white md:text-2xl">
-            <p>"Utility." "Roadmaps." "Communities."</p>
-            <p>“Dev is doxxed.”</p>
-            <p>“Influencer-backed.”</p>
-            <p>“Strong fundamentals.”</p>
-            <p>“Early entry.” “Holding the floor.”</p>
-            <p className="text-hell-red">“This time it’s different.”</p>
-            <p>“Memecoins don’t rug — they ‘restart.’”</p>
-          </div>
+          <p>&quot;Utility.&quot; &quot;Roadmaps.&quot; &quot;Communities.&quot;</p>
+          <p>&ldquo;Dev is doxxed.&rdquo;</p>
+          <p>&ldquo;Influencer-backed.&rdquo;</p>
+          <p>&ldquo;Strong fundamentals.&rdquo;</p>
+          <p>&ldquo;Early entry.&rdquo; &ldquo;Holding the floor.&rdquo;</p>
+          <p className="text-hell-red">&ldquo;This time it’s different.&rdquo;</p>
+          <p>&ldquo;Memecoins don’t rug — they ‘restart.’&rdquo;</p>
+        </div>
+
 
           <div className="mt-8 border-t border-hell-white/10 pt-6">
             <p className="font-terminal text-lg text-hell-white">

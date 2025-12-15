@@ -10,7 +10,7 @@ export const DevilsMath = () => {
           {/* FIX: Removed font-bold, set to text-xl md:text-2xl */}
           <SectionKicker>SIN NOMICS DATA</SectionKicker>
           <h2 className="font-gothic text-6xl text-hell-white md:text-8xl">
-            THE <span className="text-hell-red">DEVIL'S</span> MATH
+            THE <span className="text-hell-red">DEVIL&apos;S</span> MATH
           </h2>
         </div>
 

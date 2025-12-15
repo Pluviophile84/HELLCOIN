@@ -243,7 +243,7 @@ export const HallOfPain = () => {
                           <div className="mt-2 grid grid-cols-1 gap-6 border-t border-hell-red/10 pt-4 md:grid-cols-12">
                             <div className="md:col-span-9">
                               <p className="font-terminal text-lg italic leading-relaxed text-hell-white/70">
-                                "{sinner.quote}"
+                                &ldquo;{sinner.quote}&rdquo;
                               </p>
                             </div>
 

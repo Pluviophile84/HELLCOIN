@@ -236,7 +236,7 @@ export const PaperHandsOverlay = ({ isActive, onClose }: PaperHandsProps) => {
               <AlertTriangle size={32} className="text-yellow-400" />
               <div>
                 <strong className="block font-gothic text-2xl">NICE TRY.</strong>
-                You can't escape reality.
+                You can&apos;t escape reality.
               </div>
             </div>
           </motion.div>
@@ -245,3 +245,4 @@ export const PaperHandsOverlay = ({ isActive, onClose }: PaperHandsProps) => {
     </>
   );
 };
+
