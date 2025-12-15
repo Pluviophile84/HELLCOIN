@@ -1,10 +1,14 @@
 "use client";
+
 import { motion, useScroll, useTransform } from "framer-motion";
 import { useRef } from "react";
+import Image from "next/image";
 import { TrendingDown, Flame } from "lucide-react";
 
+import { BUY_LINK } from "@/lib/constants";
+
 export const Hero = () => {
-  const ref = useRef(null);
+  const ref = useRef<HTMLElement | null>(null);
 
   const { scrollYProgress } = useScroll({
     target: ref,
@@ -21,8 +25,6 @@ export const Hero = () => {
     }
   };
 
-  const BUY_LINK = "https://raydium.io/swap";
-
   return (
     <section
       ref={ref}
@@ -30,11 +32,14 @@ export const Hero = () => {
     >
       {/* BACKGROUND BANNER + OVERLAYS */}
       <div className="absolute inset-0 z-0">
-        <img
+        <Image
           src="/banner.png"
           alt="Hellcoin Throne"
+          fill
+          priority
+          sizes="100vw"
           // On small screens, bias the crop slightly left of center (30%). On md+, keep it anchored left.
-          className="absolute inset-0 w-full h-full object-cover object-[30%_center] md:object-left opacity-100"
+          className="object-cover object-[30%_center] md:object-left opacity-100"
         />
         <div className="absolute inset-0 bg-gradient-to-t from-hell-black via-hell-black/80 to-transparent" />
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-transparent via-hell-black/40 to-hell-black" />
@@ -44,10 +49,10 @@ export const Hero = () => {
       <motion.div
         style={{ y: yText, opacity: opacityText }}
         className="
-          relative z-10 
-          px-4 md:px-12 
-          max-w-[1600px] w-full mx-auto 
-          flex flex-col items-center md:items-end 
+          relative z-10
+          px-4 md:px-12
+          max-w-[1600px] w-full mx-auto
+          flex flex-col items-center md:items-end
           text-center md:text-right
         "
       >
@@ -57,12 +62,12 @@ export const Hero = () => {
           animate={{ scale: 1, opacity: 1 }}
           transition={{ type: "spring", duration: 1.5 }}
           className="
-            font-gothic 
-            leading-[0.9] 
-            text-hell-white 
-            text-glow 
-            drop-shadow-2xl 
-            mb-8 
+            font-gothic
+            leading-[0.9]
+            text-hell-white
+            text-glow
+            drop-shadow-2xl
+            mb-8
             md:max-w-6xl
             text-hero-h1
           "
@@ -78,10 +83,10 @@ export const Hero = () => {
           animate={{ opacity: 1 }}
           transition={{ delay: 0.5 }}
           className="
-            font-terminal 
-            text-hell-white 
-            max-w-4xl md:max-w-5xl 
-            mx-auto md:mx-0 
+            font-terminal
+            text-hell-white
+            max-w-4xl md:max-w-5xl
+            mx-auto md:mx-0
             space-y-2 md:space-y-0
             text-hero-sub
           "
@@ -90,9 +95,9 @@ export const Hero = () => {
             The first cryptocurrency powered by{" "}
             <span
               className="
-                block md:inline 
-                text-hell-gold 
-                my-2 md:my-0 
+                block md:inline
+                text-hell-gold
+                my-2 md:my-0
                 font-bold md:font-normal
                 text-hero-sub-em
               "
@@ -111,12 +116,12 @@ export const Hero = () => {
           animate={{ opacity: 1 }}
           transition={{ delay: 1.0 }}
           className="
-            font-terminal 
-            text-flame 
-            mt-8 
-            tracking-widest 
-            uppercase 
-            animate-pulse 
+            font-terminal
+            text-flame
+            mt-8
+            tracking-widest
+            uppercase
+            animate-pulse
             md:max-w-5xl
             text-hero-phrase
           "
@@ -131,25 +136,26 @@ export const Hero = () => {
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 1.4 }}
           className="
-            mt-12 
-            flex flex-col md:flex-row 
-            gap-8 
-            justify-center md:justify-end 
-            items-center 
-            w-full 
+            mt-12
+            flex flex-col md:flex-row
+            gap-8
+            justify-center md:justify-end
+            items-center
+            w-full
             md:max-w-5xl
           "
         >
           <button
+            type="button"
             onClick={handleAbandonHope}
             className="
-              text-hell-white/50 
-              font-terminal 
-              text-xl md:text-2xl 
-              hover:text-hell-gold 
-              transition-colors 
-              flex items-center gap-2 
-              group 
+              text-hell-white/50
+              font-terminal
+              text-xl md:text-2xl
+              hover:text-hell-gold
+              transition-colors
+              flex items-center gap-2
+              group
               order-1 md:order-none
             "
           >
@@ -162,34 +168,34 @@ export const Hero = () => {
             target="_blank"
             rel="noopener noreferrer"
             className="
-              group 
-              relative 
-              px-8 py-4 
-              bg-transparent 
-              border-2 border-hell-red 
-              text-hell-red 
-              font-gothic 
-              text-2xl md:text-3xl 
-              uppercase 
-              overflow-hidden 
-              transition-all 
-              hover:text-hell-white 
-              hover:border-hell-orange 
-              hover:shadow-[0_0_30px_rgba(204,0,0,0.6)] 
-              order-2 md:order-none 
-              cursor-pointer 
+              group
+              relative
+              px-8 py-4
+              bg-transparent
+              border-2 border-hell-red
+              text-hell-red
+              font-gothic
+              text-2xl md:text-3xl
+              uppercase
+              overflow-hidden
+              transition-all
+              hover:text-hell-white
+              hover:border-hell-orange
+              hover:shadow-[0_0_30px_rgba(204,0,0,0.6)]
+              order-2 md:order-none
+              cursor-pointer
               flex items-center gap-2
             "
           >
             <span
               className="
-                absolute inset-0 
-                w-full h-full 
-                bg-hell-red 
-                -translate-x-full 
-                group-hover:translate-x-0 
-                transition-transform 
-                duration-300 
+                absolute inset-0
+                w-full h-full
+                bg-hell-red
+                -translate-x-full
+                group-hover:translate-x-0
+                transition-transform
+                duration-300
                 ease-out
                 pointer-events-none
               "

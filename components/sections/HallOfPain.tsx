@@ -2,6 +2,7 @@
 import { useState, useEffect, useRef } from "react";
 import { AlertTriangle, Filter, ArrowUpDown } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
+import { SectionKicker } from "@/components/ui/SectionKicker";
 
 const sinners = [
   {
@@ -147,9 +148,7 @@ export const HallOfPain = () => {
       <div className="max-w-6xl mx-auto px-4 mb-12">
         {/* --- HEADER --- */}
         <div className="flex flex-col items-center text-center gap-2 mb-12">
-          <span className="font-terminal text-hell-gold text-xl md:text-2xl tracking-widest uppercase">
-            PROOF OF SUFFERING
-          </span>
+          <SectionKicker>PROOF OF SUFFERING</SectionKicker>
           <h2 className="font-gothic text-6xl md:text-8xl text-hell-white">
             HALL OF PAIN
           </h2>
@@ -194,7 +193,14 @@ export const HallOfPain = () => {
             className={`h-[400px] scrollbar-thin scrollbar-thumb-hell-red/30 scrollbar-track-hell-black transition-all ${
               isScrollable ? "overflow-y-auto" : "overflow-hidden"
             }`}
-            onClick={() => setIsScrollable(true)} // Unlock on click
+            tabIndex={0}
+            onClick={() => setIsScrollable(true)} // Unlock on click/tap
+            onFocusCapture={() => setIsScrollable(true)} // Unlock for keyboard users
+            onBlurCapture={(e) => {
+              const next = e.relatedTarget as Node | null;
+              if (next && e.currentTarget.contains(next)) return;
+              setIsScrollable(false);
+            }}
             onMouseLeave={() => setIsScrollable(false)} // Re-lock on mouse leave (Desktop UX)
           >
             {sortedSinners.map((sinner) => {

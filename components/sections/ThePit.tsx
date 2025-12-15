@@ -2,8 +2,8 @@
 
 import { useMemo } from "react";
 import { motion, useReducedMotion } from "framer-motion";
-
-const X_LINK = "https://x.com/YOUR_PROFILE";
+import { X_LINK } from "@/lib/constants";
+import { SectionKicker } from "@/components/ui/SectionKicker";
 
 const PTSD_WORDS_SOURCE = [
   "RUG",
@@ -123,9 +123,9 @@ export const ThePit = () => {
       <div className="relative z-10 flex flex-col items-center max-w-4xl w-full px-4">
         {/* Header Label */}
         <div className="mb-12">
-          <span className="font-terminal text-hell-gold text-xl md:text-2xl tracking-widest uppercase bg-hell-black px-4 py-1 border border-hell-gold/30 shadow-[4px_4px_0px_rgba(0,0,0,0.5)]">
+          <SectionKicker className="bg-hell-black px-4 py-1 border border-hell-gold/30 shadow-[4px_4px_0px_rgba(0,0,0,0.5)]">
             THE FINAL CIRCLE
-          </span>
+          </SectionKicker>
         </div>
 
         {/* --- THE ELEGANT BOX --- */}

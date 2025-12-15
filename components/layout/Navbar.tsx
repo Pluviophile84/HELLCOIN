@@ -1,39 +1,38 @@
 "use client";
 
-import React, {
-  useState,
-  useEffect,
-  useRef,
-  useCallback,
-} from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
+import Image from "next/image";
 import { Menu, X, ChevronDown, ChevronUp } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
-import { lockBodyScroll, unlockBodyScroll } from "../../lib/bodyScrollLock";
-import { cn } from "../../lib/utils";
 
-const BUY_LINK = "https://raydium.io/swap";
+import { cn } from "../../lib/utils";
+import { lockBodyScroll, unlockBodyScroll } from "../../lib/bodyScrollLock";
+import { BUY_LINK } from "@/lib/constants";
 
 type NavItem = {
-  name: string;   // full label (mobile menu)
-  short: string;  // compact label (desktop nav)
+  name: string; // full label (mobile menu)
+  short: string; // compact label (desktop nav)
   href: string;
 };
 
 const NAV_LINKS_DATA: NavItem[] = [
-  { name: "GENESIS",          short: "GENESIS", href: "#genesis" },
-  { name: "COMMANDMENTS",     short: "LAW",     href: "#commandments" },
-  { name: "NINE TYPES",       short: "TYPES",   href: "#nine-types" },
-  { name: "MATH",             short: "MATH",    href: "#math" },
-  { name: "RITUAL",           short: "RITUAL",  href: "#ritual" },
-  { name: "HELLMAP",          short: "MAP",     href: "#hellmap" },
-  { name: "HALL OF PAIN",     short: "HALL",    href: "#hall-of-pain" },
-  { name: "REVELATION",       short: "LORE",    href: "#revelation" },
-  { name: "THE PIT",          short: "PIT",     href: "#the-pit" },
+  { name: "GENESIS", short: "GENESIS", href: "#genesis" },
+  { name: "COMMANDMENTS", short: "LAW", href: "#commandments" },
+  { name: "NINE TYPES", short: "TYPES", href: "#nine-types" },
+  { name: "MATH", short: "MATH", href: "#math" },
+  { name: "RITUAL", short: "RITUAL", href: "#ritual" },
+  { name: "HELLMAP", short: "MAP", href: "#hellmap" },
+  { name: "HALL OF PAIN", short: "HALL", href: "#hall-of-pain" },
+  { name: "REVELATION", short: "LORE", href: "#revelation" },
+  { name: "THE PIT", short: "PIT", href: "#the-pit" },
 ];
 
 type NavbarProps = {
   onTriggerPaperHands: () => void;
 };
+
+const MORE_BUTTON_ID = "navbar-more-button";
+const MORE_MENU_ID = "navbar-more-menu";
 
 export const Navbar = ({ onTriggerPaperHands }: NavbarProps) => {
   const [isScrolled, setIsScrolled] = useState(false);
@@ -43,6 +42,10 @@ export const Navbar = ({ onTriggerPaperHands }: NavbarProps) => {
   const containerRef = useRef<HTMLDivElement | null>(null);
   const ghostRef = useRef<HTMLDivElement | null>(null);
   const moreRef = useRef<HTMLDivElement | null>(null);
+
+  const hamburgerButtonRef = useRef<HTMLButtonElement | null>(null);
+  const mobilePanelRef = useRef<HTMLDivElement | null>(null);
+  const wasMobileOpenRef = useRef(false);
 
   const [visibleCount, setVisibleCount] = useState(NAV_LINKS_DATA.length);
   const [isCalculated, setIsCalculated] = useState(false);
@@ -59,26 +62,57 @@ export const Navbar = ({ onTriggerPaperHands }: NavbarProps) => {
 
   // --- BODY LOCK ON MOBILE MENU ---
   useEffect(() => {
-  if (mobileMenuOpen) {
-    lockBodyScroll("navbar:mobile-menu");
-  } else {
-    unlockBodyScroll("navbar:mobile-menu");
-  }
-  return () => {
-    unlockBodyScroll("navbar:mobile-menu");
-  };
-}, [mobileMenuOpen]);
+    if (mobileMenuOpen) {
+      lockBodyScroll("navbar:mobile-menu");
+      wasMobileOpenRef.current = true;
+    } else {
+      unlockBodyScroll("navbar:mobile-menu");
+      // Restore focus after closing (if it was opened)
+      if (wasMobileOpenRef.current) {
+        wasMobileOpenRef.current = false;
+        hamburgerButtonRef.current?.focus();
+      }
+    }
 
+    return () => {
+      unlockBodyScroll("navbar:mobile-menu");
+    };
+  }, [mobileMenuOpen]);
+
+  // --- ESC CLOSE (mobile menu + more menu) ---
+  useEffect(() => {
+    if (!mobileMenuOpen && !moreMenuOpen) return;
+
+    const onKeyDown = (e: KeyboardEvent) => {
+      if (e.key !== "Escape") return;
+      setMobileMenuOpen(false);
+      setMoreMenuOpen(false);
+    };
+
+    document.addEventListener("keydown", onKeyDown);
+    return () => document.removeEventListener("keydown", onKeyDown);
+  }, [mobileMenuOpen, moreMenuOpen]);
+
+  // --- Focus first link when mobile menu opens ---
+  useEffect(() => {
+    if (!mobileMenuOpen) return;
+
+    // Defer until after the panel is in the DOM.
+    const raf = window.requestAnimationFrame(() => {
+      const panel = mobilePanelRef.current;
+      const firstLink = panel?.querySelector<HTMLElement>("a[href]");
+      firstLink?.focus();
+    });
+
+    return () => window.cancelAnimationFrame(raf);
+  }, [mobileMenuOpen]);
 
   const scrollToTop = () => {
     window.scrollTo({ top: 0, behavior: "smooth" });
     setMobileMenuOpen(false);
   };
 
-  const handleNavClick = (
-    e: React.MouseEvent<HTMLAnchorElement>,
-    href: string
-  ) => {
+  const handleNavClick = (e: React.MouseEvent<HTMLAnchorElement>, href: string) => {
     e.preventDefault();
     e.stopPropagation();
     setMobileMenuOpen(false);
@@ -100,14 +134,11 @@ export const Navbar = ({ onTriggerPaperHands }: NavbarProps) => {
     let currentWidth = 0;
     let visible = 0;
 
-    const ghostChildren = Array.from(
-      ghostRef.current.children
-    ) as HTMLElement[];
+    const ghostChildren = Array.from(ghostRef.current.children) as HTMLElement[];
 
     for (let i = 0; i < ghostChildren.length; i++) {
       const linkWidth = ghostChildren[i].offsetWidth + 24; // add gap
-      const reserveMore =
-        i < ghostChildren.length - 1 ? moreButtonWidth : 0;
+      const reserveMore = i < ghostChildren.length - 1 ? moreButtonWidth : 0;
 
       if (currentWidth + linkWidth + reserveMore >= containerWidth) {
         break;
@@ -143,11 +174,7 @@ export const Navbar = ({ onTriggerPaperHands }: NavbarProps) => {
   // --- CLOSE MORE ON CLICK OUTSIDE ---
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
-      if (
-        moreMenuOpen &&
-        moreRef.current &&
-        !moreRef.current.contains(event.target as Node)
-      ) {
+      if (moreMenuOpen && moreRef.current && !moreRef.current.contains(event.target as Node)) {
         setMoreMenuOpen(false);
       }
     };
@@ -155,11 +182,43 @@ export const Navbar = ({ onTriggerPaperHands }: NavbarProps) => {
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, [moreMenuOpen]);
 
-  // --- LINK STYLES (base + 20% bigger on xl = Range 4) ---
+  // --- LINK STYLES (base + 20% bigger on xl) ---
   const linkStyles =
-    "font-terminal text-[0.95rem] xl:text-[1.25rem] text-hell-white hover:text-[#ffae00] transition-colors uppercase tracking-widest relative group cursor-pointer font-semibold whitespace-nowrap";
+    "font-terminal text-[0.95rem] xl:text-[1.25rem] text-hell-white hover:text-hell-gold transition-colors uppercase tracking-widest relative group cursor-pointer font-semibold whitespace-nowrap";
   const linkUnderline =
     "absolute -bottom-1 left-0 w-0 h-0.5 bg-hell-orange transition-all group-hover:w-full";
+
+  // Focus trap for the mobile panel.
+  const handleMobileKeyDown = (e: React.KeyboardEvent) => {
+    if (e.key !== "Tab") return;
+
+    const panel = mobilePanelRef.current;
+    if (!panel) return;
+
+    const focusables = Array.from(
+      panel.querySelectorAll<HTMLElement>(
+        'a[href], button:not([disabled]), [tabindex]:not([tabindex="-1"])'
+      )
+    ).filter((el) => !el.hasAttribute("disabled") && el.getAttribute("aria-hidden") !== "true");
+
+    if (focusables.length === 0) return;
+
+    const first = focusables[0];
+    const last = focusables[focusables.length - 1];
+    const active = document.activeElement as HTMLElement | null;
+
+    if (e.shiftKey) {
+      if (active === first) {
+        e.preventDefault();
+        last.focus();
+      }
+    } else {
+      if (active === last) {
+        e.preventDefault();
+        first.focus();
+      }
+    }
+  };
 
   return (
     <nav
@@ -187,16 +246,14 @@ export const Navbar = ({ onTriggerPaperHands }: NavbarProps) => {
           className="flex items-center gap-2 md:gap-3 group cursor-pointer shrink-0 transition-transform active:scale-95 mr-4"
           aria-label="Scroll to top"
         >
-          <img
-            src="/GOAPE.png"
-            alt="Hellcoin"
+          <div
             className={cn(
-              "border border-hell-orange object-cover transition-all duration-300",
-              isScrolled
-                ? "w-8 h-8 md:w-8 md:h-8"
-                : "w-8 h-8 md:w-9 md:h-9 lg:w-10 lg:h-10"
+              "relative border border-hell-orange overflow-hidden object-cover transition-all duration-300",
+              isScrolled ? "w-8 h-8 md:w-8 md:h-8" : "w-8 h-8 md:w-9 md:h-9 lg:w-10 lg:h-10"
             )}
-          />
+          >
+            <Image src="/GOAPE.png" alt="Hellcoin" fill sizes="40px" className="object-cover" />
+          </div>
           <span className="font-gothic text-2xl md:text-2xl lg:text-3xl text-hell-orange tracking-wide text-glow">
             HELLCOIN
           </span>
@@ -247,27 +304,46 @@ export const Navbar = ({ onTriggerPaperHands }: NavbarProps) => {
               className="relative h-full flex items-center shrink-0"
               onMouseEnter={() => setMoreMenuOpen(true)}
               onMouseLeave={() => setMoreMenuOpen(false)}
+              onFocusCapture={() => setMoreMenuOpen(true)}
+              onBlurCapture={(e) => {
+                const next = e.relatedTarget as Node | null;
+                if (next && moreRef.current?.contains(next)) return;
+                setMoreMenuOpen(false);
+              }}
             >
               <button
+                id={MORE_BUTTON_ID}
                 type="button"
+                aria-haspopup="menu"
+                aria-expanded={moreMenuOpen}
+                aria-controls={MORE_MENU_ID}
                 onClick={() => setMoreMenuOpen((prev) => !prev)}
+                onKeyDown={(e) => {
+                  if (e.key === "ArrowDown") {
+                    e.preventDefault();
+                    setMoreMenuOpen(true);
+                    window.requestAnimationFrame(() => {
+                      const first = document.getElementById("navbar-more-item-0");
+                      (first as HTMLElement | null)?.focus();
+                    });
+                  }
+                }}
                 className={cn(
                   linkStyles,
-                  "flex items-center gap-1 pl-0 pr-0 border-none !text-hell-white hover:!text-[#ffae00]"
+                  "flex items-center gap-1 pl-0 pr-0 border-none !text-hell-white hover:!text-hell-gold"
                 )}
               >
                 <span>MORE</span>
-                {moreMenuOpen ? (
-                  <ChevronUp size={14} />
-                ) : (
-                  <ChevronDown size={14} />
-                )}
+                {moreMenuOpen ? <ChevronUp size={14} /> : <ChevronDown size={14} />}
                 <span className={linkUnderline}></span>
               </button>
 
               <AnimatePresence>
                 {moreMenuOpen && (
                   <motion.div
+                    id={MORE_MENU_ID}
+                    role="menu"
+                    aria-labelledby={MORE_BUTTON_ID}
                     initial={{ opacity: 0, y: 10 }}
                     animate={{ opacity: 1, y: 0 }}
                     exit={{ opacity: 0, y: 10 }}
@@ -275,8 +351,10 @@ export const Navbar = ({ onTriggerPaperHands }: NavbarProps) => {
                     className="absolute top-full left-0 pt-4 z-50 min-w-[200px]"
                   >
                     <div className="bg-hell-black border border-hell-red/50 shadow-xl p-5 flex flex-col gap-4">
-                      {hiddenLinks.map((link) => (
+                      {hiddenLinks.map((link, idx) => (
                         <a
+                          id={`navbar-more-item-${idx}`}
+                          role="menuitem"
                           key={link.href}
                           href={link.href}
                           onClick={(e) => handleNavClick(e, link.href)}
@@ -318,10 +396,12 @@ export const Navbar = ({ onTriggerPaperHands }: NavbarProps) => {
 
           {/* HAMBURGER – active below xl only */}
           <button
+            ref={hamburgerButtonRef}
             type="button"
             className="xl:hidden text-hell-white ml-3 pl-1"
             onClick={() => setMobileMenuOpen((prev) => !prev)}
             aria-label="Toggle navigation"
+            aria-expanded={mobileMenuOpen}
           >
             {mobileMenuOpen ? <X size={28} /> : <Menu size={28} />}
           </button>
@@ -332,22 +412,29 @@ export const Navbar = ({ onTriggerPaperHands }: NavbarProps) => {
       <AnimatePresence>
         {mobileMenuOpen && (
           <motion.div
+            role="dialog"
+            aria-modal="true"
+            aria-label="Navigation menu"
             className="xl:hidden fixed inset-0 bg-hell-black/95 backdrop-blur-xl border-b border-hell-red/50 overflow-y-auto shadow-2xl z-[95] cursor-pointer"
             onClick={() => setMobileMenuOpen(false)}
+            onKeyDown={handleMobileKeyDown}
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 0.18, ease: "easeOut" }}
           >
             <motion.div
+              ref={mobilePanelRef}
+              tabIndex={-1}
               className="w-full mx-auto p-6 pt-20 pb-8 flex flex-col gap-6 max-w-[480px] sm:max-w-[520px] md:max-w-none md:w-full cursor-default"
+              onClick={(e) => e.stopPropagation()}
               initial={{ opacity: 0, y: -12 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -12 }}
               transition={{ duration: 0.2, ease: "easeOut" }}
             >
               {/* TOP DIVIDER + LINKS (full names) */}
-              <div className="w-full flex flex-col gap-3 border-t border-gray-900 pt-4">
+              <div className="w-full flex flex-col gap-3 border-t border-hell-white/5 pt-4">
                 {NAV_LINKS_DATA.map((link) => (
                   <a
                     key={link.href}
@@ -361,7 +448,7 @@ export const Navbar = ({ onTriggerPaperHands }: NavbarProps) => {
               </div>
 
               {/* BOTTOM BUY SECTION */}
-              <div className="w-full flex flex-col items-center pt-4 border-t border-gray-900">
+              <div className="w-full flex flex-col items-center pt-4 border-t border-hell-white/5">
                 <a
                   href={BUY_LINK}
                   target="_blank"

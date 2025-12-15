@@ -1,5 +1,7 @@
 "use client";
 
+import { X_LINK } from "@/lib/constants";
+
 export const Footer = () => {
   const currentYear = new Date().getFullYear();
 
@@ -50,7 +52,7 @@ export const Footer = () => {
               <span className="text-hell-gold text-sm uppercase tracking-widest mb-2 font-bold">
                 PROTOCOL
               </span>
-              <a href="https://x.com" target="_blank" rel="noopener noreferrer" className="text-hell-white/70 hover:text-hell-red transition-colors">TWITTER (X)</a>
+              <a href={X_LINK} target="_blank" rel="noopener noreferrer" className="text-hell-white/70 hover:text-hell-red transition-colors">TWITTER (X)</a>
               <a href="#" className="text-hell-white/70 hover:text-hell-red transition-colors">DEXSCREENER</a>
               <a href="#" className="text-hell-white/70 hover:text-hell-red transition-colors">CONTRACT</a>
             </div>

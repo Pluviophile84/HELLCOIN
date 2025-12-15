@@ -1,14 +1,14 @@
 "use client";
 
+import { SectionKicker } from "@/components/ui/SectionKicker";
+
 export const DevilsMath = () => {
   return (
     <section id="math" className="py-24 bg-hell-black font-terminal">
       <div className="max-w-5xl mx-auto px-4">
         <div className="text-center mb-16 flex flex-col items-center gap-2">
           {/* FIX: Removed font-bold, set to text-xl md:text-2xl */}
-          <span className="font-terminal text-hell-gold text-xl md:text-2xl tracking-widest uppercase">
-            SIN NOMICS DATA
-          </span>
+          <SectionKicker>SIN NOMICS DATA</SectionKicker>
           <h2 className="font-gothic text-6xl md:text-8xl text-hell-white">
             THE <span className="text-hell-red">DEVIL'S</span> MATH
           </h2>

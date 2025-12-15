@@ -2,17 +2,19 @@
 import { motion } from "framer-motion";
 import { useState } from "react";
 import { Copy, Check } from "lucide-react";
+import { CONTRACT_ADDRESS } from "@/lib/constants";
+import { SectionKicker } from "@/components/ui/SectionKicker";
 
 export const Ritual = () => {
   const [copied, setCopied] = useState(false);
-
-  // REPLACE THIS WITH YOUR REAL CONTRACT ADDRESS
-  const CONTRACT_ADDRESS = "0x666...INSERT_REAL_CA_HERE...666";
-
-  const handleCopy = () => {
-    navigator.clipboard.writeText(CONTRACT_ADDRESS);
-    setCopied(true);
-    setTimeout(() => setCopied(false), 2000);
+  const handleCopy = async () => {
+    try {
+      await navigator.clipboard.writeText(CONTRACT_ADDRESS);
+      setCopied(true);
+      window.setTimeout(() => setCopied(false), 2000);
+    } catch {
+      // Clipboard can fail on some browsers/contexts. Keep UX quiet.
+    }
   };
 
   const steps = [
@@ -61,9 +63,7 @@ export const Ritual = () => {
       <div className="max-w-6xl mx-auto px-4 relative z-10">
         {/* --- HEADER --- */}
         <div className="text-center mb-24 flex flex-col items-center gap-2">
-          <span className="font-terminal text-hell-gold text-xl md:text-2xl tracking-widest uppercase">
-            INITIATION SEQUENCE
-          </span>
+          <SectionKicker>INITIATION SEQUENCE</SectionKicker>
 
           <h2 className="font-gothic text-6xl md:text-8xl text-center text-hell-white">
             THE <span className="text-hell-red">RITUAL</span>

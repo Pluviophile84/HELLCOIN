@@ -151,7 +151,7 @@ export const PaperHandsOverlay = ({ isActive, onClose }: PaperHandsProps) => {
                   Welcome to the Safe Space! No red candles here! Only vibes! 🚀✨🌈
                 </p>
                 
-                <div className="w-full bg-white h-4 rounded-full overflow-hidden mb-4 border border-pink-300 shadow-sm">
+                <div className="w-full bg-white h-4 overflow-hidden mb-4 border border-pink-300 shadow-sm">
                   <div 
                     className="h-full bg-pink-500 transition-all ease-linear"
                     style={{ 
