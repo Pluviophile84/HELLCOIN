@@ -17,19 +17,16 @@ import { HallOfPain } from "@/components/sections/HallOfPain";
 import { Hellmap } from "@/components/sections/Hellmap";
 import { Footer } from "@/components/sections/Footer";
 
-const ThePitLazy = dynamic(
-  () => import("@/components/sections/ThePit").then((m) => m.ThePit),
-  {
-    ssr: false,
-    loading: () => (
-      <section id="the-pit" className="py-32 bg-hell-red">
-        <div className="max-w-6xl mx-auto px-4">
-          <div className="h-[420px] border border-hell-black/40 bg-hell-black/60" />
-        </div>
-      </section>
-    ),
-  }
-);
+const ThePitLazy = dynamic(() => import("@/components/sections/ThePit").then((m) => m.ThePit), {
+  ssr: false,
+  loading: () => (
+    <section id="the-pit" className="bg-hell-red py-32">
+      <div className="mx-auto max-w-6xl px-4">
+        <div className="h-[420px] border border-hell-black/40 bg-hell-black/60" />
+      </div>
+    </section>
+  ),
+});
 
 export default function HomeClient() {
   const [paperHands, setPaperHands] = useState(false);

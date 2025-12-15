@@ -144,23 +144,21 @@ export const HallOfPain = () => {
   });
 
   return (
-    <section id="hall-of-pain" className="py-32 bg-hell-dark overflow-hidden relative">
-      <div className="max-w-6xl mx-auto px-4 mb-12">
+    <section id="hall-of-pain" className="relative overflow-hidden bg-hell-dark py-32">
+      <div className="mx-auto mb-12 max-w-6xl px-4">
         {/* --- HEADER --- */}
-        <div className="flex flex-col items-center text-center gap-2 mb-12">
+        <div className="mb-12 flex flex-col items-center gap-2 text-center">
           <SectionKicker>PROOF OF SUFFERING</SectionKicker>
-          <h2 className="font-gothic text-6xl md:text-8xl text-hell-white">
-            HALL OF PAIN
-          </h2>
+          <h2 className="font-gothic text-6xl text-hell-white md:text-8xl">HALL OF PAIN</h2>
         </div>
 
         {/* --- FILTERS --- */}
-        <div className="flex justify-end gap-4 mb-4 font-terminal text-sm md:text-base">
+        <div className="mb-4 flex justify-end gap-4 font-terminal text-sm md:text-base">
           <button
             onClick={() => setFilter("latest")}
-            className={`flex items-center gap-2 px-4 py-2 border ${
+            className={`flex items-center gap-2 border px-4 py-2 ${
               filter === "latest"
-                ? "border-hell-red text-hell-red bg-hell-red/10"
+                ? "border-hell-red bg-hell-red/10 text-hell-red"
                 : "border-hell-white/10 text-hell-white/50 hover:text-hell-white"
             }`}
           >
@@ -168,9 +166,9 @@ export const HallOfPain = () => {
           </button>
           <button
             onClick={() => setFilter("top")}
-            className={`flex items-center gap-2 px-4 py-2 border ${
+            className={`flex items-center gap-2 border px-4 py-2 ${
               filter === "top"
-                ? "border-hell-red text-hell-red bg-hell-red/10"
+                ? "border-hell-red bg-hell-red/10 text-hell-red"
                 : "border-hell-white/10 text-hell-white/50 hover:text-hell-white"
             }`}
           >
@@ -181,16 +179,16 @@ export const HallOfPain = () => {
         {/* --- THE ARCHIVES BOX --- */}
         <div className="border border-hell-white/10 bg-hell-black">
           {/* Table Headers */}
-          <div className="grid grid-cols-12 gap-4 px-6 py-3 text-hell-gold font-terminal text-sm tracking-widest uppercase border-b border-hell-white/10 bg-hell-dark">
+          <div className="grid grid-cols-12 gap-4 border-b border-hell-white/10 bg-hell-dark px-6 py-3 font-terminal text-sm uppercase tracking-widest text-hell-gold">
             <div className="col-span-3 md:col-span-2">ID</div>
             <div className="col-span-6 md:col-span-8">Identity</div>
-            <div className="col-span-3 md:col-span-2 text-right">Loss</div>
+            <div className="col-span-3 text-right md:col-span-2">Loss</div>
           </div>
 
           {/* --- SCROLLABLE LIST --- */}
           {/* FIX: Added scroll lock logic. 'overflow-hidden' by default, 'overflow-y-auto' on click. */}
           <div
-            className={`h-[400px] scrollbar-thin scrollbar-thumb-hell-red/30 scrollbar-track-hell-black transition-all ${
+            className={`scrollbar-thin scrollbar-thumb-hell-red/30 scrollbar-track-hell-black h-[400px] transition-all ${
               isScrollable ? "overflow-y-auto" : "overflow-hidden"
             }`}
             tabIndex={0}
@@ -218,15 +216,15 @@ export const HallOfPain = () => {
                   {/* Clickable Header Row */}
                   <div
                     onClick={() => toggleRow(sinner.id)}
-                    className="p-4 md:px-6 grid grid-cols-12 gap-4 items-center cursor-pointer group"
+                    className="group grid cursor-pointer grid-cols-12 items-center gap-4 p-4 md:px-6"
                   >
-                    <div className="col-span-3 md:col-span-2 font-terminal text-hell-red text-lg font-bold">
+                    <div className="col-span-3 font-terminal text-lg font-bold text-hell-red md:col-span-2">
                       {sinner.id}
                     </div>
-                    <div className="col-span-6 md:col-span-8 font-gothic text-xl md:text-2xl text-hell-white truncate group-hover:text-white transition-colors">
+                    <div className="col-span-6 truncate font-gothic text-xl text-hell-white transition-colors group-hover:text-white md:col-span-8 md:text-2xl">
                       {sinner.name}
                     </div>
-                    <div className="col-span-3 md:col-span-2 text-right font-terminal text-hell-white/70">
+                    <div className="col-span-3 text-right font-terminal text-hell-white/70 md:col-span-2">
                       {sinner.pnl}
                     </div>
                   </div>
@@ -242,31 +240,28 @@ export const HallOfPain = () => {
                         className="overflow-hidden"
                       >
                         <div className="px-4 pb-6 md:px-6 md:pb-6">
-                          <div className="border-t border-hell-red/10 pt-4 mt-2 grid grid-cols-1 md:grid-cols-12 gap-6">
+                          <div className="mt-2 grid grid-cols-1 gap-6 border-t border-hell-red/10 pt-4 md:grid-cols-12">
                             <div className="md:col-span-9">
-                              <p className="font-terminal text-lg text-hell-white/70 italic leading-relaxed">
+                              <p className="font-terminal text-lg italic leading-relaxed text-hell-white/70">
                                 "{sinner.quote}"
                               </p>
                             </div>
 
-                            <div className="md:col-span-3 flex items-end justify-end">
+                            <div className="flex items-end justify-end md:col-span-3">
                               <button
                                 onClick={(e) => {
                                   e.stopPropagation();
                                   handlePayRespect(sinner.id);
                                 }}
                                 disabled={isPaid}
-                                className={`
-                                   w-full md:w-auto py-2 px-6 font-terminal text-sm font-bold border transition-all active:scale-95 flex items-center justify-center gap-2
-                                   ${
-                                     isPaid
-                                       ? "bg-hell-red/10 border-hell-red text-hell-red cursor-default"
-                                       : "bg-hell-white text-hell-black border-hell-white hover:bg-hell-white/80"
-                                   }
-                                 `}
+                                className={`flex w-full items-center justify-center gap-2 border px-6 py-2 font-terminal text-sm font-bold transition-all active:scale-95 md:w-auto ${
+                                  isPaid
+                                    ? "cursor-default border-hell-red bg-hell-red/10 text-hell-red"
+                                    : "border-hell-white bg-hell-white text-hell-black hover:bg-hell-white/80"
+                                } `}
                               >
                                 {isPaid ? "RESPECT PAID" : "PAY RESPECTS"}
-                                <span className="opacity-60 font-normal ml-1">({count})</span>
+                                <span className="ml-1 font-normal opacity-60">({count})</span>
                               </button>
                             </div>
                           </div>
@@ -283,10 +278,10 @@ export const HallOfPain = () => {
 
       {/* --- CONFESS PRANK SECTION --- */}
       {/* FIX: Removed <p> question and reduced margin to mt-6 to bring it closer */}
-      <div className="max-w-2xl mx-auto mt-6 px-4 text-center">
+      <div className="mx-auto mt-6 max-w-2xl px-4 text-center">
         <button
           onClick={handleConfess}
-          className="group relative inline-flex items-center gap-2 px-8 py-3 bg-hell-black border-2 border-hell-red text-hell-red font-gothic text-2xl hover:bg-hell-red hover:text-white transition-all active:scale-95"
+          className="group relative inline-flex items-center gap-2 border-2 border-hell-red bg-hell-black px-8 py-3 font-gothic text-2xl text-hell-red transition-all hover:bg-hell-red hover:text-white active:scale-95"
         >
           <AlertTriangle size={24} />
           CONFESS YOUR LOSSES
@@ -299,12 +294,12 @@ export const HallOfPain = () => {
               initial={{ opacity: 0, y: 100 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: 100 }}
-              className="fixed bottom-10 right-4 md:right-10 bg-hell-red text-hell-white font-terminal text-xl p-6 border-4 border-hell-black shadow-[10px_10px_0px_#000] z-[101] animate-bounce max-w-sm md:max-w-md text-left"
+              className="fixed bottom-10 right-4 z-[101] max-w-sm animate-bounce border-4 border-hell-black bg-hell-red p-6 text-left font-terminal text-xl text-hell-white shadow-[10px_10px_0px_#000] md:right-10 md:max-w-md"
             >
               <div className="flex items-start gap-4">
-                <AlertTriangle size={32} className="text-hell-gold shrink-0 mt-1" />
+                <AlertTriangle size={32} className="mt-1 shrink-0 text-hell-gold" />
                 <div>
-                  <strong className="block text-2xl font-gothic mb-1">NICE TRY.</strong>
+                  <strong className="mb-1 block font-gothic text-2xl">NICE TRY.</strong>
                   {prankError}
                 </div>
               </div>

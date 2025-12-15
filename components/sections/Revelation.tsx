@@ -6,41 +6,42 @@ export const Revelation = () => {
   return (
     <section
       id="revelation"
-      className="relative min-h-screen flex flex-col md:flex-row bg-hell-black overflow-hidden"
+      className="relative flex min-h-screen flex-col overflow-hidden bg-hell-black md:flex-row"
     >
       {/* --- LEFT SIDE: THE LIE --- */}
-      <div className="md:w-1/2 p-8 md:p-12 flex flex-col items-center justify-center border-r border-hell-red/20 relative group overflow-hidden min-h-[50vh]">
+      <div className="group relative flex min-h-[50vh] flex-col items-center justify-center overflow-hidden border-r border-hell-red/20 p-8 md:w-1/2 md:p-12">
         {/* Background Image */}
         <Image
           src="/GOAPE-Edited.png"
           alt="The Devil"
           fill
           sizes="(min-width: 768px) 50vw, 100vw"
-          className="absolute inset-0 object-cover opacity-50 grayscale group-hover:grayscale-0 transition-all duration-700 transform group-hover:scale-110"
+          className="absolute inset-0 transform object-cover opacity-50 grayscale transition-all duration-700 group-hover:scale-110 group-hover:grayscale-0"
         />
 
         {/* Heavy Overlay for Text Readability */}
         <div className="absolute inset-0 bg-hell-black/80" />
 
-        <div className="relative z-10 text-center w-full max-w-md">
+        <div className="relative z-10 w-full max-w-md text-center">
           {/* HEADER MATCHING GENESIS STYLE */}
           <div className="mb-6 flex flex-col items-center gap-2">
             {/* SUB-LINE: Full Brightness Gold */}
-            <span className="font-terminal text-hell-gold text-lg md:text-xl tracking-widest uppercase">
+            <span className="font-terminal text-lg uppercase tracking-widest text-hell-gold md:text-xl">
               DECEPTION DETECTED
             </span>
             {/* TITLE: Full Brightness White/Red */}
             <motion.h3
               initial={{ opacity: 0 }}
               whileInView={{ opacity: 1 }}
-              className="font-gothic text-6xl md:text-8xl tracking-wide"
+              className="font-gothic text-6xl tracking-wide md:text-8xl"
             >
-              <span className="text-hell-white">THE</span> <span className="text-hell-red">LIE</span>
+              <span className="text-hell-white">THE</span>{" "}
+              <span className="text-hell-red">LIE</span>
             </motion.h3>
           </div>
 
           {/* The List of Lies */}
-          <div className="font-terminal text-lg md:text-2xl text-hell-white space-y-3 leading-relaxed">
+          <div className="space-y-3 font-terminal text-lg leading-relaxed text-hell-white md:text-2xl">
             <p>"Utility." "Roadmaps." "Communities."</p>
             <p>“Dev is doxxed.”</p>
             <p>“Influencer-backed.”</p>
@@ -51,7 +52,7 @@ export const Revelation = () => {
           </div>
 
           <div className="mt-8 border-t border-hell-white/10 pt-6">
-            <p className="font-terminal text-hell-white text-lg">
+            <p className="font-terminal text-lg text-hell-white">
               Every illusion needed to convert <br />
               <span className="text-hell-red">hope into fertilizer.</span>
             </p>
@@ -60,28 +61,28 @@ export const Revelation = () => {
       </div>
 
       {/* --- RIGHT SIDE: THE TRUTH --- */}
-      <div className="md:w-1/2 p-8 md:p-12 bg-hell-black flex flex-col justify-center relative border-t md:border-t-0 md:border-l border-hell-red/20">
+      <div className="relative flex flex-col justify-center border-t border-hell-red/20 bg-hell-black p-8 md:w-1/2 md:border-l md:border-t-0 md:p-12">
         <motion.div
           initial={{ x: 100, opacity: 0 }}
           whileInView={{ x: 0, opacity: 1 }}
           transition={{ duration: 0.8 }}
-          className="max-w-lg mx-auto w-full"
+          className="mx-auto w-full max-w-lg"
         >
           {/* HEADER */}
           <div className="mb-8 flex flex-col items-center gap-2 text-center">
-            <span className="font-terminal text-hell-gold text-lg md:text-xl tracking-widest uppercase">
+            <span className="font-terminal text-lg uppercase tracking-widest text-hell-gold md:text-xl">
               THE TRUTH
             </span>
-            <h2 className="font-gothic text-5xl md:text-8xl text-hell-white leading-none">
+            <h2 className="font-gothic text-5xl leading-none text-hell-white md:text-8xl">
               REALITY <span className="text-hell-red">CHECK.</span>
             </h2>
           </div>
 
           {/* THE MANIFESTO */}
-          <div className="space-y-6 font-terminal text-lg md:text-xl text-hell-white leading-relaxed">
-            <p className="border-l-2 border-hell-red pl-4 text-white text-xl md:text-2xl">
-              Crypto is <span className="text-hell-gold">revolutionary</span>; degens made it a casino, and
-              bad actors made it a buffet.
+          <div className="space-y-6 font-terminal text-lg leading-relaxed text-hell-white md:text-xl">
+            <p className="border-l-2 border-hell-red pl-4 text-xl text-white md:text-2xl">
+              Crypto is <span className="text-hell-gold">revolutionary</span>; degens made it a
+              casino, and bad actors made it a buffet.
             </p>
 
             <ul className="space-y-4">
@@ -96,7 +97,8 @@ export const Revelation = () => {
               <li className="flex gap-3">
                 <span className="text-hell-red">{">"}</span>
                 <span>
-                  Utility is optional. <span className="text-hell-gold">Delusion is mandatory.</span>
+                  Utility is optional.{" "}
+                  <span className="text-hell-gold">Delusion is mandatory.</span>
                 </span>
               </li>
               <li className="flex gap-3">
@@ -114,9 +116,11 @@ export const Revelation = () => {
             </ul>
 
             {/* GOLD BOX */}
-            <div className="mt-10 p-6 border border-hell-gold/30 bg-hell-gold/5 w-full">
-              <p className="text-center text-white text-xl md:text-2xl leading-tight">
-                <span className="font-gothic text-hell-red text-3xl md:text-4xl block mb-2">HELLCOIN</span>
+            <div className="mt-10 w-full border border-hell-gold/30 bg-hell-gold/5 p-6">
+              <p className="text-center text-xl leading-tight text-white md:text-2xl">
+                <span className="mb-2 block font-gothic text-3xl text-hell-red md:text-4xl">
+                  HELLCOIN
+                </span>
                 is the only project honest enough to admit it — and bold enough to expose it.
               </p>
             </div>

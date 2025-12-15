@@ -223,38 +223,38 @@ export const Navbar = ({ onTriggerPaperHands }: NavbarProps) => {
   return (
     <nav
       className={cn(
-        "fixed top-0 w-full z-[90] transition-all duration-300 ease-in-out",
+        "fixed top-0 z-[90] w-full transition-all duration-300 ease-in-out",
         isScrolled ? "py-3 md:py-2" : "py-3 md:py-4"
       )}
     >
       {/* BACKGROUND PLATE */}
       <div
         className={cn(
-          "absolute inset-0 w-full h-full transition-all duration-300 pointer-events-none",
+          "pointer-events-none absolute inset-0 h-full w-full transition-all duration-300",
           isScrolled
-            ? "bg-hell-black/95 backdrop-blur-md border-b border-hell-red/30 shadow-lg shadow-hell-red/5"
-            : "bg-transparent border-b border-transparent"
+            ? "border-b border-hell-red/30 bg-hell-black/95 shadow-lg shadow-hell-red/5 backdrop-blur-md"
+            : "border-b border-transparent bg-transparent"
         )}
       />
 
       {/* HEADER CONTENT */}
-      <div className="relative z-[100] w-full md:w-[90%] lg:w-[70%] max-w-[1920px] mx-auto px-4 md:px-0 flex justify-between items-center transition-all duration-300">
+      <div className="relative z-[100] mx-auto flex w-full max-w-[1920px] items-center justify-between px-4 transition-all duration-300 md:w-[90%] md:px-0 lg:w-[70%]">
         {/* LOGO */}
         <button
           type="button"
           onClick={scrollToTop}
-          className="flex items-center gap-2 md:gap-3 group cursor-pointer shrink-0 transition-transform active:scale-95 mr-4"
+          className="group mr-4 flex shrink-0 cursor-pointer items-center gap-2 transition-transform active:scale-95 md:gap-3"
           aria-label="Scroll to top"
         >
           <div
             className={cn(
-              "relative border border-hell-orange overflow-hidden object-cover transition-all duration-300",
-              isScrolled ? "w-8 h-8 md:w-8 md:h-8" : "w-8 h-8 md:w-9 md:h-9 lg:w-10 lg:h-10"
+              "relative overflow-hidden border border-hell-orange object-cover transition-all duration-300",
+              isScrolled ? "h-8 w-8 md:h-8 md:w-8" : "h-8 w-8 md:h-9 md:w-9 lg:h-10 lg:w-10"
             )}
           >
             <Image src="/GOAPE.png" alt="Hellcoin" fill sizes="40px" className="object-cover" />
           </div>
-          <span className="font-gothic text-2xl md:text-2xl lg:text-3xl text-hell-orange tracking-wide text-glow">
+          <span className="text-glow font-gothic text-2xl tracking-wide text-hell-orange md:text-2xl lg:text-3xl">
             HELLCOIN
           </span>
         </button>
@@ -262,12 +262,12 @@ export const Navbar = ({ onTriggerPaperHands }: NavbarProps) => {
         {/* DESKTOP NAV (xl and up) */}
         <div
           ref={containerRef}
-          className="relative hidden xl:flex items-center gap-6 justify-center flex-grow min-w-0 mx-6 px-2"
+          className="relative mx-6 hidden min-w-0 flex-grow items-center justify-center gap-6 px-2 xl:flex"
         >
           {/* GHOST ROW FOR MEASUREMENT (uses short labels) */}
           <div
             ref={ghostRef}
-            className="absolute top-0 left-0 flex gap-4 xl:gap-6 invisible pointer-events-none"
+            className="pointer-events-none invisible absolute left-0 top-0 flex gap-4 xl:gap-6"
             aria-hidden="true"
           >
             {NAV_LINKS_DATA.map((link) => (
@@ -280,7 +280,7 @@ export const Navbar = ({ onTriggerPaperHands }: NavbarProps) => {
           {/* VISIBLE LINKS */}
           <div
             className={cn(
-              "flex gap-4 xl:gap-6 transition-opacity duration-200",
+              "flex gap-4 transition-opacity duration-200 xl:gap-6",
               isCalculated ? "opacity-100" : "opacity-0"
             )}
           >
@@ -301,7 +301,7 @@ export const Navbar = ({ onTriggerPaperHands }: NavbarProps) => {
           {isCalculated && showMoreButton && (
             <div
               ref={moreRef}
-              className="relative h-full flex items-center shrink-0"
+              className="relative flex h-full shrink-0 items-center"
               onMouseEnter={() => setMoreMenuOpen(true)}
               onMouseLeave={() => setMoreMenuOpen(false)}
               onFocusCapture={() => setMoreMenuOpen(true)}
@@ -330,7 +330,7 @@ export const Navbar = ({ onTriggerPaperHands }: NavbarProps) => {
                 }}
                 className={cn(
                   linkStyles,
-                  "flex items-center gap-1 pl-0 pr-0 border-none !text-hell-white hover:!text-hell-gold"
+                  "flex items-center gap-1 border-none pl-0 pr-0 !text-hell-white hover:!text-hell-gold"
                 )}
               >
                 <span>MORE</span>
@@ -348,9 +348,9 @@ export const Navbar = ({ onTriggerPaperHands }: NavbarProps) => {
                     animate={{ opacity: 1, y: 0 }}
                     exit={{ opacity: 0, y: 10 }}
                     transition={{ duration: 0.18, ease: "easeOut" }}
-                    className="absolute top-full left-0 pt-4 z-50 min-w-[200px]"
+                    className="absolute left-0 top-full z-50 min-w-[200px] pt-4"
                   >
-                    <div className="bg-hell-black border border-hell-red/50 shadow-xl p-5 flex flex-col gap-4">
+                    <div className="flex flex-col gap-4 border border-hell-red/50 bg-hell-black p-5 shadow-xl">
                       {hiddenLinks.map((link, idx) => (
                         <a
                           id={`navbar-more-item-${idx}`}
@@ -373,13 +373,13 @@ export const Navbar = ({ onTriggerPaperHands }: NavbarProps) => {
         </div>
 
         {/* ACTIONS */}
-        <div className="flex items-center gap-2 md:gap-4 shrink-0">
+        <div className="flex shrink-0 items-center gap-2 md:gap-4">
           <button
             type="button"
             onClick={onTriggerPaperHands}
-            className="flex items-center gap-2 px-2 md:px-3 py-1 border border-pink-300 text-pink-100 font-terminal text-[10px] md:text-sm font-bold hover:bg-pink-500/20 hover:text-white transition-colors shadow-[0_0_10px_rgba(255,192,203,0.3)] whitespace-nowrap"
+            className="flex items-center gap-2 whitespace-nowrap border border-pink-300 px-2 py-1 font-terminal text-[10px] font-bold text-pink-100 shadow-[0_0_10px_rgba(255,192,203,0.3)] transition-colors hover:bg-pink-500/20 hover:text-white md:px-3 md:text-sm"
           >
-            <span className="w-2 h-2 bg-pink-200 animate-pulse shadow-[0_0_5px_#fff]" />
+            <span className="h-2 w-2 animate-pulse bg-pink-200 shadow-[0_0_5px_#fff]" />
             <span className="hidden md:inline">HEAVEN MODE</span>
             <span className="md:hidden">HEAVEN</span>
           </button>
@@ -389,7 +389,7 @@ export const Navbar = ({ onTriggerPaperHands }: NavbarProps) => {
             href={BUY_LINK}
             target="_blank"
             rel="noopener noreferrer"
-            className="hidden xl:block bg-hell-red hover:bg-hell-orange text-hell-white font-gothic text-base lg:text-lg px-4 lg:px-6 py-1 lg:py-2 shadow-[0_0_15px_rgba(204,0,0,0.5)] transition-all transform hover:scale-105 border border-hell-orange/50 text-center whitespace-nowrap"
+            className="hidden transform whitespace-nowrap border border-hell-orange/50 bg-hell-red px-4 py-1 text-center font-gothic text-base text-hell-white shadow-[0_0_15px_rgba(204,0,0,0.5)] transition-all hover:scale-105 hover:bg-hell-orange lg:px-6 lg:py-2 lg:text-lg xl:block"
           >
             ACQUIRE $666
           </a>
@@ -398,7 +398,7 @@ export const Navbar = ({ onTriggerPaperHands }: NavbarProps) => {
           <button
             ref={hamburgerButtonRef}
             type="button"
-            className="xl:hidden text-hell-white ml-3 pl-1"
+            className="ml-3 pl-1 text-hell-white xl:hidden"
             onClick={() => setMobileMenuOpen((prev) => !prev)}
             aria-label="Toggle navigation"
             aria-expanded={mobileMenuOpen}
@@ -415,7 +415,7 @@ export const Navbar = ({ onTriggerPaperHands }: NavbarProps) => {
             role="dialog"
             aria-modal="true"
             aria-label="Navigation menu"
-            className="xl:hidden fixed inset-0 bg-hell-black/95 backdrop-blur-xl border-b border-hell-red/50 overflow-y-auto shadow-2xl z-[95] cursor-pointer"
+            className="fixed inset-0 z-[95] cursor-pointer overflow-y-auto border-b border-hell-red/50 bg-hell-black/95 shadow-2xl backdrop-blur-xl xl:hidden"
             onClick={() => setMobileMenuOpen(false)}
             onKeyDown={handleMobileKeyDown}
             initial={{ opacity: 0 }}
@@ -426,7 +426,7 @@ export const Navbar = ({ onTriggerPaperHands }: NavbarProps) => {
             <motion.div
               ref={mobilePanelRef}
               tabIndex={-1}
-              className="w-full mx-auto p-6 pt-20 pb-8 flex flex-col gap-6 max-w-[480px] sm:max-w-[520px] md:max-w-none md:w-full cursor-default"
+              className="mx-auto flex w-full max-w-[480px] cursor-default flex-col gap-6 p-6 pb-8 pt-20 sm:max-w-[520px] md:w-full md:max-w-none"
               onClick={(e) => e.stopPropagation()}
               initial={{ opacity: 0, y: -12 }}
               animate={{ opacity: 1, y: 0 }}
@@ -434,13 +434,13 @@ export const Navbar = ({ onTriggerPaperHands }: NavbarProps) => {
               transition={{ duration: 0.2, ease: "easeOut" }}
             >
               {/* TOP DIVIDER + LINKS (full names) */}
-              <div className="w-full flex flex-col gap-3 border-t border-hell-white/5 pt-4">
+              <div className="flex w-full flex-col gap-3 border-t border-hell-white/5 pt-4">
                 {NAV_LINKS_DATA.map((link) => (
                   <a
                     key={link.href}
                     href={link.href}
                     onClick={(e) => handleNavClick(e, link.href)}
-                    className="font-terminal text-lg text-center text-hell-white hover:text-hell-orange tracking-widest cursor-pointer font-bold py-1 w-fit mx-auto"
+                    className="mx-auto w-fit cursor-pointer py-1 text-center font-terminal text-lg font-bold tracking-widest text-hell-white hover:text-hell-orange"
                   >
                     {link.name}
                   </a>
@@ -448,12 +448,12 @@ export const Navbar = ({ onTriggerPaperHands }: NavbarProps) => {
               </div>
 
               {/* BOTTOM BUY SECTION */}
-              <div className="w-full flex flex-col items-center pt-4 border-t border-hell-white/5">
+              <div className="flex w-full flex-col items-center border-t border-hell-white/5 pt-4">
                 <a
                   href={BUY_LINK}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="bg-hell-red text-hell-white font-gothic text-2xl py-3 px-12 shadow-[0_0_20px_rgba(204,0,0,0.6)]"
+                  className="bg-hell-red px-12 py-3 font-gothic text-2xl text-hell-white shadow-[0_0_20px_rgba(204,0,0,0.6)]"
                 >
                   ACQUIRE $666
                 </a>

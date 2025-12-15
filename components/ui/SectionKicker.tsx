@@ -14,7 +14,7 @@ export function SectionKicker({ children, className }: SectionKickerProps) {
   return (
     <span
       className={cn(
-        "font-terminal text-hell-gold text-xl md:text-2xl tracking-widest uppercase",
+        "font-terminal text-xl uppercase tracking-widest text-hell-gold md:text-2xl",
         className
       )}
     >

@@ -71,22 +71,14 @@ export const ThePit = () => {
   return (
     <section
       id="the-pit"
-      className="relative py-32 bg-hell-red overflow-hidden flex items-center justify-center min-h-[900px]"
+      className="relative flex min-h-[900px] items-center justify-center overflow-hidden bg-hell-red py-32"
     >
       {/* BACKGROUND: GHOST GRID (Desktop/Laptop only) */}
-      <div className="absolute inset-0 z-0 pointer-events-none hidden md:block">
+      <div className="pointer-events-none absolute inset-0 z-0 hidden md:block">
         <div className="absolute inset-0 px-10 py-10 lg:px-12 lg:py-12">
-          <div
-            className="
-              h-full w-full
-              grid auto-rows-fr place-items-center
-              grid-cols-4 gap-x-12 gap-y-10
-              lg:grid-cols-5 lg:gap-x-12 lg:gap-y-12
-              xl:grid-cols-6
-            "
-          >
+          <div className="grid h-full w-full auto-rows-fr grid-cols-4 place-items-center gap-x-12 gap-y-10 lg:grid-cols-5 lg:gap-x-12 lg:gap-y-12 xl:grid-cols-6">
             {gridWords.map((word, i) => (
-              <div key={`${word}-${i}`} className="w-full flex items-center justify-center">
+              <div key={`${word}-${i}`} className="flex w-full items-center justify-center">
                 <motion.div
                   className={wordClasses(word)}
                   style={{ willChange: reduceMotion ? undefined : "opacity, transform" }}
@@ -120,10 +112,10 @@ export const ThePit = () => {
       </div>
 
       {/* FOREGROUND: THE MEDIEVAL DECREE (unchanged) */}
-      <div className="relative z-10 flex flex-col items-center max-w-4xl w-full px-4">
+      <div className="relative z-10 flex w-full max-w-4xl flex-col items-center px-4">
         {/* Header Label */}
         <div className="mb-12">
-          <SectionKicker className="bg-hell-black px-4 py-1 border border-hell-gold/30 shadow-[4px_4px_0px_rgba(0,0,0,0.5)]">
+          <SectionKicker className="border border-hell-gold/30 bg-hell-black px-4 py-1 shadow-[4px_4px_0px_rgba(0,0,0,0.5)]">
             THE FINAL CIRCLE
           </SectionKicker>
         </div>
@@ -131,32 +123,32 @@ export const ThePit = () => {
         {/* --- THE ELEGANT BOX --- */}
         <div className="relative w-full bg-hell-black p-1 shadow-[0_0_50px_rgba(0,0,0,0.8)]">
           {/* 1. Outer Border */}
-          <div className="absolute inset-0 border border-hell-red/50 pointer-events-none"></div>
+          <div className="pointer-events-none absolute inset-0 border border-hell-red/50"></div>
 
           {/* 2. Inner Content Area */}
-          <div className="bg-hell-black/90 p-8 md:p-16 text-center border border-hell-white/10 backdrop-blur-md relative overflow-hidden">
+          <div className="relative overflow-hidden border border-hell-white/10 bg-hell-black/90 p-8 text-center backdrop-blur-md md:p-16">
             {/* Medieval Corner Accents */}
-            <div className="absolute top-2 left-2 w-4 h-4 border-t-2 border-l-2 border-hell-gold/50"></div>
-            <div className="absolute top-2 right-2 w-4 h-4 border-t-2 border-r-2 border-hell-gold/50"></div>
-            <div className="absolute bottom-2 left-2 w-4 h-4 border-b-2 border-l-2 border-hell-gold/50"></div>
-            <div className="absolute bottom-2 right-2 w-4 h-4 border-b-2 border-r-2 border-hell-gold/50"></div>
+            <div className="absolute left-2 top-2 h-4 w-4 border-l-2 border-t-2 border-hell-gold/50"></div>
+            <div className="absolute right-2 top-2 h-4 w-4 border-r-2 border-t-2 border-hell-gold/50"></div>
+            <div className="absolute bottom-2 left-2 h-4 w-4 border-b-2 border-l-2 border-hell-gold/50"></div>
+            <div className="absolute bottom-2 right-2 h-4 w-4 border-b-2 border-r-2 border-hell-gold/50"></div>
 
             {/* Title */}
-            <h2 className="font-gothic text-5xl md:text-8xl text-hell-white mb-8 leading-none">
+            <h2 className="mb-8 font-gothic text-5xl leading-none text-hell-white md:text-8xl">
               THE CULT OF <br className="md:hidden" />{" "}
               <span className="text-hell-red">THE BURNED</span>
             </h2>
 
             {/* Copy */}
-            <div className="font-terminal text-lg md:text-xl text-hell-white/70 mb-12 leading-relaxed max-w-3xl mx-auto space-y-6">
+            <div className="mx-auto mb-12 max-w-3xl space-y-6 font-terminal text-lg leading-relaxed text-hell-white/70 md:text-xl">
               <p>
                 Welcome to the only corner of crypto where everyone finally stops pretending. Here,
                 we don’t hide our losses — we frame them as{" "}
-                <span className="text-white font-bold">character development.</span>
+                <span className="font-bold text-white">character development.</span>
               </p>
 
               <p>
-                <span className="text-hell-red font-bold">HELLCOIN</span> is a home for the
+                <span className="font-bold text-hell-red">HELLCOIN</span> is a home for the
                 overleveraged, the rugged, the delusional, and the eternally optimistic. A sanctuary
                 for those who keep making the same mistakes with confidence, pride, and a complete
                 lack of learning curve.
@@ -171,26 +163,26 @@ export const ThePit = () => {
                 of doing it all again tomorrow.
               </p>
 
-              <p className="text-white text-2xl font-bold pt-4">
+              <p className="pt-4 text-2xl font-bold text-white">
                 If you’ve been burned, you belong here.
                 <br />
                 If you haven’t, you will.
               </p>
 
-              <p className="text-hell-red/80 text-sm uppercase tracking-widest">
+              <p className="text-sm uppercase tracking-widest text-hell-red/80">
                 Misery needs company. Hellcoin provides it.
               </p>
             </div>
 
             {/* X (Twitter) Button */}
-            <div className="flex justify-center w-full">
+            <div className="flex w-full justify-center">
               <a
                 href={X_LINK}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="group relative inline-flex items-center justify-center gap-3 bg-hell-red/10 border border-hell-red hover:bg-hell-red text-hell-white font-gothic transition-all duration-300 active:scale-95 w-full md:w-auto text-xl md:text-3xl py-3 px-6 md:py-4 md:px-12 shadow-[0_0_20px_rgba(204,0,0,0.2)] hover:shadow-[0_0_30px_rgba(204,0,0,0.6)]"
+                className="group relative inline-flex w-full items-center justify-center gap-3 border border-hell-red bg-hell-red/10 px-6 py-3 font-gothic text-xl text-hell-white shadow-[0_0_20px_rgba(204,0,0,0.2)] transition-all duration-300 hover:bg-hell-red hover:shadow-[0_0_30px_rgba(204,0,0,0.6)] active:scale-95 md:w-auto md:px-12 md:py-4 md:text-3xl"
               >
-                <svg viewBox="0 0 24 24" className="w-5 h-5 md:w-6 md:h-6 fill-current shrink-0">
+                <svg viewBox="0 0 24 24" className="h-5 w-5 shrink-0 fill-current md:h-6 md:w-6">
                   <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
                 </svg>
                 <span className="md:hidden">ENTER</span>
