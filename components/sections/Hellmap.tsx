@@ -33,20 +33,20 @@ export const Hellmap = () => {
   ];
 
   return (
-    <section id="hellmap" className="py-32 bg-hell-black relative">
-      <div className="max-w-4xl mx-auto px-4">
+    <section id="hellmap" className="relative bg-hell-black py-32">
+      <div className="mx-auto max-w-4xl px-4">
         {/* --- HEADER --- */}
-        <div className="flex flex-col items-center gap-2 mb-20">
-          <span className="font-terminal text-hell-gold text-xl tracking-widest uppercase">
+        <div className="mb-20 flex flex-col items-center gap-2">
+          <span className="font-terminal text-xl uppercase tracking-widest text-hell-gold">
             ROADMAP TO RUIN
           </span>
-          <h2 className="font-gothic text-6xl md:text-8xl text-center text-hell-white">
+          <h2 className="text-center font-gothic text-6xl text-hell-white md:text-8xl">
             THE HELLMAP
           </h2>
         </div>
 
         {/* TIMELINE */}
-        <div className="relative border-l-4 border-hell-red/30 ml-4 md:ml-0 space-y-20">
+        <div className="relative ml-4 space-y-20 border-l-4 border-hell-red/30 md:ml-0">
           {phases.map((phase, i) => (
             <motion.div
               key={i}
@@ -56,23 +56,23 @@ export const Hellmap = () => {
               className="relative pl-12 md:pl-24"
             >
               {/* Timeline Marker */}
-              <div className="absolute left-[-10px] top-2 w-6 h-6 bg-hell-black border-4 border-hell-red z-10"></div>
+              <div className="absolute left-[-10px] top-2 z-10 h-6 w-6 border-4 border-hell-red bg-hell-black"></div>
 
               {/* FIX: Standardized Title Size (text-xl md:text-2xl) */}
-              <h3 className="font-terminal font-semibold text-xl md:text-2xl text-hell-gold mb-2">
+              <h3 className="mb-2 font-terminal text-xl font-semibold text-hell-gold md:text-2xl">
                 {phase.title}
               </h3>
 
-              <p className="font-terminal text-xl text-hell-red mb-6">"{phase.sub}"</p>
+              <p className="mb-6 font-terminal text-xl text-hell-red">&ldquo;{phase.sub}&rdquo;</p>
 
               <ul className="space-y-3">
                 {phase.details.map((d, idx) => (
                   <li
                     key={idx}
-                    className="font-terminal text-xl text-hell-white/70 flex items-start gap-3"
+                    className="flex items-start gap-3 font-terminal text-xl text-hell-white/70"
                   >
                     {/* List marker (Red Dot) */}
-                    <div className="w-2 h-2 bg-hell-red mt-2.5 shrink-0"></div>
+                    <div className="mt-2.5 h-2 w-2 shrink-0 bg-hell-red"></div>
                     <span>{d}</span>
                   </li>
                 ))}

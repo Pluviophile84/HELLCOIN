@@ -6,13 +6,37 @@ import { ChevronLeft, ChevronRight } from "lucide-react";
 
 const commandments = [
   { id: "I", title: "BUY THE TOP", text: "Wait for the candle to touch heaven. Then enter hell." },
-  { id: "II", title: "NEVER TAKE PROFITS", text: "Watch $50 become $5,000. Then watch $5,000 become a funny story." },
-  { id: "III", title: "USE 100X LEVERAGE", text: "Why lose over years when you can lose in a single heartbeat?" },
-  { id: "IV", title: "TRUST THE ANIME GIRL", text: "If the founder has a cute profile picture, you must trust them with your life savings." },
-  { id: "V", title: "CLICK EVERY LINK", text: "Security is for cowards. If it says “Claim Airdrop,” connect instantly." },
+  {
+    id: "II",
+    title: "NEVER TAKE PROFITS",
+    text: "Watch $50 become $5,000. Then watch $5,000 become a funny story.",
+  },
+  {
+    id: "III",
+    title: "USE 100X LEVERAGE",
+    text: "Why lose over years when you can lose in a single heartbeat?",
+  },
+  {
+    id: "IV",
+    title: "TRUST THE ANIME GIRL",
+    text: "If the founder has a cute profile picture, you must trust them with your life savings.",
+  },
+  {
+    id: "V",
+    title: "CLICK EVERY LINK",
+    text: "Security is for cowards. If it says “Claim Airdrop,” connect instantly.",
+  },
   { id: "VI", title: "DO ZERO RESEARCH", text: "DYOR is for scholars. You follow vibes." },
-  { id: "VII", title: "PANIC SELL BOTTOM", text: "Buy when you feel euphoric. Sell when you are crying in the shower." },
-  { id: "VIII", title: "MARRY YOUR BAGS", text: "Even if the dev leaves, love never dies. Your portfolio does." },
+  {
+    id: "VII",
+    title: "PANIC SELL BOTTOM",
+    text: "Buy when you feel euphoric. Sell when you are crying in the shower.",
+  },
+  {
+    id: "VIII",
+    title: "MARRY YOUR BAGS",
+    text: "Even if the dev leaves, love never dies. Your portfolio does.",
+  },
   {
     id: "IX",
     title: "BUY EVERY NEW COIN",
@@ -82,7 +106,6 @@ export const Commandments = () => {
     compute();
 
     // fonts can load after first paint, changing height
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const fonts = (document as any).fonts;
     if (fonts?.ready) fonts.ready.then(() => compute()).catch(() => {});
 
@@ -113,14 +136,14 @@ export const Commandments = () => {
   };
 
   return (
-    <section id="commandments" className="py-24 px-4 bg-hell-dark relative">
-      <div className="max-w-7xl mx-auto">
+    <section id="commandments" className="relative bg-hell-dark px-4 py-24">
+      <div className="mx-auto max-w-7xl">
         {/* Header (unchanged) */}
-        <div className="text-center mb-16 flex flex-col items-center gap-2">
-          <span className="font-terminal text-hell-gold text-lg md:text-xl tracking-widest uppercase">
+        <div className="mb-16 flex flex-col items-center gap-2 text-center">
+          <span className="font-terminal text-lg uppercase tracking-widest text-hell-gold md:text-xl">
             LAW OF THE LAND
           </span>
-          <h2 className="font-gothic text-6xl md:text-8xl text-hell-white">
+          <h2 className="font-gothic text-6xl text-hell-white md:text-8xl">
             THE TEN <span className="text-hell-red">COMMANDMENTS</span>
           </h2>
         </div>
@@ -129,34 +152,40 @@ export const Commandments = () => {
             TABLET + PHONE: CAROUSEL (below lg)
            ========================================================= */}
         <div className="lg:hidden">
-          <div className="max-w-3xl mx-auto">
-            <div className="relative bg-hell-black border border-hell-white/10 overflow-hidden">
-              <div className="absolute inset-0 border border-hell-red/10 pointer-events-none" />
+          <div className="mx-auto max-w-3xl">
+            <div className="relative overflow-hidden border border-hell-white/10 bg-hell-black">
+              <div className="pointer-events-none absolute inset-0 border border-hell-red/10" />
 
               {/* Top rail: left numeral + TRUE centered counter (absolute) + right arrows */}
-              <div className="relative flex items-center px-6 py-4 md:px-10 border-b border-hell-white/10 bg-hell-black/40">
+              <div className="relative flex items-center border-b border-hell-white/10 bg-hell-black/40 px-6 py-4 md:px-10">
                 {/* Left: current roman numeral */}
                 <div className="flex items-center">
-                  <span className="font-gothic text-4xl md:text-5xl text-hell-red">{current.id}</span>
+                  <span className="font-gothic text-4xl text-hell-red md:text-5xl">
+                    {current.id}
+                  </span>
                 </div>
 
                 {/* Center: rock-solid counter (cannot shift when left width changes) */}
                 <div className="absolute left-1/2 -translate-x-1/2">
-                  <span className="font-terminal text-sm md:text-base tracking-widest uppercase text-hell-gold whitespace-nowrap">
+                  <span className="whitespace-nowrap font-terminal text-sm uppercase tracking-widest text-hell-gold md:text-base">
                     {/* 5ch covers "VIIII" as well as "VIII" etc */}
-                    <span className="inline-block w-[5ch] text-center tabular-nums">{current.id}</span>
+                    <span className="inline-block w-[5ch] text-center tabular-nums">
+                      {current.id}
+                    </span>
                     <span className="inline-block w-[3ch] text-center">/</span>
-                    <span className="inline-block w-[5ch] text-center tabular-nums">{TOTAL_ROMAN}</span>
+                    <span className="inline-block w-[5ch] text-center tabular-nums">
+                      {TOTAL_ROMAN}
+                    </span>
                   </span>
                 </div>
 
                 {/* Right: arrows (tablet+) */}
-                <div className="ml-auto hidden md:flex items-center gap-2">
+                <div className="ml-auto hidden items-center gap-2 md:flex">
                   <button
                     type="button"
                     onClick={() => paginate(-1)}
                     aria-label="Previous commandment"
-                    className="border border-hell-red/30 bg-hell-black px-3 py-2 text-hell-white hover:border-hell-red hover:text-hell-gold transition-colors"
+                    className="border border-hell-red/30 bg-hell-black px-3 py-2 text-hell-white transition-colors hover:border-hell-red hover:text-hell-gold"
                   >
                     <ChevronLeft size={18} />
                   </button>
@@ -164,7 +193,7 @@ export const Commandments = () => {
                     type="button"
                     onClick={() => paginate(1)}
                     aria-label="Next commandment"
-                    className="border border-hell-red/30 bg-hell-black px-3 py-2 text-hell-white hover:border-hell-red hover:text-hell-gold transition-colors"
+                    className="border border-hell-red/30 bg-hell-black px-3 py-2 text-hell-white transition-colors hover:border-hell-red hover:text-hell-gold"
                   >
                     <ChevronRight size={18} />
                   </button>
@@ -174,22 +203,24 @@ export const Commandments = () => {
               {/* Fixed-height content area (overflow hidden prevents overlap into bottom rail) */}
               <div
                 ref={frameRef}
-                className="px-6 py-10 md:px-10 md:py-14 overflow-hidden"
+                className="overflow-hidden px-6 py-10 md:px-10 md:py-14"
                 style={{ height: fixedHeight || undefined }}
               >
                 {/* Offscreen measurement slides (same width + same typography) */}
                 <div
                   ref={measureRef}
-                  className="absolute -left-[9999px] top-0 opacity-0 pointer-events-none"
+                  className="pointer-events-none absolute -left-[9999px] top-0 opacity-0"
                   aria-hidden="true"
                 >
                   {commandments.map((c) => (
                     <div key={`m-${c.id}`} data-measure-slide="1">
-                      <h3 className="font-terminal text-2xl md:text-4xl uppercase tracking-wide text-hell-gold">
+                      <h3 className="font-terminal text-2xl uppercase tracking-wide text-hell-gold md:text-4xl">
                         {c.title}
                       </h3>
                       <div className="mt-6 border-l-4 border-hell-red pl-5">
-                        <p className="font-terminal text-lg md:text-2xl text-hell-white leading-relaxed">{c.text}</p>
+                        <p className="font-terminal text-lg leading-relaxed text-hell-white md:text-2xl">
+                          {c.text}
+                        </p>
                       </div>
                     </div>
                   ))}
@@ -214,12 +245,12 @@ export const Commandments = () => {
                     className="h-full cursor-grab active:cursor-grabbing"
                     style={{ touchAction: "pan-y" }}
                   >
-                    <h3 className="font-terminal text-2xl md:text-4xl uppercase tracking-wide text-hell-gold">
+                    <h3 className="font-terminal text-2xl uppercase tracking-wide text-hell-gold md:text-4xl">
                       {current.title}
                     </h3>
 
                     <div className="mt-6 border-l-4 border-hell-red pl-5">
-                      <p className="font-terminal text-lg md:text-2xl text-hell-white leading-relaxed">
+                      <p className="font-terminal text-lg leading-relaxed text-hell-white md:text-2xl">
                         {current.text}
                       </p>
                     </div>
@@ -229,15 +260,15 @@ export const Commandments = () => {
 
               {/* Bottom rail: static phrase + dots + mobile arrows */}
               <div className="border-t border-hell-white/10 bg-hell-black/40 px-6 py-4 md:px-10">
-                <div className="font-terminal text-xs md:text-sm tracking-widest uppercase text-hell-white/50 text-center">
+                <div className="text-center font-terminal text-xs uppercase tracking-widest text-hell-white/50 md:text-sm">
                   SWIPE LEFT / RIGHT — OR PRETEND YOU READ IT AND DO IT ANYWAY.
                 </div>
 
-                <div className="mt-3 flex items-center justify-between md:justify-center gap-4">
+                <div className="mt-3 flex items-center justify-between gap-4 md:justify-center">
                   <button
                     type="button"
                     onClick={() => paginate(-1)}
-                    className="md:hidden border border-hell-red/30 bg-hell-black px-3 py-2 text-hell-white hover:border-hell-red hover:text-hell-gold transition-colors"
+                    className="border border-hell-red/30 bg-hell-black px-3 py-2 text-hell-white transition-colors hover:border-hell-red hover:text-hell-gold md:hidden"
                     aria-label="Previous commandment"
                   >
                     <ChevronLeft size={18} />
@@ -251,7 +282,7 @@ export const Commandments = () => {
                         aria-label={`Go to commandment ${c.id}`}
                         onClick={() => setIdx(([curr]) => [i, i > curr ? 1 : -1])}
                         className={[
-                          "w-3 h-3 border border-hell-red/40 transition-colors",
+                          "h-3 w-3 border border-hell-red/40 transition-colors",
                           i === idx ? "bg-hell-red" : "bg-transparent",
                         ].join(" ")}
                       />
@@ -261,7 +292,7 @@ export const Commandments = () => {
                   <button
                     type="button"
                     onClick={() => paginate(1)}
-                    className="md:hidden border border-hell-red/30 bg-hell-black px-3 py-2 text-hell-white hover:border-hell-red hover:text-hell-gold transition-colors"
+                    className="border border-hell-red/30 bg-hell-black px-3 py-2 text-hell-white transition-colors hover:border-hell-red hover:text-hell-gold md:hidden"
                     aria-label="Next commandment"
                   >
                     <ChevronRight size={18} />
@@ -280,7 +311,7 @@ export const Commandments = () => {
           whileInView="visible"
           viewport={{ once: true }}
           variants={{ visible: { transition: { staggerChildren: 0.1 } } }}
-          className="hidden lg:grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6"
+          className="hidden grid-cols-1 gap-6 md:grid-cols-2 lg:grid lg:grid-cols-3 xl:grid-cols-4"
         >
           {commandments.map((c, i) => (
             <motion.div
@@ -289,20 +320,17 @@ export const Commandments = () => {
                 hidden: { opacity: 0, y: 50 },
                 visible: { opacity: 1, y: 0 },
               }}
-              className={`
-                bg-hell-black border border-hell-white/10 p-6 relative group
-                transition-all duration-75 ease-out
-                hover:border-hell-red hover:scale-[1.01]
-                ${i === 0 || i === 9 ? "md:col-span-2" : ""}
-              `}
+              className={`group relative border border-hell-white/10 bg-hell-black p-6 transition-all duration-75 ease-out hover:scale-[1.01] hover:border-hell-red ${i === 0 || i === 9 ? "md:col-span-2" : ""} `}
             >
-              <div className="absolute top-4 right-4 font-gothic text-4xl text-hell-red">{c.id}</div>
+              <div className="absolute right-4 top-4 font-gothic text-4xl text-hell-red">
+                {c.id}
+              </div>
 
-              <h3 className="font-terminal text-xl text-hell-gold mb-3 group-hover:text-hell-red uppercase font-semibold transition-colors duration-75">
+              <h3 className="mb-3 font-terminal text-xl font-semibold uppercase text-hell-gold transition-colors duration-75 group-hover:text-hell-red">
                 {c.title}
               </h3>
 
-              <p className="font-terminal text-lg text-hell-white/70 group-hover:text-hell-white transition-colors duration-75">
+              <p className="font-terminal text-lg text-hell-white/70 transition-colors duration-75 group-hover:text-hell-white">
                 {c.text}
               </p>
             </motion.div>

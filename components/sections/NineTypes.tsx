@@ -62,20 +62,20 @@ const types = [
 
 export const NineTypes = () => {
   return (
-    <section id="nine-types" className="py-32 px-4 bg-hell-black relative">
-      <div className="max-w-6xl mx-auto">
+    <section id="nine-types" className="relative bg-hell-black px-4 py-32">
+      <div className="mx-auto max-w-6xl">
         {/* --- HEADER --- */}
-        <div className="flex flex-col items-center text-center gap-4 mb-20">
-          <span className="font-terminal text-hell-gold text-xl tracking-widest uppercase">
+        <div className="mb-20 flex flex-col items-center gap-4 text-center">
+          <span className="font-terminal text-xl uppercase tracking-widest text-hell-gold">
             CHOOSE YOUR FIGHTER
           </span>
-          <h2 className="font-gothic text-5xl md:text-8xl text-hell-white tracking-wide">
+          <h2 className="font-gothic text-5xl tracking-wide text-hell-white md:text-8xl">
             THE NINE CIRCLES
           </h2>
         </div>
 
         {/* --- GRID --- */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
           {types.map((type, i) => (
             <motion.div
               key={i}
@@ -85,25 +85,25 @@ export const NineTypes = () => {
               transition={{ delay: i * 0.05 }}
               // FIX: Removed Glow. Added sharp border transition.
               // FIX: Background is black, shifts to deep blood red on hover.
-              className="group relative bg-hell-black border border-hell-white/10 p-8 flex flex-col items-center text-center hover:border-hell-red hover:bg-hell-red/10 transition-all duration-200 overflow-hidden"
+              className="group relative flex flex-col items-center overflow-hidden border border-hell-white/10 bg-hell-black p-8 text-center transition-all duration-200 hover:border-hell-red hover:bg-hell-red/10"
             >
               {/* --- BACKGROUND WATERMARK ICON --- */}
               {/* This sits behind the text, huge and subtle, creating a 'Class Emblem' look */}
               <type.icon
                 strokeWidth={1}
-                className="absolute -right-8 -bottom-8 w-40 h-40 text-hell-black/70 group-hover:text-hell-red/10 transition-colors duration-300 opacity-50 rotate-12"
+                className="absolute -bottom-8 -right-8 h-40 w-40 rotate-12 text-hell-black/70 opacity-50 transition-colors duration-300 group-hover:text-hell-red/10"
               />
 
               {/* --- FOREGROUND ICON --- */}
-              <div className="mb-6 p-4 border border-hell-red/20 group-hover:border-hell-red/50 group-hover:bg-hell-red/10 transition-all">
-                <type.icon className="w-8 h-8 text-hell-red" />
+              <div className="mb-6 border border-hell-red/20 p-4 transition-all group-hover:border-hell-red/50 group-hover:bg-hell-red/10">
+                <type.icon className="h-8 w-8 text-hell-red" />
               </div>
 
-              <h3 className="font-terminal font-semibold text-2xl text-hell-gold mb-3 tracking-wide uppercase">
+              <h3 className="mb-3 font-terminal text-2xl font-semibold uppercase tracking-wide text-hell-gold">
                 {type.title}
               </h3>
 
-              <p className="font-terminal text-hell-white/70 text-lg leading-relaxed relative z-10 group-hover:text-hell-white transition-colors">
+              <p className="relative z-10 font-terminal text-lg leading-relaxed text-hell-white/70 transition-colors group-hover:text-hell-white">
                 {type.subline}
               </p>
             </motion.div>

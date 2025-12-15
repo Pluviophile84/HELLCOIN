@@ -2,17 +2,19 @@
 import { motion } from "framer-motion";
 import { useState } from "react";
 import { Copy, Check } from "lucide-react";
+import { CONTRACT_ADDRESS } from "@/lib/constants";
+import { SectionKicker } from "@/components/ui/SectionKicker";
 
 export const Ritual = () => {
   const [copied, setCopied] = useState(false);
-
-  // REPLACE THIS WITH YOUR REAL CONTRACT ADDRESS
-  const CONTRACT_ADDRESS = "0x666...INSERT_REAL_CA_HERE...666";
-
-  const handleCopy = () => {
-    navigator.clipboard.writeText(CONTRACT_ADDRESS);
-    setCopied(true);
-    setTimeout(() => setCopied(false), 2000);
+  const handleCopy = async () => {
+    try {
+      await navigator.clipboard.writeText(CONTRACT_ADDRESS);
+      setCopied(true);
+      window.setTimeout(() => setCopied(false), 2000);
+    } catch {
+      // Clipboard can fail on some browsers/contexts. Keep UX quiet.
+    }
   };
 
   const steps = [
@@ -39,12 +41,12 @@ export const Ritual = () => {
   ];
 
   return (
-    <section id="ritual" className="py-32 bg-hell-black overflow-hidden relative">
+    <section id="ritual" className="relative overflow-hidden bg-hell-black py-32">
       {/* BACKGROUND: THE PENTAGRAM */}
-      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 pointer-events-none select-none z-0">
+      <div className="pointer-events-none absolute left-1/2 top-1/2 z-0 -translate-x-1/2 -translate-y-1/2 select-none">
         <svg
           viewBox="0 0 100 100"
-          className="w-[180vw] h-[180vw] md:w-[1000px] md:h-[1000px] animate-spin-slow text-hell-red"
+          className="h-[180vw] w-[180vw] animate-spin-slow text-hell-red md:h-[1000px] md:w-[1000px]"
           style={{ opacity: 0.05, animationDuration: "60s" }}
         >
           <circle cx="50" cy="50" r="48" fill="none" stroke="currentColor" strokeWidth="2" />
@@ -58,20 +60,18 @@ export const Ritual = () => {
         </svg>
       </div>
 
-      <div className="max-w-6xl mx-auto px-4 relative z-10">
+      <div className="relative z-10 mx-auto max-w-6xl px-4">
         {/* --- HEADER --- */}
-        <div className="text-center mb-24 flex flex-col items-center gap-2">
-          <span className="font-terminal text-hell-gold text-xl md:text-2xl tracking-widest uppercase">
-            INITIATION SEQUENCE
-          </span>
+        <div className="mb-24 flex flex-col items-center gap-2 text-center">
+          <SectionKicker>INITIATION SEQUENCE</SectionKicker>
 
-          <h2 className="font-gothic text-6xl md:text-8xl text-center text-hell-white">
+          <h2 className="text-center font-gothic text-6xl text-hell-white md:text-8xl">
             THE <span className="text-hell-red">RITUAL</span>
           </h2>
         </div>
 
         {/* STEPS GRID */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-12 mb-20">
+        <div className="mb-20 grid grid-cols-1 gap-12 md:grid-cols-2">
           {steps.map((step, i) => (
             <motion.div
               key={i}
@@ -79,18 +79,18 @@ export const Ritual = () => {
               whileInView={{ opacity: 1, x: 0 }}
               viewport={{ once: true }}
               transition={{ delay: i * 0.2 }}
-              className="flex gap-6 items-start group"
+              className="group flex items-start gap-6"
             >
               {/* FIX: Number is now always bright red (text-hell-red) */}
-              <span className="font-gothic text-8xl text-hell-red transition-colors leading-none shrink-0">
+              <span className="shrink-0 font-gothic text-8xl leading-none text-hell-red transition-colors">
                 {step.num}
               </span>
               <div>
                 {/* FIX: Reduced title size (text-xl md:text-2xl) and added group-hover border brightness */}
-                <h3 className="font-terminal text-xl md:text-2xl text-hell-gold mb-2 uppercase font-semibold border-b border-hell-red/30 group-hover:border-hell-red pb-2 inline-block transition-colors duration-300">
+                <h3 className="mb-2 inline-block border-b border-hell-red/30 pb-2 font-terminal text-xl font-semibold uppercase text-hell-gold transition-colors duration-300 group-hover:border-hell-red md:text-2xl">
                   {step.title}
                 </h3>
-                <p className="font-terminal text-xl text-hell-white/70 max-w-sm">{step.text}</p>
+                <p className="max-w-sm font-terminal text-xl text-hell-white/70">{step.text}</p>
               </div>
             </motion.div>
           ))}
@@ -100,20 +100,20 @@ export const Ritual = () => {
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
-          className="max-w-3xl mx-auto"
+          className="mx-auto max-w-3xl"
         >
-          <div className="text-center mb-4">
-            <span className="font-terminal text-hell-red text-xl bg-hell-red/10 px-4 py-1 border border-hell-red/20 animate-pulse">
+          <div className="mb-4 text-center">
+            <span className="animate-pulse border border-hell-red/20 bg-hell-red/10 px-4 py-1 font-terminal text-xl text-hell-red">
               CONTRACT ADDRESS
             </span>
           </div>
-          <div className="bg-hell-black border-2 border-hell-red p-2 md:p-4 flex flex-col md:flex-row items-center gap-4 shadow-[0_0_30px_rgba(204,0,0,0.2)]">
-            <div className="flex-1 w-full bg-hell-dark/50 p-4 border border-hell-white/10 font-terminal text-xl md:text-2xl text-hell-white break-all text-center md:text-left">
+          <div className="flex flex-col items-center gap-4 border-2 border-hell-red bg-hell-black p-2 shadow-[0_0_30px_rgba(204,0,0,0.2)] md:flex-row md:p-4">
+            <div className="w-full flex-1 break-all border border-hell-white/10 bg-hell-dark/50 p-4 text-center font-terminal text-xl text-hell-white md:text-left md:text-2xl">
               {CONTRACT_ADDRESS}
             </div>
             <button
               onClick={handleCopy}
-              className="w-full md:w-auto min-w-[180px] bg-hell-red hover:bg-hell-orange text-white font-bold py-4 px-8 flex items-center justify-center gap-2 transition-all active:scale-95"
+              className="flex w-full min-w-[180px] items-center justify-center gap-2 bg-hell-red px-8 py-4 font-bold text-white transition-all hover:bg-hell-orange active:scale-95 md:w-auto"
             >
               {copied ? <Check size={24} /> : <Copy size={24} />}
               {copied ? "COPIED!" : "COPY CA"}

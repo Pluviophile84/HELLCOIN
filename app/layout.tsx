@@ -13,12 +13,9 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html
-      lang="en"
-      className={`${fontGothic.variable} ${fontTerminal.variable} scroll-smooth`}
-    >
+    <html lang="en" className={`${fontGothic.variable} ${fontTerminal.variable} scroll-smooth`}>
       {/* Default body font becomes Crimson (via font-terminal) so no silent fallback to sans */}
-      <body className="font-terminal bg-hell-black">{children}</body>
+      <body className="bg-hell-black font-terminal">{children}</body>
     </html>
   );
 }

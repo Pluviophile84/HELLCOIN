@@ -1,6 +1,7 @@
 "use client";
 
 import { useCallback, useState } from "react";
+import dynamic from "next/dynamic";
 
 import { Navbar } from "@/components/layout/Navbar";
 import { PaperHandsOverlay } from "@/components/ui/PaperHandsOverlay";
@@ -14,8 +15,18 @@ import { DevilsMath } from "@/components/sections/Math";
 import { Ritual } from "@/components/sections/Ritual";
 import { HallOfPain } from "@/components/sections/HallOfPain";
 import { Hellmap } from "@/components/sections/Hellmap";
-import { ThePit } from "@/components/sections/ThePit";
 import { Footer } from "@/components/sections/Footer";
+
+const ThePitLazy = dynamic(() => import("@/components/sections/ThePit").then((m) => m.ThePit), {
+  ssr: false,
+  loading: () => (
+    <section id="the-pit" className="bg-hell-red py-32">
+      <div className="mx-auto max-w-6xl px-4">
+        <div className="h-[420px] border border-hell-black/40 bg-hell-black/60" />
+      </div>
+    </section>
+  ),
+});
 
 export default function HomeClient() {
   const [paperHands, setPaperHands] = useState(false);
@@ -48,7 +59,7 @@ export default function HomeClient() {
         <Hellmap />
         <HallOfPain />
         <Revelation />
-        <ThePit />
+        <ThePitLazy />
         <Footer />
       </div>
     </main>
