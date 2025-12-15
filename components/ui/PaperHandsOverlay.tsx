@@ -1,7 +1,7 @@
 "use client";
 import { useEffect, useMemo, useState } from "react";
-import { cn } from "../../lib/utils";
-import { lockBodyScroll, unlockBodyScroll } from "../../lib/bodyScrollLock";
+import { cn } from "@/lib/utils";
+import { lockBodyScroll, unlockBodyScroll } from "@/lib/bodyScrollLock";
 import { AlertTriangle } from "lucide-react";
 import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
 
@@ -120,6 +120,9 @@ export const PaperHandsOverlay = ({ isActive, onClose }: PaperHandsProps) => {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
+            role="dialog"
+            aria-modal="true"
+            aria-label="Heaven mode overlay"
             className={cn(
               "fixed inset-0 z-[100] flex flex-col items-center justify-center overflow-hidden p-4 text-center transition-colors duration-200",
               // Instant red flash when burning starts
@@ -229,6 +232,8 @@ export const PaperHandsOverlay = ({ isActive, onClose }: PaperHandsProps) => {
             initial={{ opacity: 0, y: 100 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: 100 }}
+            role="status"
+            aria-live="polite"
             transition={{ duration: reduceMotion ? 0.01 : 0.25 }}
             className="fixed bottom-10 right-4 z-[101] animate-bounce border-4 border-black bg-hell-red p-6 font-terminal text-xl text-hell-white shadow-[10px_10px_0px_#000] motion-reduce:animate-none md:right-10"
           >
