@@ -3,7 +3,7 @@ import { useEffect, useMemo, useState } from "react";
 import { cn } from "../../lib/utils";
 import { lockBodyScroll, unlockBodyScroll } from "../../lib/bodyScrollLock";
 import { AlertTriangle } from "lucide-react";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
 
 interface PaperHandsProps {
   isActive: boolean;
@@ -15,36 +15,47 @@ type Phase = "idle" | "heaven" | "burning" | "reality";
 export const PaperHandsOverlay = ({ isActive, onClose }: PaperHandsProps) => {
   const [phase, setPhase] = useState<Phase>("idle");
   const [progress, setProgress] = useState(0);
+  const reduceMotion = useReducedMotion();
+  const [isSmallScreen, setIsSmallScreen] = useState(false);
 
-  // Generate MORE flame particles for intensity (50 flames)
-  const flames = useMemo(
-    () =>
-      Array.from({ length: 50 }).map((_, i) => ({
-        id: i,
-        left: `${Math.random() * 100}%`,
-        delay: Math.random() * 0.5, // Start quickly
-        duration: 0.5 + Math.random() * 1.5, // Faster movement
-        size: 40 + Math.random() * 60, // Bigger flames
-      })),
-    []
-  );
+  // Detect small screens once (and on resize) so we can avoid melting phones.
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    const mq = window.matchMedia("(max-width: 640px)");
+    const update = () => setIsSmallScreen(mq.matches);
+    update();
+    mq.addEventListener?.("change", update);
+    return () => mq.removeEventListener?.("change", update);
+  }, []);
+
+  // Generate flame particles (memoized). We scale down on small screens and respect reduced-motion.
+  const flameCount = reduceMotion ? 0 : isSmallScreen ? 24 : 50;
+  const flames = useMemo(() => {
+    return Array.from({ length: flameCount }).map((_, i) => ({
+      id: i,
+      left: `${Math.random() * 100}%`,
+      delay: Math.random() * 0.5, // Start quickly
+      duration: 0.5 + Math.random() * 1.5, // Faster movement
+      size: 40 + Math.random() * 60, // Bigger flames
+    }));
+  }, [flameCount]);
 
   // --- SCROLL LOCK EFFECT ---
-  // Prevents the background website from scrolling ONLY during the immersive phases
+  // Prevents the background website from scrolling ONLY during the immersive phases.
+  // Uses a shared keyed lock so it won't fight other features (e.g. mobile menu).
   useEffect(() => {
-  const shouldLock = isActive || phase === "heaven" || phase === "burning";
+    const shouldLock = isActive || phase === "heaven" || phase === "burning";
 
-  if (shouldLock) {
-    lockBodyScroll("overlay:paperhands");
-  } else {
-    unlockBodyScroll("overlay:paperhands");
-  }
+    if (shouldLock) {
+      lockBodyScroll("overlay:paperhands");
+    } else {
+      unlockBodyScroll("overlay:paperhands");
+    }
 
-  return () => {
-    unlockBodyScroll("overlay:paperhands");
-  };
-}, [isActive, phase]);
-
+    return () => {
+      unlockBodyScroll("overlay:paperhands");
+    };
+  }, [isActive, phase]);
 
   // Handle the main sequence (Heaven -> Burning -> Reality)
   useEffect(() => {
@@ -119,12 +130,16 @@ export const PaperHandsOverlay = ({ isActive, onClose }: PaperHandsProps) => {
             {phase === "heaven" && (
               <motion.div
                 key="heaven-content"
-                exit={{ opacity: 0, scale: 1.5, filter: "blur(20px)" }} // Explodes out
-                transition={{ duration: 0.5 }}
+                exit={
+                  reduceMotion
+                    ? { opacity: 0 }
+                    : ({ opacity: 0, scale: 1.5, filter: "blur(20px)" } as any)
+                } // Explodes out (unless reduced-motion)
+                transition={{ duration: reduceMotion ? 0.01 : 0.5 }}
                 className="flex flex-col items-center relative z-20 w-full max-w-lg"
               >
                 {/* FIX: Smaller Emoji size for mobile (5xl vs 8xl) */}
-                <div className="animate-bounce mb-6 text-5xl md:text-8xl">🦄</div>
+                <div className="animate-bounce motion-reduce:animate-none mb-6 text-5xl md:text-8xl">🦄</div>
                 
                 {/* FIX: Smaller Title (2xl vs 5xl) */}
                 <h1 className="font-sans font-black text-2xl md:text-5xl mb-4 leading-tight">
@@ -154,7 +169,8 @@ export const PaperHandsOverlay = ({ isActive, onClose }: PaperHandsProps) => {
               <motion.div
                 key="burning-content"
                 initial={{ opacity: 0, scale: 0.8 }}
-                animate={{ opacity: 1, scale: 1.1 }}
+                animate={{ opacity: 1, scale: reduceMotion ? 1 : 1.1 }}
+                transition={{ duration: reduceMotion ? 0.01 : 0.4 }}
                 className="relative z-30 flex flex-col items-center w-full px-2"
               >
                 {/* FIX: Smaller Title on Mobile (4xl vs 9xl) */}
@@ -209,7 +225,8 @@ export const PaperHandsOverlay = ({ isActive, onClose }: PaperHandsProps) => {
             initial={{ opacity: 0, y: 100 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: 100 }}
-            className="fixed bottom-10 right-4 md:right-10 bg-hell-red text-hell-white font-terminal text-xl p-6 border-4 border-black shadow-[10px_10px_0px_#000] z-[101] animate-bounce"
+            transition={{ duration: reduceMotion ? 0.01 : 0.25 }}
+            className="fixed bottom-10 right-4 md:right-10 bg-hell-red text-hell-white font-terminal text-xl p-6 border-4 border-black shadow-[10px_10px_0px_#000] z-[101] animate-bounce motion-reduce:animate-none"
           >
             <div className="flex items-center gap-4">
               <AlertTriangle size={32} className="text-yellow-400" />
