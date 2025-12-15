@@ -147,7 +147,7 @@ export const HallOfPain = () => {
       <div className="max-w-6xl mx-auto px-4 mb-12">
         {/* --- HEADER --- */}
         <div className="flex flex-col items-center text-center gap-2 mb-12">
-          <span className="font-terminal text-[#ffae00] text-xl md:text-2xl tracking-widest uppercase">
+          <span className="font-terminal text-hell-gold text-xl md:text-2xl tracking-widest uppercase">
             PROOF OF SUFFERING
           </span>
           <h2 className="font-gothic text-6xl md:text-8xl text-hell-white">
@@ -162,7 +162,7 @@ export const HallOfPain = () => {
             className={`flex items-center gap-2 px-4 py-2 border ${
               filter === "latest"
                 ? "border-hell-red text-hell-red bg-hell-red/10"
-                : "border-gray-800 text-gray-500 hover:text-gray-300"
+                : "border-hell-white/10 text-hell-white/50 hover:text-hell-white"
             }`}
           >
             <ArrowUpDown size={16} /> LATEST
@@ -172,7 +172,7 @@ export const HallOfPain = () => {
             className={`flex items-center gap-2 px-4 py-2 border ${
               filter === "top"
                 ? "border-hell-red text-hell-red bg-hell-red/10"
-                : "border-gray-800 text-gray-500 hover:text-gray-300"
+                : "border-hell-white/10 text-hell-white/50 hover:text-hell-white"
             }`}
           >
             <Filter size={16} /> MOST RESPECTS
@@ -180,9 +180,9 @@ export const HallOfPain = () => {
         </div>
 
         {/* --- THE ARCHIVES BOX --- */}
-        <div className="border border-gray-800 bg-hell-black">
+        <div className="border border-hell-white/10 bg-hell-black">
           {/* Table Headers */}
-          <div className="grid grid-cols-12 gap-4 px-6 py-3 text-[#ffae00] font-terminal text-sm tracking-widest uppercase border-b border-gray-800 bg-[#0a0a0a]">
+          <div className="grid grid-cols-12 gap-4 px-6 py-3 text-hell-gold font-terminal text-sm tracking-widest uppercase border-b border-hell-white/10 bg-hell-dark">
             <div className="col-span-3 md:col-span-2">ID</div>
             <div className="col-span-6 md:col-span-8">Identity</div>
             <div className="col-span-3 md:col-span-2 text-right">Loss</div>
@@ -191,7 +191,7 @@ export const HallOfPain = () => {
           {/* --- SCROLLABLE LIST --- */}
           {/* FIX: Added scroll lock logic. 'overflow-hidden' by default, 'overflow-y-auto' on click. */}
           <div
-            className={`h-[400px] scrollbar-thin scrollbar-thumb-hell-red/30 scrollbar-track-black transition-all ${
+            className={`h-[400px] scrollbar-thin scrollbar-thumb-hell-red/30 scrollbar-track-hell-black transition-all ${
               isScrollable ? "overflow-y-auto" : "overflow-hidden"
             }`}
             onClick={() => setIsScrollable(true)} // Unlock on click
@@ -205,8 +205,8 @@ export const HallOfPain = () => {
               return (
                 <div
                   key={sinner.id}
-                  className={`border-b border-gray-900 transition-colors duration-200 ${
-                    isOpen ? "bg-[#1a0505]" : "hover:bg-gray-900/30"
+                  className={`border-b border-hell-white/5 transition-colors duration-200 ${
+                    isOpen ? "bg-hell-red/10" : "hover:bg-hell-black/30"
                   }`}
                 >
                   {/* Clickable Header Row */}
@@ -217,10 +217,10 @@ export const HallOfPain = () => {
                     <div className="col-span-3 md:col-span-2 font-terminal text-hell-red text-lg font-bold">
                       {sinner.id}
                     </div>
-                    <div className="col-span-6 md:col-span-8 font-gothic text-xl md:text-2xl text-gray-300 truncate group-hover:text-white transition-colors">
+                    <div className="col-span-6 md:col-span-8 font-gothic text-xl md:text-2xl text-hell-white truncate group-hover:text-white transition-colors">
                       {sinner.name}
                     </div>
-                    <div className="col-span-3 md:col-span-2 text-right font-terminal text-gray-400">
+                    <div className="col-span-3 md:col-span-2 text-right font-terminal text-hell-white/70">
                       {sinner.pnl}
                     </div>
                   </div>
@@ -238,7 +238,7 @@ export const HallOfPain = () => {
                         <div className="px-4 pb-6 md:px-6 md:pb-6">
                           <div className="border-t border-hell-red/10 pt-4 mt-2 grid grid-cols-1 md:grid-cols-12 gap-6">
                             <div className="md:col-span-9">
-                              <p className="font-terminal text-lg text-gray-400 italic leading-relaxed">
+                              <p className="font-terminal text-lg text-hell-white/70 italic leading-relaxed">
                                 "{sinner.quote}"
                               </p>
                             </div>
@@ -255,7 +255,7 @@ export const HallOfPain = () => {
                                    ${
                                      isPaid
                                        ? "bg-hell-red/10 border-hell-red text-hell-red cursor-default"
-                                       : "bg-white text-black border-white hover:bg-gray-300"
+                                       : "bg-hell-white text-hell-black border-hell-white hover:bg-hell-white/80"
                                    }
                                  `}
                               >
@@ -280,7 +280,7 @@ export const HallOfPain = () => {
       <div className="max-w-2xl mx-auto mt-6 px-4 text-center">
         <button
           onClick={handleConfess}
-          className="group relative inline-flex items-center gap-2 px-8 py-3 bg-black border-2 border-hell-red text-hell-red font-gothic text-2xl hover:bg-hell-red hover:text-white transition-all active:scale-95"
+          className="group relative inline-flex items-center gap-2 px-8 py-3 bg-hell-black border-2 border-hell-red text-hell-red font-gothic text-2xl hover:bg-hell-red hover:text-white transition-all active:scale-95"
         >
           <AlertTriangle size={24} />
           CONFESS YOUR LOSSES
@@ -293,10 +293,10 @@ export const HallOfPain = () => {
               initial={{ opacity: 0, y: 100 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: 100 }}
-              className="fixed bottom-10 right-4 md:right-10 bg-hell-red text-hell-white font-terminal text-xl p-6 border-4 border-black shadow-[10px_10px_0px_#000] z-[101] animate-bounce max-w-sm md:max-w-md text-left"
+              className="fixed bottom-10 right-4 md:right-10 bg-hell-red text-hell-white font-terminal text-xl p-6 border-4 border-hell-black shadow-[10px_10px_0px_#000] z-[101] animate-bounce max-w-sm md:max-w-md text-left"
             >
               <div className="flex items-start gap-4">
-                <AlertTriangle size={32} className="text-yellow-400 shrink-0 mt-1" />
+                <AlertTriangle size={32} className="text-hell-gold shrink-0 mt-1" />
                 <div>
                   <strong className="block text-2xl font-gothic mb-1">NICE TRY.</strong>
                   {prankError}

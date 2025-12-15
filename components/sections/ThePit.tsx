@@ -60,7 +60,7 @@ export const ThePit = () => {
   const wordClasses = (w: string) => {
     const isLong = w.length >= 10 || w.includes(" ");
     return [
-      "font-gothic font-bold text-black/30 leading-none tracking-tight text-center max-w-full",
+      "font-gothic font-bold text-hell-black/30 leading-none tracking-tight text-center max-w-full",
       isLong
         ? "whitespace-normal px-1 max-w-[15ch] text-[clamp(1.25rem,2.0vw,2.4rem)]"
         : "whitespace-nowrap text-[clamp(1.6rem,2.8vw,3.6rem)]",
@@ -113,7 +113,7 @@ export const ThePit = () => {
       <div className="relative z-10 flex flex-col items-center max-w-4xl w-full px-4">
         {/* Header Label */}
         <div className="mb-12">
-          <span className="font-terminal text-[#ffae00] text-xl md:text-2xl tracking-widest uppercase bg-black px-4 py-1 border border-[#ffae00]/30 shadow-[4px_4px_0px_rgba(0,0,0,0.5)]">
+          <span className="font-terminal text-hell-gold text-xl md:text-2xl tracking-widest uppercase bg-hell-black px-4 py-1 border border-hell-gold/30 shadow-[4px_4px_0px_rgba(0,0,0,0.5)]">
             THE FINAL CIRCLE
           </span>
         </div>
@@ -124,12 +124,12 @@ export const ThePit = () => {
           <div className="absolute inset-0 border border-hell-red/50 pointer-events-none"></div>
 
           {/* 2. Inner Content Area */}
-          <div className="bg-black/90 p-8 md:p-16 text-center border border-gray-800 backdrop-blur-md relative overflow-hidden">
+          <div className="bg-hell-black/90 p-8 md:p-16 text-center border border-hell-white/10 backdrop-blur-md relative overflow-hidden">
             {/* Medieval Corner Accents */}
-            <div className="absolute top-2 left-2 w-4 h-4 border-t-2 border-l-2 border-[#ffae00]/50"></div>
-            <div className="absolute top-2 right-2 w-4 h-4 border-t-2 border-r-2 border-[#ffae00]/50"></div>
-            <div className="absolute bottom-2 left-2 w-4 h-4 border-b-2 border-l-2 border-[#ffae00]/50"></div>
-            <div className="absolute bottom-2 right-2 w-4 h-4 border-b-2 border-r-2 border-[#ffae00]/50"></div>
+            <div className="absolute top-2 left-2 w-4 h-4 border-t-2 border-l-2 border-hell-gold/50"></div>
+            <div className="absolute top-2 right-2 w-4 h-4 border-t-2 border-r-2 border-hell-gold/50"></div>
+            <div className="absolute bottom-2 left-2 w-4 h-4 border-b-2 border-l-2 border-hell-gold/50"></div>
+            <div className="absolute bottom-2 right-2 w-4 h-4 border-b-2 border-r-2 border-hell-gold/50"></div>
 
             {/* Title */}
             <h2 className="font-gothic text-5xl md:text-8xl text-hell-white mb-8 leading-none">
@@ -138,7 +138,7 @@ export const ThePit = () => {
             </h2>
 
             {/* Copy */}
-            <div className="font-terminal text-lg md:text-xl text-gray-400 mb-12 leading-relaxed max-w-3xl mx-auto space-y-6">
+            <div className="font-terminal text-lg md:text-xl text-hell-white/70 mb-12 leading-relaxed max-w-3xl mx-auto space-y-6">
               <p>
                 Welcome to the only corner of crypto where everyone finally stops pretending. Here,
                 we don’t hide our losses — we frame them as{" "}
@@ -152,7 +152,7 @@ export const ThePit = () => {
                 lack of learning curve.
               </p>
 
-              <p className="border-l-2 border-[#ffae00] pl-4 italic text-gray-300">
+              <p className="border-l-2 border-hell-gold pl-4 italic text-hell-white">
                 We don’t judge. We recognize the pattern. We’ve lived the pattern.
               </p>
 

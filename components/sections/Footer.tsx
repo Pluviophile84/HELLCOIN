@@ -4,7 +4,7 @@ export const Footer = () => {
   const currentYear = new Date().getFullYear();
 
   return (
-    <footer className="bg-black border-t border-hell-red/20 pt-24 pb-12 relative overflow-hidden">
+    <footer className="bg-hell-black border-t border-hell-red/20 pt-24 pb-12 relative overflow-hidden">
       
       {/* Background Ambience */}
       <div className="absolute top-0 left-0 w-full h-full bg-[radial-gradient(circle_at_top,_var(--tw-gradient-stops))] from-hell-red/5 to-transparent pointer-events-none"></div>
@@ -25,7 +25,7 @@ export const Footer = () => {
                 HELLCOIN
               </span>
             </div>
-            <p className="font-terminal text-gray-400 max-w-sm text-lg leading-relaxed">
+            <p className="font-terminal text-hell-white/70 max-w-sm text-lg leading-relaxed">
               The final destination for the rekt. <br/>
               Born in the red. Forged by regret.
             </p>
@@ -37,22 +37,22 @@ export const Footer = () => {
             
             {/* Column 1 */}
             <div className="flex flex-col gap-4">
-              <span className="text-[#ffae00] text-sm uppercase tracking-widest mb-2 font-bold">
+              <span className="text-hell-gold text-sm uppercase tracking-widest mb-2 font-bold">
                 DIRECTORY
               </span>
-              <a href="#genesis" className="text-gray-400 hover:text-hell-red transition-colors">GENESIS</a>
-              <a href="#revelation" className="text-gray-400 hover:text-hell-red transition-colors">TRUTH</a>
-              <a href="#the-pit" className="text-gray-400 hover:text-hell-red transition-colors">THE PIT</a>
+              <a href="#genesis" className="text-hell-white/70 hover:text-hell-red transition-colors">GENESIS</a>
+              <a href="#revelation" className="text-hell-white/70 hover:text-hell-red transition-colors">TRUTH</a>
+              <a href="#the-pit" className="text-hell-white/70 hover:text-hell-red transition-colors">THE PIT</a>
             </div>
 
             {/* Column 2 */}
             <div className="flex flex-col gap-4">
-              <span className="text-[#ffae00] text-sm uppercase tracking-widest mb-2 font-bold">
+              <span className="text-hell-gold text-sm uppercase tracking-widest mb-2 font-bold">
                 PROTOCOL
               </span>
-              <a href="https://x.com" target="_blank" rel="noopener noreferrer" className="text-gray-400 hover:text-hell-red transition-colors">TWITTER (X)</a>
-              <a href="#" className="text-gray-400 hover:text-hell-red transition-colors">DEXSCREENER</a>
-              <a href="#" className="text-gray-400 hover:text-hell-red transition-colors">CONTRACT</a>
+              <a href="https://x.com" target="_blank" rel="noopener noreferrer" className="text-hell-white/70 hover:text-hell-red transition-colors">TWITTER (X)</a>
+              <a href="#" className="text-hell-white/70 hover:text-hell-red transition-colors">DEXSCREENER</a>
+              <a href="#" className="text-hell-white/70 hover:text-hell-red transition-colors">CONTRACT</a>
             </div>
 
           </div>
@@ -60,10 +60,10 @@ export const Footer = () => {
 
         {/* --- BOTTOM ROW: THE DISCLAIMER --- */}
         {/* FIX: Changed 'md:flex-row' to 'lg:flex-row' here as well for consistency */}
-        <div className="border-t border-gray-900 pt-8 flex flex-col lg:flex-row justify-between items-center lg:items-end gap-8 text-center lg:text-left">
+        <div className="border-t border-hell-white/5 pt-8 flex flex-col lg:flex-row justify-between items-center lg:items-end gap-8 text-center lg:text-left">
           
           {/* Legal Text */}
-          <div className="font-terminal text-gray-500 text-sm max-w-2xl leading-relaxed">
+          <div className="font-terminal text-hell-white/50 text-sm max-w-2xl leading-relaxed">
             <p className="mb-2">
               <span className="text-hell-red font-bold">DISCLAIMER:</span> $666 is a useless memecoin with no intrinsic value and no expectation of financial return. There is no roadmap, no team, and no utility. 
             </p>
@@ -74,7 +74,7 @@ export const Footer = () => {
 
           {/* Copyright */}
           {/* FIX: Centered on Tablet, Right-aligned on Desktop */}
-          <div className="font-terminal text-gray-600 text-sm text-center lg:text-right whitespace-nowrap">
+          <div className="font-terminal text-hell-white/40 text-sm text-center lg:text-right whitespace-nowrap">
             <p>© {currentYear} HELLCOIN. ALL RIGHTS BURNED.</p>
           </div>
 

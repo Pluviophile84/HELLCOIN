@@ -61,7 +61,7 @@ export const Ritual = () => {
       <div className="max-w-6xl mx-auto px-4 relative z-10">
         {/* --- HEADER --- */}
         <div className="text-center mb-24 flex flex-col items-center gap-2">
-          <span className="font-terminal text-[#ffae00] text-xl md:text-2xl tracking-widest uppercase">
+          <span className="font-terminal text-hell-gold text-xl md:text-2xl tracking-widest uppercase">
             INITIATION SEQUENCE
           </span>
 
@@ -90,7 +90,7 @@ export const Ritual = () => {
                 <h3 className="font-terminal text-xl md:text-2xl text-hell-gold mb-2 uppercase font-semibold border-b border-hell-red/30 group-hover:border-hell-red pb-2 inline-block transition-colors duration-300">
                   {step.title}
                 </h3>
-                <p className="font-terminal text-xl text-gray-400 max-w-sm">{step.text}</p>
+                <p className="font-terminal text-xl text-hell-white/70 max-w-sm">{step.text}</p>
               </div>
             </motion.div>
           ))}
@@ -107,8 +107,8 @@ export const Ritual = () => {
               CONTRACT ADDRESS
             </span>
           </div>
-          <div className="bg-black border-2 border-hell-red p-2 md:p-4 flex flex-col md:flex-row items-center gap-4 shadow-[0_0_30px_rgba(204,0,0,0.2)]">
-            <div className="flex-1 w-full bg-hell-dark/50 p-4 border border-gray-800 font-terminal text-xl md:text-2xl text-gray-300 break-all text-center md:text-left">
+          <div className="bg-hell-black border-2 border-hell-red p-2 md:p-4 flex flex-col md:flex-row items-center gap-4 shadow-[0_0_30px_rgba(204,0,0,0.2)]">
+            <div className="flex-1 w-full bg-hell-dark/50 p-4 border border-hell-white/10 font-terminal text-xl md:text-2xl text-hell-white break-all text-center md:text-left">
               {CONTRACT_ADDRESS}
             </div>
             <button

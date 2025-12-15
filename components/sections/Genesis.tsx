@@ -41,7 +41,7 @@ export const Genesis = () => {
           className="flex flex-col items-center text-center gap-2 mb-16"
         >
           {/* Clean, Elegant Sub-line (No slashes, Regular weight) */}
-          <span className="font-terminal text-[#ffae00] text-xl tracking-widest uppercase">
+          <span className="font-terminal text-hell-gold text-xl tracking-widest uppercase">
             GENESIS BLOCK 001
           </span>
           
@@ -62,7 +62,7 @@ export const Genesis = () => {
               transition={{ duration: 0.8, delay: i * 0.2 }}
               className={`
                 font-terminal text-xl md:text-3xl leading-relaxed border-l-4 pl-6
-                ${para.highlight ? 'text-hell-red border-hell-red font-bold' : 'text-gray-400 border-hell-dark'}
+                ${para.highlight ? 'text-hell-red border-hell-red font-bold' : 'text-hell-white/70 border-hell-dark'}
               `}
             >
               {para.text}

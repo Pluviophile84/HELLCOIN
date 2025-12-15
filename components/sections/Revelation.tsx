@@ -15,14 +15,14 @@ export const Revelation = () => {
           className="absolute inset-0 w-full h-full object-cover opacity-50 grayscale group-hover:grayscale-0 transition-all duration-700 transform group-hover:scale-110"
         />
         {/* Heavy Overlay for Text Readability */}
-        <div className="absolute inset-0 bg-black/80"></div>
+        <div className="absolute inset-0 bg-hell-black/80"></div>
 
         <div className="relative z-10 text-center w-full max-w-md">
           
           {/* HEADER MATCHING GENESIS STYLE */}
           <div className="mb-6 flex flex-col items-center gap-2">
             {/* SUB-LINE: Full Brightness Gold */}
-            <span className="font-terminal text-[#ffae00] text-lg md:text-xl tracking-widest uppercase">
+            <span className="font-terminal text-hell-gold text-lg md:text-xl tracking-widest uppercase">
               DECEPTION DETECTED
             </span>
             {/* TITLE: Full Brightness White/Red */}
@@ -36,7 +36,7 @@ export const Revelation = () => {
           </div>
           
           {/* The List of Lies - High Visibility (Gray-300) */}
-          <div className="font-terminal text-lg md:text-2xl text-gray-300 space-y-3 leading-relaxed">
+          <div className="font-terminal text-lg md:text-2xl text-hell-white space-y-3 leading-relaxed">
             <p>"Utility." "Roadmaps." "Communities."</p>
             <p>“Dev is doxxed.”</p>
             <p>“Influencer-backed.”</p>
@@ -46,8 +46,8 @@ export const Revelation = () => {
             <p>“Memecoins don’t rug — they ‘restart.’”</p>
           </div>
 
-          <div className="mt-8 border-t border-gray-800 pt-6">
-            <p className="font-terminal text-gray-200 text-lg">
+          <div className="mt-8 border-t border-hell-white/10 pt-6">
+            <p className="font-terminal text-hell-white text-lg">
               Every illusion needed to convert <br/>
               <span className="text-hell-red">hope into fertilizer.</span>
             </p>
@@ -65,7 +65,7 @@ export const Revelation = () => {
         >
           {/* HEADER - UPDATED ALIGNMENT (Centered) */}
           <div className="mb-8 flex flex-col items-center gap-2 text-center">
-            <span className="font-terminal text-[#ffae00] text-lg md:text-xl tracking-widest uppercase">
+            <span className="font-terminal text-hell-gold text-lg md:text-xl tracking-widest uppercase">
                THE TRUTH
             </span>
             <h2 className="font-gothic text-5xl md:text-8xl text-hell-white leading-none">
@@ -74,10 +74,10 @@ export const Revelation = () => {
           </div>
 
           {/* THE MANIFESTO */}
-          <div className="space-y-6 font-terminal text-lg md:text-xl text-gray-300 leading-relaxed">
+          <div className="space-y-6 font-terminal text-lg md:text-xl text-hell-white leading-relaxed">
             
             <p className="border-l-2 border-hell-red pl-4 text-white text-xl md:text-2xl">
-              Crypto is <span className="text-[#ffae00]">revolutionary</span>; degens made it a casino, and bad actors made it a buffet.
+              Crypto is <span className="text-hell-gold">revolutionary</span>; degens made it a casino, and bad actors made it a buffet.
             </p>
 
             <ul className="space-y-4">
@@ -91,7 +91,7 @@ export const Revelation = () => {
               </li>
               <li className="flex gap-3">
                 <span className="text-hell-red">{">"}</span>
-                <span>Utility is optional. <span className="text-[#ffae00]">Delusion is mandatory.</span></span>
+                <span>Utility is optional. <span className="text-hell-gold">Delusion is mandatory.</span></span>
               </li>
               <li className="flex gap-3">
                 <span className="text-hell-red">{">"}</span>
@@ -108,7 +108,7 @@ export const Revelation = () => {
             </ul>
 
             {/* GOLD BOX */}
-            <div className="mt-10 p-6 border border-[#ffae00]/30 bg-[#ffae00]/5 w-full">
+            <div className="mt-10 p-6 border border-hell-gold/30 bg-hell-gold/5 w-full">
               <p className="text-center text-white text-xl md:text-2xl leading-tight">
                 <span className="font-gothic text-hell-red text-3xl md:text-4xl block mb-2">HELLCOIN</span> 
                 is the only project honest enough to admit it — and bold enough to expose it.

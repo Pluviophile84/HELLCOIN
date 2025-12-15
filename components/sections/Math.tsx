@@ -2,11 +2,11 @@
 
 export const DevilsMath = () => {
   return (
-    <section id="math" className="py-24 bg-black font-terminal">
+    <section id="math" className="py-24 bg-hell-black font-terminal">
       <div className="max-w-5xl mx-auto px-4">
         <div className="text-center mb-16 flex flex-col items-center gap-2">
           {/* FIX: Removed font-bold, set to text-xl md:text-2xl */}
-          <span className="font-terminal text-[#ffae00] text-xl md:text-2xl tracking-widest uppercase">
+          <span className="font-terminal text-hell-gold text-xl md:text-2xl tracking-widest uppercase">
             SIN NOMICS DATA
           </span>
           <h2 className="font-gothic text-6xl md:text-8xl text-hell-white">
@@ -48,7 +48,7 @@ export const DevilsMath = () => {
               <div className="text-5xl md:text-7xl text-hell-white mb-2 font-gothic">
                 {item.value}
               </div>
-              <div className="text-gray-500 text-lg border-l-2 border-[#ffae00] pl-3">
+              <div className="text-hell-white/50 text-lg border-l-2 border-hell-gold pl-3">
                 {item.sub}
               </div>
             </div>

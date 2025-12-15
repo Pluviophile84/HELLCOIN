@@ -69,7 +69,7 @@ export const Hero = () => {
         >
           BORN IN THE <span className="text-hell-red">RED.</span>
           <br />
-          FORGED BY <span className="text-[#ffae00]">REGRET.</span>
+          FORGED BY <span className="text-hell-gold">REGRET.</span>
         </motion.h1>
 
         {/* BODY TEXT + PROOF-OF-SUFFERING (CLAMPED) */}
@@ -79,7 +79,7 @@ export const Hero = () => {
           transition={{ delay: 0.5 }}
           className="
             font-terminal 
-            text-gray-300 
+            text-hell-white 
             max-w-4xl md:max-w-5xl 
             mx-auto md:mx-0 
             space-y-2 md:space-y-0
@@ -91,7 +91,7 @@ export const Hero = () => {
             <span
               className="
                 block md:inline 
-                text-[#ffae00] 
+                text-hell-gold 
                 my-2 md:my-0 
                 font-bold md:font-normal
                 text-hero-sub-em
@@ -100,7 +100,7 @@ export const Hero = () => {
               Proof-of-Suffering
             </span>
           </p>
-          <p className="text-gray-300">
+          <p className="text-hell-white">
             the only consensus mechanism traders truly understand.
           </p>
         </motion.div>
@@ -143,10 +143,10 @@ export const Hero = () => {
           <button
             onClick={handleAbandonHope}
             className="
-              text-gray-500 
+              text-hell-white/50 
               font-terminal 
               text-xl md:text-2xl 
-              hover:text-[#ffae00] 
+              hover:text-hell-gold 
               transition-colors 
               flex items-center gap-2 
               group 

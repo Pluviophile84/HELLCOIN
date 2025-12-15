@@ -37,7 +37,7 @@ export const Hellmap = () => {
       <div className="max-w-4xl mx-auto px-4">
         {/* --- HEADER --- */}
         <div className="flex flex-col items-center gap-2 mb-20">
-          <span className="font-terminal text-[#ffae00] text-xl tracking-widest uppercase">
+          <span className="font-terminal text-hell-gold text-xl tracking-widest uppercase">
             ROADMAP TO RUIN
           </span>
           <h2 className="font-gothic text-6xl md:text-8xl text-center text-hell-white">
@@ -59,7 +59,7 @@ export const Hellmap = () => {
               <div className="absolute left-[-10px] top-2 w-6 h-6 bg-hell-black border-4 border-hell-red z-10"></div>
 
               {/* FIX: Standardized Title Size (text-xl md:text-2xl) */}
-              <h3 className="font-terminal font-semibold text-xl md:text-2xl text-[#ffae00] mb-2">
+              <h3 className="font-terminal font-semibold text-xl md:text-2xl text-hell-gold mb-2">
                 {phase.title}
               </h3>
 
@@ -69,7 +69,7 @@ export const Hellmap = () => {
                 {phase.details.map((d, idx) => (
                   <li
                     key={idx}
-                    className="font-terminal text-xl text-gray-400 flex items-start gap-3"
+                    className="font-terminal text-xl text-hell-white/70 flex items-start gap-3"
                   >
                     {/* List marker (Red Dot) */}
                     <div className="w-2 h-2 bg-hell-red mt-2.5 shrink-0"></div>

@@ -66,7 +66,7 @@ export const NineTypes = () => {
       <div className="max-w-6xl mx-auto">
         {/* --- HEADER --- */}
         <div className="flex flex-col items-center text-center gap-4 mb-20">
-          <span className="font-terminal text-[#ffae00] text-xl tracking-widest uppercase">
+          <span className="font-terminal text-hell-gold text-xl tracking-widest uppercase">
             CHOOSE YOUR FIGHTER
           </span>
           <h2 className="font-gothic text-5xl md:text-8xl text-hell-white tracking-wide">
@@ -85,13 +85,13 @@ export const NineTypes = () => {
               transition={{ delay: i * 0.05 }}
               // FIX: Removed Glow. Added sharp border transition.
               // FIX: Background is black, shifts to deep blood red on hover.
-              className="group relative bg-black border border-gray-800 p-8 flex flex-col items-center text-center hover:border-hell-red hover:bg-[#1a0505] transition-all duration-200 overflow-hidden"
+              className="group relative bg-hell-black border border-hell-white/10 p-8 flex flex-col items-center text-center hover:border-hell-red hover:bg-hell-red/10 transition-all duration-200 overflow-hidden"
             >
               {/* --- BACKGROUND WATERMARK ICON --- */}
               {/* This sits behind the text, huge and subtle, creating a 'Class Emblem' look */}
               <type.icon
                 strokeWidth={1}
-                className="absolute -right-8 -bottom-8 w-40 h-40 text-gray-900 group-hover:text-hell-red/10 transition-colors duration-300 opacity-50 rotate-12"
+                className="absolute -right-8 -bottom-8 w-40 h-40 text-hell-black/70 group-hover:text-hell-red/10 transition-colors duration-300 opacity-50 rotate-12"
               />
 
               {/* --- FOREGROUND ICON --- */}
@@ -99,11 +99,11 @@ export const NineTypes = () => {
                 <type.icon className="w-8 h-8 text-hell-red" />
               </div>
 
-              <h3 className="font-terminal font-semibold text-2xl text-[#ffae00] mb-3 tracking-wide uppercase">
+              <h3 className="font-terminal font-semibold text-2xl text-hell-gold mb-3 tracking-wide uppercase">
                 {type.title}
               </h3>
 
-              <p className="font-terminal text-gray-400 text-lg leading-relaxed relative z-10 group-hover:text-gray-200 transition-colors">
+              <p className="font-terminal text-hell-white/70 text-lg leading-relaxed relative z-10 group-hover:text-hell-white transition-colors">
                 {type.subline}
               </p>
             </motion.div>
