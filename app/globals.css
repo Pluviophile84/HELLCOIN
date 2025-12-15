@@ -42,3 +42,21 @@ body {
   -ms-overflow-style: none;
   scrollbar-width: none;
 }
+
+/* Skip link (keyboard accessibility) */
+.skip-link {
+  position: absolute;
+  left: -9999px;
+  top: 12px;
+  z-index: 9999;
+  background: #0a0a0a;
+  color: #ffffff;
+  padding: 10px 14px;
+  border: 2px solid #ff3c00;
+  text-decoration: none;
+  font-family: var(--font-terminal);
+}
+
+.skip-link:focus {
+  left: 12px;
+}

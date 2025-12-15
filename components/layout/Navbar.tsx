@@ -5,8 +5,8 @@ import Image from "next/image";
 import { Menu, X, ChevronDown, ChevronUp } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 
-import { cn } from "../../lib/utils";
-import { lockBodyScroll, unlockBodyScroll } from "../../lib/bodyScrollLock";
+import { cn } from "@/lib/utils";
+import { lockBodyScroll, unlockBodyScroll } from "@/lib/bodyScrollLock";
 import { BUY_LINK } from "@/lib/constants";
 
 type NavItem = {
