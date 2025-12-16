@@ -1,9 +1,9 @@
 "use client";
 
-import Image from "next/image";
-import { useRef } from "react";
 import { motion, useScroll, useTransform } from "framer-motion";
-import { Flame, TrendingDown } from "lucide-react";
+import { useRef } from "react";
+import Image from "next/image";
+import { TrendingDown, Flame } from "lucide-react";
 
 import { BUY_LINK } from "@/lib/constants";
 
@@ -30,6 +30,7 @@ export const Hero = () => {
       ref={ref}
       className="relative flex h-screen w-full items-center justify-center overflow-hidden"
     >
+      {/* BACKGROUND BANNER + OVERLAYS */}
       <div className="absolute inset-0 z-0">
         <Image
           src="/banner.png"
@@ -37,16 +38,19 @@ export const Hero = () => {
           fill
           priority
           sizes="100vw"
+          // On small screens, bias the crop slightly left of center (30%). On md+, keep it anchored left.
           className="object-cover object-[30%_center] opacity-100 md:object-left"
         />
         <div className="absolute inset-0 bg-gradient-to-t from-hell-black via-hell-black/80 to-transparent" />
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-transparent via-hell-black/40 to-hell-black" />
       </div>
 
+      {/* CONTENT */}
       <motion.div
         style={{ y: yText, opacity: opacityText }}
         className="relative z-10 mx-auto flex w-full max-w-[1600px] flex-col items-center px-4 text-center md:items-end md:px-12 md:text-right"
       >
+        {/* MAIN HEADER (CLAMPED) */}
         <motion.h1
           initial={{ scale: 0.9, opacity: 0 }}
           animate={{ scale: 1, opacity: 1 }}
@@ -58,6 +62,7 @@ export const Hero = () => {
           FORGED BY <span className="text-hell-gold">REGRET.</span>
         </motion.h1>
 
+        {/* BODY TEXT + PROOF-OF-SUFFERING (CLAMPED) */}
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
@@ -70,11 +75,10 @@ export const Hero = () => {
               Proof-of-Suffering
             </span>
           </p>
-          <p className="text-hell-white">
-            the only consensus mechanism traders truly understand.
-          </p>
+          <p className="text-hell-white">the only consensus mechanism traders truly understand.</p>
         </motion.div>
 
+        {/* WHEN THE MARKET BURNS (CONTROLLED BREAK + CLAMPED) */}
         <motion.p
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
@@ -85,6 +89,7 @@ export const Hero = () => {
           <span className="block md:ml-2 md:inline">WE TREND</span>
         </motion.p>
 
+        {/* CTAs (BUTTON TEXT NOT CLAMPED) */}
         <motion.div
           initial={{ opacity: 0, y: 50 }}
           animate={{ opacity: 1, y: 0 }}
@@ -114,6 +119,7 @@ export const Hero = () => {
         </motion.div>
       </motion.div>
 
+      {/* BOTTOM FADE INTO PAGE */}
       <div className="absolute bottom-0 z-20 h-32 w-full bg-gradient-to-t from-hell-black to-transparent" />
     </section>
   );
