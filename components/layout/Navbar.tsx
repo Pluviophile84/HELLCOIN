@@ -33,6 +33,19 @@ type NavbarProps = {
 
 const MORE_BUTTON_ID = "navbar-more-button";
 const MORE_MENU_ID = "navbar-more-menu";
+const XL_MEDIA_QUERY = "(min-width: 1280px)"; // Tailwind `xl`
+
+function subscribeMediaQuery(
+  mq: MediaQueryList,
+  handler: (e: MediaQueryListEvent) => void
+): () => void {
+  if (mq.addEventListener) {
+    mq.addEventListener("change", handler);
+    return () => mq.removeEventListener("change", handler);
+  }
+  mq.addListener(handler);
+  return () => mq.removeListener(handler);
+}
 
 export const Navbar = ({ onTriggerPaperHands }: NavbarProps) => {
   const [isScrolled, setIsScrolled] = useState(false);
@@ -42,6 +55,7 @@ export const Navbar = ({ onTriggerPaperHands }: NavbarProps) => {
   const containerRef = useRef<HTMLDivElement | null>(null);
   const ghostRef = useRef<HTMLDivElement | null>(null);
   const moreRef = useRef<HTMLDivElement | null>(null);
+  const moreMeasureRef = useRef<HTMLSpanElement | null>(null);
 
   const hamburgerButtonRef = useRef<HTMLButtonElement | null>(null);
   const mobilePanelRef = useRef<HTMLDivElement | null>(null);
@@ -52,12 +66,40 @@ export const Navbar = ({ onTriggerPaperHands }: NavbarProps) => {
 
   // --- SCROLL SHRINK (desktop only; mobile stays the same) ---
   useEffect(() => {
+    let ticking = false;
+
     const handleScroll = () => {
-      setIsScrolled(window.scrollY > 50);
+      if (ticking) return;
+      ticking = true;
+
+      window.requestAnimationFrame(() => {
+        const next = window.scrollY > 50;
+        setIsScrolled((prev) => (prev === next ? prev : next));
+        ticking = false;
+      });
     };
-    window.addEventListener("scroll", handleScroll);
+
+    window.addEventListener("scroll", handleScroll, { passive: true });
     handleScroll();
     return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
+  // --- CLOSE MENUS ON RESPONSIVE BREAKPOINT CHANGES ---
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    const mq = window.matchMedia(XL_MEDIA_QUERY);
+
+    const sync = () => {
+      if (mq.matches) {
+        setMobileMenuOpen(false);
+      } else {
+        setMoreMenuOpen(false);
+      }
+    };
+
+    sync();
+    const unsubscribe = subscribeMediaQuery(mq, (_e) => sync());
+    return unsubscribe;
   }, []);
 
   // --- BODY LOCK ON MOBILE MENU ---
@@ -67,7 +109,6 @@ export const Navbar = ({ onTriggerPaperHands }: NavbarProps) => {
       wasMobileOpenRef.current = true;
     } else {
       unlockBodyScroll("navbar:mobile-menu");
-      // Restore focus after closing (if it was opened)
       if (wasMobileOpenRef.current) {
         wasMobileOpenRef.current = false;
         hamburgerButtonRef.current?.focus();
@@ -97,7 +138,6 @@ export const Navbar = ({ onTriggerPaperHands }: NavbarProps) => {
   useEffect(() => {
     if (!mobileMenuOpen) return;
 
-    // Defer until after the panel is in the DOM.
     const raf = window.requestAnimationFrame(() => {
       const panel = mobilePanelRef.current;
       const firstLink = panel?.querySelector<HTMLElement>("a[href]");
@@ -110,6 +150,7 @@ export const Navbar = ({ onTriggerPaperHands }: NavbarProps) => {
   const scrollToTop = () => {
     window.scrollTo({ top: 0, behavior: "smooth" });
     setMobileMenuOpen(false);
+    setMoreMenuOpen(false);
   };
 
   const handleNavClick = (e: React.MouseEvent<HTMLAnchorElement>, href: string) => {
@@ -121,6 +162,7 @@ export const Navbar = ({ onTriggerPaperHands }: NavbarProps) => {
     const targetId = href.replace("#", "");
     const elem = document.getElementById(targetId);
     if (elem) {
+      // Revert to original-style landing (no forced block alignment / no scroll-margin offset).
       elem.scrollIntoView({ behavior: "smooth" });
     }
   };
@@ -130,40 +172,62 @@ export const Navbar = ({ onTriggerPaperHands }: NavbarProps) => {
     if (!containerRef.current || !ghostRef.current) return;
 
     const containerWidth = containerRef.current.clientWidth;
-    const moreButtonWidth = 60; // reserve for "MORE"
+    const measuredMore = moreMeasureRef.current?.offsetWidth;
+    const moreButtonWidth = (measuredMore ?? 60) + 8;
+
     let currentWidth = 0;
     let visible = 0;
 
     const ghostChildren = Array.from(ghostRef.current.children) as HTMLElement[];
+    const epsilon = 8;
 
     for (let i = 0; i < ghostChildren.length; i++) {
-      const linkWidth = ghostChildren[i].offsetWidth + 24; // add gap
+      const linkWidth = ghostChildren[i].offsetWidth + 24;
       const reserveMore = i < ghostChildren.length - 1 ? moreButtonWidth : 0;
 
-      if (currentWidth + linkWidth + reserveMore >= containerWidth) {
+      if (currentWidth + linkWidth + reserveMore > containerWidth - epsilon) {
         break;
       }
       currentWidth += linkWidth;
       visible++;
     }
 
-    setVisibleCount(visible);
-    setIsCalculated(true);
+    setVisibleCount((prev) => (prev === visible ? prev : visible));
+    setIsCalculated((prev) => (prev ? prev : true));
   }, []);
 
   useEffect(() => {
+    const rafRef = { current: 0 as number | 0 };
+
     checkOverflow();
+
     const resizeObserver = new ResizeObserver(() => {
-      window.requestAnimationFrame(() => checkOverflow());
+      if (rafRef.current) window.cancelAnimationFrame(rafRef.current);
+      rafRef.current = window.requestAnimationFrame(() => checkOverflow());
     });
+
     if (containerRef.current) {
       resizeObserver.observe(containerRef.current);
     }
-    window.addEventListener("resize", checkOverflow);
 
     return () => {
+      if (rafRef.current) window.cancelAnimationFrame(rafRef.current);
       resizeObserver.disconnect();
-      window.removeEventListener("resize", checkOverflow);
+    };
+  }, [checkOverflow]);
+
+  useEffect(() => {
+    if (typeof document === "undefined") return;
+    const fonts = (document as Document & { fonts?: FontFaceSet }).fonts;
+    if (!fonts?.ready) return;
+    let cancelled = false;
+    fonts.ready
+      .then(() => {
+        if (!cancelled) checkOverflow();
+      })
+      .catch(() => {});
+    return () => {
+      cancelled = true;
     };
   }, [checkOverflow]);
 
@@ -171,24 +235,29 @@ export const Navbar = ({ onTriggerPaperHands }: NavbarProps) => {
   const hiddenLinks = NAV_LINKS_DATA.slice(visibleCount);
   const showMoreButton = hiddenLinks.length > 0;
 
+  useEffect(() => {
+    if (moreMenuOpen && !showMoreButton) setMoreMenuOpen(false);
+  }, [moreMenuOpen, showMoreButton]);
+
   // --- CLOSE MORE ON CLICK OUTSIDE ---
   useEffect(() => {
+    if (!moreMenuOpen) return;
+
     const handleClickOutside = (event: MouseEvent) => {
-      if (moreMenuOpen && moreRef.current && !moreRef.current.contains(event.target as Node)) {
+      if (moreRef.current && !moreRef.current.contains(event.target as Node)) {
         setMoreMenuOpen(false);
       }
     };
+
     document.addEventListener("mousedown", handleClickOutside);
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, [moreMenuOpen]);
 
-  // --- LINK STYLES (base + 20% bigger on xl) ---
   const linkStyles =
     "font-terminal text-[0.95rem] xl:text-[1.25rem] text-hell-white hover:text-hell-gold transition-colors uppercase tracking-widest relative group cursor-pointer font-semibold whitespace-nowrap";
   const linkUnderline =
     "absolute -bottom-1 left-0 w-0 h-0.5 bg-hell-orange transition-all group-hover:w-full";
 
-  // Focus trap for the mobile panel.
   const handleMobileKeyDown = (e: React.KeyboardEvent) => {
     if (e.key !== "Tab") return;
 
@@ -227,7 +296,6 @@ export const Navbar = ({ onTriggerPaperHands }: NavbarProps) => {
         isScrolled ? "py-3 md:py-2" : "py-3 md:py-4"
       )}
     >
-      {/* BACKGROUND PLATE */}
       <div
         className={cn(
           "pointer-events-none absolute inset-0 h-full w-full transition-all duration-300",
@@ -237,9 +305,7 @@ export const Navbar = ({ onTriggerPaperHands }: NavbarProps) => {
         )}
       />
 
-      {/* HEADER CONTENT */}
       <div className="relative z-[100] mx-auto flex w-full max-w-[1920px] items-center justify-between px-4 transition-all duration-300 md:w-[90%] md:px-0 lg:w-[70%]">
-        {/* LOGO */}
         <button
           type="button"
           onClick={scrollToTop}
@@ -259,12 +325,10 @@ export const Navbar = ({ onTriggerPaperHands }: NavbarProps) => {
           </span>
         </button>
 
-        {/* DESKTOP NAV (xl and up) */}
         <div
           ref={containerRef}
           className="relative mx-6 hidden min-w-0 flex-grow items-center justify-center gap-6 px-2 xl:flex"
         >
-          {/* GHOST ROW FOR MEASUREMENT (uses short labels) */}
           <div
             ref={ghostRef}
             className="pointer-events-none invisible absolute left-0 top-0 flex gap-4 xl:gap-6"
@@ -277,7 +341,17 @@ export const Navbar = ({ onTriggerPaperHands }: NavbarProps) => {
             ))}
           </div>
 
-          {/* VISIBLE LINKS */}
+          <span
+            ref={moreMeasureRef}
+            aria-hidden="true"
+            className={cn(
+              linkStyles,
+              "pointer-events-none invisible absolute left-0 top-0 flex items-center gap-1"
+            )}
+          >
+            MORE <ChevronDown size={14} />
+          </span>
+
           <div
             className={cn(
               "flex gap-4 transition-opacity duration-200 xl:gap-6",
@@ -297,7 +371,6 @@ export const Navbar = ({ onTriggerPaperHands }: NavbarProps) => {
             ))}
           </div>
 
-          {/* MORE BUTTON + DROPDOWN (only rendered when needed) */}
           {isCalculated && showMoreButton && (
             <div
               ref={moreRef}
@@ -372,7 +445,6 @@ export const Navbar = ({ onTriggerPaperHands }: NavbarProps) => {
           )}
         </div>
 
-        {/* ACTIONS */}
         <div className="flex shrink-0 items-center gap-2 md:gap-4">
           <button
             type="button"
@@ -384,7 +456,6 @@ export const Navbar = ({ onTriggerPaperHands }: NavbarProps) => {
             <span className="md:hidden">HEAVEN</span>
           </button>
 
-          {/* BUY ONLY IN DESKTOP MODE (xl+) */}
           <a
             href={BUY_LINK}
             target="_blank"
@@ -394,7 +465,6 @@ export const Navbar = ({ onTriggerPaperHands }: NavbarProps) => {
             ACQUIRE $666
           </a>
 
-          {/* HAMBURGER – active below xl only */}
           <button
             ref={hamburgerButtonRef}
             type="button"
@@ -408,7 +478,6 @@ export const Navbar = ({ onTriggerPaperHands }: NavbarProps) => {
         </div>
       </div>
 
-      {/* MOBILE / TABLET MENU (all < xl) */}
       <AnimatePresence>
         {mobileMenuOpen && (
           <motion.div
@@ -433,7 +502,6 @@ export const Navbar = ({ onTriggerPaperHands }: NavbarProps) => {
               exit={{ opacity: 0, y: -12 }}
               transition={{ duration: 0.2, ease: "easeOut" }}
             >
-              {/* TOP DIVIDER + LINKS (full names) */}
               <div className="flex w-full flex-col gap-3 border-t border-hell-white/5 pt-4">
                 {NAV_LINKS_DATA.map((link) => (
                   <a
@@ -447,7 +515,6 @@ export const Navbar = ({ onTriggerPaperHands }: NavbarProps) => {
                 ))}
               </div>
 
-              {/* BOTTOM BUY SECTION */}
               <div className="flex w-full flex-col items-center border-t border-hell-white/5 pt-4">
                 <a
                   href={BUY_LINK}
