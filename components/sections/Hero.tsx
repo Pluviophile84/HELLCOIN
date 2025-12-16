@@ -1,9 +1,9 @@
 "use client";
 
-import { motion, useScroll, useTransform } from "framer-motion";
-import { useRef } from "react";
 import Image from "next/image";
-import { TrendingDown, Flame } from "lucide-react";
+import { useRef } from "react";
+import { motion, useScroll, useTransform } from "framer-motion";
+import { Flame, TrendingDown } from "lucide-react";
 
 import { BUY_LINK } from "@/lib/constants";
 
@@ -21,13 +21,15 @@ export const Hero = () => {
   const handleAbandonHope = () => {
     const genesisSection = document.getElementById("genesis");
     if (genesisSection) {
-      // Revert to original-style landing (no forced block alignment / no scroll-margin offset).
       genesisSection.scrollIntoView({ behavior: "smooth" });
     }
   };
 
   return (
-    <section ref={ref} className="relative flex h-screen w-full items-center justify-center overflow-hidden">
+    <section
+      ref={ref}
+      className="relative flex h-screen w-full items-center justify-center overflow-hidden"
+    >
       <div className="absolute inset-0 z-0">
         <Image
           src="/banner.png"
@@ -68,7 +70,9 @@ export const Hero = () => {
               Proof-of-Suffering
             </span>
           </p>
-          <p className="text-hell-white">the only consensus mechanism traders truly understand.</p>
+          <p className="text-hell-white">
+            the only consensus mechanism traders truly understand.
+          </p>
         </motion.div>
 
         <motion.p
