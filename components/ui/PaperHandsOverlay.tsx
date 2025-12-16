@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { cn } from "@/lib/utils";
 import { lockBodyScroll, unlockBodyScroll } from "@/lib/bodyScrollLock";
 import { AlertTriangle } from "lucide-react";
@@ -18,6 +18,12 @@ export const PaperHandsOverlay = ({ isActive, onClose }: PaperHandsProps) => {
   const reduceMotion = useReducedMotion();
   const [isSmallScreen, setIsSmallScreen] = useState(false);
 
+  // Keep latest phase in a ref so we can safely gate activation without effect re-running on phase changes.
+  const phaseRef = useRef<Phase>("idle");
+  useEffect(() => {
+    phaseRef.current = phase;
+  }, [phase]);
+
   // Detect small screens once (and on resize) so we can avoid melting phones.
   useEffect(() => {
     if (typeof window === "undefined") return;
@@ -28,23 +34,23 @@ export const PaperHandsOverlay = ({ isActive, onClose }: PaperHandsProps) => {
     return () => mq.removeEventListener?.("change", update);
   }, []);
 
-  // Generate flame particles (memoized). We scale down on small screens and respect reduced-motion.
-  const flameCount = reduceMotion ? 0 : isSmallScreen ? 24 : 50;
+  // Generate flame particles (memoized) only when we actually render the burning phase.
+  // We scale down on small screens and respect reduced-motion.
+  const flameCount = phase !== "burning" || reduceMotion ? 0 : isSmallScreen ? 24 : 50;
   const flames = useMemo(() => {
     return Array.from({ length: flameCount }).map((_, i) => ({
       id: i,
       left: `${Math.random() * 100}%`,
-      delay: Math.random() * 0.5, // Start quickly
-      duration: 0.5 + Math.random() * 1.5, // Faster movement
-      size: 40 + Math.random() * 60, // Bigger flames
+      delay: Math.random() * 0.5,
+      duration: 0.5 + Math.random() * 1.5,
+      size: 40 + Math.random() * 60,
     }));
   }, [flameCount]);
 
   // --- SCROLL LOCK EFFECT ---
-  // Prevents the background website from scrolling ONLY during the immersive phases.
-  // Uses a shared keyed lock so it won't fight other features (e.g. mobile menu).
+  // Lock ONLY during immersive fullscreen phases to avoid scrollbar “shake”.
   useEffect(() => {
-    const shouldLock = isActive || phase === "heaven" || phase === "burning";
+    const shouldLock = phase === "heaven" || phase === "burning";
 
     if (shouldLock) {
       lockBodyScroll("overlay:paperhands");
@@ -55,33 +61,35 @@ export const PaperHandsOverlay = ({ isActive, onClose }: PaperHandsProps) => {
     return () => {
       unlockBodyScroll("overlay:paperhands");
     };
-  }, [isActive, phase]);
+  }, [phase]);
 
   // Handle the main sequence (Heaven -> Burning -> Reality)
   useEffect(() => {
     if (!isActive) return;
+
+    // HARD BLOCK: if the snackbar is showing, ignore re-trigger attempts.
+    if (phaseRef.current === "reality") {
+      onClose();
+      return;
+    }
 
     let progressTimer: ReturnType<typeof setTimeout> | undefined;
     let timer1: ReturnType<typeof setTimeout> | undefined;
     let timer2: ReturnType<typeof setTimeout> | undefined;
 
     setPhase("heaven");
-    // 1. Reset progress instantly
     setProgress(0);
 
-    // 2. Start animation after tiny delay to ensure browser sees the 0
     progressTimer = setTimeout(() => setProgress(100), 50);
 
-    // STEP 1: TRANSITION TO BURNING (After 5s)
     timer1 = setTimeout(() => {
       setPhase("burning");
     }, 5000);
 
-    // STEP 2: SHOW REALITY CHECK + CLOSE OVERLAY (After another 4s)
     timer2 = setTimeout(() => {
       setPhase("reality");
       onClose();
-    }, 9000); // 5s + 4s
+    }, 9000);
 
     return () => {
       if (progressTimer) clearTimeout(progressTimer);
@@ -109,7 +117,6 @@ export const PaperHandsOverlay = ({ isActive, onClose }: PaperHandsProps) => {
     }
   }, [phase]);
 
-  // If completely idle, render nothing
   if (phase === "idle" && !isActive) return null;
 
   return (
@@ -125,7 +132,6 @@ export const PaperHandsOverlay = ({ isActive, onClose }: PaperHandsProps) => {
             aria-label="Heaven mode overlay"
             className={cn(
               "fixed inset-0 z-[100] flex flex-col items-center justify-center overflow-hidden p-4 text-center transition-colors duration-200",
-              // Instant red flash when burning starts
               phase === "burning" ? "bg-red-600 text-white" : "bg-pink-100 text-pink-500"
             )}
           >
@@ -137,22 +143,20 @@ export const PaperHandsOverlay = ({ isActive, onClose }: PaperHandsProps) => {
                   reduceMotion
                     ? { opacity: 0 }
                     : ({ opacity: 0, scale: 1.5, filter: "blur(20px)" } as any)
-                } // Explodes out (unless reduced-motion)
+                }
                 transition={{ duration: reduceMotion ? 0.01 : 0.5 }}
                 className="relative z-20 flex w-full max-w-lg flex-col items-center"
               >
-                {/* FIX: Smaller Emoji size for mobile (5xl vs 8xl) */}
-                <div className="mb-6 animate-bounce text-5xl motion-reduce:animate-none md:text-8xl">
+                <div className="mb-6 animate-bounce text-[3.6rem] motion-reduce:animate-none md:text-[7.2rem]">
                   🦄
                 </div>
 
-                {/* FIX: Smaller Title (2xl vs 5xl) */}
                 <h1 className="mb-4 font-sans text-2xl font-black leading-tight md:text-5xl">
                   EVERYTHING IS FINE!
                 </h1>
 
-                {/* FIX: Smaller Body Text (lg vs 2xl) */}
-                <p className="mb-8 px-4 font-sans text-lg font-bold text-pink-400 md:text-2xl">
+                {/* Purple body copy */}
+                <p className="mb-8 px-4 font-sans text-lg font-bold text-purple-500 md:text-2xl">
                   Welcome to the Safe Space! No red candles here! Only vibes! 🚀✨🌈
                 </p>
 
@@ -163,8 +167,9 @@ export const PaperHandsOverlay = ({ isActive, onClose }: PaperHandsProps) => {
                       width: `${progress}%`,
                       transitionDuration: progress === 0 ? "0ms" : "5000ms",
                     }}
-                  ></div>
+                  />
                 </div>
+
                 <p className="font-sans text-sm font-bold text-pink-300">
                   Ignoring reality in 5...
                 </p>
@@ -180,12 +185,10 @@ export const PaperHandsOverlay = ({ isActive, onClose }: PaperHandsProps) => {
                 transition={{ duration: reduceMotion ? 0.01 : 0.4 }}
                 className="relative z-30 flex w-full flex-col items-center px-2"
               >
-                {/* FIX: Smaller Title on Mobile (4xl vs 9xl) */}
                 <h1 className="mb-8 font-sans text-4xl font-black leading-none tracking-tighter text-white drop-shadow-[0_5px_5px_rgba(0,0,0,0.8)] md:text-9xl">
                   REALITY CHECK
                 </h1>
 
-                {/* FIX: Responsive Card Sizing (text-lg vs text-4xl) */}
                 <p className="max-w-full -rotate-2 break-words border-4 border-yellow-300 bg-black px-4 py-2 text-center font-mono text-lg font-bold uppercase text-yellow-300 shadow-xl md:max-w-[90vw] md:px-6 md:text-4xl">
                   WENDY&apos;S IS STILL HIRING
                 </p>
@@ -195,7 +198,7 @@ export const PaperHandsOverlay = ({ isActive, onClose }: PaperHandsProps) => {
             {/* --- FIRE ANIMATION LAYER --- */}
             {phase === "burning" && (
               <div className="pointer-events-none absolute inset-0 z-10 overflow-hidden">
-                <div className="absolute inset-0 bg-gradient-to-t from-red-900 via-red-600 to-orange-500 opacity-90"></div>
+                <div className="absolute inset-0 bg-gradient-to-t from-red-900 via-red-600 to-orange-500 opacity-90" />
 
                 {flames.map((flame) => (
                   <motion.div
