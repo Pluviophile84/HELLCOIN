@@ -71,16 +71,10 @@ export const Footer = () => {
               >
                 TWITTER (X)
               </a>
-              <a
-                href="#"
-                className="text-hell-white/70 transition-colors hover:text-hell-red"
-              >
+              <a href="#" className="text-hell-white/70 transition-colors hover:text-hell-red">
                 DEXSCREENER
               </a>
-              <a
-                href="#"
-                className="text-hell-white/70 transition-colors hover:text-hell-red"
-              >
+              <a href="#" className="text-hell-white/70 transition-colors hover:text-hell-red">
                 CONTRACT
               </a>
             </div>
@@ -93,15 +87,14 @@ export const Footer = () => {
           {/* Legal Text */}
           <div className="max-w-2xl font-terminal text-sm leading-relaxed text-hell-white/50">
             <p className="mb-2">
-              <span className="font-bold text-hell-red">DISCLAIMER:</span> $666
-              is a useless memecoin with no intrinsic value and no expectation
-              of financial return. There is no roadmap, no team, and no utility.
+              <span className="font-bold text-hell-red">DISCLAIMER:</span> $666 is a useless
+              memecoin with no intrinsic value and no expectation of financial return. There is no
+              roadmap, no team, and no utility.
             </p>
             <p>
-              By buying $666, you agree that you are the exit liquidity. If the
-              price goes up, it is luck. If it goes down, it is gravity. Do not
-              email us complaining about your losses; we are busy burning
-              liquidity.
+              By buying $666, you agree that you are the exit liquidity. If the price goes up, it is
+              luck. If it goes down, it is gravity. Do not email us complaining about your losses;
+              we are busy burning liquidity.
             </p>
           </div>
 
