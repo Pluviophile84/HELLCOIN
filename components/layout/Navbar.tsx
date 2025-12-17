@@ -64,7 +64,7 @@ export const Navbar = ({ onTriggerPaperHands }: NavbarProps) => {
   const [visibleCount, setVisibleCount] = useState(NAV_LINKS_DATA.length);
   const [isCalculated, setIsCalculated] = useState(false);
 
-  // --- SCROLL SHRINK (desktop only; mobile stays the same) ---
+  // --- SCROLL SHRINK (rAF throttled) ---
   useEffect(() => {
     let ticking = false;
 
@@ -98,7 +98,7 @@ export const Navbar = ({ onTriggerPaperHands }: NavbarProps) => {
     };
 
     sync();
-    const unsubscribe = subscribeMediaQuery(mq, (_e) => sync());
+    const unsubscribe = subscribeMediaQuery(mq, () => sync());
     return unsubscribe;
   }, []);
 
@@ -162,7 +162,6 @@ export const Navbar = ({ onTriggerPaperHands }: NavbarProps) => {
     const targetId = href.replace("#", "");
     const elem = document.getElementById(targetId);
     if (elem) {
-      // Revert to original-style landing (no forced block alignment / no scroll-margin offset).
       elem.scrollIntoView({ behavior: "smooth" });
     }
   };
@@ -172,22 +171,25 @@ export const Navbar = ({ onTriggerPaperHands }: NavbarProps) => {
     if (!containerRef.current || !ghostRef.current) return;
 
     const containerWidth = containerRef.current.clientWidth;
+
+    // Must match visible/ghost gap-4 (16px)
+    const GAP_PX = 16;
+    const epsilon = 8;
+
     const measuredMore = moreMeasureRef.current?.offsetWidth;
-    const moreButtonWidth = (measuredMore ?? 60) + 8;
+    const moreButtonWidth = (measuredMore ?? 56) + 8;
 
     let currentWidth = 0;
     let visible = 0;
 
     const ghostChildren = Array.from(ghostRef.current.children) as HTMLElement[];
-    const epsilon = 8;
 
     for (let i = 0; i < ghostChildren.length; i++) {
-      const linkWidth = ghostChildren[i].offsetWidth + 24;
+      const linkWidth = ghostChildren[i].offsetWidth + GAP_PX;
       const reserveMore = i < ghostChildren.length - 1 ? moreButtonWidth : 0;
 
-      if (currentWidth + linkWidth + reserveMore > containerWidth - epsilon) {
-        break;
-      }
+      if (currentWidth + linkWidth + reserveMore > containerWidth - epsilon) break;
+
       currentWidth += linkWidth;
       visible++;
     }
@@ -206,9 +208,7 @@ export const Navbar = ({ onTriggerPaperHands }: NavbarProps) => {
       rafRef.current = window.requestAnimationFrame(() => checkOverflow());
     });
 
-    if (containerRef.current) {
-      resizeObserver.observe(containerRef.current);
-    }
+    if (containerRef.current) resizeObserver.observe(containerRef.current);
 
     return () => {
       if (rafRef.current) window.cancelAnimationFrame(rafRef.current);
@@ -220,6 +220,7 @@ export const Navbar = ({ onTriggerPaperHands }: NavbarProps) => {
     if (typeof document === "undefined") return;
     const fonts = (document as Document & { fonts?: FontFaceSet }).fonts;
     if (!fonts?.ready) return;
+
     let cancelled = false;
     fonts.ready
       .then(() => {
@@ -253,10 +254,11 @@ export const Navbar = ({ onTriggerPaperHands }: NavbarProps) => {
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, [moreMenuOpen]);
 
+  // About ~20% smaller than the earlier “big” look (not 50%).
   const linkStyles =
-    "font-terminal text-[0.95rem] xl:text-[1.25rem] text-hell-white hover:text-hell-gold transition-colors uppercase tracking-widest relative group cursor-pointer font-semibold whitespace-nowrap";
+    "font-terminal text-[0.9rem] xl:text-[1.1rem] text-hell-white hover:text-hell-gold transition-colors uppercase tracking-widest relative group cursor-pointer font-semibold whitespace-nowrap";
   const linkUnderline =
-    "absolute -bottom-1 left-0 w-0 h-0.5 bg-hell-orange transition-all group-hover:w-full";
+    "absolute -bottom-1 left-0 h-0.5 w-0 bg-hell-orange transition-all group-hover:w-full";
 
   const handleMobileKeyDown = (e: React.KeyboardEvent) => {
     if (e.key !== "Tab") return;
@@ -305,11 +307,13 @@ export const Navbar = ({ onTriggerPaperHands }: NavbarProps) => {
         )}
       />
 
-      <div className="relative z-[100] mx-auto flex w-full max-w-[1920px] items-center justify-between px-4 transition-all duration-300 md:w-[90%] md:px-0 lg:w-[70%]">
+      {/* Key UX fix: cap width like a real site header. This kills “huge dead air” without weird alignment hacks. */}
+      <div className="relative z-[100] mx-auto flex w-full max-w-screen-xl items-center justify-between px-4 transition-all duration-300">
+        {/* LOGO */}
         <button
           type="button"
           onClick={scrollToTop}
-          className="group mr-4 flex shrink-0 cursor-pointer items-center gap-2 transition-transform active:scale-95 md:gap-3"
+          className="group flex shrink-0 cursor-pointer items-center gap-2 transition-transform active:scale-95 md:gap-3"
           aria-label="Scroll to top"
         >
           <div
@@ -325,13 +329,15 @@ export const Navbar = ({ onTriggerPaperHands }: NavbarProps) => {
           </span>
         </button>
 
+        {/* DESKTOP NAV (xl and up) — centered, symmetric */}
         <div
           ref={containerRef}
-          className="relative mx-6 hidden min-w-0 flex-grow items-center justify-center gap-6 px-2 xl:flex"
+          className="relative mx-4 hidden min-w-0 flex-grow items-center justify-center px-2 xl:flex"
         >
+          {/* GHOST ROW FOR MEASUREMENT (must match visible gap) */}
           <div
             ref={ghostRef}
-            className="pointer-events-none invisible absolute left-0 top-0 flex gap-4 xl:gap-6"
+            className="pointer-events-none invisible absolute left-0 top-0 flex gap-4"
             aria-hidden="true"
           >
             {NAV_LINKS_DATA.map((link) => (
@@ -341,6 +347,7 @@ export const Navbar = ({ onTriggerPaperHands }: NavbarProps) => {
             ))}
           </div>
 
+          {/* Measure "MORE" width using real styles */}
           <span
             ref={moreMeasureRef}
             aria-hidden="true"
@@ -354,7 +361,8 @@ export const Navbar = ({ onTriggerPaperHands }: NavbarProps) => {
 
           <div
             className={cn(
-              "flex gap-4 transition-opacity duration-200 xl:gap-6",
+              // ~30% tighter than gap-6
+              "flex gap-4 transition-opacity duration-200",
               isCalculated ? "opacity-100" : "opacity-0"
             )}
           >
@@ -374,7 +382,7 @@ export const Navbar = ({ onTriggerPaperHands }: NavbarProps) => {
           {isCalculated && showMoreButton && (
             <div
               ref={moreRef}
-              className="relative flex h-full shrink-0 items-center"
+              className="relative ml-4 flex h-full shrink-0 items-center"
               onMouseEnter={() => setMoreMenuOpen(true)}
               onMouseLeave={() => setMoreMenuOpen(false)}
               onFocusCapture={() => setMoreMenuOpen(true)}
@@ -445,6 +453,7 @@ export const Navbar = ({ onTriggerPaperHands }: NavbarProps) => {
           )}
         </div>
 
+        {/* ACTIONS */}
         <div className="flex shrink-0 items-center gap-2 md:gap-4">
           <button
             type="button"
@@ -456,6 +465,7 @@ export const Navbar = ({ onTriggerPaperHands }: NavbarProps) => {
             <span className="md:hidden">HEAVEN</span>
           </button>
 
+          {/* BUY ONLY IN DESKTOP MODE (xl+) */}
           <a
             href={BUY_LINK}
             target="_blank"
@@ -478,6 +488,7 @@ export const Navbar = ({ onTriggerPaperHands }: NavbarProps) => {
         </div>
       </div>
 
+      {/* MOBILE / TABLET MENU (all < xl) */}
       <AnimatePresence>
         {mobileMenuOpen && (
           <motion.div
@@ -495,7 +506,7 @@ export const Navbar = ({ onTriggerPaperHands }: NavbarProps) => {
             <motion.div
               ref={mobilePanelRef}
               tabIndex={-1}
-              className="mx-auto flex w-full max-w-[480px] cursor-default flex-col gap-6 p-6 pb-8 pt-20 sm:max-w-[520px] md:w-full md:max-w-none"
+              className="mx-auto flex w-full max-w-[480px] cursor-default flex-col gap-6 p-6 pb-8 pt-20 sm:max-w-[520px]"
               onClick={(e) => e.stopPropagation()}
               initial={{ opacity: 0, y: -12 }}
               animate={{ opacity: 1, y: 0 }}
