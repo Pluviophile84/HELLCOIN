@@ -41,12 +41,15 @@ export const Ritual = () => {
   ];
 
   return (
-    <section id="ritual" className="relative overflow-hidden bg-hell-black py-32">
+    <section
+      id="ritual"
+      className="hk-noise relative overflow-hidden bg-[radial-gradient(900px_540px_at_50%_0%,rgba(255,60,0,0.18),transparent_60%),radial-gradient(800px_560px_at_10%_40%,rgba(255,174,0,0.08),transparent_60%),linear-gradient(180deg,rgba(5,5,5,1),rgba(8,8,11,1))] py-32"
+    >
       {/* BACKGROUND: THE PENTAGRAM */}
       <div className="pointer-events-none absolute left-1/2 top-1/2 z-0 -translate-x-1/2 -translate-y-1/2 select-none">
         <svg
           viewBox="0 0 100 100"
-          className="h-[180vw] w-[180vw] animate-spin-slow text-hell-red md:h-[1000px] md:w-[1000px]"
+          className="h-[180vw] w-[180vw] animate-spin-slow text-hell-red motion-reduce:animate-none md:h-[1000px] md:w-[1000px]"
           style={{ opacity: 0.05, animationDuration: "60s" }}
         >
           <circle cx="50" cy="50" r="48" fill="none" stroke="currentColor" strokeWidth="2" />
@@ -79,7 +82,7 @@ export const Ritual = () => {
               whileInView={{ opacity: 1, x: 0 }}
               viewport={{ once: true }}
               transition={{ delay: i * 0.2 }}
-              className="group flex items-start gap-6"
+              className="hk-ember-edge hk-noise group flex items-start gap-6 rounded-2xl bg-hell-black/35 p-6 shadow-ember transition-all duration-200 hover:-translate-y-1 hover:shadow-deep"
             >
               {/* FIX: Number is now always bright red (text-hell-red) */}
               <span className="shrink-0 font-gothic text-8xl leading-none text-hell-red transition-colors">
@@ -103,17 +106,17 @@ export const Ritual = () => {
           className="mx-auto max-w-3xl"
         >
           <div className="mb-4 text-center">
-            <span className="animate-pulse border border-hell-red/20 bg-hell-red/10 px-4 py-1 font-terminal text-xl text-hell-red">
+            <span className="animate-rune-pulse border border-hell-red/20 bg-hell-red/10 px-4 py-1 font-terminal text-xl text-hell-red motion-reduce:animate-none">
               CONTRACT ADDRESS
             </span>
           </div>
-          <div className="flex flex-col items-center gap-4 border-2 border-hell-red bg-hell-black p-2 shadow-[0_0_30px_rgba(204,0,0,0.2)] md:flex-row md:p-4">
+          <div className="hk-ember-edge hk-noise flex flex-col items-center gap-4 rounded-2xl bg-hell-black/55 p-2 shadow-deep backdrop-blur-sm md:flex-row md:p-4">
             <div className="w-full flex-1 break-all border border-hell-white/10 bg-hell-dark/50 p-4 text-center font-terminal text-xl text-hell-white md:text-left md:text-2xl">
               {CONTRACT_ADDRESS}
             </div>
             <button
               onClick={handleCopy}
-              className="flex w-full min-w-[180px] items-center justify-center gap-2 bg-hell-red px-8 py-4 font-bold text-white transition-all hover:bg-hell-orange active:scale-95 md:w-auto"
+              className="hk-ember-edge flex w-full min-w-[180px] items-center justify-center gap-2 rounded-xl bg-[linear-gradient(180deg,rgba(204,0,0,0.92),rgba(255,51,0,0.92))] px-8 py-4 font-bold text-white shadow-ember transition-all hover:brightness-110 active:scale-95 md:w-auto"
             >
               {copied ? <Check size={24} /> : <Copy size={24} />}
               {copied ? "COPIED!" : "COPY CA"}

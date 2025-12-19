@@ -71,7 +71,7 @@ export const ThePit = () => {
   return (
     <section
       id="the-pit"
-      className="relative flex min-h-[900px] items-center justify-center overflow-hidden bg-hell-red py-32"
+      className="hk-noise relative flex min-h-[900px] items-center justify-center overflow-hidden bg-[radial-gradient(950px_650px_at_50%_0%,rgba(204,0,0,0.45),transparent_55%),radial-gradient(900px_650px_at_20%_60%,rgba(255,60,0,0.18),transparent_60%),linear-gradient(180deg,rgba(204,0,0,0.18),rgba(5,5,5,1))] py-32"
     >
       {/* BACKGROUND: GHOST GRID (Desktop/Laptop only) */}
       <div className="pointer-events-none absolute inset-0 z-0 hidden md:block">
@@ -121,12 +121,12 @@ export const ThePit = () => {
         </div>
 
         {/* --- THE ELEGANT BOX --- */}
-        <div className="relative w-full bg-hell-black p-1 shadow-[0_0_50px_rgba(0,0,0,0.8)]">
+        <div className="hk-ember-edge hk-noise relative w-full rounded-3xl bg-[linear-gradient(180deg,rgba(10,10,10,0.92),rgba(5,5,5,0.78))] p-2 shadow-deep">
           {/* 1. Outer Border */}
-          <div className="pointer-events-none absolute inset-0 border border-hell-red/50"></div>
+          <div className="pointer-events-none absolute inset-0 rounded-3xl border border-hell-red/25"></div>
 
           {/* 2. Inner Content Area */}
-          <div className="relative overflow-hidden border border-hell-white/10 bg-hell-black/90 p-8 text-center backdrop-blur-md md:p-16">
+          <div className="hk-noise relative overflow-hidden rounded-[22px] border border-hell-white/10 bg-[radial-gradient(800px_480px_at_50%_0%,rgba(255,60,0,0.10),transparent_60%),linear-gradient(180deg,rgba(5,5,5,0.92),rgba(10,10,10,0.78))] p-8 text-center backdrop-blur-md md:p-16">
             {/* Medieval Corner Accents */}
             <div className="absolute left-2 top-2 h-4 w-4 border-l-2 border-t-2 border-hell-gold/50"></div>
             <div className="absolute right-2 top-2 h-4 w-4 border-r-2 border-t-2 border-hell-gold/50"></div>

@@ -43,7 +43,7 @@ export default function HomeClient() {
   return (
     <main
       id="main"
-      className="min-h-screen bg-hell-black text-hell-white selection:bg-hell-red selection:text-white"
+      className="hk-noise min-h-screen bg-transparent text-hell-white selection:bg-hell-red selection:text-white"
     >
       {/* 1. The Full Screen Overlay */}
       <PaperHandsOverlay isActive={paperHands} onClose={closeHeavenMode} />

@@ -124,11 +124,31 @@ export const PaperHandsOverlay = ({ isActive, onClose }: PaperHandsProps) => {
             aria-modal="true"
             aria-label="Heaven mode overlay"
             className={cn(
-              "fixed inset-0 z-[100] flex flex-col items-center justify-center overflow-hidden p-4 text-center transition-colors duration-200",
-              // Instant red flash when burning starts
-              phase === "burning" ? "bg-red-600 text-white" : "bg-pink-100 text-pink-500"
+              "hk-noise fixed inset-0 z-[100] flex flex-col items-center justify-center overflow-hidden p-4 text-center",
+              phase === "burning"
+                ? "bg-[radial-gradient(900px_650px_at_50%_0%,rgba(255,60,0,0.42),transparent_55%),radial-gradient(800px_520px_at_50%_80%,rgba(255,174,0,0.16),transparent_60%),linear-gradient(180deg,rgba(8,8,11,0.98),rgba(5,5,5,1))] text-hell-white"
+                : "bg-[radial-gradient(900px_650px_at_50%_0%,rgba(255,174,0,0.28),rgba(246,239,229,0.95)_48%,rgba(255,255,255,0.92)_74%),linear-gradient(180deg,rgba(255,255,255,0.94),rgba(246,239,229,0.90))] text-hell-dark"
             )}
           >
+            {/* ambient framing */}
+            <div aria-hidden className="pointer-events-none absolute inset-0">
+              {phase === "heaven" && (
+                <>
+                  <div className="absolute left-1/2 top-10 h-[720px] w-[720px] -translate-x-1/2 rounded-full bg-[conic-gradient(from_0deg,rgba(255,174,0,0.0),rgba(255,174,0,0.30),rgba(255,255,255,0.0),rgba(255,174,0,0.18),rgba(255,174,0,0.0))] opacity-60 blur-2xl motion-reduce:hidden" />
+                  <div className="absolute inset-0 bg-[radial-gradient(1100px_700px_at_50%_0%,rgba(255,174,0,0.12),transparent_60%)]" />
+                  <div className="absolute inset-0 opacity-25 [background-image:linear-gradient(90deg,rgba(0,0,0,0.05)_1px,transparent_1px),linear-gradient(180deg,rgba(0,0,0,0.04)_1px,transparent_1px)] [background-size:48px_48px]" />
+                </>
+              )}
+
+              {phase === "burning" && (
+                <>
+                  <div className="absolute inset-0 bg-[radial-gradient(1200px_700px_at_50%_0%,rgba(255,60,0,0.22),transparent_60%)]" />
+                  <div className="absolute inset-0 opacity-20 [background-image:linear-gradient(90deg,rgba(255,255,255,0.06)_1px,transparent_1px),linear-gradient(180deg,rgba(255,255,255,0.04)_1px,transparent_1px)] [background-size:44px_44px]" />
+                  <div className="absolute -bottom-40 left-1/2 h-[860px] w-[860px] -translate-x-1/2 rounded-full bg-[radial-gradient(closest-side,rgba(255,60,0,0.20),transparent_72%)] blur-2xl motion-reduce:hidden" />
+                </>
+              )}
+            </div>
+
             {/* --- PHASE 1: HEAVEN CONTENT --- */}
             {phase === "heaven" && (
               <motion.div
@@ -137,35 +157,41 @@ export const PaperHandsOverlay = ({ isActive, onClose }: PaperHandsProps) => {
                   reduceMotion
                     ? { opacity: 0 }
                     : ({ opacity: 0, scale: 1.5, filter: "blur(20px)" } as any)
-                } // Explodes out (unless reduced-motion)
+                }
                 transition={{ duration: reduceMotion ? 0.01 : 0.5 }}
                 className="relative z-20 flex w-full max-w-lg flex-col items-center"
               >
-                {/* FIX: Smaller Emoji size for mobile (5xl vs 8xl) */}
-                <div className="mb-6 animate-bounce text-5xl motion-reduce:animate-none md:text-8xl">
-                  🦄
+                {/* mascot glyph */}
+                <div className="relative mb-7 flex items-center justify-center">
+                  <div
+                    aria-hidden
+                    className="absolute inset-0 rounded-full bg-[radial-gradient(closest-side,rgba(255,174,0,0.30),transparent_72%)] blur-xl motion-reduce:hidden"
+                  />
+                  <div className="hk-ember-edge rounded-full bg-white/65 p-6 shadow-[0_25px_90px_rgba(0,0,0,0.18)] backdrop-blur-md">
+                    <div className="animate-bounce text-5xl motion-reduce:animate-none md:text-8xl">
+                      🦄
+                    </div>
+                  </div>
                 </div>
 
-                {/* FIX: Smaller Title (2xl vs 5xl) */}
-                <h1 className="mb-4 font-sans text-2xl font-black leading-tight md:text-5xl">
+                <h1 className="mb-4 font-gothic text-2xl font-black leading-tight tracking-wide md:text-5xl">
                   EVERYTHING IS FINE!
                 </h1>
 
-                {/* FIX: Smaller Body Text (lg vs 2xl) */}
-                <p className="mb-8 px-4 font-sans text-lg font-bold text-pink-400 md:text-2xl">
+                <p className="mb-8 px-4 font-terminal text-lg font-bold text-hell-dark/70 md:text-2xl">
                   Welcome to the Safe Space! No red candles here! Only vibes! 🚀✨🌈
                 </p>
 
-                <div className="mb-4 h-4 w-full overflow-hidden border border-pink-300 bg-white shadow-sm">
+                <div className="hk-ember-edge mb-4 h-4 w-full overflow-hidden rounded-full bg-white/70 shadow-[0_18px_55px_rgba(0,0,0,0.14)]">
                   <div
-                    className="h-full bg-pink-500 transition-all ease-linear"
+                    className="h-full bg-[linear-gradient(90deg,rgba(255,174,0,0.95),rgba(255,60,0,0.58))] transition-all ease-linear"
                     style={{
                       width: `${progress}%`,
                       transitionDuration: progress === 0 ? "0ms" : "5000ms",
                     }}
                   ></div>
                 </div>
-                <p className="font-sans text-sm font-bold text-pink-300">
+                <p className="font-terminal text-sm font-bold tracking-[0.28em] text-hell-dark/55">
                   Ignoring reality in 5...
                 </p>
               </motion.div>
@@ -176,17 +202,15 @@ export const PaperHandsOverlay = ({ isActive, onClose }: PaperHandsProps) => {
               <motion.div
                 key="burning-content"
                 initial={{ opacity: 0, scale: 0.8 }}
-                animate={{ opacity: 1, scale: reduceMotion ? 1 : 1.1 }}
+                animate={{ opacity: 1, scale: reduceMotion ? 1 : 1.04 }}
                 transition={{ duration: reduceMotion ? 0.01 : 0.4 }}
                 className="relative z-30 flex w-full flex-col items-center px-2"
               >
-                {/* FIX: Smaller Title on Mobile (4xl vs 9xl) */}
-                <h1 className="mb-8 font-sans text-4xl font-black leading-none tracking-tighter text-white drop-shadow-[0_5px_5px_rgba(0,0,0,0.8)] md:text-9xl">
+                <h1 className="mb-8 bg-[linear-gradient(90deg,rgba(255,174,0,0.95),rgba(255,60,0,1),rgba(204,0,0,0.95))] bg-clip-text font-gothic text-4xl font-black leading-none tracking-[0.06em] text-transparent drop-shadow-[0_10px_35px_rgba(0,0,0,0.7)] md:text-9xl">
                   REALITY CHECK
                 </h1>
 
-                {/* FIX: Responsive Card Sizing (text-lg vs text-4xl) */}
-                <p className="max-w-full -rotate-2 break-words border-4 border-yellow-300 bg-black px-4 py-2 text-center font-mono text-lg font-bold uppercase text-yellow-300 shadow-xl md:max-w-[90vw] md:px-6 md:text-4xl">
+                <p className="hk-scanlines hk-ember-edge max-w-full -rotate-2 break-words rounded-xl bg-hell-black/75 px-4 py-3 text-center font-terminal text-lg font-bold uppercase text-hell-gold shadow-ember md:max-w-[90vw] md:px-6 md:text-4xl">
                   WENDY&apos;S IS STILL HIRING
                 </p>
               </motion.div>
@@ -195,7 +219,7 @@ export const PaperHandsOverlay = ({ isActive, onClose }: PaperHandsProps) => {
             {/* --- FIRE ANIMATION LAYER --- */}
             {phase === "burning" && (
               <div className="pointer-events-none absolute inset-0 z-10 overflow-hidden">
-                <div className="absolute inset-0 bg-gradient-to-t from-red-900 via-red-600 to-orange-500 opacity-90"></div>
+                <div className="absolute inset-0 bg-[radial-gradient(1200px_720px_at_50%_0%,rgba(255,60,0,0.45),transparent_62%),linear-gradient(180deg,rgba(204,0,0,0.25),rgba(5,5,5,0.0))] opacity-95"></div>
 
                 {flames.map((flame) => (
                   <motion.div
@@ -235,11 +259,13 @@ export const PaperHandsOverlay = ({ isActive, onClose }: PaperHandsProps) => {
             role="status"
             aria-live="polite"
             transition={{ duration: reduceMotion ? 0.01 : 0.25 }}
-            className="fixed bottom-10 right-4 z-[101] animate-bounce border-4 border-black bg-hell-red p-6 font-terminal text-xl text-hell-white shadow-[10px_10px_0px_#000] motion-reduce:animate-none md:right-10"
+            className="hk-ember-edge hk-noise fixed bottom-10 right-4 z-[101] animate-bounce rounded-2xl bg-[linear-gradient(180deg,rgba(10,10,10,0.92),rgba(5,5,5,0.88))] p-5 font-terminal text-base text-hell-white shadow-ember backdrop-blur-md motion-reduce:animate-none md:right-10 md:p-6 md:text-xl"
           >
             <div className="flex items-center gap-4">
-              <AlertTriangle size={32} className="text-yellow-400" />
-              <div>
+              <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-hell-black/35 shadow-[inset_0_0_0_1px_rgba(255,60,0,0.18)]">
+                <AlertTriangle size={32} className="text-hell-gold" />
+              </div>
+              <div className="text-left">
                 <strong className="block font-gothic text-2xl">NICE TRY.</strong>
                 You can&apos;t escape reality.
               </div>

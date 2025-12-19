@@ -30,8 +30,17 @@ export const Genesis = () => {
   ];
 
   return (
-    <section id="genesis" className="relative bg-hell-dark px-4 py-32">
-      <div className="mx-auto max-w-5xl">
+    <section
+      id="genesis"
+      className="hk-noise relative overflow-hidden bg-[radial-gradient(1200px_700px_at_20%_0%,rgba(255,60,0,0.18),transparent_60%),radial-gradient(900px_600px_at_90%_20%,rgba(255,174,0,0.10),transparent_55%),linear-gradient(180deg,rgba(10,10,10,1),rgba(8,8,11,1))] px-4 py-32"
+    >
+      {/* Carved stone / molten seams (decorative) */}
+      <div aria-hidden="true" className="pointer-events-none absolute inset-0 opacity-70">
+        <div className="absolute -left-24 top-0 h-full w-[420px] bg-[radial-gradient(closest-side,rgba(255,60,0,0.14),transparent_70%)] blur-2xl" />
+        <div className="absolute -right-24 top-1/4 h-[60%] w-[520px] bg-[radial-gradient(closest-side,rgba(34,17,37,0.32),transparent_72%)] blur-2xl" />
+        <div className="absolute inset-0 bg-[linear-gradient(90deg,transparent,rgba(255,255,255,0.04),transparent)] opacity-30" />
+      </div>
+      <div className="relative mx-auto max-w-5xl">
         {/* --- HEADER --- */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -40,7 +49,7 @@ export const Genesis = () => {
           className="mb-16 flex flex-col items-center gap-2 text-center"
         >
           {/* Clean, Elegant Sub-line (No slashes, Regular weight) */}
-          <span className="font-terminal text-xl uppercase tracking-widest text-hell-gold">
+          <span className="font-terminal text-sm uppercase tracking-[0.35em] text-hell-gold/90 sm:text-base">
             GENESIS BLOCK 001
           </span>
 
@@ -51,7 +60,7 @@ export const Genesis = () => {
         </motion.div>
 
         {/* --- CONTENT --- */}
-        <div className="mx-auto max-w-4xl space-y-12 pl-0 md:pl-12">
+        <div className="hk-ember-edge relative mx-auto max-w-4xl space-y-6 rounded-2xl bg-hell-black/25 p-6 shadow-deep backdrop-blur-md md:p-10">
           {paragraphs.map((para, i) => (
             <motion.div
               key={i}
@@ -59,7 +68,7 @@ export const Genesis = () => {
               whileInView={{ opacity: 1, x: 0 }}
               viewport={{ once: true, margin: "-100px" }}
               transition={{ duration: 0.8, delay: i * 0.2 }}
-              className={`border-l-4 pl-6 font-terminal text-xl leading-relaxed md:text-3xl ${para.highlight ? "border-hell-red font-bold text-hell-red" : "border-hell-dark text-hell-white/70"} `}
+              className={`relative rounded-xl px-6 py-5 font-terminal text-xl leading-relaxed before:absolute before:bottom-4 before:left-0 before:top-4 before:w-[2px] before:rounded-full before:bg-[linear-gradient(180deg,rgba(255,60,0,0.0),rgba(255,60,0,0.65),rgba(255,174,0,0.25),rgba(255,60,0,0.0))] md:text-3xl ${para.highlight ? "hk-ember-edge bg-[linear-gradient(180deg,rgba(204,0,0,0.18),rgba(10,10,10,0.10))] font-bold text-hell-red" : "bg-hell-black/15 text-hell-white/75 shadow-[0_0_0_1px_rgba(255,255,255,0.06)]"} `}
             >
               {para.text}
             </motion.div>

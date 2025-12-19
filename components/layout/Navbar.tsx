@@ -184,9 +184,9 @@ export const Navbar = ({ onTriggerPaperHands }: NavbarProps) => {
 
   // --- LINK STYLES (base + 20% bigger on xl) ---
   const linkStyles =
-    "font-terminal text-[0.95rem] xl:text-[1.25rem] text-hell-white hover:text-hell-gold transition-colors uppercase tracking-widest relative group cursor-pointer font-semibold whitespace-nowrap";
+    "font-terminal text-[0.9rem] xl:text-[1.1rem] text-hell-white/80 hover:text-hell-white transition-colors uppercase tracking-[0.28em] relative group cursor-pointer font-semibold whitespace-nowrap";
   const linkUnderline =
-    "absolute -bottom-1 left-0 w-0 h-0.5 bg-hell-orange transition-all group-hover:w-full";
+    "absolute -bottom-2 left-0 h-[2px] w-0 bg-[linear-gradient(90deg,rgba(255,60,0,0),rgba(255,60,0,0.95),rgba(255,174,0,0.6))] transition-all duration-300 group-hover:w-full";
 
   // Focus trap for the mobile panel.
   const handleMobileKeyDown = (e: React.KeyboardEvent) => {
@@ -232,8 +232,8 @@ export const Navbar = ({ onTriggerPaperHands }: NavbarProps) => {
         className={cn(
           "pointer-events-none absolute inset-0 h-full w-full transition-all duration-300",
           isScrolled
-            ? "border-b border-hell-red/30 bg-hell-black/95 shadow-lg shadow-hell-red/5 backdrop-blur-md"
-            : "border-b border-transparent bg-transparent"
+            ? "border-b border-hell-red/25 bg-[linear-gradient(180deg,rgba(10,10,10,0.92),rgba(5,5,5,0.78))] shadow-ember backdrop-blur-xl"
+            : "border-b border-transparent bg-[linear-gradient(180deg,rgba(5,5,5,0.35),transparent)]"
         )}
       />
 
@@ -248,13 +248,19 @@ export const Navbar = ({ onTriggerPaperHands }: NavbarProps) => {
         >
           <div
             className={cn(
-              "relative overflow-hidden border border-hell-orange object-cover transition-all duration-300",
+              "hk-ember-edge relative overflow-hidden rounded-lg bg-hell-black/40 shadow-ember ring-1 ring-hell-red/25 transition-all duration-300 group-hover:ring-hell-orange/40",
               isScrolled ? "h-8 w-8 md:h-8 md:w-8" : "h-8 w-8 md:h-9 md:w-9 lg:h-10 lg:w-10"
             )}
           >
-            <Image src="/GOAPE.png" alt="Hellcoin" fill sizes="40px" className="object-cover" />
+            <Image
+              src="/GOAPE.png"
+              alt="Hellcoin"
+              fill
+              sizes="40px"
+              className="saturate-90 contrast-110 group-hover:saturate-125 object-cover transition duration-500"
+            />
           </div>
-          <span className="text-glow font-gothic text-2xl tracking-wide text-hell-orange md:text-2xl lg:text-3xl">
+          <span className="text-glow bg-[linear-gradient(90deg,rgba(255,174,0,0.95),rgba(255,60,0,1),rgba(204,0,0,0.95))] bg-clip-text font-gothic text-2xl tracking-wide text-transparent md:text-2xl lg:text-3xl">
             HELLCOIN
           </span>
         </button>
@@ -350,7 +356,7 @@ export const Navbar = ({ onTriggerPaperHands }: NavbarProps) => {
                     transition={{ duration: 0.18, ease: "easeOut" }}
                     className="absolute left-0 top-full z-50 min-w-[200px] pt-4"
                   >
-                    <div className="flex flex-col gap-4 border border-hell-red/50 bg-hell-black p-5 shadow-xl">
+                    <div className="hk-ember-edge hk-noise flex flex-col gap-4 rounded-xl bg-[linear-gradient(180deg,rgba(10,10,10,0.92),rgba(5,5,5,0.85))] p-5 shadow-ember">
                       {hiddenLinks.map((link, idx) => (
                         <a
                           id={`navbar-more-item-${idx}`}
@@ -377,9 +383,9 @@ export const Navbar = ({ onTriggerPaperHands }: NavbarProps) => {
           <button
             type="button"
             onClick={onTriggerPaperHands}
-            className="flex items-center gap-2 whitespace-nowrap border border-pink-300 px-2 py-1 font-terminal text-[10px] font-bold text-pink-100 shadow-[0_0_10px_rgba(255,192,203,0.3)] transition-colors hover:bg-pink-500/20 hover:text-white md:px-3 md:text-sm"
+            className="hk-ember-edge flex items-center gap-2 whitespace-nowrap rounded-full bg-[linear-gradient(180deg,rgba(255,255,255,0.08),rgba(255,255,255,0.03))] px-2 py-1 font-terminal text-[10px] font-bold text-hell-bone shadow-[0_0_18px_rgba(255,255,255,0.08)] transition-all hover:bg-[linear-gradient(180deg,rgba(255,255,255,0.12),rgba(255,255,255,0.04))] hover:shadow-[0_0_24px_rgba(255,255,255,0.14)] md:px-3 md:text-sm"
           >
-            <span className="h-2 w-2 animate-pulse bg-pink-200 shadow-[0_0_5px_#fff]" />
+            <span className="h-2 w-2 animate-pulse rounded-full bg-white/80 shadow-[0_0_10px_rgba(255,255,255,0.45)]" />
             <span className="hidden md:inline">HEAVEN MODE</span>
             <span className="md:hidden">HEAVEN</span>
           </button>
@@ -389,7 +395,7 @@ export const Navbar = ({ onTriggerPaperHands }: NavbarProps) => {
             href={BUY_LINK}
             target="_blank"
             rel="noopener noreferrer"
-            className="hidden transform whitespace-nowrap border border-hell-orange/50 bg-hell-red px-4 py-1 text-center font-gothic text-base text-hell-white shadow-[0_0_15px_rgba(204,0,0,0.5)] transition-all hover:scale-105 hover:bg-hell-orange lg:px-6 lg:py-2 lg:text-lg xl:block"
+            className="hk-ember-edge hidden transform whitespace-nowrap rounded-lg bg-[linear-gradient(180deg,rgba(204,0,0,0.95),rgba(255,60,0,0.85))] px-4 py-1 text-center font-gothic text-base text-hell-white shadow-ember transition-all hover:scale-105 hover:shadow-ember-strong lg:px-6 lg:py-2 lg:text-lg xl:block"
           >
             ACQUIRE $666
           </a>
@@ -398,7 +404,7 @@ export const Navbar = ({ onTriggerPaperHands }: NavbarProps) => {
           <button
             ref={hamburgerButtonRef}
             type="button"
-            className="ml-3 pl-1 text-hell-white xl:hidden"
+            className="ml-3 rounded-lg bg-hell-black/30 p-2 text-hell-white shadow-[0_0_0_1px_rgba(255,60,0,0.12)] backdrop-blur-md xl:hidden"
             onClick={() => setMobileMenuOpen((prev) => !prev)}
             aria-label="Toggle navigation"
             aria-expanded={mobileMenuOpen}
@@ -415,7 +421,7 @@ export const Navbar = ({ onTriggerPaperHands }: NavbarProps) => {
             role="dialog"
             aria-modal="true"
             aria-label="Navigation menu"
-            className="fixed inset-0 z-[95] cursor-pointer overflow-y-auto border-b border-hell-red/50 bg-hell-black/95 shadow-2xl backdrop-blur-xl xl:hidden"
+            className="hk-noise fixed inset-0 z-[95] cursor-pointer overflow-y-auto bg-[radial-gradient(900px_600px_at_50%_0%,rgba(255,60,0,0.22),transparent_55%),linear-gradient(180deg,rgba(5,5,5,0.94),rgba(10,10,10,0.88))] shadow-2xl backdrop-blur-xl xl:hidden"
             onClick={() => setMobileMenuOpen(false)}
             onKeyDown={handleMobileKeyDown}
             initial={{ opacity: 0 }}
@@ -426,7 +432,7 @@ export const Navbar = ({ onTriggerPaperHands }: NavbarProps) => {
             <motion.div
               ref={mobilePanelRef}
               tabIndex={-1}
-              className="mx-auto flex w-full max-w-[480px] cursor-default flex-col gap-6 p-6 pb-8 pt-20 sm:max-w-[520px] md:w-full md:max-w-none"
+              className="hk-ember-edge mx-auto flex w-full max-w-[480px] cursor-default flex-col gap-6 rounded-2xl bg-hell-black/40 p-6 pb-8 pt-20 shadow-ember backdrop-blur-md sm:max-w-[520px] md:w-full md:max-w-none"
               onClick={(e) => e.stopPropagation()}
               initial={{ opacity: 0, y: -12 }}
               animate={{ opacity: 1, y: 0 }}
@@ -440,7 +446,7 @@ export const Navbar = ({ onTriggerPaperHands }: NavbarProps) => {
                     key={link.href}
                     href={link.href}
                     onClick={(e) => handleNavClick(e, link.href)}
-                    className="mx-auto w-fit cursor-pointer py-1 text-center font-terminal text-lg font-bold tracking-widest text-hell-white hover:text-hell-orange"
+                    className="mx-auto w-fit cursor-pointer py-2 text-center font-terminal text-lg font-bold tracking-[0.28em] text-hell-white/90 hover:text-hell-white"
                   >
                     {link.name}
                   </a>
@@ -453,7 +459,7 @@ export const Navbar = ({ onTriggerPaperHands }: NavbarProps) => {
                   href={BUY_LINK}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="bg-hell-red px-12 py-3 font-gothic text-2xl text-hell-white shadow-[0_0_20px_rgba(204,0,0,0.6)]"
+                  className="hk-ember-edge rounded-xl bg-[linear-gradient(180deg,rgba(204,0,0,0.95),rgba(255,60,0,0.85))] px-12 py-3 font-gothic text-2xl text-hell-white shadow-ember"
                 >
                   ACQUIRE $666
                 </a>

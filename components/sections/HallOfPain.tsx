@@ -144,7 +144,10 @@ export const HallOfPain = () => {
   });
 
   return (
-    <section id="hall-of-pain" className="relative overflow-hidden bg-hell-dark py-32">
+    <section
+      id="hall-of-pain"
+      className="hk-noise relative overflow-hidden bg-[radial-gradient(1000px_650px_at_20%_0%,rgba(255,60,0,0.18),transparent_60%),radial-gradient(900px_600px_at_80%_10%,rgba(255,174,0,0.08),transparent_60%),linear-gradient(180deg,rgba(8,8,11,1),rgba(5,5,5,1))] py-32"
+    >
       <div className="mx-auto mb-12 max-w-6xl px-4">
         {/* --- HEADER --- */}
         <div className="mb-12 flex flex-col items-center gap-2 text-center">
@@ -156,20 +159,20 @@ export const HallOfPain = () => {
         <div className="mb-4 flex justify-end gap-4 font-terminal text-sm md:text-base">
           <button
             onClick={() => setFilter("latest")}
-            className={`flex items-center gap-2 border px-4 py-2 ${
+            className={`hk-ember-edge flex items-center gap-2 rounded-full px-5 py-2 transition-all ${
               filter === "latest"
-                ? "border-hell-red bg-hell-red/10 text-hell-red"
-                : "border-hell-white/10 text-hell-white/50 hover:text-hell-white"
+                ? "bg-hell-red/10 text-hell-red shadow-[0_0_20px_rgba(255,60,0,0.15)]"
+                : "bg-hell-black/30 text-hell-white/55 hover:text-hell-white"
             }`}
           >
             <ArrowUpDown size={16} /> LATEST
           </button>
           <button
             onClick={() => setFilter("top")}
-            className={`flex items-center gap-2 border px-4 py-2 ${
+            className={`hk-ember-edge flex items-center gap-2 rounded-full px-5 py-2 transition-all ${
               filter === "top"
-                ? "border-hell-red bg-hell-red/10 text-hell-red"
-                : "border-hell-white/10 text-hell-white/50 hover:text-hell-white"
+                ? "bg-hell-red/10 text-hell-red shadow-[0_0_20px_rgba(255,60,0,0.15)]"
+                : "bg-hell-black/30 text-hell-white/55 hover:text-hell-white"
             }`}
           >
             <Filter size={16} /> MOST RESPECTS
@@ -177,9 +180,9 @@ export const HallOfPain = () => {
         </div>
 
         {/* --- THE ARCHIVES BOX --- */}
-        <div className="border border-hell-white/10 bg-hell-black">
+        <div className="hk-ember-edge hk-noise overflow-hidden rounded-2xl bg-hell-black/40 shadow-ember">
           {/* Table Headers */}
-          <div className="grid grid-cols-12 gap-4 border-b border-hell-white/10 bg-hell-dark px-6 py-3 font-terminal text-sm uppercase tracking-widest text-hell-gold">
+          <div className="grid grid-cols-12 gap-4 border-b border-hell-red/15 bg-[linear-gradient(180deg,rgba(10,10,10,0.85),rgba(5,5,5,0.65))] px-6 py-4 font-terminal text-sm uppercase tracking-[0.35em] text-hell-gold">
             <div className="col-span-3 md:col-span-2">ID</div>
             <div className="col-span-6 md:col-span-8">Identity</div>
             <div className="col-span-3 text-right md:col-span-2">Loss</div>
@@ -210,7 +213,7 @@ export const HallOfPain = () => {
                 <div
                   key={sinner.id}
                   className={`border-b border-hell-white/5 transition-colors duration-200 ${
-                    isOpen ? "bg-hell-red/10" : "hover:bg-hell-black/30"
+                    isOpen ? "bg-hell-red/10" : "hover:bg-hell-black/20"
                   }`}
                 >
                   {/* Clickable Header Row */}
@@ -242,7 +245,7 @@ export const HallOfPain = () => {
                         <div className="px-4 pb-6 md:px-6 md:pb-6">
                           <div className="mt-2 grid grid-cols-1 gap-6 border-t border-hell-red/10 pt-4 md:grid-cols-12">
                             <div className="md:col-span-9">
-                              <p className="font-terminal text-lg italic leading-relaxed text-hell-white/70">
+                              <p className="font-terminal text-lg italic leading-relaxed text-hell-white/75">
                                 &ldquo;{sinner.quote}&rdquo;
                               </p>
                             </div>
@@ -254,10 +257,10 @@ export const HallOfPain = () => {
                                   handlePayRespect(sinner.id);
                                 }}
                                 disabled={isPaid}
-                                className={`flex w-full items-center justify-center gap-2 border px-6 py-2 font-terminal text-sm font-bold transition-all active:scale-95 md:w-auto ${
+                                className={`hk-ember-edge flex w-full items-center justify-center gap-2 rounded-full px-6 py-2 font-terminal text-sm font-bold transition-all active:scale-95 md:w-auto ${
                                   isPaid
-                                    ? "cursor-default border-hell-red bg-hell-red/10 text-hell-red"
-                                    : "border-hell-white bg-hell-white text-hell-black hover:bg-hell-white/80"
+                                    ? "cursor-default bg-hell-red/10 text-hell-red"
+                                    : "bg-hell-white text-hell-black hover:bg-hell-white/80"
                                 } `}
                               >
                                 {isPaid ? "RESPECT PAID" : "PAY RESPECTS"}
@@ -281,7 +284,7 @@ export const HallOfPain = () => {
       <div className="mx-auto mt-6 max-w-2xl px-4 text-center">
         <button
           onClick={handleConfess}
-          className="group relative inline-flex items-center gap-2 border-2 border-hell-red bg-hell-black px-8 py-3 font-gothic text-2xl text-hell-red transition-all hover:bg-hell-red hover:text-white active:scale-95"
+          className="hk-ember-edge group relative inline-flex items-center gap-3 rounded-full bg-hell-black/35 px-9 py-4 font-gothic text-2xl text-hell-red shadow-ember transition-all hover:bg-hell-red hover:text-white active:scale-95"
         >
           <AlertTriangle size={24} />
           CONFESS YOUR LOSSES
@@ -294,7 +297,7 @@ export const HallOfPain = () => {
               initial={{ opacity: 0, y: 100 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: 100 }}
-              className="fixed bottom-10 right-4 z-[101] max-w-sm animate-bounce border-4 border-hell-black bg-hell-red p-6 text-left font-terminal text-xl text-hell-white shadow-[10px_10px_0px_#000] md:right-10 md:max-w-md"
+              className="hk-noise fixed bottom-10 right-4 z-[101] max-w-sm border border-hell-black bg-hell-red p-6 text-left font-terminal text-xl text-hell-white shadow-deep md:right-10 md:max-w-md"
             >
               <div className="flex items-start gap-4">
                 <AlertTriangle size={32} className="mt-1 shrink-0 text-hell-gold" />

@@ -4,7 +4,15 @@ import { SectionKicker } from "@/components/ui/SectionKicker";
 
 export const DevilsMath = () => {
   return (
-    <section id="math" className="bg-hell-black py-24 font-terminal">
+    <section
+      id="math"
+      className="hk-scanlines hk-noise relative overflow-hidden bg-[radial-gradient(800px_480px_at_20%_10%,rgba(255,60,0,0.14),transparent_60%),radial-gradient(900px_600px_at_80%_0%,rgba(124,42,255,0.10),transparent_60%),linear-gradient(180deg,rgba(5,5,5,1),rgba(8,8,11,1))] py-28 font-terminal"
+    >
+      <div aria-hidden="true" className="pointer-events-none absolute inset-0">
+        <div className="bg-infernal-grid absolute inset-0 opacity-[0.08]" />
+        <div className="absolute -left-24 top-10 h-[520px] w-[520px] rounded-full bg-[radial-gradient(closest-side,rgba(255,60,0,0.25),transparent_70%)] blur-2xl" />
+        <div className="absolute -right-32 bottom-0 h-[640px] w-[640px] rounded-full bg-[radial-gradient(closest-side,rgba(124,42,255,0.16),transparent_72%)] blur-3xl" />
+      </div>
       <div className="mx-auto max-w-5xl px-4">
         <div className="mb-16 flex flex-col items-center gap-2 text-center">
           {/* FIX: Removed font-bold, set to text-xl md:text-2xl */}
@@ -14,7 +22,7 @@ export const DevilsMath = () => {
           </h2>
         </div>
 
-        <div className="grid grid-cols-1 gap-px border border-hell-red/30 bg-hell-red/30 md:grid-cols-2">
+        <div className="hk-ember-edge hk-noise grid grid-cols-1 gap-px overflow-hidden rounded-2xl bg-hell-red/25 shadow-ember md:grid-cols-2">
           {[
             {
               label: "MAX SUPPLY",
@@ -37,10 +45,13 @@ export const DevilsMath = () => {
               sub: '"Enough to buy a cheeseburger in hell."',
             },
           ].map((item, i) => (
-            <div key={i} className="group bg-hell-black p-8 transition-colors hover:bg-hell-dark">
+            <div
+              key={i}
+              className="group relative bg-[linear-gradient(180deg,rgba(10,10,10,0.86),rgba(5,5,5,0.92))] p-8 transition-all duration-200 hover:bg-[linear-gradient(180deg,rgba(10,10,10,0.92),rgba(5,5,5,0.92))]"
+            >
               <div className="mb-4 flex items-start justify-between">
                 <span className="text-xl text-hell-red">./{item.label}</span>
-                <div className="h-2 w-2 animate-pulse bg-hell-red opacity-0 group-hover:opacity-100"></div>
+                <div className="animate-rune-pulse h-2 w-2 bg-hell-gold opacity-0 group-hover:opacity-100 motion-reduce:animate-none"></div>
               </div>
               <div className="mb-2 font-gothic text-5xl text-hell-white md:text-7xl">
                 {item.value}

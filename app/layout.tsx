@@ -35,7 +35,7 @@ export default function RootLayout({
   return (
     <html lang="en" className={`${fontGothic.variable} ${fontTerminal.variable} scroll-smooth`}>
       {/* Default body font becomes Crimson (via font-terminal) so no silent fallback to sans */}
-      <body className="bg-hell-black font-terminal">
+      <body className="min-h-screen bg-hell-black font-terminal text-hell-white antialiased">
         <a href="#main" className="skip-link">
           Skip to content
         </a>

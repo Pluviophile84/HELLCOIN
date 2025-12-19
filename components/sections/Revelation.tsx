@@ -6,10 +6,10 @@ export const Revelation = () => {
   return (
     <section
       id="revelation"
-      className="relative flex min-h-screen flex-col overflow-hidden bg-hell-black md:flex-row"
+      className="hk-noise relative flex min-h-screen flex-col overflow-hidden bg-[radial-gradient(1200px_700px_at_50%_0%,rgba(255,60,0,0.16),transparent_60%),linear-gradient(180deg,rgba(5,5,5,1),rgba(8,8,11,1))] md:flex-row"
     >
       {/* --- LEFT SIDE: THE LIE --- */}
-      <div className="group relative flex min-h-[50vh] flex-col items-center justify-center overflow-hidden border-r border-hell-red/20 p-8 md:w-1/2 md:p-12">
+      <div className="hk-noise group relative flex min-h-[50vh] flex-col items-center justify-center overflow-hidden border-r border-hell-red/20 p-8 md:w-1/2 md:p-12">
         {/* Background Image */}
         <Image
           src="/GOAPE-Edited.png"
@@ -22,11 +22,11 @@ export const Revelation = () => {
         {/* Heavy Overlay for Text Readability */}
         <div className="absolute inset-0 bg-hell-black/80" />
 
-        <div className="relative z-10 w-full max-w-md text-center">
+        <div className="hk-ember-edge hk-noise relative z-10 w-full max-w-md rounded-3xl bg-hell-black/55 p-8 text-center shadow-deep backdrop-blur-md">
           {/* HEADER MATCHING GENESIS STYLE */}
           <div className="mb-6 flex flex-col items-center gap-2">
             {/* SUB-LINE: Full Brightness Gold */}
-            <span className="font-terminal text-lg uppercase tracking-widest text-hell-gold md:text-xl">
+            <span className="font-terminal text-sm uppercase tracking-[0.35em] text-hell-gold/90 sm:text-base md:text-lg">
               DECEPTION DETECTED
             </span>
             {/* TITLE: Full Brightness White/Red */}
@@ -61,7 +61,7 @@ export const Revelation = () => {
       </div>
 
       {/* --- RIGHT SIDE: THE TRUTH --- */}
-      <div className="relative flex flex-col justify-center border-t border-hell-red/20 bg-hell-black p-8 md:w-1/2 md:border-l md:border-t-0 md:p-12">
+      <div className="hk-noise relative flex flex-col justify-center border-t border-hell-red/20 bg-hell-black/20 p-8 md:w-1/2 md:border-l md:border-t-0 md:p-12">
         <motion.div
           initial={{ x: 100, opacity: 0 }}
           whileInView={{ x: 0, opacity: 1 }}
@@ -70,7 +70,7 @@ export const Revelation = () => {
         >
           {/* HEADER */}
           <div className="mb-8 flex flex-col items-center gap-2 text-center">
-            <span className="font-terminal text-lg uppercase tracking-widest text-hell-gold md:text-xl">
+            <span className="font-terminal text-sm uppercase tracking-[0.35em] text-hell-gold/90 sm:text-base md:text-lg">
               THE TRUTH
             </span>
             <h2 className="font-gothic text-5xl leading-none text-hell-white md:text-8xl">
@@ -116,7 +116,7 @@ export const Revelation = () => {
             </ul>
 
             {/* GOLD BOX */}
-            <div className="mt-10 w-full border border-hell-gold/30 bg-hell-gold/5 p-6">
+            <div className="hk-ember-edge hk-noise mt-10 w-full rounded-2xl bg-[linear-gradient(180deg,rgba(255,174,0,0.08),rgba(255,60,0,0.05))] p-6 shadow-ember">
               <p className="text-center text-xl leading-tight text-white md:text-2xl">
                 <span className="mb-2 block font-gothic text-3xl text-hell-red md:text-4xl">
                   HELLCOIN
