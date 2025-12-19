@@ -44,8 +44,8 @@ export const Genesis = () => {
         >
           <div className="mb-8 rounded-2xl bg-hell-black/30 p-6 shadow-[inset_0_0_0_1px_rgba(255,60,0,0.14)]">
             <p className="font-terminal text-lg text-hell-white/80 md:text-xl">
-              The Devil finally reacted — and launched HELLCOIN on pump.fun to
-              commemorate the moment stupidity reached its sacred number.
+              The Devil finally reacted — and launched HELLCOIN on pump.fun to commemorate the
+              moment stupidity reached its sacred number.
             </p>
           </div>
 
@@ -66,8 +66,8 @@ export const Genesis = () => {
                 className="absolute left-0 top-2 h-3 w-3 rounded-full bg-hell-red shadow-[0_0_18px_rgba(255,60,0,0.35)]"
               />
               <p className="font-terminal text-lg text-hell-white/80 md:text-xl">
-                A mirror held up to the charts. A shrine built from bad entries.
-                A meme forged in pure regret.
+                A mirror held up to the charts. A shrine built from bad entries. A meme forged in
+                pure regret.
               </p>
             </div>
 

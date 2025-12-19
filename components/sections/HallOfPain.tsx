@@ -152,7 +152,9 @@ export const HallOfPain = () => {
         {/* --- HEADER --- */}
         <div className="mb-12 flex flex-col items-center gap-2 text-center">
           <SectionKicker>PROOF OF SUFFERING</SectionKicker>
-          <h2 className="font-gothic text-6xl text-hell-white md:text-8xl">HALL OF <span className="hk-flame-title">PAIN</span></h2>
+          <h2 className="font-gothic text-6xl text-hell-white md:text-8xl">
+            HALL OF <span className="hk-flame-title">PAIN</span>
+          </h2>
         </div>
 
         {/* --- FILTERS --- */}

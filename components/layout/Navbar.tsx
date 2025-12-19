@@ -424,7 +424,7 @@ export const Navbar = ({ onTriggerPaperHands }: NavbarProps) => {
             role="dialog"
             aria-modal="true"
             aria-label="Navigation menu"
-            className="hk-noise fixed inset-0 z-[95] flex items-stretch justify-center bg-[radial-gradient(900px_600px_at_50%_0%,rgba(255,60,0,0.22),transparent_55%),linear-gradient(180deg,rgba(5,5,5,0.94),rgba(10,10,10,0.92))] px-4 pt-[calc(1rem+env(safe-area-inset-top))] pb-[calc(1rem+env(safe-area-inset-bottom))] shadow-2xl backdrop-blur-xl xl:hidden"
+            className="hk-noise fixed inset-0 z-[95] flex items-stretch justify-center bg-[radial-gradient(900px_600px_at_50%_0%,rgba(255,60,0,0.22),transparent_55%),linear-gradient(180deg,rgba(5,5,5,0.94),rgba(10,10,10,0.92))] px-4 pb-[calc(1rem+env(safe-area-inset-bottom))] pt-[calc(1rem+env(safe-area-inset-top))] shadow-2xl backdrop-blur-xl xl:hidden"
             onClick={() => setMobileMenuOpen(false)}
             onKeyDown={handleMobileKeyDown}
             initial={{ opacity: 0 }}

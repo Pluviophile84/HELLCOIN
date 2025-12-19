@@ -5,20 +5,15 @@ import { useMemo } from "react";
 
 import { SectionKicker } from "../ui/SectionKicker";
 
-const MotionDiv = dynamic(
-  () => import("framer-motion").then((mod) => mod.motion.div),
-  { ssr: false },
-);
+const MotionDiv = dynamic(() => import("framer-motion").then((mod) => mod.motion.div), {
+  ssr: false,
+});
 
-const MotionH2 = dynamic(
-  () => import("framer-motion").then((mod) => mod.motion.h2),
-  { ssr: false },
-);
+const MotionH2 = dynamic(() => import("framer-motion").then((mod) => mod.motion.h2), {
+  ssr: false,
+});
 
-const MotionP = dynamic(
-  () => import("framer-motion").then((mod) => mod.motion.p),
-  { ssr: false },
-);
+const MotionP = dynamic(() => import("framer-motion").then((mod) => mod.motion.p), { ssr: false });
 
 export const ThePit = () => {
   const words = useMemo(
@@ -34,7 +29,7 @@ export const ThePit = () => {
       "THE DEVIL REACTED",
       "STUPIDITY REACHED 666",
     ],
-    [],
+    []
   );
 
   return (
@@ -103,18 +98,16 @@ export const ThePit = () => {
           className="hk-ember-edge hk-noise mx-auto mt-14 max-w-4xl rounded-2xl bg-[linear-gradient(180deg,rgba(10,10,10,0.72),rgba(5,5,5,0.92))] p-10 shadow-ember md:p-14"
         >
           <p className="font-terminal text-lg leading-relaxed text-hell-white/80 md:text-xl">
-            A journey through regret, delusion, and the sacred art of buying the
-            top.
+            A journey through regret, delusion, and the sacred art of buying the top.
           </p>
 
           <p className="mt-6 font-terminal text-lg leading-relaxed text-hell-white/80 md:text-xl">
-            One section at a time, the website pulls you deeper — not into
-            enlightenment, but into recognition.
+            One section at a time, the website pulls you deeper — not into enlightenment, but into
+            recognition.
           </p>
 
           <p className="mt-6 font-terminal text-lg leading-relaxed text-hell-white/80 md:text-xl">
-            Because the real hell isn&apos;t losing money. It&apos;s thinking you
-            were different.
+            Because the real hell isn&apos;t losing money. It&apos;s thinking you were different.
           </p>
         </MotionDiv>
       </div>
