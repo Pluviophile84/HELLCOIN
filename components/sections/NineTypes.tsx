@@ -13,7 +13,7 @@ import {
   Siren,
   Gem,
   Handshake,
-  BrokenTool,
+  Wrench,
   Magnet,
 } from "lucide-react";
 
@@ -56,7 +56,7 @@ const CARD_DATA = [
   {
     title: "THE COPE ALCHEMIST",
     description: "Turns losses into lore and calls it character development.",
-    Icon: BrokenTool,
+    Icon: Wrench,
   },
   {
     title: "THE LIQUIDATION SIREN",
@@ -124,12 +124,12 @@ export const NineTypes = () => {
                 delay: Math.min(index * 0.03, 0.18),
               }}
               style={{ willChange: "transform, opacity" }}
-              className="group relative hk-ember-edge hk-noise overflow-hidden rounded-2xl bg-[linear-gradient(180deg,rgba(10,10,10,0.72),rgba(5,5,5,0.92))] p-8 shadow-ember transition-transform hover:-translate-y-1"
+              className="hk-ember-edge hk-noise group relative overflow-hidden rounded-2xl bg-[linear-gradient(180deg,rgba(10,10,10,0.72),rgba(5,5,5,0.92))] p-8 shadow-ember transition-transform hover:-translate-y-1"
             >
               {/* hover wash (consistent across all cards) */}
               <div
                 aria-hidden
-                className="pointer-events-none absolute inset-0 rounded-2xl opacity-0 transition-opacity duration-300 group-hover:opacity-100 bg-[radial-gradient(600px_220px_at_50%_-15%,rgba(255,174,0,0.18),transparent_60%),linear-gradient(180deg,rgba(255,60,0,0.12),transparent)]"
+                className="pointer-events-none absolute inset-0 rounded-2xl bg-[radial-gradient(600px_220px_at_50%_-15%,rgba(255,174,0,0.18),transparent_60%),linear-gradient(180deg,rgba(255,60,0,0.12),transparent)] opacity-0 transition-opacity duration-300 group-hover:opacity-100"
               />
 
               <div className="relative z-10 flex items-start justify-between gap-6">
@@ -137,9 +137,7 @@ export const NineTypes = () => {
                   <h3 className="mb-2 font-gothic text-2xl tracking-wide text-hell-bone">
                     {card.title}
                   </h3>
-                  <p className="font-terminal text-lg text-hell-white/70">
-                    {card.description}
-                  </p>
+                  <p className="font-terminal text-lg text-hell-white/70">{card.description}</p>
                 </div>
 
                 <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-hell-black/30 shadow-[inset_0_0_0_1px_rgba(255,60,0,0.14)] transition-colors group-hover:bg-hell-red/10">
