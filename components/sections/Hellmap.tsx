@@ -35,7 +35,7 @@ export const Hellmap = () => {
   return (
     <section
       id="hellmap"
-      className="hk-noise relative overflow-hidden bg-[radial-gradient(900px_600px_at_80%_0%,rgba(255,60,0,0.14),transparent_60%),radial-gradient(850px_560px_at_15%_35%,rgba(255,174,0,0.08),transparent_60%),linear-gradient(180deg,rgba(5,5,5,1),rgba(8,8,11,1))] py-32"
+      className="hk-section hk-noise relative overflow-hidden bg-[radial-gradient(900px_600px_at_80%_0%,rgba(255,60,0,0.14),transparent_60%),radial-gradient(850px_560px_at_15%_35%,rgba(255,174,0,0.08),transparent_60%),linear-gradient(180deg,rgba(5,5,5,1),rgba(8,8,11,1))] py-32"
     >
       {/* Charred map geometry (decorative) */}
       <div aria-hidden="true" className="pointer-events-none absolute inset-0 opacity-60">

@@ -1,79 +1,97 @@
 "use client";
 import { motion } from "framer-motion";
+import { SectionKicker } from "../ui/SectionKicker";
 
 export const Genesis = () => {
-  const paragraphs = [
-    {
-      text: "THERE WAS GREED.",
-      highlight: true,
-    },
-    {
-      text: "And when a trader whispered “this time it’s different” for the 666th time, Heaven sighed, Hell took notice, and the Devil smiled — a mortal had mastered self-deception at a level even he found impressive.",
-      highlight: false,
-    },
-    {
-      text: "Realizing such craftsmanship deserved a monument, his gaze fell upon the crypto pit — where his sacred number had just been reached — a landscape of rugs, scams, broken dreams, and regret stacked higher than ambition, and no corner burned brighter than pump.fun.",
-      highlight: false,
-    },
-    {
-      text: "A platform where neither pumps nor fun survive launch day. Perfect.",
-      highlight: true,
-    },
-    {
-      text: "From that glorious wreckage, he forged HELLCOIN ($666).",
-      highlight: true,
-    },
-    {
-      text: "It was already home.",
-      highlight: false,
-    },
-  ];
-
   return (
     <section
       id="genesis"
-      className="hk-noise relative overflow-hidden bg-[radial-gradient(1200px_700px_at_20%_0%,rgba(255,60,0,0.18),transparent_60%),radial-gradient(900px_600px_at_90%_20%,rgba(255,174,0,0.10),transparent_55%),linear-gradient(180deg,rgba(10,10,10,1),rgba(8,8,11,1))] px-4 py-32"
+      className="hk-section relative overflow-hidden bg-[radial-gradient(1100px_820px_at_18%_10%,rgba(255,60,0,0.20),transparent_60%),radial-gradient(900px_700px_at_82%_18%,rgba(255,174,0,0.06),transparent_55%),radial-gradient(1000px_800px_at_50%_115%,rgba(204,0,0,0.12),transparent_60%),linear-gradient(180deg,rgba(5,5,5,1),rgba(10,10,10,1))] py-28"
     >
-      {/* Carved stone / molten seams (decorative) */}
-      <div aria-hidden="true" className="pointer-events-none absolute inset-0 opacity-70">
-        <div className="absolute -left-24 top-0 h-full w-[420px] bg-[radial-gradient(closest-side,rgba(255,60,0,0.14),transparent_70%)] blur-2xl" />
-        <div className="absolute -right-24 top-1/4 h-[60%] w-[520px] bg-[radial-gradient(closest-side,rgba(34,17,37,0.32),transparent_72%)] blur-2xl" />
-        <div className="absolute inset-0 bg-[linear-gradient(90deg,transparent,rgba(255,255,255,0.04),transparent)] opacity-30" />
+      <div className="absolute inset-0 opacity-60" aria-hidden>
+        <div className="hk-heat-blob" />
       </div>
-      <div className="relative mx-auto max-w-5xl">
-        {/* --- HEADER --- */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
+
+      <div className="container relative z-10 mx-auto px-4">
+        <SectionKicker>GENESIS</SectionKicker>
+
+        <motion.h2
+          initial={{ opacity: 0, y: 18 }}
           whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          className="mb-16 flex flex-col items-center gap-2 text-center"
+          viewport={{ once: true, amount: 0.35 }}
+          transition={{ duration: 0.45, ease: "easeOut" }}
+          className="mt-4 text-center font-gothic text-5xl tracking-wide text-hell-white md:text-6xl"
         >
-          {/* Clean, Elegant Sub-line (No slashes, Regular weight) */}
-          <span className="font-terminal text-sm uppercase tracking-[0.35em] text-hell-gold/90 sm:text-base">
-            GENESIS BLOCK 001
-          </span>
+          IN THE <span className="hk-flame-title">BEGINNING</span>
+        </motion.h2>
 
-          {/* Main Title */}
-          <h2 className="font-gothic text-6xl leading-none text-hell-white md:text-8xl">
-            IN THE <span className="text-hell-red">BEGINNING</span>
-          </h2>
+        <motion.p
+          initial={{ opacity: 0, y: 14 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, amount: 0.35 }}
+          transition={{ duration: 0.45, ease: "easeOut", delay: 0.05 }}
+          className="mx-auto mt-6 max-w-3xl text-center font-terminal text-xl text-hell-white/70 md:text-2xl"
+        >
+          When stupidity reached its sacred number, the Devil finally reacted.
+        </motion.p>
+
+        <motion.div
+          initial={{ opacity: 0, y: 22 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, amount: 0.25 }}
+          transition={{ duration: 0.45, ease: "easeOut", delay: 0.08 }}
+          className="hk-ember-edge hk-noise mx-auto mt-14 max-w-4xl rounded-2xl bg-[linear-gradient(180deg,rgba(10,10,10,0.78),rgba(5,5,5,0.92))] p-8 shadow-ember md:p-12"
+        >
+          <div className="mb-8 rounded-2xl bg-hell-black/30 p-6 shadow-[inset_0_0_0_1px_rgba(255,60,0,0.14)]">
+            <p className="font-terminal text-lg text-hell-white/80 md:text-xl">
+              The Devil finally reacted — and launched HELLCOIN on pump.fun to
+              commemorate the moment stupidity reached its sacred number.
+            </p>
+          </div>
+
+          <div className="space-y-6">
+            <div className="relative pl-6">
+              <span
+                aria-hidden
+                className="absolute left-0 top-2 h-3 w-3 rounded-full bg-hell-red shadow-[0_0_18px_rgba(255,60,0,0.35)]"
+              />
+              <p className="font-terminal text-lg text-hell-white/80 md:text-xl">
+                This wasn&apos;t a plan. It was a reaction.
+              </p>
+            </div>
+
+            <div className="relative pl-6">
+              <span
+                aria-hidden
+                className="absolute left-0 top-2 h-3 w-3 rounded-full bg-hell-red shadow-[0_0_18px_rgba(255,60,0,0.35)]"
+              />
+              <p className="font-terminal text-lg text-hell-white/80 md:text-xl">
+                A mirror held up to the charts. A shrine built from bad entries.
+                A meme forged in pure regret.
+              </p>
+            </div>
+
+            <div className="relative pl-6">
+              <span
+                aria-hidden
+                className="absolute left-0 top-2 h-3 w-3 rounded-full bg-hell-red shadow-[0_0_18px_rgba(255,60,0,0.35)]"
+              />
+              <p className="font-terminal text-lg text-hell-white/80 md:text-xl">
+                HELLCOIN doesn&apos;t promise utility.
+              </p>
+            </div>
+
+            <div className="relative pl-6">
+              <span
+                aria-hidden
+                className="absolute left-0 top-2 h-3 w-3 rounded-full bg-hell-red shadow-[0_0_18px_rgba(255,60,0,0.35)]"
+              />
+              <p className="font-terminal text-lg text-hell-white/80 md:text-xl">
+                It promises truth: most traders deserve this.
+              </p>
+            </div>
+          </div>
         </motion.div>
-
-        {/* --- CONTENT --- */}
-        <div className="hk-ember-edge relative mx-auto max-w-4xl space-y-6 rounded-2xl bg-hell-black/25 p-6 shadow-deep backdrop-blur-md md:p-10">
-          {paragraphs.map((para, i) => (
-            <motion.div
-              key={i}
-              initial={{ opacity: 0.2, x: -50 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              viewport={{ once: true, margin: "-100px" }}
-              transition={{ duration: 0.8, delay: i * 0.2 }}
-              className={`relative rounded-xl px-6 py-5 font-terminal text-xl leading-relaxed before:absolute before:bottom-4 before:left-0 before:top-4 before:w-[2px] before:rounded-full before:bg-[linear-gradient(180deg,rgba(255,60,0,0.0),rgba(255,60,0,0.65),rgba(255,174,0,0.25),rgba(255,60,0,0.0))] md:text-3xl ${para.highlight ? "hk-ember-edge bg-[linear-gradient(180deg,rgba(204,0,0,0.18),rgba(10,10,10,0.10))] font-bold text-hell-red" : "bg-hell-black/15 text-hell-white/75 shadow-[0_0_0_1px_rgba(255,255,255,0.06)]"} `}
-            >
-              {para.text}
-            </motion.div>
-          ))}
-        </div>
       </div>
     </section>
   );

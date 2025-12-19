@@ -1,4 +1,5 @@
 "use client";
+import { createPortal } from "react-dom";
 import { useEffect, useMemo, useState } from "react";
 import { cn } from "@/lib/utils";
 import { lockBodyScroll, unlockBodyScroll } from "@/lib/bodyScrollLock";
@@ -16,6 +17,11 @@ export const PaperHandsOverlay = ({ isActive, onClose }: PaperHandsProps) => {
   const [phase, setPhase] = useState<Phase>("idle");
   const [progress, setProgress] = useState(0);
   const reduceMotion = useReducedMotion();
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
   const [isSmallScreen, setIsSmallScreen] = useState(false);
 
   // Detect small screens once (and on resize) so we can avoid melting phones.
@@ -112,7 +118,10 @@ export const PaperHandsOverlay = ({ isActive, onClose }: PaperHandsProps) => {
   // If completely idle, render nothing
   if (phase === "idle" && !isActive) return null;
 
-  return (
+  if (!mounted) return null;
+  if (!isActive && phase !== "reality") return null;
+
+  return createPortal(
     <>
       <AnimatePresence>
         {(phase === "heaven" || phase === "burning") && (
@@ -273,6 +282,7 @@ export const PaperHandsOverlay = ({ isActive, onClose }: PaperHandsProps) => {
           </motion.div>
         )}
       </AnimatePresence>
-    </>
+    </>,
+    document.body
   );
 };

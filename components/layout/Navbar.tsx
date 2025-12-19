@@ -186,7 +186,10 @@ export const Navbar = ({ onTriggerPaperHands }: NavbarProps) => {
   const linkStyles =
     "font-terminal text-[0.9rem] xl:text-[1.1rem] text-hell-white/80 hover:text-hell-white transition-colors uppercase tracking-[0.28em] relative group cursor-pointer font-semibold whitespace-nowrap";
   const linkUnderline =
-    "absolute -bottom-2 left-0 h-[2px] w-0 bg-[linear-gradient(90deg,rgba(255,60,0,0),rgba(255,60,0,0.95),rgba(255,174,0,0.6))] transition-all duration-300 group-hover:w-full";
+    "pointer-events-none absolute -bottom-2 left-1/2 h-[2px] w-0 -translate-x-1/2 rounded-full bg-[linear-gradient(90deg,rgba(255,60,0,0),rgba(255,60,0,0.92),rgba(255,174,0,0.85),rgba(255,60,0,0.92),rgba(255,60,0,0))] opacity-0 transition-[width,opacity] duration-300 group-hover:w-full group-hover:opacity-100 group-focus-visible:w-full group-focus-visible:opacity-100 group-active:w-full group-active:opacity-100";
+
+  const mobileUnderline =
+    "pointer-events-none absolute -bottom-1 left-1/2 h-[2px] w-0 -translate-x-1/2 rounded-full bg-[linear-gradient(90deg,rgba(255,60,0,0),rgba(255,60,0,0.92),rgba(255,174,0,0.85),rgba(255,60,0,0.92),rgba(255,60,0,0))] opacity-0 transition-[width,opacity] duration-300 group-hover:w-full group-hover:opacity-100 group-focus-visible:w-full group-focus-visible:opacity-100 group-active:w-full group-active:opacity-100";
 
   // Focus trap for the mobile panel.
   const handleMobileKeyDown = (e: React.KeyboardEvent) => {
@@ -421,7 +424,7 @@ export const Navbar = ({ onTriggerPaperHands }: NavbarProps) => {
             role="dialog"
             aria-modal="true"
             aria-label="Navigation menu"
-            className="hk-noise fixed inset-0 z-[95] cursor-pointer overflow-y-auto bg-[radial-gradient(900px_600px_at_50%_0%,rgba(255,60,0,0.22),transparent_55%),linear-gradient(180deg,rgba(5,5,5,0.94),rgba(10,10,10,0.88))] shadow-2xl backdrop-blur-xl xl:hidden"
+            className="hk-noise fixed inset-0 z-[95] flex items-stretch justify-center bg-[radial-gradient(900px_600px_at_50%_0%,rgba(255,60,0,0.22),transparent_55%),linear-gradient(180deg,rgba(5,5,5,0.94),rgba(10,10,10,0.92))] px-4 pt-[calc(1rem+env(safe-area-inset-top))] pb-[calc(1rem+env(safe-area-inset-bottom))] shadow-2xl backdrop-blur-xl xl:hidden"
             onClick={() => setMobileMenuOpen(false)}
             onKeyDown={handleMobileKeyDown}
             initial={{ opacity: 0 }}
@@ -432,34 +435,57 @@ export const Navbar = ({ onTriggerPaperHands }: NavbarProps) => {
             <motion.div
               ref={mobilePanelRef}
               tabIndex={-1}
-              className="hk-ember-edge mx-auto flex w-full max-w-[480px] cursor-default flex-col gap-6 rounded-2xl bg-hell-black/40 p-6 pb-8 pt-20 shadow-ember backdrop-blur-md sm:max-w-[520px] md:w-full md:max-w-none"
+              className="hk-ember-edge hk-noise mx-auto flex h-full max-h-[calc(100svh-2rem)] w-full max-w-[560px] flex-col overflow-hidden rounded-2xl bg-[linear-gradient(180deg,rgba(10,10,10,0.82),rgba(5,5,5,0.92))] shadow-ember backdrop-blur-md"
               onClick={(e) => e.stopPropagation()}
               initial={{ opacity: 0, y: -12 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -12 }}
               transition={{ duration: 0.2, ease: "easeOut" }}
             >
-              {/* TOP DIVIDER + LINKS (full names) */}
-              <div className="flex w-full flex-col gap-3 border-t border-hell-white/5 pt-4">
-                {NAV_LINKS_DATA.map((link) => (
-                  <a
-                    key={link.href}
-                    href={link.href}
-                    onClick={(e) => handleNavClick(e, link.href)}
-                    className="mx-auto w-fit cursor-pointer py-2 text-center font-terminal text-lg font-bold tracking-[0.28em] text-hell-white/90 hover:text-hell-white"
-                  >
-                    {link.name}
-                  </a>
-                ))}
+              {/* Header */}
+              <div className="flex items-center justify-between gap-3 border-b border-hell-white/5 px-5 py-4">
+                <a
+                  href="#top"
+                  onClick={(e) => handleNavClick(e, "#top")}
+                  className="select-none font-gothic text-2xl tracking-wide text-hell-white"
+                  aria-label="Go to top"
+                >
+                  HELLCOIN
+                </a>
+                <button
+                  type="button"
+                  className="rounded-xl bg-hell-black/40 p-2 text-hell-white shadow-[0_0_0_1px_rgba(255,60,0,0.14)]"
+                  onClick={() => setMobileMenuOpen(false)}
+                  aria-label="Close navigation"
+                >
+                  <X size={22} />
+                </button>
               </div>
 
-              {/* BOTTOM BUY SECTION */}
-              <div className="flex w-full flex-col items-center border-t border-hell-white/5 pt-4">
+              {/* Links */}
+              <div className="flex-1 overflow-y-auto px-5 py-5">
+                <div className="flex flex-col items-center gap-3">
+                  {NAV_LINKS_DATA.map((link) => (
+                    <a
+                      key={link.href}
+                      href={link.href}
+                      onClick={(e) => handleNavClick(e, link.href)}
+                      className="group relative w-full max-w-[22rem] rounded-xl bg-hell-black/25 px-5 py-3 text-center font-terminal text-lg font-bold tracking-[0.28em] text-hell-white/90 transition-colors hover:text-hell-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-hell-red/40 active:bg-hell-red/10"
+                    >
+                      {link.name}
+                      <span className={mobileUnderline} />
+                    </a>
+                  ))}
+                </div>
+              </div>
+
+              {/* CTA */}
+              <div className="border-t border-hell-white/5 px-5 py-4">
                 <a
                   href={BUY_LINK}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="hk-ember-edge rounded-xl bg-[linear-gradient(180deg,rgba(204,0,0,0.95),rgba(255,60,0,0.85))] px-12 py-3 font-gothic text-2xl text-hell-white shadow-ember"
+                  className="hk-ember-edge block w-full rounded-xl bg-[linear-gradient(180deg,rgba(204,0,0,0.95),rgba(255,60,0,0.85))] px-10 py-3 text-center font-gothic text-2xl text-hell-white shadow-ember ring-1 ring-hell-red/30 transition-transform hover:scale-[1.02] hover:shadow-ember-strong active:scale-[0.98]"
                 >
                   ACQUIRE $666
                 </a>

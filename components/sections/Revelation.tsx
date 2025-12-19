@@ -22,7 +22,7 @@ export const Revelation = () => {
         {/* Heavy Overlay for Text Readability */}
         <div className="absolute inset-0 bg-hell-black/80" />
 
-        <div className="hk-ember-edge hk-noise relative z-10 w-full max-w-md rounded-3xl bg-hell-black/55 p-8 text-center shadow-deep backdrop-blur-md">
+        <div className="hk-ember-edge hk-noise relative z-10 w-full max-w-lg rounded-3xl bg-hell-black/55 p-8 text-center shadow-deep backdrop-blur-md">
           {/* HEADER MATCHING GENESIS STYLE */}
           <div className="mb-6 flex flex-col items-center gap-2">
             {/* SUB-LINE: Full Brightness Gold */}

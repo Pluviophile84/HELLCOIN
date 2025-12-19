@@ -146,13 +146,13 @@ export const HallOfPain = () => {
   return (
     <section
       id="hall-of-pain"
-      className="hk-noise relative overflow-hidden bg-[radial-gradient(1000px_650px_at_20%_0%,rgba(255,60,0,0.18),transparent_60%),radial-gradient(900px_600px_at_80%_10%,rgba(255,174,0,0.08),transparent_60%),linear-gradient(180deg,rgba(8,8,11,1),rgba(5,5,5,1))] py-32"
+      className="hk-section hk-noise relative overflow-hidden bg-[radial-gradient(1000px_650px_at_20%_0%,rgba(255,60,0,0.18),transparent_60%),radial-gradient(900px_600px_at_80%_10%,rgba(255,174,0,0.08),transparent_60%),linear-gradient(180deg,rgba(8,8,11,1),rgba(5,5,5,1))] py-32"
     >
       <div className="mx-auto mb-12 max-w-6xl px-4">
         {/* --- HEADER --- */}
         <div className="mb-12 flex flex-col items-center gap-2 text-center">
           <SectionKicker>PROOF OF SUFFERING</SectionKicker>
-          <h2 className="font-gothic text-6xl text-hell-white md:text-8xl">HALL OF PAIN</h2>
+          <h2 className="font-gothic text-6xl text-hell-white md:text-8xl">HALL OF <span className="hk-flame-title">PAIN</span></h2>
         </div>
 
         {/* --- FILTERS --- */}

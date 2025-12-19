@@ -1,62 +1,92 @@
 "use client";
 import { motion } from "framer-motion";
 import {
-  TrendingUp,
-  Bomb,
-  Anchor,
-  Magnet,
-  MousePointerClick,
-  Megaphone,
-  PenTool,
-  Sparkles,
+  Skull,
   Flame,
+  Ghost,
+  Sparkles,
+  Crown,
+  HeartCrack,
+  Swords,
+  Anchor,
+  Bomb,
+  Siren,
+  Gem,
+  Handshake,
+  BrokenTool,
+  Magnet,
 } from "lucide-react";
 
-const types = [
+const CARD_DATA = [
   {
     title: "THE TOP BUYER",
-    subline: "Sees green. Sees destiny. Buys the candle’s nosebleed.",
-    icon: TrendingUp,
-  },
-  {
-    title: "THE LEVERAGE MARTYR",
-    subline: "Sacrifices accounts daily so others may learn nothing.",
-    icon: Bomb,
-  },
-  {
-    title: "THE BAG-MARRIED",
-    subline: "Holds the corpse. Believes in resurrection.",
-    icon: Anchor,
+    description: "Buys every top like it’s a loyalty program.",
+    Icon: Crown,
   },
   {
     title: "THE RUG MAGNET",
-    subline: "Finds every scam contract the moment it deploys.",
-    icon: Magnet,
+    description: "Attracts exit liquidity like a cosmic curse.",
+    Icon: Magnet,
   },
   {
-    title: "THE CLICK-ANY-LINKER",
-    subline: "If it says “airdrop,” it must be safe. Wallets disagree.",
-    icon: MousePointerClick,
+    title: "THE LEVERAGE MARTYR",
+    description: "Dies gloriously at 100x so others may learn nothing.",
+    Icon: Anchor,
   },
   {
-    title: "THE INFLUENCER DISCIPLE",
-    subline: "Takes every “gm fam” as gospel and destiny.",
-    icon: Megaphone,
-  },
-  {
-    title: "THE ARCHITECT OF PAIN",
-    subline: "The scam dev. The rugsmith. The artist of extraction.",
-    icon: PenTool,
+    title: "THE BAG-MARRIED",
+    description: "Refuses to sell. Calls it “conviction.”",
+    Icon: Bomb,
   },
   {
     title: "THE HOPIUM PRIEST",
-    subline: "Charts optional. Faith mandatory.",
-    icon: Sparkles,
+    description: "Preaches green candles through pure delusion.",
+    Icon: Sparkles,
   },
   {
-    title: "THE ALMOST-DEVIL",
-    subline: "Burned enough times to see the pattern, but still tempted by green.",
-    icon: Flame,
+    title: "THE CHART NECROMANCER",
+    description: "Summons patterns from the dead and calls it TA.",
+    Icon: Skull,
+  },
+  {
+    title: "THE FOMO DEMON",
+    description: "Can’t resist the candle. Always arrives late.",
+    Icon: Flame,
+  },
+  {
+    title: "THE COPE ALCHEMIST",
+    description: "Turns losses into lore and calls it character development.",
+    Icon: BrokenTool,
+  },
+  {
+    title: "THE LIQUIDATION SIREN",
+    description: "Sings sweetly right before your position vanishes.",
+    Icon: Siren,
+  },
+  {
+    title: "THE EXIT LIQUIDITY",
+    description: "Blesses whales with your sacrifice.",
+    Icon: Handshake,
+  },
+  {
+    title: "THE HEARTBREAK HODLER",
+    description: "Still believes… after everything.",
+    Icon: HeartCrack,
+  },
+  {
+    title: "THE GHOST OF ATH",
+    description: "Lives only in screenshots and old tweets.",
+    Icon: Ghost,
+  },
+  {
+    title: "THE WARLORD OF GAS",
+    description: "Pays more in fees than the coin is worth.",
+    Icon: Swords,
+  },
+  {
+    title: "THE JEWEL THIEF",
+    description: "Finds gems, then sells them at the bottom.",
+    Icon: Gem,
   },
 ];
 
@@ -64,55 +94,61 @@ export const NineTypes = () => {
   return (
     <section
       id="nine-types"
-      className="hk-noise relative overflow-hidden bg-[radial-gradient(920px_580px_at_10%_0%,rgba(124,42,255,0.12),transparent_60%),radial-gradient(900px_600px_at_90%_20%,rgba(255,60,0,0.16),transparent_55%),linear-gradient(180deg,rgba(5,5,5,1),rgba(8,8,11,1))] px-4 py-32"
+      className="hk-section relative overflow-hidden bg-[radial-gradient(1200px_900px_at_20%_10%,rgba(255,60,0,0.16),transparent_60%),radial-gradient(900px_700px_at_80%_20%,rgba(255,174,0,0.06),transparent_55%),radial-gradient(1000px_700px_at_50%_110%,rgba(204,0,0,0.12),transparent_60%),linear-gradient(180deg,rgba(5,5,5,1),rgba(10,10,10,1))] py-28"
     >
-      <div aria-hidden="true" className="pointer-events-none absolute inset-0">
-        <div className="absolute left-1/2 top-14 h-[780px] w-[780px] -translate-x-1/2 rounded-full bg-[conic-gradient(from_90deg,rgba(255,60,0,0.0),rgba(255,60,0,0.20),rgba(255,174,0,0.12),rgba(255,60,0,0.0))] opacity-30 blur-2xl" />
-        <div className="absolute inset-0 bg-[radial-gradient(700px_420px_at_50%_20%,rgba(255,174,0,0.10),transparent_60%)]" />
+      <div className="absolute inset-0 opacity-60" aria-hidden>
+        <div className="hk-heat-blob" />
       </div>
-      <div className="mx-auto max-w-6xl">
-        {/* --- HEADER --- */}
-        <div className="mb-20 flex flex-col items-center gap-4 text-center">
-          <span className="font-terminal text-sm uppercase tracking-[0.35em] text-hell-gold/90 sm:text-base md:text-lg">
-            CHOOSE YOUR FIGHTER
-          </span>
-          <h2 className="font-gothic text-5xl tracking-wide text-hell-white md:text-8xl">
-            THE NINE CIRCLES
-          </h2>
-        </div>
 
-        {/* --- GRID --- */}
-        <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
-          {types.map((type, i) => (
+      <div className="container relative z-10 mx-auto px-4">
+        <motion.h2
+          initial={{ opacity: 0, y: 18 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, amount: 0.35 }}
+          transition={{ duration: 0.45, ease: "easeOut" }}
+          className="mb-14 text-center font-gothic text-5xl tracking-wide text-hell-white md:text-6xl"
+        >
+          NINE <span className="hk-flame-title">CIRCLES</span> OF DEGENS
+        </motion.h2>
+
+        <div className="grid grid-cols-1 gap-7 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+          {CARD_DATA.map((card, index) => (
             <motion.div
-              key={i}
-              initial={{ opacity: 0, y: 20 }}
+              key={card.title}
+              initial={{ opacity: 0, y: 18 }}
               whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ delay: i * 0.05 }}
-              // FIX: Removed Glow. Added sharp border transition.
-              // FIX: Background is black, shifts to deep blood red on hover.
-              className="hk-ember-edge hk-noise group relative flex flex-col items-start gap-5 overflow-hidden rounded-2xl bg-[linear-gradient(180deg,rgba(10,10,10,0.80),rgba(5,5,5,0.92))] p-8 text-left shadow-[0_25px_80px_rgba(0,0,0,0.55)] transition-all duration-200 hover:-translate-y-1 hover:shadow-[0_35px_90px_rgba(0,0,0,0.65)]"
+              viewport={{ once: true, amount: 0.22 }}
+              transition={{
+                duration: 0.35,
+                ease: "easeOut",
+                delay: Math.min(index * 0.03, 0.18),
+              }}
+              style={{ willChange: "transform, opacity" }}
+              className="group relative hk-ember-edge hk-noise overflow-hidden rounded-2xl bg-[linear-gradient(180deg,rgba(10,10,10,0.72),rgba(5,5,5,0.92))] p-8 shadow-ember transition-transform hover:-translate-y-1"
             >
-              {/* --- BACKGROUND WATERMARK ICON --- */}
-              {/* This sits behind the text, huge and subtle, creating a 'Class Emblem' look */}
-              <type.icon
-                strokeWidth={1}
-                className="absolute -bottom-10 -right-10 h-44 w-44 rotate-12 text-hell-white/5 opacity-100 transition-all duration-500 group-hover:-rotate-6 group-hover:text-hell-red/10"
+              {/* hover wash (consistent across all cards) */}
+              <div
+                aria-hidden
+                className="pointer-events-none absolute inset-0 rounded-2xl opacity-0 transition-opacity duration-300 group-hover:opacity-100 bg-[radial-gradient(600px_220px_at_50%_-15%,rgba(255,174,0,0.18),transparent_60%),linear-gradient(180deg,rgba(255,60,0,0.12),transparent)]"
               />
 
-              {/* --- FOREGROUND ICON --- */}
-              <div className="hk-ember-edge inline-flex rounded-xl bg-hell-red/10 p-4 shadow-[0_0_0_1px_rgba(255,60,0,0.20)] transition-all duration-200 group-hover:bg-hell-red/15">
-                <type.icon className="h-8 w-8 text-hell-gold" />
+              <div className="relative z-10 flex items-start justify-between gap-6">
+                <div>
+                  <h3 className="mb-2 font-gothic text-2xl tracking-wide text-hell-bone">
+                    {card.title}
+                  </h3>
+                  <p className="font-terminal text-lg text-hell-white/70">
+                    {card.description}
+                  </p>
+                </div>
+
+                <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-hell-black/30 shadow-[inset_0_0_0_1px_rgba(255,60,0,0.14)] transition-colors group-hover:bg-hell-red/10">
+                  <card.Icon className="h-8 w-8 text-hell-gold/85 transition-colors group-hover:text-hell-gold" />
+                </div>
               </div>
 
-              <h3 className="font-terminal text-2xl font-semibold uppercase tracking-[0.18em] text-hell-white">
-                {type.title}
-              </h3>
-
-              <p className="relative z-10 font-terminal text-lg leading-relaxed text-hell-white/70 transition-colors duration-200 group-hover:text-hell-white">
-                {type.subline}
-              </p>
+              {/* watermark */}
+              <card.Icon className="absolute -right-8 -top-8 h-32 w-32 text-hell-red/10 transition-opacity group-hover:opacity-90" />
             </motion.div>
           ))}
         </div>

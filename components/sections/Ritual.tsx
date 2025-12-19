@@ -43,7 +43,7 @@ export const Ritual = () => {
   return (
     <section
       id="ritual"
-      className="hk-noise relative overflow-hidden bg-[radial-gradient(900px_540px_at_50%_0%,rgba(255,60,0,0.18),transparent_60%),radial-gradient(800px_560px_at_10%_40%,rgba(255,174,0,0.08),transparent_60%),linear-gradient(180deg,rgba(5,5,5,1),rgba(8,8,11,1))] py-32"
+      className="hk-section hk-noise relative overflow-hidden bg-[radial-gradient(900px_540px_at_50%_0%,rgba(255,60,0,0.18),transparent_60%),radial-gradient(800px_560px_at_10%_40%,rgba(255,174,0,0.08),transparent_60%),linear-gradient(180deg,rgba(5,5,5,1),rgba(8,8,11,1))] py-32"
     >
       {/* BACKGROUND: THE PENTAGRAM */}
       <div className="pointer-events-none absolute left-1/2 top-1/2 z-0 -translate-x-1/2 -translate-y-1/2 select-none">
@@ -69,7 +69,7 @@ export const Ritual = () => {
           <SectionKicker>INITIATION SEQUENCE</SectionKicker>
 
           <h2 className="text-center font-gothic text-6xl text-hell-white md:text-8xl">
-            THE <span className="text-hell-red">RITUAL</span>
+            THE <span className="hk-flame-title">RITUAL</span>
           </h2>
         </div>
 

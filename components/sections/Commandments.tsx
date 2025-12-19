@@ -138,7 +138,7 @@ export const Commandments = () => {
   return (
     <section
       id="commandments"
-      className="hk-noise relative overflow-hidden bg-[radial-gradient(900px_550px_at_50%_0%,rgba(255,174,0,0.10),transparent_55%),radial-gradient(820px_520px_at_50%_55%,rgba(246,239,229,0.12),transparent_60%),linear-gradient(180deg,rgba(8,8,11,1),rgba(5,5,5,1))] px-4 py-28"
+      className="hk-section hk-noise relative overflow-hidden bg-[radial-gradient(900px_550px_at_50%_0%,rgba(255,174,0,0.10),transparent_55%),radial-gradient(820px_520px_at_50%_55%,rgba(246,239,229,0.12),transparent_60%),linear-gradient(180deg,rgba(8,8,11,1),rgba(5,5,5,1))] px-4 py-28"
     >
       {/* Burnt parchment circle + cathedral haze (decorative) */}
       <div aria-hidden="true" className="pointer-events-none absolute inset-0 opacity-70">
@@ -154,7 +154,7 @@ export const Commandments = () => {
             LAW OF THE LAND
           </span>
           <h2 className="font-gothic text-6xl text-hell-white md:text-8xl">
-            THE TEN <span className="text-hell-red">COMMANDMENTS</span>
+            THE TEN <span className="hk-flame-title">COMMANDMENTS</span>
           </h2>
         </div>
 

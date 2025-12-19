@@ -6,19 +6,19 @@ export const DevilsMath = () => {
   return (
     <section
       id="math"
-      className="hk-scanlines hk-noise relative overflow-hidden bg-[radial-gradient(800px_480px_at_20%_10%,rgba(255,60,0,0.14),transparent_60%),radial-gradient(900px_600px_at_80%_0%,rgba(124,42,255,0.10),transparent_60%),linear-gradient(180deg,rgba(5,5,5,1),rgba(8,8,11,1))] py-28 font-terminal"
+      className="hk-section hk-scanlines hk-noise relative overflow-hidden bg-[radial-gradient(800px_480px_at_20%_10%,rgba(255,60,0,0.14),transparent_60%),radial-gradient(900px_600px_at_80%_0%,rgba(204,0,0,0.10),transparent_60%),linear-gradient(180deg,rgba(5,5,5,1),rgba(8,8,11,1))] py-28 font-terminal"
     >
       <div aria-hidden="true" className="pointer-events-none absolute inset-0">
         <div className="bg-infernal-grid absolute inset-0 opacity-[0.08]" />
         <div className="absolute -left-24 top-10 h-[520px] w-[520px] rounded-full bg-[radial-gradient(closest-side,rgba(255,60,0,0.25),transparent_70%)] blur-2xl" />
-        <div className="absolute -right-32 bottom-0 h-[640px] w-[640px] rounded-full bg-[radial-gradient(closest-side,rgba(124,42,255,0.16),transparent_72%)] blur-3xl" />
+        <div className="absolute -right-32 bottom-0 h-[640px] w-[640px] rounded-full bg-[radial-gradient(closest-side,rgba(204,0,0,0.16),transparent_72%)] blur-3xl" />
       </div>
       <div className="mx-auto max-w-5xl px-4">
         <div className="mb-16 flex flex-col items-center gap-2 text-center">
           {/* FIX: Removed font-bold, set to text-xl md:text-2xl */}
           <SectionKicker>SIN NOMICS DATA</SectionKicker>
           <h2 className="font-gothic text-6xl text-hell-white md:text-8xl">
-            THE <span className="text-hell-red">DEVIL&apos;S</span> MATH
+            THE <span className="hk-flame-title">DEVIL&apos;S</span> MATH
           </h2>
         </div>
 

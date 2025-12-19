@@ -1,196 +1,122 @@
 "use client";
 
+import dynamic from "next/dynamic";
 import { useMemo } from "react";
-import { motion, useReducedMotion } from "framer-motion";
-import { X_LINK } from "@/lib/constants";
-import { SectionKicker } from "@/components/ui/SectionKicker";
 
-const PTSD_WORDS_SOURCE = [
-  "RUG",
-  "BUY THE DIP",
-  "SCAM",
-  "-99%",
-  "LIQUIDATED",
-  "HONEYPOT",
-  "HACKED",
-  "WAGMI",
-  "SOFT RUG",
-  "LFG",
-  "NGMI",
-  "COPE",
-  "FUD",
-  "GAS FEES",
-  "TOP SIGNAL",
-  "REKT",
-  "BAGHOLDER",
-  "DOWN BAD",
-  "PUMP",
-  "DUMP",
-  "EXIT",
-  "PONZI",
-  "MOON",
-  "BULLISH",
-];
+import { SectionKicker } from "../ui/SectionKicker";
 
-const GRID_COUNT = 48;
+const MotionDiv = dynamic(
+  () => import("framer-motion").then((mod) => mod.motion.div),
+  { ssr: false },
+);
+
+const MotionH2 = dynamic(
+  () => import("framer-motion").then((mod) => mod.motion.h2),
+  { ssr: false },
+);
+
+const MotionP = dynamic(
+  () => import("framer-motion").then((mod) => mod.motion.p),
+  { ssr: false },
+);
 
 export const ThePit = () => {
-  const reduceMotion = useReducedMotion();
-  // Stable word pool
-  const gridWords = useMemo(() => {
-    const out: string[] = [];
-    while (out.length < GRID_COUNT) out.push(...PTSD_WORDS_SOURCE);
-    return out.slice(0, GRID_COUNT);
-  }, []);
-
-  // Stable per-word timing so ghosts don't sync/cancel each other
-  const ghost = useMemo(() => {
-    return gridWords.map((_, i) => {
-      const stagger = (i % 16) * 0.14;
-      return {
-        peak: 0.14 + Math.random() * 0.22,
-        s1: 0.88 + Math.random() * 0.08,
-        s2: 1.06 + Math.random() * 0.18,
-        duration: 3.0 + Math.random() * 4.4,
-        delay: stagger + Math.random() * 1.0,
-        repeatDelay: 0.6 + Math.random() * 3.2,
-      };
-    });
-  }, [gridWords]);
-
-  const wordClasses = (w: string) => {
-    const isLong = w.length >= 10 || w.includes(" ");
-    return [
-      "font-gothic font-bold text-hell-black/30 leading-none tracking-tight text-center max-w-full",
-      isLong
-        ? "whitespace-normal px-1 max-w-[15ch] text-[clamp(1.25rem,2.0vw,2.4rem)]"
-        : "whitespace-nowrap text-[clamp(1.6rem,2.8vw,3.6rem)]",
-    ].join(" ");
-  };
+  const words = useMemo(
+    () => [
+      "FORGED BY REGRET",
+      "PROOF OF SUFFERING",
+      "BORN IN THE RED",
+      "ABANDON HOPE",
+      "ENTER THE PIT",
+      "THE CULT OF THE BURNED",
+      "HALL OF PAIN",
+      "NINE CIRCLES",
+      "THE DEVIL REACTED",
+      "STUPIDITY REACHED 666",
+    ],
+    [],
+  );
 
   return (
     <section
       id="the-pit"
-      className="hk-noise relative flex min-h-[900px] items-center justify-center overflow-hidden bg-[radial-gradient(950px_650px_at_50%_0%,rgba(204,0,0,0.45),transparent_55%),radial-gradient(900px_650px_at_20%_60%,rgba(255,60,0,0.18),transparent_60%),linear-gradient(180deg,rgba(204,0,0,0.18),rgba(5,5,5,1))] py-32"
+      className="hk-section relative overflow-hidden bg-[radial-gradient(1200px_900px_at_20%_10%,rgba(255,60,0,0.14),transparent_60%),radial-gradient(900px_700px_at_80%_15%,rgba(255,174,0,0.06),transparent_55%),linear-gradient(180deg,rgba(5,5,5,1),rgba(10,10,10,1))] py-28"
     >
-      {/* BACKGROUND: GHOST GRID (Desktop/Laptop only) */}
-      <div className="pointer-events-none absolute inset-0 z-0 hidden md:block">
-        <div className="absolute inset-0 px-10 py-10 lg:px-12 lg:py-12">
-          <div className="grid h-full w-full auto-rows-fr grid-cols-4 place-items-center gap-x-12 gap-y-10 lg:grid-cols-5 lg:gap-x-12 lg:gap-y-12 xl:grid-cols-6">
-            {gridWords.map((word, i) => (
-              <div key={`${word}-${i}`} className="flex w-full items-center justify-center">
-                <motion.div
-                  className={wordClasses(word)}
-                  style={{ willChange: reduceMotion ? undefined : "opacity, transform" }}
-                  animate={
-                    reduceMotion
-                      ? { opacity: 0.12, scale: 1 }
-                      : {
-                          opacity: [0, ghost[i].peak, 0],
-                          scale: [ghost[i].s1, ghost[i].s2, ghost[i].s1],
-                        }
-                  }
-                  transition={
-                    reduceMotion
-                      ? { duration: 0.01 }
-                      : {
-                          duration: ghost[i].duration,
-                          delay: ghost[i].delay,
-                          repeat: Infinity,
-                          repeatDelay: ghost[i].repeatDelay,
-                          ease: "easeInOut",
-                          times: [0, 0.5, 1],
-                        }
-                  }
-                >
-                  {word}
-                </motion.div>
-              </div>
+      {/* animated chant background */}
+      <div className="pointer-events-none absolute inset-0 opacity-60" aria-hidden>
+        <div className="absolute inset-0">
+          <div className="grid h-full w-full grid-cols-2 gap-10 p-10 sm:grid-cols-3 lg:grid-cols-4">
+            {Array.from({ length: 32 }).map((_, i) => (
+              <MotionDiv
+                key={i}
+                initial={{ opacity: 0, y: 10 }}
+                animate={{
+                  opacity: [0.12, 0.32, 0.16],
+                  y: [10, 0, 10],
+                }}
+                transition={{
+                  duration: 4 + (i % 5),
+                  repeat: Infinity,
+                  delay: i * 0.09,
+                  ease: "easeInOut",
+                }}
+                className="font-gothic text-2xl tracking-widest text-hell-white/10 sm:text-3xl"
+              >
+                {words[i % words.length]}
+              </MotionDiv>
             ))}
           </div>
         </div>
+
+        {/* ember haze */}
+        <div className="absolute inset-0 bg-[radial-gradient(900px_520px_at_50%_0%,rgba(255,60,0,0.22),transparent_60%)]" />
       </div>
 
-      {/* FOREGROUND: THE MEDIEVAL DECREE (unchanged) */}
-      <div className="relative z-10 flex w-full max-w-4xl flex-col items-center px-4">
-        {/* Header Label */}
-        <div className="mb-12">
-          <SectionKicker className="border border-hell-gold/30 bg-hell-black px-4 py-1 shadow-[4px_4px_0px_rgba(0,0,0,0.5)]">
-            THE FINAL CIRCLE
-          </SectionKicker>
-        </div>
+      <div className="container relative z-10 mx-auto px-4">
+        <SectionKicker>THE PIT</SectionKicker>
 
-        {/* --- THE ELEGANT BOX --- */}
-        <div className="hk-ember-edge hk-noise relative w-full rounded-3xl bg-[linear-gradient(180deg,rgba(10,10,10,0.92),rgba(5,5,5,0.78))] p-2 shadow-deep">
-          {/* 1. Outer Border */}
-          <div className="pointer-events-none absolute inset-0 rounded-3xl border border-hell-red/25"></div>
+        <MotionH2
+          initial={{ opacity: 0, y: 18 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, amount: 0.35 }}
+          transition={{ duration: 0.45, ease: "easeOut" }}
+          className="mt-4 text-center font-gothic text-5xl tracking-wide text-hell-white md:text-6xl"
+        >
+          ENTER <span className="hk-flame-title">THE PIT</span>
+        </MotionH2>
 
-          {/* 2. Inner Content Area */}
-          <div className="hk-noise relative overflow-hidden rounded-[22px] border border-hell-white/10 bg-[radial-gradient(800px_480px_at_50%_0%,rgba(255,60,0,0.10),transparent_60%),linear-gradient(180deg,rgba(5,5,5,0.92),rgba(10,10,10,0.78))] p-8 text-center backdrop-blur-md md:p-16">
-            {/* Medieval Corner Accents */}
-            <div className="absolute left-2 top-2 h-4 w-4 border-l-2 border-t-2 border-hell-gold/50"></div>
-            <div className="absolute right-2 top-2 h-4 w-4 border-r-2 border-t-2 border-hell-gold/50"></div>
-            <div className="absolute bottom-2 left-2 h-4 w-4 border-b-2 border-l-2 border-hell-gold/50"></div>
-            <div className="absolute bottom-2 right-2 h-4 w-4 border-b-2 border-r-2 border-hell-gold/50"></div>
+        <MotionP
+          initial={{ opacity: 0, y: 14 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, amount: 0.35 }}
+          transition={{ duration: 0.45, ease: "easeOut", delay: 0.05 }}
+          className="mx-auto mt-6 max-w-3xl text-center font-terminal text-xl text-hell-white/70 md:text-2xl"
+        >
+          This is not a roadmap. It&apos;s a descent.
+        </MotionP>
 
-            {/* Title */}
-            <h2 className="mb-8 font-gothic text-5xl leading-none text-hell-white md:text-8xl">
-              THE CULT OF <br className="md:hidden" />{" "}
-              <span className="text-hell-red">THE BURNED</span>
-            </h2>
+        <MotionDiv
+          initial={{ opacity: 0, y: 22 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, amount: 0.25 }}
+          transition={{ duration: 0.45, ease: "easeOut", delay: 0.08 }}
+          className="hk-ember-edge hk-noise mx-auto mt-14 max-w-4xl rounded-2xl bg-[linear-gradient(180deg,rgba(10,10,10,0.72),rgba(5,5,5,0.92))] p-10 shadow-ember md:p-14"
+        >
+          <p className="font-terminal text-lg leading-relaxed text-hell-white/80 md:text-xl">
+            A journey through regret, delusion, and the sacred art of buying the
+            top.
+          </p>
 
-            {/* Copy */}
-            <div className="mx-auto mb-12 max-w-3xl space-y-6 font-terminal text-lg leading-relaxed text-hell-white/70 md:text-xl">
-              <p>
-                Welcome to the only corner of crypto where everyone finally stops pretending. Here,
-                we don’t hide our losses — we frame them as{" "}
-                <span className="font-bold text-white">character development.</span>
-              </p>
+          <p className="mt-6 font-terminal text-lg leading-relaxed text-hell-white/80 md:text-xl">
+            One section at a time, the website pulls you deeper — not into
+            enlightenment, but into recognition.
+          </p>
 
-              <p>
-                <span className="font-bold text-hell-red">HELLCOIN</span> is a home for the
-                overleveraged, the rugged, the delusional, and the eternally optimistic. A sanctuary
-                for those who keep making the same mistakes with confidence, pride, and a complete
-                lack of learning curve.
-              </p>
-
-              <p className="border-l-2 border-hell-gold pl-4 italic text-hell-white">
-                We don’t judge. We recognize the pattern. We’ve lived the pattern.
-              </p>
-
-              <p>
-                This is a community built on shared suffering, recycled hope, and the sacred ritual
-                of doing it all again tomorrow.
-              </p>
-
-              <p className="pt-4 text-2xl font-bold text-white">
-                If you’ve been burned, you belong here.
-                <br />
-                If you haven’t, you will.
-              </p>
-
-              <p className="text-sm uppercase tracking-widest text-hell-red/80">
-                Misery needs company. Hellcoin provides it.
-              </p>
-            </div>
-
-            {/* X (Twitter) Button */}
-            <div className="flex w-full justify-center">
-              <a
-                href={X_LINK}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="group relative inline-flex w-full items-center justify-center gap-3 border border-hell-red bg-hell-red/10 px-6 py-3 font-gothic text-xl text-hell-white shadow-[0_0_20px_rgba(204,0,0,0.2)] transition-all duration-300 hover:bg-hell-red hover:shadow-[0_0_30px_rgba(204,0,0,0.6)] active:scale-95 md:w-auto md:px-12 md:py-4 md:text-3xl"
-              >
-                <svg viewBox="0 0 24 24" className="h-5 w-5 shrink-0 fill-current md:h-6 md:w-6">
-                  <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
-                </svg>
-                <span className="md:hidden">ENTER</span>
-                <span className="hidden md:inline">ENTER THE SANCTUARY</span>
-              </a>
-            </div>
-          </div>
-        </div>
+          <p className="mt-6 font-terminal text-lg leading-relaxed text-hell-white/80 md:text-xl">
+            Because the real hell isn&apos;t losing money. It&apos;s thinking you
+            were different.
+          </p>
+        </MotionDiv>
       </div>
     </section>
   );
