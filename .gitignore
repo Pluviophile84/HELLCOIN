@@ -1,12 +1,30 @@
-node_modules
-.next
-.vercel
+# Dependencies
+node_modules/
+
+# Next.js
+.next/
+out/
+
+# Vercel
+.vercel/
+
+# Builds
+dist/
+build/
+
+# Env
 .env
 .env.local
-dist
-build
-out
+
+# OS / editor
 .DS_Store
+components/ui/hellcoin.code-workspace
+
+# TypeScript
+tsconfig.tsbuildinfo
+
+# Logs
+*.log
 npm-debug.log*
 yarn-debug.log*
 pnpm-debug.log*
