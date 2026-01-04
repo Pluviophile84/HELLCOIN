@@ -1,0 +1,258 @@
+"use client";
+
+import { useRef, useState, useEffect, useCallback } from "react";
+import Image from "next/image";
+import { TrendingDown } from "lucide-react";
+
+import { BUY_LINK } from "@/lib/constants";
+
+/**
+ * Hero - Premium Parallax Experience
+ *
+ * Full parallax implementation with:
+ * 1. Multi-layer parallax (background, content, individual elements)
+ * 2. Smooth CSS transitions between scroll updates
+ * 3. RAF-throttled scroll handling for 60fps
+ * 4. Staggered element fade and movement
+ * 5. Works on desktop and mobile (with adjusted intensity)
+ * 6. Respects reduced motion preferences
+ */
+export const Hero = () => {
+  const sectionRef = useRef<HTMLElement | null>(null);
+  const rafRef = useRef<number | null>(null);
+  const [scrollProgress, setScrollProgress] = useState(0);
+  const [reduceMotion, setReduceMotion] = useState(false);
+  const [isVisible, setIsVisible] = useState(true);
+  const [isMobile, setIsMobile] = useState(false);
+
+  // Initialize and set up scroll handling
+  useEffect(() => {
+    const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const mobile = window.innerWidth < 768;
+
+    setReduceMotion(prefersReducedMotion);
+    setIsMobile(mobile);
+
+    if (prefersReducedMotion) return;
+
+    const updateScrollProgress = () => {
+      if (!sectionRef.current) return;
+
+      const rect = sectionRef.current.getBoundingClientRect();
+      const sectionHeight = rect.height;
+
+      // Calculate how much of the section has scrolled past
+      // 0 = at top, 1 = fully scrolled past
+      const scrolled = -rect.top;
+      const progress = Math.max(0, Math.min(1, scrolled / (sectionHeight * 0.8)));
+
+      setScrollProgress(progress);
+      setIsVisible(rect.bottom > 0);
+    };
+
+    const handleScroll = () => {
+      if (rafRef.current) cancelAnimationFrame(rafRef.current);
+      rafRef.current = requestAnimationFrame(updateScrollProgress);
+    };
+
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    updateScrollProgress();
+
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+      if (rafRef.current) cancelAnimationFrame(rafRef.current);
+    };
+  }, []);
+
+  const handleAbandonHope = useCallback(() => {
+    const genesisSection = document.getElementById("genesis");
+    if (genesisSection) {
+      genesisSection.scrollIntoView({ behavior: "smooth" });
+    }
+  }, []);
+
+  // Parallax calculations with easing
+  const shouldAnimate = !reduceMotion && isVisible;
+
+  // Eased progress for smoother falloff
+  const easedProgress = scrollProgress * scrollProgress; // Quadratic ease
+
+  // Mobile gets 60% of desktop parallax intensity
+  const intensity = isMobile ? 0.6 : 1;
+
+  // Background parallax (moves slower - 30% of scroll)
+  const bgY = shouldAnimate ? scrollProgress * 120 * intensity : 0;
+  const bgScale = shouldAnimate ? 1 + scrollProgress * 0.1 : 1;
+
+  // Content parallax (moves faster - 50% of scroll, fades out)
+  const contentY = shouldAnimate ? scrollProgress * 200 * intensity : 0;
+  const contentOpacity = shouldAnimate ? Math.max(0, 1 - easedProgress * 1.5) : 1;
+
+  // Individual element stagger (each element moves at different rate)
+  const titleY = shouldAnimate ? scrollProgress * 180 * intensity : 0;
+  const titleOpacity = shouldAnimate ? Math.max(0, 1 - easedProgress * 1.3) : 1;
+
+  const subtitleY = shouldAnimate ? scrollProgress * 220 * intensity : 0;
+  const subtitleOpacity = shouldAnimate ? Math.max(0, 1 - easedProgress * 1.5) : 1;
+
+  const taglineY = shouldAnimate ? scrollProgress * 260 * intensity : 0;
+  const taglineOpacity = shouldAnimate ? Math.max(0, 1 - easedProgress * 1.7) : 1;
+
+  const ctaY = shouldAnimate ? scrollProgress * 300 * intensity : 0;
+  const ctaOpacity = shouldAnimate ? Math.max(0, 1 - easedProgress * 1.9) : 1;
+
+  // Shared transition style for smooth interpolation
+  const smoothTransition = "transform 0.15s cubic-bezier(0.33, 1, 0.68, 1), opacity 0.15s ease-out";
+
+  return (
+    <section
+      ref={sectionRef}
+      className="relative flex min-h-[100svh] w-full items-center justify-center overflow-hidden bg-obsidian-950"
+    >
+      {/* Background image with parallax */}
+      <div
+        className="absolute inset-0 z-0"
+        style={
+          shouldAnimate
+            ? {
+                transform: `translateY(${bgY}px) scale(${bgScale})`,
+                transition: smoothTransition,
+                willChange: "transform",
+              }
+            : undefined
+        }
+      >
+        <Image
+          src="/banner.webp"
+          alt="Hellcoin Throne - fiery demonic landscape"
+          fill
+          priority
+          sizes="100vw"
+          placeholder="blur"
+          blurDataURL="data:image/webp;base64,UklGRlYAAABXRUJQVlA4IEoAAADwAQCdASoQAAkAAUAmJYgCdAEO/hOMAAD++O/t0f/H/8BWrXr/Zu3lHuVf7lPuV8P/Yf/h/yj/N/8j/0v/V/9L/0v/S/9IAA=="
+          className="object-cover object-[30%_top] md:object-[left_top]"
+        />
+        {/* Gradient overlays */}
+        <div className="absolute inset-0 bg-gradient-to-t from-obsidian-950 via-obsidian-950/80 to-transparent" />
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-transparent via-obsidian-950/40 to-obsidian-950" />
+      </div>
+
+      {/* Main content wrapper with base parallax */}
+      <div
+        className="relative z-10 mx-auto flex w-full max-w-[1600px] flex-col items-center px-4 pt-20 text-center md:items-end md:px-12 md:pt-0 md:text-right 3xl:max-w-[2000px] 3xl:pr-[20%]"
+        style={
+          shouldAnimate
+            ? {
+                transform: `translateY(${contentY}px)`,
+                opacity: contentOpacity,
+                transition: smoothTransition,
+                willChange: "transform, opacity",
+              }
+            : undefined
+        }
+      >
+        {/* Title - fastest fade, moderate movement */}
+        <h1
+          className="mb-8 font-hero text-5xl leading-[0.9] text-lava-50 motion-safe:animate-hero-slide-up md:max-w-6xl md:text-6xl 3xl:text-7xl 4xl:text-8xl"
+          style={
+            shouldAnimate
+              ? {
+                  transform: `translateY(${titleY - contentY}px)`,
+                  opacity: titleOpacity,
+                  transition: smoothTransition,
+                }
+              : undefined
+          }
+        >
+          BORN IN THE <span className="hellfire-text-pure">RED.</span>
+          <br />
+          FORGED BY <span className="text-gold">REGRET.</span>
+        </h1>
+
+        {/* Subtitle - medium fade */}
+        <div
+          className="mx-auto max-w-4xl space-y-2 font-body text-hero-sub text-lava-100 motion-safe:animate-hero-slide-up-delayed md:mx-0 md:max-w-5xl md:space-y-0 3xl:text-2xl"
+          style={
+            shouldAnimate
+              ? {
+                  transform: `translateY(${subtitleY - contentY}px)`,
+                  opacity: subtitleOpacity,
+                  transition: smoothTransition,
+                }
+              : undefined
+          }
+        >
+          <p className="leading-relaxed">
+            The first cryptocurrency powered by{" "}
+            <span className="my-2 block text-hero-sub-em font-bold text-gold md:my-0 md:inline md:font-normal 3xl:text-3xl">
+              Proof-of-Suffering
+            </span>
+          </p>
+          <p className="text-lava-100">the only consensus mechanism traders truly understand.</p>
+        </div>
+
+        {/* Tagline - slower fade */}
+        <p
+          className="hellfire-text-pure mt-8 animate-pulse font-body text-base font-bold uppercase tracking-widest md:max-w-5xl md:text-lg 3xl:text-xl"
+          style={
+            shouldAnimate
+              ? {
+                  transform: `translateY(${taglineY - contentY}px)`,
+                  opacity: taglineOpacity,
+                  transition: smoothTransition,
+                }
+              : undefined
+          }
+        >
+          WHEN THE MARKET BURNS,{" "}
+          <span className="block md:ml-2 md:inline">WE TREND</span>
+        </p>
+
+        {/* CTA - slowest fade, most movement */}
+        <div
+          className="mt-12 flex w-full flex-col items-center justify-center gap-8 motion-safe:animate-hero-slide-up-delayed-3 md:max-w-5xl md:flex-row md:justify-end"
+          style={
+            shouldAnimate
+              ? {
+                  transform: `translateY(${ctaY - contentY}px)`,
+                  opacity: ctaOpacity,
+                  transition: smoothTransition,
+                }
+              : undefined
+          }
+        >
+          <button
+            type="button"
+            onClick={handleAbandonHope}
+            className="group order-1 flex items-center gap-2 font-body text-xl font-bold text-lava-100/50 transition-colors duration-200 hover:text-gold md:order-none md:text-2xl 3xl:text-3xl"
+          >
+            [ ABANDON HOPE ]
+            <TrendingDown className="h-5 w-5 transition-transform duration-200 group-hover:translate-y-1" />
+          </button>
+
+          <a
+            href={BUY_LINK}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="hellfire-bg group relative order-2 flex cursor-pointer items-center gap-2 overflow-hidden rounded-xl border-3 border-black px-8 py-4 font-heading text-xl uppercase text-white shadow-brutal transition-all duration-200 hover:translate-x-1 hover:translate-y-1 hover:shadow-[0_0_30px_rgba(255,85,0,0.7)] md:order-none md:text-2xl 3xl:text-3xl"
+          >
+            <span className="relative z-10 flex items-center gap-2">ACQUIRE $666</span>
+          </a>
+        </div>
+      </div>
+
+      {/* Bottom fade gradient */}
+      <div
+        className="pointer-events-none absolute bottom-0 z-20 h-32 w-full bg-gradient-to-t from-obsidian-950 to-transparent"
+        style={
+          shouldAnimate
+            ? {
+                opacity: Math.max(0.3, 1 - scrollProgress * 2),
+                transition: "opacity 0.15s ease-out",
+              }
+            : undefined
+        }
+      />
+    </section>
+  );
+};
