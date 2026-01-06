@@ -29,13 +29,13 @@ const bodyFont = Nunito({
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://hellcoin.fun"),
-  title: "HELLCOIN ($666) - Born in the Red",
+  title: "HELLCOIN ($666)",
   description:
     "The official currency of eternal regret. The first cryptocurrency powered by Proof-of-Suffering.",
   keywords: ["hellcoin", "cryptocurrency", "memecoin", "solana", "$666", "crypto"],
   authors: [{ name: "HELLCOIN" }],
   openGraph: {
-    title: "HELLCOIN ($666) - Born in the Red",
+    title: "HELLCOIN ($666)",
     description: "The official currency of eternal regret.",
     type: "website",
     siteName: "HELLCOIN",
@@ -50,7 +50,7 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "HELLCOIN ($666) - Born in the Red",
+    title: "HELLCOIN ($666)",
     description: "The official currency of eternal regret.",
     images: ["/banner.webp"],
   },
