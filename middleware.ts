@@ -22,14 +22,11 @@ export function middleware(req: NextRequest) {
 
   const csp = [
     "default-src 'self'",
-    // Strict script policy: no unsafe-inline, no unsafe-eval.
-    // 'strict-dynamic' allows scripts trusted by nonce to load their dependencies.
-    `script-src 'self' 'nonce-${nonce}' 'strict-dynamic'`,
-    // Next.js emits <style> tags; keep unsafe-inline for styles unless you implement style nonces.
+    `script-src 'self' 'nonce-${nonce}' 'strict-dynamic'${process.env.NODE_ENV === "development" ? " 'unsafe-eval'" : ""}`,
     "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
     "img-src 'self' data: blob: https:",
     "font-src 'self' data: https://fonts.gstatic.com",
-    "connect-src 'self' https://fonts.googleapis.com",
+    "connect-src 'self' https://fonts.googleapis.com https://*.google-analytics.com https://*.analytics.google.com https://*.googletagmanager.com",
     "frame-ancestors 'none'",
     "base-uri 'self'",
     "form-action 'self'",

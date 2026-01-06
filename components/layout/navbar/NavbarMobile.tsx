@@ -24,22 +24,6 @@ export const NavbarMobile = ({ isOpen, onClose, links, onNavClick, navRef }: Nav
   const panelRef = useRef<HTMLDivElement | null>(null);
   const [shouldRender, setShouldRender] = useState(false);
   const [isAnimating, setIsAnimating] = useState(false);
-  const [navHeight, setNavHeight] = useState(71);
-
-  // Measure navbar height when menu opens and on resize
-  useEffect(() => {
-    if (!isOpen || !navRef.current) return;
-
-    const measureHeight = () => {
-      if (navRef.current) {
-        setNavHeight(navRef.current.offsetHeight);
-      }
-    };
-
-    measureHeight();
-    window.addEventListener("resize", measureHeight);
-    return () => window.removeEventListener("resize", measureHeight);
-  }, [isOpen, navRef]);
 
   // Handle mount/unmount with animation
   useEffect(() => {
@@ -72,18 +56,6 @@ export const NavbarMobile = ({ isOpen, onClose, links, onNavClick, navRef }: Nav
     };
   }, [isOpen]);
 
-  // Focus first link when opened
-  useEffect(() => {
-    if (!isOpen) return;
-
-    const raf = window.requestAnimationFrame(() => {
-      const firstLink = panelRef.current?.querySelector<HTMLElement>("a[href]");
-      firstLink?.focus();
-    });
-
-    return () => window.cancelAnimationFrame(raf);
-  }, [isOpen]);
-
   // Close on Escape
   useEffect(() => {
     if (!isOpen) return;
@@ -96,30 +68,6 @@ export const NavbarMobile = ({ isOpen, onClose, links, onNavClick, navRef }: Nav
     return () => document.removeEventListener("keydown", onKeyDown);
   }, [isOpen, onClose]);
 
-  // Keyboard navigation within menu
-  const handleKeyDown = (e: React.KeyboardEvent<HTMLDivElement>) => {
-    const focusables = Array.from(
-      panelRef.current?.querySelectorAll<HTMLElement>("a[href], button") ?? []
-    );
-    const currentIdx = focusables.indexOf(document.activeElement as HTMLElement);
-
-    if (e.key === "ArrowDown") {
-      e.preventDefault();
-      const next = focusables[currentIdx + 1] ?? focusables[0];
-      next?.focus();
-    } else if (e.key === "ArrowUp") {
-      e.preventDefault();
-      const prev = focusables[currentIdx - 1] ?? focusables[focusables.length - 1];
-      prev?.focus();
-    } else if (e.key === "Home") {
-      e.preventDefault();
-      focusables[0]?.focus();
-    } else if (e.key === "End") {
-      e.preventDefault();
-      focusables[focusables.length - 1]?.focus();
-    }
-  };
-
   if (!shouldRender) return null;
 
   return (
@@ -131,9 +79,8 @@ export const NavbarMobile = ({ isOpen, onClose, links, onNavClick, navRef }: Nav
         "fixed inset-x-0 bottom-0 z-[80] overflow-y-auto bg-[#1C1612] transition-opacity duration-200 ease-out xl:hidden",
         isAnimating ? "opacity-100" : "opacity-0"
       )}
-      style={{ top: `${navHeight}px` }}
+      style={{ top: "var(--nav-h)" }}
       onClick={onClose}
-      onKeyDown={handleKeyDown}
     >
       <div
         ref={panelRef}

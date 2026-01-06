@@ -103,11 +103,9 @@ export const Hero = () => {
   return (
     <section
       ref={sectionRef}
-      className="relative flex w-full items-center justify-center overflow-hidden bg-obsidian-950"
-      style={{ 
-        marginTop: "calc(var(--nav-h) - 3px)",
-        minHeight: "calc(100svh - var(--nav-h) + 3px)"
-      }}
+      id="hero"
+      className="relative flex min-h-[100svh] w-full items-center justify-center overflow-hidden bg-obsidian-950"
+      style={{ scrollMarginTop: "0" }}
     >
       {/* Background - fills section from navbar bottom to viewport bottom */}
       <div className="absolute inset-0 z-0">
@@ -142,7 +140,7 @@ export const Hero = () => {
       >
         {/* Title - fastest fade, moderate movement */}
         <h1
-          className="mb-8 font-hero text-5xl leading-[0.9] text-lava-50 motion-safe:animate-hero-slide-up md:max-w-6xl md:text-6xl 3xl:text-7xl 4xl:text-8xl"
+          className="mb-6 font-hero text-4xl leading-[0.9] text-lava-50 motion-safe:animate-hero-slide-up sm:text-5xl md:max-w-6xl md:text-6xl 3xl:text-7xl 4xl:text-8xl"
           style={
             shouldAnimate
               ? {

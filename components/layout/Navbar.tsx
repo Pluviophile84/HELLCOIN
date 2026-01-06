@@ -32,49 +32,47 @@ export const Navbar = ({ onTriggerPaperHands, isHeavenModeActive = false }: Navb
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   const navRef = useRef<HTMLElement | null>(null);
-  const measureRef = useRef<HTMLDivElement | null>(null);
   const hamburgerRef = useRef<HTMLButtonElement | null>(null);
-  const maxNavHRef = useRef(0);
   const wasMobileOpenRef = useRef(false);
 
   // Scroll detection
   useEffect(() => {
-    const handleScroll = () => setIsScrolled(window.scrollY > 5);
+    const handleScroll = () => setIsScrolled(window.scrollY > 20);
     window.addEventListener("scroll", handleScroll, { passive: true });
     handleScroll();
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
   // Nav height CSS variable management
-  const updateNavHeight = useCallback(() => {
-    if (navRef.current) {
-      const currentHeight = navRef.current.offsetHeight;
-      document.documentElement.style.setProperty("--nav-curr-h", `${currentHeight}px`);
-    }
-
-    if (measureRef.current) {
-      const expandedHeight = measureRef.current.offsetHeight;
-      if (expandedHeight > 0 && Math.abs(maxNavHRef.current - expandedHeight) > 1) {
-        maxNavHRef.current = expandedHeight;
-        document.documentElement.style.setProperty("--nav-h", `${expandedHeight}px`);
-      }
-    }
-  }, []);
-
   useEffect(() => {
-    const resizeObserver = new ResizeObserver(updateNavHeight);
-    if (navRef.current) resizeObserver.observe(navRef.current);
-    if (measureRef.current) resizeObserver.observe(measureRef.current);
+    if (!navRef.current) return;
 
-    window.addEventListener("resize", updateNavHeight, { passive: true });
-    updateNavHeight();
-    document.fonts.ready.then(updateNavHeight);
+    const updateHeight = () => {
+      if (navRef.current) {
+        const height = navRef.current.offsetHeight;
+        document.documentElement.style.setProperty("--nav-h", `${height}px`);
+      }
+    };
 
+    const resizeObserver = new ResizeObserver(updateHeight);
+    resizeObserver.observe(navRef.current);
+    
+    updateHeight();
+    
+    // Close mobile menu on resize and restore scroll
+    const handleResize = () => {
+      if (window.innerWidth >= 1280) { // xl breakpoint
+        setMobileMenuOpen(false);
+      }
+      updateHeight();
+    };
+
+    window.addEventListener("resize", handleResize);
     return () => {
       resizeObserver.disconnect();
-      window.removeEventListener("resize", updateNavHeight);
+      window.removeEventListener("resize", handleResize);
     };
-  }, [updateNavHeight]);
+  }, []);
 
   // Focus management when mobile menu closes
   useEffect(() => {
@@ -93,7 +91,6 @@ export const Navbar = ({ onTriggerPaperHands, isHeavenModeActive = false }: Navb
 
   const handleNavClick = (e: React.MouseEvent<HTMLAnchorElement>, href: string) => {
     e.preventDefault();
-    e.stopPropagation();
     setMobileMenuOpen(false);
 
     const targetId = href.replace("#", "");
@@ -103,37 +100,26 @@ export const Navbar = ({ onTriggerPaperHands, isHeavenModeActive = false }: Navb
     }
   };
 
+  // Ensure solid background when menu is open
+  const showSolidNav = isScrolled || mobileMenuOpen;
+
   return (
     <nav
       ref={navRef}
       className={cn(
-        "fixed left-0 right-0 top-0 z-[90] border-b-3 border-black bg-[#1C1612] transition-[padding,box-shadow] duration-300 ease-out",
-        isScrolled ? `${navPadCompact} shadow-brutal` : `${navPadExpanded} shadow-none`
+        "fixed left-0 right-0 top-0 z-[90] transition-all duration-300 ease-out",
+        showSolidNav 
+          ? cn("border-b-3 border-black bg-[#1C1612] shadow-brutal", navPadCompact)
+          : cn("border-b-3 border-transparent bg-transparent shadow-none", navPadExpanded)
       )}
     >
-      {/* Hidden measurement div (always expanded state) - must match actual navbar structure including border */}
-      <div
-        ref={measureRef}
-        aria-hidden="true"
-        className={cn(
-          "pointer-events-none invisible absolute left-0 right-0 top-0 border-b-3 px-4 md:px-8",
-          navPadExpanded
-        )}
-      >
-        <div className="flex items-center justify-between">
-          <div className="h-11 w-11" />
-          <div className="h-10" />
-        </div>
-      </div>
-
-      {/* Main navbar content */}
       <div className="mx-auto flex max-w-[90rem] items-center justify-between px-4 md:px-8">
-        <NavbarLogo isScrolled={isScrolled} onClick={scrollToTop} />
+        <NavbarLogo isScrolled={showSolidNav} onClick={scrollToTop} />
 
         <NavbarLinks links={NAV_LINKS_DATA} onNavClick={handleNavClick} />
 
         <NavbarActions
-          isScrolled={isScrolled}
+          isScrolled={showSolidNav}
           mobileMenuOpen={mobileMenuOpen}
           onToggleMobile={() => setMobileMenuOpen((prev) => !prev)}
           onTriggerPaperHands={onTriggerPaperHands}

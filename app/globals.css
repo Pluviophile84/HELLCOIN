@@ -11,13 +11,17 @@
   --obsidian-dark: #0d0a08;
   --obsidian-mid: #1c1612;
   --gold-accent: #e8a020;
-  /* Navbar height variables - initialized to expected expanded height */
-  --nav-h: 71px;
-  --nav-curr-h: 71px;
+  /* Navbar height variable - updated via ResizeObserver in Navbar.tsx */
+  --nav-h: 70px;
 }
 
 html {
   scroll-behavior: smooth;
+  scroll-padding-top: var(--nav-h);
+}
+
+[id] {
+  scroll-margin-top: var(--nav-h);
 }
 
 body {
