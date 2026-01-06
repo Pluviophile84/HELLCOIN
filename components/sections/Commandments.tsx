@@ -287,20 +287,20 @@ export const Commandments = () => {
           viewport={{ once: true, amount: 0.05, margin: "100px 0px 0px 0px" }}
           className="hidden grid-cols-1 gap-6 md:grid-cols-2 lg:grid lg:grid-cols-3 xl:grid-cols-4 3xl:grid-cols-5 3xl:gap-8"
         >
-          {commandments.map((c, i) => (
-            <motion.div
-              key={c.id}
-              variants={getVariants(fadeInUp, reduceMotion)}
-              whileHover={getHover(cardHover, reduceMotion)}
-              className={`group relative overflow-visible rounded-xl border-3 border-black bg-obsidian-800 p-6 shadow-brutal transition-shadow duration-200 hover:bg-obsidian-900 hover:shadow-[0_0_40px_rgba(255,85,0,0.5)] ${i === 0 || i === 9 ? "md:col-span-2 3xl:col-span-1" : ""}`}
-            >
-              <div className="text-cartoon-sm hellfire-text absolute right-6 top-4 font-heading text-4xl">
-                {c.id}
-              </div>
+            {commandments.map((c, i) => (
+              <motion.div
+                key={c.id}
+                variants={getVariants(fadeInUp, reduceMotion)}
+                whileHover={getHover(cardHover, reduceMotion)}
+                className={`group relative overflow-visible rounded-xl border-3 border-black bg-obsidian-800 p-6 shadow-brutal transition-shadow duration-200 hover:bg-obsidian-900 hover:shadow-[0_0_40px_rgba(255,85,0,0.5)] ${i === 0 || i === 9 ? "md:col-span-2 3xl:col-span-1" : ""}`}
+              >
+                <div className="text-cartoon-sm hellfire-text absolute right-4 top-3 font-heading text-3xl">
+                  {c.id}
+                </div>
 
-              <h3 className="mb-3 pr-14 font-body text-xl font-bold uppercase text-gold transition-colors duration-150 group-hover:text-lava-300">
-                {c.title}
-              </h3>
+                <h3 className="mb-3 pr-10 font-body text-xl font-bold uppercase text-gold transition-colors duration-150 group-hover:text-lava-300">
+                  {c.title}
+                </h3>
 
               <p className="font-body text-lg text-lava-100/70 transition-colors duration-150 group-hover:text-lava-100">
                 {c.text}
