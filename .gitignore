@@ -1,47 +1,51 @@
+# Orchids (do not ever commit)
+.orchids/
+**/.orchids/
+
+# Bun artifacts (ignore; you use npm)
+bun.lock
+bun.lockb
+
 # Dependencies
 node_modules/
 .pnp/
 .pnp.js
 
-# Build outputs
+# Next.js / build outputs
 .next/
 out/
-build/
 dist/
+build/
 
-# TypeScript
+# Caches / tooling
+.vercel/
+.turbo/
+.cache/
+.parcel-cache/
+.eslintcache
 *.tsbuildinfo
-next-env.d.ts
+tsconfig.tsbuildinfo
 
-# Environment files
+# Env (secrets)
 .env
+.env.*
 .env*.local
+!.env.example
 
-# Vercel
-.vercel
-
-# IDE / Editor
-.vscode/
-.idea/
-*.swp
-*.swo
-*~
-
-# OS files
-.DS_Store
-Thumbs.db
-ehthumbs.db
-
-# Debug logs
+# Logs
+*.log
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 .pnpm-debug.log*
 
-# Testing
-coverage/
-.nyc_output/
+# IDE / OS
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+ehthumbs.db
+*.swp
+*.swo
+*~
 
-# Misc
-*.pem
-*.log
