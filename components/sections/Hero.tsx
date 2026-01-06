@@ -135,7 +135,7 @@ export const Hero = () => {
 
       {/* Main content wrapper with parallax */}
       <div
-        className="relative z-10 mx-auto flex w-full max-w-[1600px] flex-col items-center px-4 pt-8 text-center landscape:pb-8 landscape:pt-20 md:items-end md:px-12 md:pt-0 md:text-right 3xl:max-w-[2000px] 3xl:pr-[20%]"
+        className="relative z-10 mx-auto flex w-full max-w-[1600px] flex-col items-center px-4 pt-8 text-center short-landscape:pb-8 short-landscape:pt-20 md:items-end md:px-12 md:pt-0 md:text-right 3xl:max-w-[2000px] 3xl:pr-[20%]"
         style={
           shouldAnimate
             ? {
@@ -149,7 +149,7 @@ export const Hero = () => {
       >
         {/* Title - fastest fade, moderate movement */}
         <h1
-          className="mb-6 font-hero text-4xl leading-[0.9] text-lava-50 motion-safe:animate-hero-slide-up landscape:mb-2 landscape:text-2xl sm:text-5xl md:max-w-6xl md:text-6xl 3xl:text-7xl 4xl:text-8xl"
+          className="mb-6 font-hero text-4xl leading-[0.9] text-lava-50 motion-safe:animate-hero-slide-up short-landscape:mb-2 short-landscape:text-2xl sm:text-5xl md:max-w-6xl md:text-6xl 3xl:text-7xl 4xl:text-8xl"
           style={
             shouldAnimate
               ? {
@@ -167,7 +167,7 @@ export const Hero = () => {
 
         {/* Subtitle - medium fade */}
         <div
-          className="mx-auto max-w-4xl space-y-2 font-body text-hero-sub text-lava-100 motion-safe:animate-hero-slide-up-delayed landscape:space-y-0 md:mx-0 md:max-w-5xl md:space-y-0 3xl:text-2xl"
+          className="mx-auto max-w-4xl space-y-2 font-body text-hero-sub text-lava-100 motion-safe:animate-hero-slide-up-delayed short-landscape:space-y-0 md:mx-0 md:max-w-5xl md:space-y-0 3xl:text-2xl"
           style={
             shouldAnimate
               ? {
@@ -178,18 +178,18 @@ export const Hero = () => {
               : undefined
           }
         >
-          <p className="leading-relaxed landscape:text-sm md:landscape:text-base">
+          <p className="leading-relaxed short-landscape:text-sm">
             The first cryptocurrency powered by{" "}
             <span className="my-2 block text-hero-sub-em font-bold text-gold md:my-0 md:inline md:font-normal 3xl:text-3xl">
               Proof-of-Suffering
             </span>
           </p>
-          <p className="text-lava-100 landscape:text-sm md:landscape:text-base">the only consensus mechanism traders truly understand.</p>
+          <p className="text-lava-100 short-landscape:text-sm">the only consensus mechanism traders truly understand.</p>
         </div>
 
         {/* Tagline - slower fade */}
         <p
-          className="hellfire-text-pure mt-8 animate-pulse font-body text-base font-bold uppercase tracking-widest landscape:mt-2 landscape:text-xs md:max-w-5xl md:text-lg 3xl:text-xl"
+          className="hellfire-text-pure mt-8 animate-pulse font-body text-base font-bold uppercase tracking-widest short-landscape:mt-2 short-landscape:text-xs md:max-w-5xl md:text-lg 3xl:text-xl"
           style={
             shouldAnimate
               ? {
@@ -206,7 +206,7 @@ export const Hero = () => {
 
         {/* CTA - slowest fade, most movement */}
         <div
-          className="mt-12 flex w-full flex-col items-center justify-center gap-8 motion-safe:animate-hero-slide-up-delayed-3 landscape:mt-4 landscape:flex-row landscape:gap-4 md:max-w-5xl md:flex-row md:justify-end"
+          className="mt-12 flex w-full flex-col items-center justify-center gap-8 motion-safe:animate-hero-slide-up-delayed-3 short-landscape:mt-4 short-landscape:flex-row short-landscape:gap-4 md:max-w-5xl md:flex-row md:justify-end"
           style={
             shouldAnimate
               ? {
@@ -220,7 +220,7 @@ export const Hero = () => {
           <button
             type="button"
             onClick={handleAbandonHope}
-            className="group order-1 flex items-center gap-2 font-body text-xl font-bold text-lava-100/50 transition-colors duration-200 hover:text-gold landscape:text-sm md:order-none md:text-2xl 3xl:text-3xl"
+            className="group order-1 flex items-center gap-2 font-body text-xl font-bold text-lava-100/50 transition-colors duration-200 hover:text-gold short-landscape:text-sm md:order-none md:text-2xl 3xl:text-3xl"
           >
             [ ABANDON HOPE ]
             <TrendingDown className="h-5 w-5 transition-transform duration-200 group-hover:translate-y-1" />
@@ -230,7 +230,7 @@ export const Hero = () => {
             href={BUY_LINK}
             target="_blank"
             rel="noopener noreferrer"
-            className="hellfire-bg group relative order-2 flex cursor-pointer items-center gap-2 overflow-hidden rounded-xl border-3 border-black px-8 py-4 font-heading text-xl uppercase text-white shadow-brutal transition-all duration-200 hover:translate-x-1 hover:translate-y-1 hover:shadow-[0_0_30px_rgba(255,85,0,0.7)] landscape:px-4 landscape:py-2 landscape:text-sm md:order-none md:text-2xl 3xl:text-3xl"
+            className="hellfire-bg group relative order-2 flex cursor-pointer items-center gap-2 overflow-hidden rounded-xl border-3 border-black px-8 py-4 font-heading text-xl uppercase text-white shadow-brutal transition-all duration-200 hover:translate-x-1 hover:translate-y-1 hover:shadow-[0_0_30px_rgba(255,85,0,0.7)] short-landscape:px-4 short-landscape:py-2 short-landscape:text-sm md:order-none md:text-2xl 3xl:text-3xl"
           >
             <span className="relative z-10 flex items-center gap-2">ACQUIRE $666</span>
           </a>
