@@ -241,7 +241,7 @@ export const Commandments = () => {
                   SWIPE LEFT / RIGHT — OR PRETEND YOU READ IT AND DO IT ANYWAY.
                 </div>
 
-                <div className="mt-3 flex items-center justify-between gap-4 md:justify-center">
+                <div className="mt-3 flex items-center justify-center gap-4">
                   <button
                     type="button"
                     onClick={() => paginate(-1)}
