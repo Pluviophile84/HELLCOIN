@@ -200,8 +200,8 @@ export const Hero = () => {
               : undefined
           }
         >
-          WHEN THE MARKET BURNS,{" "}
-          <span className="block md:ml-2 md:inline">WE TREND</span>
+            WHEN THE MARKET BURNS,{" "}
+            <span className="block md:inline">WE TREND</span>
         </p>
 
         {/* CTA - slowest fade, most movement */}
