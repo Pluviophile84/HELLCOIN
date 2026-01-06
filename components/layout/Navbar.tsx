@@ -114,7 +114,7 @@ export const Navbar = ({ onTriggerPaperHands, isHeavenModeActive = false }: Navb
           : cn("border-b-3 border-transparent bg-transparent shadow-none", currentPadding)
       )}
     >
-      <div className="mx-auto flex max-w-[90rem] items-center justify-between px-4 md:px-8">
+      <div className="relative z-50 mx-auto flex max-w-[90rem] items-center justify-between px-4 md:px-8">
         <NavbarLogo isScrolled={showSolidNav} onClick={scrollToTop} />
 
         <NavbarLinks links={NAV_LINKS_DATA} onNavClick={handleNavClick} />
