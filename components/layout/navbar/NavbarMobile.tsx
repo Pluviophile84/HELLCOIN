@@ -76,10 +76,10 @@ export const NavbarMobile = ({ isOpen, onClose, links, onNavClick, navRef }: Nav
       aria-modal="true"
       aria-label="Navigation menu"
       className={cn(
-        "fixed inset-x-0 bottom-0 z-[80] overflow-y-auto bg-[#1C1612] transition-opacity duration-200 ease-out xl:hidden",
+        "fixed inset-0 z-[80] overflow-y-auto bg-[#1C1612] transition-opacity duration-200 ease-out xl:hidden",
         isAnimating ? "opacity-100" : "opacity-0"
       )}
-      style={{ top: "var(--nav-h)" }}
+      style={{ paddingTop: "var(--nav-h)" }}
       onClick={onClose}
     >
       <div

@@ -126,7 +126,7 @@ export const Hero = () => {
 
       {/* Main content wrapper with parallax */}
       <div
-        className="relative z-10 mx-auto flex w-full max-w-[1600px] flex-col items-center px-4 pt-8 text-center md:items-end md:px-12 md:pt-0 md:text-right 3xl:max-w-[2000px] 3xl:pr-[20%]"
+        className="relative z-10 mx-auto flex w-full max-w-[1600px] flex-col items-center px-4 pt-12 text-center md:items-end md:px-12 md:pt-0 md:text-right 3xl:max-w-[2000px] 3xl:pr-[20%]"
         style={
           shouldAnimate
             ? {
@@ -140,7 +140,7 @@ export const Hero = () => {
       >
         {/* Title - fastest fade, moderate movement */}
         <h1
-          className="mb-6 font-hero text-4xl leading-[0.9] text-lava-50 motion-safe:animate-hero-slide-up sm:text-5xl md:max-w-6xl md:text-6xl 3xl:text-7xl 4xl:text-8xl"
+          className="mb-4 font-hero text-3xl leading-[0.9] text-lava-50 motion-safe:animate-hero-slide-up sm:mb-6 sm:text-5xl md:max-w-6xl md:text-6xl 3xl:text-7xl 4xl:text-8xl"
           style={
             shouldAnimate
               ? {
@@ -158,7 +158,7 @@ export const Hero = () => {
 
         {/* Subtitle - medium fade */}
         <div
-          className="mx-auto max-w-4xl space-y-2 font-body text-hero-sub text-lava-100 motion-safe:animate-hero-slide-up-delayed md:mx-0 md:max-w-5xl md:space-y-0 3xl:text-2xl"
+          className="mx-auto max-w-4xl space-y-2 font-body text-base text-lava-100 motion-safe:animate-hero-slide-up-delayed sm:text-xl md:mx-0 md:max-w-5xl md:space-y-0 3xl:text-2xl"
           style={
             shouldAnimate
               ? {
@@ -171,7 +171,7 @@ export const Hero = () => {
         >
           <p className="leading-relaxed">
             The first cryptocurrency powered by{" "}
-            <span className="my-2 block text-hero-sub-em font-bold text-gold md:my-0 md:inline md:font-normal 3xl:text-3xl">
+            <span className="my-2 block font-bold text-gold md:my-0 md:inline md:font-normal 3xl:text-3xl">
               Proof-of-Suffering
             </span>
           </p>
@@ -180,7 +180,7 @@ export const Hero = () => {
 
         {/* Tagline - slower fade */}
         <p
-          className="hellfire-text-pure mt-8 animate-pulse font-body text-base font-bold uppercase tracking-widest md:max-w-5xl md:text-lg 3xl:text-xl"
+          className="hellfire-text-pure mt-6 animate-pulse font-body text-sm font-bold uppercase tracking-widest sm:mt-8 md:max-w-5xl md:text-lg 3xl:text-xl"
           style={
             shouldAnimate
               ? {
@@ -197,7 +197,7 @@ export const Hero = () => {
 
         {/* CTA - slowest fade, most movement */}
         <div
-          className="mt-12 flex w-full flex-col items-center justify-center gap-8 motion-safe:animate-hero-slide-up-delayed-3 md:max-w-5xl md:flex-row md:justify-end"
+          className="mt-8 flex w-full flex-col items-center justify-center gap-6 motion-safe:animate-hero-slide-up-delayed-3 sm:mt-12 sm:gap-8 md:max-w-5xl md:flex-row md:justify-end"
           style={
             shouldAnimate
               ? {

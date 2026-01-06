@@ -102,6 +102,8 @@ export const Navbar = ({ onTriggerPaperHands, isHeavenModeActive = false }: Navb
 
   // Ensure solid background when menu is open
   const showSolidNav = isScrolled || mobileMenuOpen;
+  // Only use compact padding when actually scrolled
+  const isCompact = isScrolled;
 
   return (
     <nav
@@ -109,8 +111,9 @@ export const Navbar = ({ onTriggerPaperHands, isHeavenModeActive = false }: Navb
       className={cn(
         "fixed left-0 right-0 top-0 z-[90] transition-all duration-300 ease-out",
         showSolidNav 
-          ? cn("border-b-3 border-black bg-[#1C1612] shadow-brutal", navPadCompact)
-          : cn("border-b-3 border-transparent bg-transparent shadow-none", navPadExpanded)
+          ? "border-b-3 border-black bg-[#1C1612] shadow-brutal"
+          : "border-b-3 border-transparent bg-transparent shadow-none",
+        isCompact ? navPadCompact : navPadExpanded
       )}
     >
       <div className="mx-auto flex max-w-[90rem] items-center justify-between px-4 md:px-8">
