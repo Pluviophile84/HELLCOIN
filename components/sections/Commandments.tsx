@@ -217,22 +217,22 @@ export const Commandments = () => {
                 </AnimatePresence>
               </div>
 
-              <div className="border-t-3 border-black bg-obsidian-900 px-6 py-4 md:px-10">
-                <div className="text-center font-body text-xs font-bold uppercase tracking-widest text-lava-100/50 md:text-sm">
+              <div className="border-t-3 border-black bg-obsidian-900 px-4 py-6 sm:px-6 md:px-10">
+                <div className="text-center font-body text-[10px] font-bold uppercase tracking-widest text-lava-100/50 sm:text-xs md:text-sm">
                   SWIPE LEFT / RIGHT — OR PRETEND YOU READ IT AND DO IT ANYWAY.
                 </div>
 
-                <div className="mt-6 flex items-center justify-between gap-4 w-full max-w-2xl mx-auto">
+                <div className="mt-8 flex items-center justify-between gap-2 w-full max-w-4xl mx-auto px-1 sm:px-2">
                     <button
                       type="button"
                       onClick={() => paginate(-1)}
-                      className="rounded-lg border-3 border-black bg-obsidian-800 px-4 py-3 text-lava-100 shadow-brutal-sm transition-all hover:translate-x-0.5 hover:translate-y-0.5 hover:text-gold hover:shadow-none flex-shrink-0"
+                      className="rounded-lg border-3 border-black bg-obsidian-800 p-2.5 sm:px-4 sm:py-3 text-lava-100 shadow-brutal-sm transition-all hover:translate-x-0.5 hover:translate-y-0.5 hover:text-gold hover:shadow-none flex-shrink-0 active:scale-95"
                       aria-label="Previous commandment"
                     >
-                      <ChevronLeft size={20} />
+                      <ChevronLeft className="w-5 h-5 sm:w-6 sm:h-6" />
                     </button>
 
-                    <div className="flex flex-1 items-center justify-center gap-[clamp(0.5rem,2vw,1.5rem)]">
+                    <div className="flex flex-1 items-center justify-center gap-[clamp(0.25rem,3.5vw,2.5rem)] min-w-0 mx-2">
                       {commandments.map((c, i) => (
                         <button
                           key={c.id}
@@ -240,8 +240,10 @@ export const Commandments = () => {
                           aria-label={`Go to commandment ${c.id}`}
                           onClick={() => setIdx(([curr]) => [i, i > curr ? 1 : -1])}
                           className={[
-                            "h-3.5 w-3.5 rounded-sm border-2 border-black transition-all duration-300",
-                            i === idx ? "hellfire-bg scale-125" : "bg-obsidian-800 hover:bg-obsidian-700",
+                            "rounded-sm border-2 border-black transition-all duration-300 flex-shrink-0",
+                            i === idx 
+                              ? "hellfire-bg scale-125 w-2.5 h-2.5 sm:w-3.5 sm:h-3.5" 
+                              : "bg-obsidian-800 hover:bg-obsidian-700 w-2 h-2 sm:w-3 sm:h-3",
                           ].join(" ")}
                         />
                       ))}
@@ -250,10 +252,10 @@ export const Commandments = () => {
                     <button
                       type="button"
                       onClick={() => paginate(1)}
-                      className="rounded-lg border-3 border-black bg-obsidian-800 px-4 py-3 text-lava-100 shadow-brutal-sm transition-all hover:translate-x-0.5 hover:translate-y-0.5 hover:text-gold hover:shadow-none flex-shrink-0"
+                      className="rounded-lg border-3 border-black bg-obsidian-800 p-2.5 sm:px-4 sm:py-3 text-lava-100 shadow-brutal-sm transition-all hover:translate-x-0.5 hover:translate-y-0.5 hover:text-gold hover:shadow-none flex-shrink-0 active:scale-95"
                       aria-label="Next commandment"
                     >
-                      <ChevronRight size={20} />
+                      <ChevronRight className="w-5 h-5 sm:w-6 sm:h-6" />
                     </button>
                 </div>
               </div>
