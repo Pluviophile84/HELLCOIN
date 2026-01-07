@@ -144,44 +144,25 @@ export const Commandments = () => {
         <div className="lg:hidden">
           <div className="mx-auto max-w-3xl">
             <div className="relative overflow-hidden rounded-xl border-3 border-black bg-obsidian-800 shadow-brutal transition-all hover:shadow-[0_0_30px_rgba(255,85,0,0.7)]">
-              <div className="relative flex items-center border-b-3 border-black bg-obsidian-900 px-6 py-4 md:px-10">
-                <div className="flex items-center">
-                  <span className="text-cartoon-sm hellfire-text font-heading text-4xl md:text-5xl">
-                    {current.id}
-                  </span>
-                </div>
-
-                <div className="absolute left-1/2 -translate-x-1/2">
-                  <span className="whitespace-nowrap font-body text-sm font-bold uppercase tracking-widest text-gold md:text-base">
-                    <span className="inline-block w-[5ch] text-center tabular-nums">
+                <div className="relative flex items-center border-b-3 border-black bg-obsidian-900 px-6 py-4 md:px-10">
+                  <div className="flex items-center">
+                    <span className="text-cartoon-sm hellfire-text font-heading text-4xl md:text-5xl">
                       {current.id}
                     </span>
-                    <span className="inline-block w-[3ch] text-center">/</span>
-                    <span className="inline-block w-[5ch] text-center tabular-nums">
-                      {TOTAL_ROMAN}
-                    </span>
-                  </span>
-                </div>
+                  </div>
 
-                <div className="ml-auto hidden items-center gap-2 md:flex">
-                  <button
-                    type="button"
-                    onClick={() => paginate(-1)}
-                    aria-label="Previous commandment"
-                    className="rounded-lg border-3 border-black bg-obsidian-800 px-3 py-2 text-lava-100 shadow-brutal-sm transition-all hover:translate-x-0.5 hover:translate-y-0.5 hover:text-gold hover:shadow-none"
-                  >
-                    <ChevronLeft size={18} />
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => paginate(1)}
-                    aria-label="Next commandment"
-                    className="rounded-lg border-3 border-black bg-obsidian-800 px-3 py-2 text-lava-100 shadow-brutal-sm transition-all hover:translate-x-0.5 hover:translate-y-0.5 hover:text-gold hover:shadow-none"
-                  >
-                    <ChevronRight size={18} />
-                  </button>
+                  <div className="absolute left-1/2 -translate-x-1/2">
+                    <span className="whitespace-nowrap font-body text-sm font-bold uppercase tracking-widest text-gold md:text-base">
+                      <span className="inline-block w-[5ch] text-center tabular-nums">
+                        {current.id}
+                      </span>
+                      <span className="inline-block w-[3ch] text-center">/</span>
+                      <span className="inline-block w-[5ch] text-center tabular-nums">
+                        {TOTAL_ROMAN}
+                      </span>
+                    </span>
+                  </div>
                 </div>
-              </div>
 
               <div
                 ref={frameRef}
@@ -242,38 +223,38 @@ export const Commandments = () => {
                 </div>
 
                 <div className="mt-3 flex items-center justify-center gap-4">
-                  <button
-                    type="button"
-                    onClick={() => paginate(-1)}
-                    className="rounded-lg border-3 border-black bg-obsidian-800 px-3 py-2 text-lava-100 shadow-brutal-sm transition-all hover:translate-x-0.5 hover:translate-y-0.5 hover:text-gold hover:shadow-none md:hidden"
-                    aria-label="Previous commandment"
-                  >
-                    <ChevronLeft size={18} />
-                  </button>
+                    <button
+                      type="button"
+                      onClick={() => paginate(-1)}
+                      className="rounded-lg border-3 border-black bg-obsidian-800 px-3 py-2 text-lava-100 shadow-brutal-sm transition-all hover:translate-x-0.5 hover:translate-y-0.5 hover:text-gold hover:shadow-none"
+                      aria-label="Previous commandment"
+                    >
+                      <ChevronLeft size={18} />
+                    </button>
 
-                  <div className="flex items-center gap-2">
-                    {commandments.map((c, i) => (
-                      <button
-                        key={c.id}
-                        type="button"
-                        aria-label={`Go to commandment ${c.id}`}
-                        onClick={() => setIdx(([curr]) => [i, i > curr ? 1 : -1])}
-                        className={[
-                          "h-3 w-3 rounded-sm border-2 border-black transition-colors",
-                          i === idx ? "hellfire-bg" : "bg-obsidian-800",
-                        ].join(" ")}
-                      />
-                    ))}
-                  </div>
+                    <div className="flex items-center gap-2">
+                      {commandments.map((c, i) => (
+                        <button
+                          key={c.id}
+                          type="button"
+                          aria-label={`Go to commandment ${c.id}`}
+                          onClick={() => setIdx(([curr]) => [i, i > curr ? 1 : -1])}
+                          className={[
+                            "h-3 w-3 rounded-sm border-2 border-black transition-colors",
+                            i === idx ? "hellfire-bg" : "bg-obsidian-800",
+                          ].join(" ")}
+                        />
+                      ))}
+                    </div>
 
-                  <button
-                    type="button"
-                    onClick={() => paginate(1)}
-                    className="rounded-lg border-3 border-black bg-obsidian-800 px-3 py-2 text-lava-100 shadow-brutal-sm transition-all hover:translate-x-0.5 hover:translate-y-0.5 hover:text-gold hover:shadow-none md:hidden"
-                    aria-label="Next commandment"
-                  >
-                    <ChevronRight size={18} />
-                  </button>
+                    <button
+                      type="button"
+                      onClick={() => paginate(1)}
+                      className="rounded-lg border-3 border-black bg-obsidian-800 px-3 py-2 text-lava-100 shadow-brutal-sm transition-all hover:translate-x-0.5 hover:translate-y-0.5 hover:text-gold hover:shadow-none"
+                      aria-label="Next commandment"
+                    >
+                      <ChevronRight size={18} />
+                    </button>
                 </div>
               </div>
             </div>
