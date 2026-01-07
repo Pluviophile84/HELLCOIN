@@ -222,17 +222,17 @@ export const Commandments = () => {
                   SWIPE LEFT / RIGHT — OR PRETEND YOU READ IT AND DO IT ANYWAY.
                 </div>
 
-                <div className="mt-3 flex items-center justify-center gap-4">
+                <div className="mt-6 flex items-center justify-between gap-4 w-full max-w-2xl mx-auto">
                     <button
                       type="button"
                       onClick={() => paginate(-1)}
-                      className="rounded-lg border-3 border-black bg-obsidian-800 px-3 py-2 text-lava-100 shadow-brutal-sm transition-all hover:translate-x-0.5 hover:translate-y-0.5 hover:text-gold hover:shadow-none"
+                      className="rounded-lg border-3 border-black bg-obsidian-800 px-4 py-3 text-lava-100 shadow-brutal-sm transition-all hover:translate-x-0.5 hover:translate-y-0.5 hover:text-gold hover:shadow-none flex-shrink-0"
                       aria-label="Previous commandment"
                     >
-                      <ChevronLeft size={18} />
+                      <ChevronLeft size={20} />
                     </button>
 
-                    <div className="flex items-center gap-2">
+                    <div className="flex flex-1 items-center justify-center gap-[clamp(0.5rem,2vw,1.5rem)]">
                       {commandments.map((c, i) => (
                         <button
                           key={c.id}
@@ -240,8 +240,8 @@ export const Commandments = () => {
                           aria-label={`Go to commandment ${c.id}`}
                           onClick={() => setIdx(([curr]) => [i, i > curr ? 1 : -1])}
                           className={[
-                            "h-3 w-3 rounded-sm border-2 border-black transition-colors",
-                            i === idx ? "hellfire-bg" : "bg-obsidian-800",
+                            "h-3.5 w-3.5 rounded-sm border-2 border-black transition-all duration-300",
+                            i === idx ? "hellfire-bg scale-125" : "bg-obsidian-800 hover:bg-obsidian-700",
                           ].join(" ")}
                         />
                       ))}
@@ -250,10 +250,10 @@ export const Commandments = () => {
                     <button
                       type="button"
                       onClick={() => paginate(1)}
-                      className="rounded-lg border-3 border-black bg-obsidian-800 px-3 py-2 text-lava-100 shadow-brutal-sm transition-all hover:translate-x-0.5 hover:translate-y-0.5 hover:text-gold hover:shadow-none"
+                      className="rounded-lg border-3 border-black bg-obsidian-800 px-4 py-3 text-lava-100 shadow-brutal-sm transition-all hover:translate-x-0.5 hover:translate-y-0.5 hover:text-gold hover:shadow-none flex-shrink-0"
                       aria-label="Next commandment"
                     >
-                      <ChevronRight size={18} />
+                      <ChevronRight size={20} />
                     </button>
                 </div>
               </div>
