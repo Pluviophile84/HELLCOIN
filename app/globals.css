@@ -1,0 +1,308 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --foreground-rgb: 255, 244, 230;
+  --lava-primary: #ff4d1a;
+  --lava-secondary: #ff6b1a;
+  --hellfire-red: #dc2626;
+  --hellfire-orange: #ff6b1a;
+  --obsidian-dark: #0d0a08;
+  --obsidian-mid: #1c1612;
+  --gold-accent: #e8a020;
+  /* Navbar height variable - updated via ResizeObserver in Navbar.tsx */
+  --nav-h: 4.375rem;
+  /* Global scale for unified responsive scaling */
+  --hc-scale: 1;
+  /* Scalable border widths */
+  --hc-border-1: calc(1px * var(--hc-scale));
+  --hc-border-2: calc(2px * var(--hc-scale));
+  --hc-border-3: calc(3px * var(--hc-scale));
+}
+
+@media (min-width: 2560px) {
+  :root {
+    --hc-scale: 1.20;
+  }
+}
+
+@media (min-width: 3840px) {
+  :root {
+    --hc-scale: 1.30;
+  }
+}
+
+html {
+  scroll-behavior: smooth;
+  scroll-padding-top: var(--nav-h);
+  font-size: calc(16px * var(--hc-scale));
+}
+
+[id] {
+  scroll-margin-top: var(--nav-h);
+}
+
+body {
+  color: rgb(var(--foreground-rgb));
+  background: var(--obsidian-dark);
+  font-family: var(--font-body), system-ui, sans-serif;
+}
+
+@layer base {
+  h1 {
+    font-family: var(--font-hero), cursive;
+    text-transform: uppercase;
+    line-height: 0.9;
+  }
+
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    font-family: var(--font-heading), serif;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    font-weight: 600;
+  }
+}
+
+@layer components {
+  .text-cartoon {
+    -webkit-text-stroke: 0.125rem #000000;
+    paint-order: stroke fill;
+  }
+
+  .text-cartoon-sm {
+    -webkit-text-stroke: 0.0625rem #000000;
+    paint-order: stroke fill;
+  }
+
+  .text-cartoon-lg {
+    -webkit-text-stroke: 0.1875rem #000000;
+    paint-order: stroke fill;
+  }
+
+  .hellfire-text-pure {
+    background: linear-gradient(to top, #ff6b1a, #dc2626);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    -webkit-text-stroke: 0;
+    text-shadow: none;
+  }
+
+  .btn-lava {
+    @apply relative overflow-hidden rounded-xl border-3 border-black px-6 py-3 font-heading text-xl uppercase tracking-wide text-white shadow-brutal transition-all duration-150 ease-out;
+    background: linear-gradient(to top, #ff6b1a, #dc2626);
+  }
+
+  .btn-lava:hover {
+    @apply translate-x-0.5 translate-y-0.5 shadow-brutal-sm;
+    box-shadow: 0 0 1.5625rem rgba(220, 38, 38, 0.6);
+  }
+
+  .btn-lava:active {
+    @apply translate-x-1 translate-y-1 shadow-none;
+  }
+
+  .card-obsidian {
+    @apply rounded-xl border-3 border-black bg-obsidian-800 shadow-brutal transition-all duration-200;
+  }
+
+  .card-obsidian:hover {
+    box-shadow: 0 0 1.5625rem rgba(220, 38, 38, 0.6);
+  }
+
+  .card-obsidian-dark {
+    @apply rounded-xl border-3 border-black bg-obsidian-950 shadow-brutal transition-all duration-200;
+  }
+
+  .card-obsidian-dark:hover {
+    box-shadow: 0 0 1.5625rem rgba(220, 38, 38, 0.6);
+  }
+
+  .input-infernal {
+    @apply rounded-lg border-3 border-obsidian-800 bg-obsidian-900 px-4 py-3 font-body text-lava-100 outline-none transition-all duration-200;
+  }
+
+  .input-infernal:focus {
+    @apply border-lava-400 ring-2 ring-lava-400/30;
+  }
+
+  .section-container {
+    @apply mx-auto max-w-screen-2xl px-4 md:px-8 lg:px-12 3xl:px-16 4xl:max-w-[150rem];
+  }
+
+  .ember-particle {
+    @apply absolute h-2 w-2 animate-ember-float rounded-full bg-lava-400 opacity-60;
+  }
+
+  .hellfire-text {
+    background: linear-gradient(to top, #ff6b1a, #dc2626);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .hellfire-bg {
+    background: linear-gradient(to top, #ff6b1a, #dc2626);
+  }
+
+  .hellfire-bg-b {
+    background: linear-gradient(to bottom, #ff6b1a, #dc2626);
+  }
+}
+
+::-webkit-scrollbar {
+  width: 0.625rem;
+}
+
+::-webkit-scrollbar-track {
+  background: #1c1612;
+  border-left: 0.125rem solid #000;
+}
+
+::-webkit-scrollbar-thumb {
+  background: linear-gradient(180deg, #dc2626 0%, #ff6b1a 100%);
+  border: 0.125rem solid #000;
+  border-radius: 0;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(180deg, #ff6b1a 0%, #dc2626 100%);
+}
+
+.text-glow {
+  text-shadow:
+    0 0 0.625rem rgba(255, 77, 26, 0.7),
+    0 0 1.25rem rgba(255, 77, 26, 0.4);
+}
+
+.text-glow-gold {
+  text-shadow:
+    0 0 0.625rem rgba(232, 160, 32, 0.7),
+    0 0 1.25rem rgba(232, 160, 32, 0.4);
+}
+
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
+
+.scrollbar-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.skip-link {
+  position: absolute;
+  left: -9999px;
+  top: 0.75rem;
+  z-index: 9999;
+  background: #1c1612;
+  color: #fff4e6;
+  padding: 0.625rem 0.875rem;
+  border: 0.1875rem solid #ff4d1a;
+  text-decoration: none;
+  font-family: var(--font-body);
+  box-shadow: 0.25rem 0.25rem 0 #000;
+}
+
+.skip-link:focus {
+  left: 0.75rem;
+}
+
+.lava-border {
+  position: relative;
+}
+
+.lava-border::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 0.25rem;
+  background: linear-gradient(90deg, #dc2626, #ff6b1a, #dc2626);
+  background-size: 200% 100%;
+  animation: lavaFlow 3s ease-in-out infinite;
+}
+
+@keyframes lavaFlow {
+  0%,
+  100% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+}
+
+.cave-texture {
+  background-image:
+    radial-gradient(ellipse at 20% 80%, rgba(255, 77, 26, 0.1) 0%, transparent 50%),
+    radial-gradient(ellipse at 80% 20%, rgba(232, 160, 32, 0.05) 0%, transparent 50%),
+    radial-gradient(ellipse at 50% 50%, rgba(28, 22, 18, 0.8) 0%, transparent 100%);
+}
+
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+
+  .hc-border-1 {
+    border-width: var(--hc-border-1);
+  }
+
+  .hc-border-2 {
+    border-width: var(--hc-border-2);
+  }
+
+  .hc-border-3 {
+    border-width: var(--hc-border-3);
+  }
+}
+
+/* Focus-visible styles for keyboard navigation */
+@layer base {
+  /* Remove default focus outline */
+  *:focus {
+    outline: none;
+  }
+
+  /* Custom focus-visible ring for interactive elements */
+  a:focus-visible,
+  button:focus-visible,
+  input:focus-visible,
+  select:focus-visible,
+  textarea:focus-visible,
+  [role="button"]:focus-visible,
+  [tabindex]:focus-visible {
+    outline: 0.125rem solid #e8a020;
+    outline-offset: 0.125rem;
+    border-radius: 0.25rem;
+  }
+
+  /* Specific focus styles for links */
+  a:focus-visible {
+    text-decoration: underline;
+  }
+
+  /* Enhanced focus for buttons */
+  button:focus-visible,
+  [role="button"]:focus-visible {
+    box-shadow: 0 0 0 0.1875rem rgba(232, 160, 32, 0.3);
+  }
+}
+
+/* Reduced motion preferences */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
