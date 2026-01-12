@@ -34,12 +34,12 @@ const types = [
   {
     title: "THE LEVERAGE MARTYR",
     subline: "Sacrifices accounts daily so others may learn nothing.",
-    icon: Bomb,
+    icon: Anchor,
   },
   {
     title: "THE BAG-MARRIED",
     subline: "Holds the corpse. Believes in resurrection.",
-    icon: Anchor,
+    icon: Bomb,
   },
   {
     title: "THE RUG MAGNET",

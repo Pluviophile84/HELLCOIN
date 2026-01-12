@@ -10,8 +10,8 @@ type NavbarLogoProps = {
 
 const logoExpanded = "h-7 w-7 md:h-8 md:w-8 lg:h-9 lg:w-9";
 const logoCompact = "h-7 w-7 md:h-7 md:w-7 lg:h-8 lg:w-8";
-const brandExpanded = "text-xl md:text-2xl lg:text-3xl";
-const brandCompact = "text-xl md:text-2xl lg:text-2xl";
+const brandExpanded = "text-2xl md:text-3xl lg:text-3xl";
+const brandCompact = "text-2xl md:text-3xl lg:text-2xl";
 
 export const NavbarLogo = ({ isScrolled, onClick }: NavbarLogoProps) => {
   return (

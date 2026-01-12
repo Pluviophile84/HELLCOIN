@@ -130,7 +130,7 @@ export const Hero = () => {
         />
         {/* Gradient overlays */}
         <div className="absolute inset-0 bg-gradient-to-t from-obsidian-950 via-obsidian-950/60 to-transparent" />
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-transparent via-obsidian-950/0 to-obsidian-950" />
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-transparent via-obsidian-950/20 to-obsidian-950" />
       </div>
 
       {/* Main content wrapper - outer handles 2K/4K positioning */}
@@ -180,18 +180,18 @@ export const Hero = () => {
               : undefined
           }
         >
-          <p className="leading-relaxed short-landscape:text-sm">
+        <p className="leading-relaxed short-landscape:text-sm 3xl:text-3xl 4xl:text-4xl">
             The first cryptocurrency powered by{" "}
             <span className="my-1 block text-hero-sub-em font-bold text-gold md:my-0 md:inline md:font-normal 3xl:text-3xl">
               Proof-of-Suffering
             </span>
           </p>
-          <p className="text-lava-100 short-landscape:text-sm">the only consensus mechanism traders truly understand.</p>
+          <p className="text-lava-100 short-landscape:text-sm 3xl:text-3xl 4xl:text-4xl">the only consensus mechanism traders truly understand.</p>
         </div>
 
         {/* Tagline - slower fade */}
         <p
-          className="hellfire-text-pure mt-8 animate-pulse font-body text-base font-bold uppercase tracking-widest short-landscape:mt-2 short-landscape:text-xs md:max-w-5xl md:text-lg 3xl:text-xl"
+          className="hellfire-text-pure mt-8 animate-pulse font-body text-base font-bold uppercase tracking-widest short-landscape:mt-2 short-landscape:text-xs md:max-w-5xl md:text-lg 3xl:text-2xl 4xl:text-3xl"
           style={
             shouldAnimate
               ? {
