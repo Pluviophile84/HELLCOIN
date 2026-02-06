@@ -9,7 +9,7 @@ export const X_LINK = process.env.NEXT_PUBLIC_X_LINK || "https://x.com/hellcoin6
 
 // DEXScreener link
 export const DEXSCREENER_LINK =
-  process.env.NEXT_PUBLIC_DEXSCREENER_LINK || "https://dexscreener.com/solana/hellcoin";
+  process.env.NEXT_PUBLIC_DEXSCREENER_LINK || "https://dexscreener.com/solana/lq6qkcvntu29ptani91hlbqfslxfp2akw9scjdnzvuj";
 
 // Contract address - warning-only until launch
 // Set NEXT_PUBLIC_CONTRACT_ADDRESS environment variable with actual contract address at launch
