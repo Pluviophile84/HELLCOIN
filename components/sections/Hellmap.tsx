@@ -2,7 +2,12 @@
 
 import { motion, useReducedMotion } from "framer-motion";
 import { SectionKicker } from "@/components/ui/SectionKicker";
-import { fadeInUp, getVariants, getInitial, getWhileInView } from "@/lib/animations";
+import {
+  fadeInUp,
+  getVariants,
+  getInitial,
+  getWhileInView,
+} from "@/lib/animations";
 import { useViewportOnce } from "@/lib/useViewportMarginRem";
 
 const phases = [
@@ -19,31 +24,35 @@ const phases = [
   {
     num: "I",
     title: "DELUSIONAL HODLING",
-    tagline: "We promise utility, we deliver damage.",
+    tagline: "We promise utility. We deliver damage.",
     details: [
-      "Hit $666k Market Cap (12 secs)",
-      "Partnership with therapy apps",
-      "CEX Listing (Rejected 47 times)",
+      "Market cap hits $666k (briefly)",
+      "Partnerships announced",
+      "Therapy apps considered",
+      "CEX listing attempts: Rejected 47 times",
     ],
   },
   {
     num: "II",
     title: "COPIUM OVERDOSE",
-    tagline: "The chart is just consolidating... since 2024.",
+    tagline: "The chart is just consolidating.",
     details: [
       "Community invents new cope phrases",
       '"Whale manipulation" blamed for everything',
-      "Diamond hands become cement shoes",
+      "Long-term vision unlocked",
+      "Diamond hands upgraded to cement shoes",
     ],
   },
   {
     num: "III",
-    title: "TOTAL COLLAPSE",
-    tagline: "Can't be a bear market if it never went up.",
+    title: "TOTAL ADOPTION",
+    tagline: "There is no alternative.",
     details: [
-      "HELLCOIN becomes legal tender (in hell)",
+      "Hellcoin declared legal tender (jurisdiction pending)",
       "Financial system replaced by memes",
-      "We all become exit liquidity together",
+      "Everyone now holds exactly $666",
+      "The Mark of the Beast fulfilled.",
+      "The world does not end. The financial system does.",
     ],
   },
 ];
@@ -129,3 +138,4 @@ export const Hellmap = () => {
     </section>
   );
 };
+

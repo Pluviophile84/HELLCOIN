@@ -110,7 +110,7 @@ export const Footer = () => {
               </span>
             </div>
             <p className="max-w-sm font-body text-lg leading-relaxed text-gold">
-              The final destination for the rekt.
+              The afterlife of every bag.
             </p>
 
             {/* Social icons */}

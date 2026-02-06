@@ -17,7 +17,7 @@ import { useViewportOnce } from "@/lib/useViewportMarginRem";
 const mathItems = [
   {
     label: "MAX SUPPLY",
-    value: "1,000,000,000",
+    value: "1 BILLION",
     valueShort: "1B",
     sub: "TOTAL DAMNED // No Inflation. Just Pain.",
     icon: Coins,
@@ -43,13 +43,13 @@ const mathItems = [
     bgColor: "bg-hellfire-orange/10",
   },
   {
-    label: "DEV ALLOCATION",
+    label: "DEVIL (A.K.A DEV) ALLOCATION",
     value: "666",
     valueShort: "666",
     sub: '"Enough to buy a cheeseburger in hell."',
     icon: Skull,
-    color: "text-lava-400",
-    bgColor: "bg-lava-400/10",
+    color: "text-hellfire-red",
+    bgColor: "bg-hellfire-red/10",
   },
 ];
 

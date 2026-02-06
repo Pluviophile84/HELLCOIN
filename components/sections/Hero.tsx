@@ -181,12 +181,12 @@ export const Hero = () => {
           }
         >
         <p className="leading-relaxed short-landscape:text-sm 3xl:text-3xl 4xl:text-4xl">
-            The first cryptocurrency powered by{" "}
+            Powered by{" "}
             <span className="my-1 block text-hero-sub-em font-bold text-gold md:my-0 md:inline md:font-normal 3xl:text-3xl">
               Proof-of-Suffering
             </span>
           </p>
-          <p className="text-lava-100 short-landscape:text-sm 3xl:text-3xl 4xl:text-4xl">the only consensus mechanism traders truly understand.</p>
+          <p className="text-lava-100 short-landscape:text-sm 3xl:text-3xl 4xl:text-4xl">(the only consensus mechanism traders truly understand.)</p>
         </div>
 
         {/* Tagline - slower fade */}
