@@ -2,7 +2,7 @@
 // Keep these as the single source of truth.
 
 // External buy link (Raydium swap)
-export const BUY_LINK = process.env.NEXT_PUBLIC_BUY_LINK || "https://raydium.io/swap";
+export const BUY_LINK = process.env.NEXT_PUBLIC_BUY_LINK || "https://pump.fun/coin/85taNYVWKBJtGSKrk23NRZTaK9aDThf2e9e6diRLpump";
 
 // X (Twitter) profile
 export const X_LINK = process.env.NEXT_PUBLIC_X_LINK || "https://x.com/hellcoin666";
@@ -13,7 +13,7 @@ export const DEXSCREENER_LINK =
 
 // Contract address - warning-only until launch
 // Set NEXT_PUBLIC_CONTRACT_ADDRESS environment variable with actual contract address at launch
-export const CONTRACT_ADDRESS = process.env.NEXT_PUBLIC_CONTRACT_ADDRESS || "TBD";
+export const CONTRACT_ADDRESS = process.env.NEXT_PUBLIC_CONTRACT_ADDRESS || "85taNYVWKBJtGSKrk23NRZTaK9aDThf2e9e6diRLpump";
 
 // Site URL for metadata
 export const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://hellcoin.fun";
