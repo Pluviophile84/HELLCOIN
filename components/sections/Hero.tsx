@@ -186,7 +186,7 @@ export const Hero = () => {
               Proof-of-Suffering
             </span>
           </p>
-          <p className="text-lava-100 short-landscape:text-sm 3xl:text-3xl 4xl:text-4xl">(the only consensus mechanism traders truly understand.)</p>
+          <p className="text-lava-100 short-landscape:text-sm 3xl:text-3xl 4xl:text-4xl">the only consensus mechanism traders truly understand.</p>
         </div>
 
         {/* Tagline - slower fade */}
