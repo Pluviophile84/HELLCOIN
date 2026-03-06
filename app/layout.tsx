@@ -31,33 +31,65 @@ const bodyFont = Nunito({
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
-  title: "HELLCOIN - $666",
+
+  title: "HELLCOIN ($666) | Born in the Red. Forged by Regret.",
   description:
-    "HELLCOIN - $666 is a satirical memecoin about the hell people go through in crypto, where delusion, scams and painful losses unite survivors in the Cult of the Burned.",
-  keywords: ["hellcoin", "cryptocurrency", "memecoin", "solana", "$666", "crypto"],
+    "HELLCOIN is a satirical memecoin about the hell people go through in crypto, where delusion, scams and painful losses unite survivors in the Cult of the Burned.",
+
+  keywords: [
+    "HELLCOIN",
+    "hellcoin",
+    "$666",
+    "666 coin",
+    "memecoin",
+    "satirical memecoin",
+    "crypto",
+    "solana memecoin",
+    "crypto satire",
+    "Cult of the Burned",
+  ],
+
   authors: [{ name: "HELLCOIN" }],
+  creator: "HELLCOIN",
+  publisher: "HELLCOIN",
+
+  alternates: {
+    canonical: SITE_URL,
+  },
+
   openGraph: {
-    title: "HELLCOIN - $666",
-    description: "Born in the Red. Forged by Regret",
     type: "website",
+    url: SITE_URL,
     siteName: "HELLCOIN",
+    title: "HELLCOIN ($666) | Born in the Red. Forged by Regret.",
+    description: "Born in the Red. Forged by Regret.",
     images: [
       {
         url: "/hellcoin-og.png",
         width: 1200,
         height: 630,
-        alt: "HELLCOIN - $666 | Born in the Red. Forged by Regret",
+        alt: "HELLCOIN ($666) | Born in the Red. Forged by Regret.",
       },
     ],
   },
+
   twitter: {
     card: "summary_large_image",
-    title: "HELLCOIN - $666",
-    description: "Born in the Red. Forged by Regret",
+    title: "HELLCOIN ($666) | Born in the Red. Forged by Regret.",
+    description: "Born in the Red. Forged by Regret.",
     images: ["/hellcoin-og.png"],
   },
-  alternates: {
-    canonical: SITE_URL,
+
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      "max-image-preview": "large",
+      "max-snippet": -1,
+      "max-video-preview": -1,
+    },
   },
 };
 
@@ -65,9 +97,19 @@ const jsonLd = {
   "@context": "https://schema.org",
   "@type": "WebSite",
   name: "HELLCOIN",
+  alternateName: "HELLCOIN ($666)",
   url: SITE_URL,
   description:
-    "HELLCOIN - $666 is a satirical memecoin about the hell people go through in crypto, where delusion, scams and painful losses unite survivors in the Cult of the Burned.",
+    "HELLCOIN is a satirical memecoin about the hell people go through in crypto, where delusion, scams and painful losses unite survivors in the Cult of the Burned.",
+  publisher: {
+    "@type": "Organization",
+    name: "HELLCOIN",
+    url: SITE_URL,
+    logo: {
+      "@type": "ImageObject",
+      url: `${SITE_URL}/icon-192.png`,
+    },
+  },
 };
 
 export default async function RootLayout({
@@ -88,8 +130,6 @@ export default async function RootLayout({
         <link rel="icon" href="/icon-192.png" type="image/png" sizes="192x192" />
         <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
         <meta name="theme-color" content="#ff5500" />
-        <meta name="apple-mobile-web-app-capable" content="yes" />
-        <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
         <script
           type="application/ld+json"
           nonce={nonce}
