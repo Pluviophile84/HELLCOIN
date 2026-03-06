@@ -61,7 +61,7 @@ export const metadata: Metadata = {
     type: "website",
     url: SITE_URL,
     siteName: "HELLCOIN",
-    title: "HELLCOIN ($666) | Born in the Red. Forged by Regret.",
+    title: "HELLCOIN ($666)",
     description: "Born in the Red. Forged by Regret.",
     images: [
       {
