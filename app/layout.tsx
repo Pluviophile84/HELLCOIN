@@ -31,30 +31,30 @@ const bodyFont = Nunito({
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
-  title: "HELLCOIN ($666)",
+  title: "HELLCOIN - $666",
   description:
-    "The official currency of eternal regret. The first cryptocurrency powered by Proof-of-Suffering.",
+    "HELLCOIN - $666 is a satirical memecoin about the hell people go through in crypto, where delusion, scams and painful losses unite survivors in the Cult of the Burned.",
   keywords: ["hellcoin", "cryptocurrency", "memecoin", "solana", "$666", "crypto"],
   authors: [{ name: "HELLCOIN" }],
   openGraph: {
-    title: "HELLCOIN ($666)",
-    description: "The official currency of eternal regret.",
+    title: "HELLCOIN - $666",
+    description: "Born in the Red. Forged by Regret.",
     type: "website",
     siteName: "HELLCOIN",
     images: [
       {
-        url: "/banner.webp",
-        width: 1920,
-        height: 1080,
-        alt: "HELLCOIN ($666) - Born in the Red",
+        url: "/hellcoin-og.png",
+        width: 1200,
+        height: 630,
+        alt: "HELLCOIN - $666 | Born in the Red. Forged by Regret.",
       },
     ],
   },
   twitter: {
     card: "summary_large_image",
-    title: "HELLCOIN ($666)",
-    description: "The official currency of eternal regret.",
-    images: ["/banner.webp"],
+    title: "HELLCOIN - $666",
+    description: "Born in the Red. Forged by Regret.",
+    images: ["/hellcoin-og.png"],
   },
   alternates: {
     canonical: SITE_URL,
@@ -67,7 +67,7 @@ const jsonLd = {
   name: "HELLCOIN",
   url: SITE_URL,
   description:
-    "The official currency of eternal regret. The first cryptocurrency powered by Proof-of-Suffering.",
+    "HELLCOIN - $666 is a satirical memecoin about the hell people go through in crypto, where delusion, scams and painful losses unite survivors in the Cult of the Burned.",
 };
 
 export default async function RootLayout({
