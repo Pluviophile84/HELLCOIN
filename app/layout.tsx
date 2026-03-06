@@ -38,7 +38,7 @@ export const metadata: Metadata = {
   authors: [{ name: "HELLCOIN" }],
   openGraph: {
     title: "HELLCOIN - $666",
-    description: "Born in the Red. Forged by Regret.",
+    description: "Born in the Red. Forged by Regret",
     type: "website",
     siteName: "HELLCOIN",
     images: [
@@ -46,14 +46,14 @@ export const metadata: Metadata = {
         url: "/hellcoin-og.png",
         width: 1200,
         height: 630,
-        alt: "HELLCOIN - $666 | Born in the Red. Forged by Regret.",
+        alt: "HELLCOIN - $666 | Born in the Red. Forged by Regret",
       },
     ],
   },
   twitter: {
     card: "summary_large_image",
     title: "HELLCOIN - $666",
-    description: "Born in the Red. Forged by Regret.",
+    description: "Born in the Red. Forged by Regret",
     images: ["/hellcoin-og.png"],
   },
   alternates: {
@@ -75,7 +75,6 @@ export default async function RootLayout({
 }: Readonly<{
   children: ReactNode;
 }>) {
-  // Provided by middleware.ts (per-request CSP nonce). If missing, we still render safely.
   const headersList = await headers();
   const nonce = headersList.get("x-nonce") ?? undefined;
 
