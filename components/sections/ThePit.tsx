@@ -22,7 +22,7 @@ export const ThePit = () => {
               THE CULT OF <br className="md:hidden" />{" "}
               <span className="hellfire-text-pure pr-1">THE BURNED</span>
             </h2>
-            <p className="mb-8 font-body text-lg text-gold">Where bag holders become family.</p>
+            <p className="mb-8 font-body text-lg text-gold">Where bagholders become family.</p>
 
             <div className="mx-auto mb-12 max-w-3xl space-y-6 font-body text-lg leading-relaxed text-lava-100/70 md:text-xl">
               <p>
