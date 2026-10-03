@@ -1,0 +1,171 @@
+export const SIZE = 1080;
+export const FONT_WEIGHT = 700;
+export const MARGIN = 36;
+export const PADDING = 16;
+export const DEVIL = { right: 434, top: 587 };
+export type TextBlock = {
+  id: number;
+  text: string;
+  x: number;
+  y: number;
+  size: number;
+  contrast: "Auto" | "On" | "Off";
+};
+export type Background = {
+  image: HTMLImageElement;
+  baseScale: number;
+  zoom: number;
+  x: number;
+  y: number;
+};
+export type Layout = {
+  lines: string[];
+  width: number;
+  height: number;
+  x: number;
+  y: number;
+  lineHeight: number;
+};
+const clamp = (n: number, min: number, max: number) => Math.max(min, Math.min(max, n));
+
+export function clampBackground(bg: Background): Background {
+  const scale = bg.baseScale * bg.zoom;
+  return {
+    ...bg,
+    x: clamp(bg.x, SIZE - bg.image.naturalWidth * scale, 0),
+    y: clamp(bg.y, SIZE - bg.image.naturalHeight * scale, 0),
+  };
+}
+export function centerBackground(image: HTMLImageElement): Background {
+  const baseScale = Math.max(SIZE / image.naturalWidth, SIZE / image.naturalHeight);
+  return {
+    image,
+    baseScale,
+    zoom: 1,
+    x: (SIZE - image.naturalWidth * baseScale) / 2,
+    y: (SIZE - image.naturalHeight * baseScale) / 2,
+  };
+}
+export function zoomBackground(bg: Background, zoom: number): Background {
+  const ratio = zoom / bg.zoom;
+  return clampBackground({
+    ...bg,
+    zoom,
+    x: SIZE / 2 - (SIZE / 2 - bg.x) * ratio,
+    y: SIZE / 2 - (SIZE / 2 - bg.y) * ratio,
+  });
+}
+export function textLayout(
+  ctx: CanvasRenderingContext2D,
+  block: TextBlock,
+  family: string
+): Layout {
+  ctx.font = FONT_WEIGHT + " " + block.size + "px " + family;
+  const maxWidth = SIZE - 2 * (MARGIN + PADDING);
+  const lines: string[] = [];
+  for (const paragraph of block.text.split("\n")) {
+    let line = "";
+    for (const word of paragraph.split(/\s+/)) {
+      const candidate = line ? line + " " + word : word;
+      if (ctx.measureText(candidate).width <= maxWidth) {
+        line = candidate;
+        continue;
+      }
+      if (line) {
+        lines.push(line);
+        line = "";
+      }
+      for (const char of Array.from(word)) {
+        if (ctx.measureText(line + char).width > maxWidth && line) {
+          lines.push(line);
+          line = "";
+        }
+        line += char;
+      }
+    }
+    lines.push(line);
+  }
+  const lineHeight = block.size * 1.25;
+  const width = Math.max(1, ...lines.map((line) => ctx.measureText(line).width)) + PADDING * 2;
+  const height = lines.length * lineHeight + PADDING * 2;
+  // Any accepted block must fit above the observer. Never silently clip or shrink text.
+  if (height > DEVIL.top - MARGIN)
+    throw new Error("Too many lines at this size. Shorten the text or reduce its size.");
+  let x = clamp(block.x, MARGIN, SIZE - MARGIN - width);
+  let y = clamp(block.y, MARGIN, SIZE - MARGIN - height);
+  if (x < DEVIL.right && y + height > DEVIL.top) {
+    const above = DEVIL.top - height;
+    const canGoRight = DEVIL.right + width <= SIZE - MARGIN;
+    if (canGoRight && DEVIL.right - x < y - above) x = DEVIL.right;
+    else y = above;
+  }
+  return { lines, width, height, x, y, lineHeight };
+}
+export function drawBackground(ctx: CanvasRenderingContext2D, bg: Background | null) {
+  ctx.fillStyle = "#0D0A08";
+  ctx.fillRect(0, 0, SIZE, SIZE);
+  if (bg) {
+    const scale = bg.baseScale * bg.zoom;
+    ctx.drawImage(
+      bg.image,
+      bg.x,
+      bg.y,
+      bg.image.naturalWidth * scale,
+      bg.image.naturalHeight * scale
+    );
+  }
+}
+function needsContrast(sample: CanvasRenderingContext2D, bgCanvas: HTMLCanvasElement, box: Layout) {
+  // 256 samples per block, always from background alone, never from other text or the Devil.
+  sample.clearRect(0, 0, 16, 16);
+  sample.drawImage(bgCanvas, box.x, box.y, box.width, box.height, 0, 0, 16, 16);
+  const data = sample.getImageData(0, 0, 16, 16).data;
+  let sum = 0,
+    squares = 0,
+    bright = 0;
+  for (let i = 0; i < data.length; i += 4) {
+    const channels = [data[i], data[i + 1], data[i + 2]].map((v) => {
+      const s = v / 255;
+      return s <= 0.04045 ? s / 12.92 : Math.pow((s + 0.055) / 1.055, 2.4);
+    });
+    const lum = 0.2126 * channels[0] + 0.7152 * channels[1] + 0.0722 * channels[2];
+    sum += lum;
+    squares += lum * lum;
+    if (lum > 0.183) bright++;
+  }
+  return bright / 256 > 0.1 || sum / 256 > 0.15 || squares / 256 - Math.pow(sum / 256, 2) > 0.018;
+}
+export function renderMeme(
+  canvas: HTMLCanvasElement,
+  backgroundCanvas: HTMLCanvasElement,
+  sample: CanvasRenderingContext2D,
+  blocks: TextBlock[],
+  overlay: HTMLImageElement,
+  family: string
+) {
+  const ctx = canvas.getContext("2d");
+  if (!ctx) throw new Error("Canvas is unavailable in this browser.");
+  ctx.clearRect(0, 0, SIZE, SIZE);
+  ctx.drawImage(backgroundCanvas, 0, 0);
+  const layouts = blocks.map((block) => ({ block, box: textLayout(ctx, block, family) }));
+  for (const { block, box } of layouts) {
+    if (!block.text.trim()) continue;
+    if (
+      block.contrast === "On" ||
+      (block.contrast === "Auto" && needsContrast(sample, backgroundCanvas, box))
+    ) {
+      ctx.fillStyle = "rgba(0,0,0,0.65)";
+      ctx.fillRect(box.x, box.y, box.width, box.height);
+    }
+  }
+  ctx.fillStyle = "#FFFFFF";
+  ctx.textAlign = "center";
+  ctx.textBaseline = "middle";
+  for (const { block, box } of layouts) {
+    ctx.font = FONT_WEIGHT + " " + block.size + "px " + family;
+    box.lines.forEach((line, i) =>
+      ctx.fillText(line, box.x + box.width / 2, box.y + PADDING + (i + 0.5) * box.lineHeight)
+    );
+  }
+  ctx.drawImage(overlay, 0, 0, SIZE, SIZE);
+}
