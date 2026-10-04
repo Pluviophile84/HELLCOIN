@@ -4,6 +4,7 @@ import type { KeyboardEvent, PointerEvent } from "react";
 import {
   BACKDROPS,
   SIZE,
+  DEVIL,
   clampBackground,
   centerBackground,
   textLayout,
@@ -19,6 +20,7 @@ const field =
   "w-full min-w-0 rounded-lg border-3 border-black bg-obsidian-950 px-3 py-2 text-base text-lava-50 focus-visible:ring-2 focus-visible:ring-gold";
 const modes = ["IMAGE", "TEXT", "EXPORT"] as const;
 type Mode = (typeof modes)[number];
+type Target = { type: "background" } | { type: "text"; id: number } | null;
 export function ForgeEditor({
   fontFamily,
   active = true,
@@ -33,14 +35,16 @@ export function ForgeEditor({
   const [mode, setMode] = useState<Mode>("IMAGE");
   const [selected, setSelected] = useState<number | null>(null);
   const [moving, setMoving] = useState(false);
+  const [dragging, setDragging] = useState(false);
+  const [previewWidth, setPreviewWidth] = useState(0);
   const [busy, setBusy] = useState(false);
   const [copySupported, setCopySupported] = useState(false);
   const workspace = useRef<HTMLDivElement>(null);
   const tabs = useRef<(HTMLButtonElement | null)[]>([]);
   const nextId = useRef(1);
-  const drag = useRef<{ id: number; x: number; y: number } | null>(null);
+  const drag = useRef<{ id: number; x: number; y: number; target: Target } | null>(null);
   const id = useId();
-  const engine = useForge(fontFamily, active, mode === "EXPORT");
+  const engine = useForge(fontFamily, active, mode === "EXPORT" && !dragging);
   const {
     preview,
     scene,
@@ -60,7 +64,47 @@ export function ForgeEditor({
   } = engine;
   const selectedBlock = scene.blocks.find((b) => b.id === selected);
   const selectedIndex = scene.blocks.findIndex((b) => b.id === selected);
-  const selectedLabel = mode === "TEXT" && selectedBlock ? "Text " + (selectedIndex + 1) : "image";
+  const target: Target =
+    mode === "IMAGE"
+      ? scene.background
+        ? { type: "background" }
+        : null
+      : selectedBlock
+        ? { type: "text", id: selectedBlock.id }
+        : null;
+  const selectedLabel = target?.type === "text" ? "Text " + (selectedIndex + 1) : "image";
+  const ctx = ready ? preview.current?.getContext("2d") : null;
+  const box =
+    ctx && target?.type === "text" && selectedBlock?.text.trim()
+      ? textLayout(ctx, selectedBlock, font)
+      : null;
+  const scale = previewWidth / SIZE;
+  const hit =
+    box && scale
+      ? {
+          x: Math.max(0, box.x - Math.max(0, (44 / scale - box.width) / 2)),
+          y: Math.max(0, box.y - Math.max(0, (44 / scale - box.height) / 2)),
+          width: Math.max(box.width, 44 / scale),
+          height: Math.max(box.height, 44 / scale),
+        }
+      : null;
+  if (hit) {
+    hit.width = Math.min(hit.width, SIZE - hit.x);
+    hit.height = Math.min(hit.height, SIZE - hit.y);
+    if (hit.x < DEVIL.right && hit.y + hit.height > DEVIL.top) {
+      if (box!.x >= DEVIL.right) {
+        hit.width -= DEVIL.right - hit.x;
+        hit.x = DEVIL.right;
+      } else hit.height = DEVIL.top - hit.y;
+    }
+  }
+  useEffect(() => {
+    const canvas = preview.current;
+    if (!canvas) return;
+    const observer = new ResizeObserver(() => setPreviewWidth(canvas.clientWidth));
+    observer.observe(canvas);
+    return () => observer.disconnect();
+  }, [preview]);
 
   useEffect(() => {
     setCopySupported(
@@ -95,40 +139,54 @@ export function ForgeEditor({
         behavior: "instant",
       });
     let frame = 0;
-    const resize = () => {
+    let lastWidth = 0;
+    const layout = () => {
+      const width = element.clientWidth;
+      if (width === lastWidth) return;
+      lastWidth = width;
+      // Freeze height-dependent landscape/tray layout until the container width changes.
+      element.style.setProperty("--forge-layout-height", window.innerHeight + "px");
+      element.dataset.landscape = String(
+        window.innerWidth > window.innerHeight && window.innerWidth < 1024
+      );
+    };
+    const keyboard = () => {
       const viewport = window.visualViewport;
-      const height = viewport?.height ?? window.innerHeight;
-      element.style.setProperty("--forge-vh", height + "px");
-      element.dataset.compact = String(height < 500);
-      if (element.contains(document.activeElement)) align();
+      const focused = document.activeElement as HTMLElement | null;
+      if (
+        !viewport ||
+        !focused ||
+        !element.contains(focused) ||
+        !focused.matches("textarea, input:not([type=range])")
+      )
+        return;
+      // Only assist genuine keyboard occlusion. Browser toolbar resizing never changes geometry.
+      if (window.innerHeight - viewport.height < 150) return;
       cancelAnimationFrame(frame);
       frame = requestAnimationFrame(() => {
-        const nav = embedded
-          ? parseFloat(getComputedStyle(document.documentElement).getPropertyValue("--nav-h")) || 0
-          : 0;
-        const top = Math.max(nav, element.getBoundingClientRect().top - (viewport?.offsetTop ?? 0));
-        element.style.setProperty("--forge-space", Math.min(top, height / 3) + "px");
         const panel = element.querySelector<HTMLElement>('[role="tabpanel"]');
-        const focused = document.activeElement as HTMLElement | null;
-        if (panel && focused && panel.contains(focused)) {
-          const field = focused.getBoundingClientRect(),
-            tray = panel.getBoundingClientRect();
-          if (field.bottom > tray.bottom) panel.scrollTop += field.bottom - tray.bottom + 8;
-          else if (field.top < tray.top) panel.scrollTop -= tray.top - field.top + 8;
-        }
+        if (panel)
+          panel.scrollTop += Math.max(
+            0,
+            focused.getBoundingClientRect().bottom - panel.getBoundingClientRect().bottom + 8
+          );
+        const bottom = viewport.offsetTop + viewport.height - 12;
+        const overflow = focused.getBoundingClientRect().bottom - bottom;
+        if (overflow > 0) window.scrollBy({ top: overflow, behavior: "instant" });
       });
     };
-    resize();
+    layout();
+    const observer = new ResizeObserver(layout);
+    observer.observe(element);
     align();
     element
       .querySelector<HTMLElement>('[role="tab"][aria-selected="true"]')
       ?.focus({ preventScroll: true });
-    window.visualViewport?.addEventListener("resize", resize);
-    window.addEventListener("resize", resize);
+    window.visualViewport?.addEventListener("resize", keyboard);
     return () => {
       cancelAnimationFrame(frame);
-      window.visualViewport?.removeEventListener("resize", resize);
-      window.removeEventListener("resize", resize);
+      observer.disconnect();
+      window.visualViewport?.removeEventListener("resize", keyboard);
     };
   }, [active, embedded]);
 
@@ -166,10 +224,10 @@ export function ForgeEditor({
       setMessage(error instanceof Error ? error.message : "That text does not fit.");
     }
   }
-  function move(dx: number, dy: number) {
-    if (mode === "EXPORT") return;
-    if (mode === "TEXT") {
-      const block = current.current.blocks.find((b) => b.id === selected);
+  function move(dx: number, dy: number, manipulation: Target = target) {
+    if (!manipulation) return;
+    if (manipulation.type === "text") {
+      const block = current.current.blocks.find((b) => b.id === manipulation.id);
       if (block) updateBlock(block.id, { x: block.x + dx, y: block.y + dy });
     } else
       change((old) =>
@@ -185,16 +243,17 @@ export function ForgeEditor({
           : old
       );
   }
-  function pointerMove(event: PointerEvent<HTMLCanvasElement>) {
+  function pointerMove(event: PointerEvent<HTMLElement>) {
     if (!drag.current || event.pointerId !== drag.current.id) return;
-    const rect = event.currentTarget.getBoundingClientRect();
+    const rect = preview.current!.getBoundingClientRect();
     move(
       ((event.clientX - drag.current.x) * SIZE) / rect.width,
-      ((event.clientY - drag.current.y) * SIZE) / rect.height
+      ((event.clientY - drag.current.y) * SIZE) / rect.height,
+      drag.current.target
     );
-    drag.current = { id: event.pointerId, x: event.clientX, y: event.clientY };
+    drag.current = { ...drag.current, x: event.clientX, y: event.clientY };
   }
-  function keyMove(event: KeyboardEvent<HTMLCanvasElement>) {
+  function keyMove(event: KeyboardEvent<HTMLElement>) {
     if (event.key === "Escape") {
       setMoving(false);
       return;
@@ -211,6 +270,25 @@ export function ForgeEditor({
       move(...delta[event.key]);
     }
   }
+  function startDrag(event: PointerEvent<HTMLElement>, manipulation: Target) {
+    if (!ready || !manipulation || event.button !== 0 || drag.current) return;
+    event.currentTarget.focus({ preventScroll: true });
+    event.currentTarget.setPointerCapture(event.pointerId);
+    drag.current = {
+      id: event.pointerId,
+      x: event.clientX,
+      y: event.clientY,
+      target: manipulation,
+    };
+    setDragging(true);
+  }
+  function endDrag(event: PointerEvent<HTMLElement>) {
+    if (drag.current?.id !== event.pointerId) return;
+    drag.current = null;
+    setDragging(false);
+    if (event.currentTarget.hasPointerCapture(event.pointerId))
+      event.currentTarget.releasePointerCapture(event.pointerId);
+  }
   const canShare = (file: File | undefined) => {
     try {
       return (
@@ -224,7 +302,7 @@ export function ForgeEditor({
     }
   };
   async function output(action: "jpg" | "png" | "copy" | "share") {
-    if (busy || loading || !ready) return;
+    if (busy || loading || !ready || drag.current) return;
     setBusy(true);
     try {
       // Share/copy use files prepared on Export entry to preserve user activation.
@@ -273,9 +351,9 @@ export function ForgeEditor({
       setBusy(false);
     }
   }
-  const canExport = ready && !!files && !loading && !encoding && !busy;
+  const canExport = ready && !!files && !loading && !encoding && !busy && !dragging;
   const shareSupported = canShare(files?.jpg);
-  const canMove = mode === "TEXT" ? !!selectedBlock : mode === "IMAGE" && !!scene.background;
+
   return (
     <div
       ref={workspace}
@@ -311,64 +389,74 @@ export function ForgeEditor({
           }}
         >
           <div className={styles.square}>
-            <canvas
-              ref={preview}
-              width={SIZE}
-              height={SIZE}
-              tabIndex={0}
-              aria-label={"Meme preview. Move " + selectedLabel + " with arrow keys."}
-              aria-describedby={id + "-movement"}
-              className={
-                styles.canvas +
-                " " +
-                (moving ? styles.moving : "") +
-                " rounded-lg border-3 border-black bg-obsidian-950 focus-visible:outline focus-visible:outline-2 focus-visible:outline-gold"
-              }
-              onPointerDown={(event) => {
-                if (
-                  !ready ||
-                  !canMove ||
-                  event.button !== 0 ||
-                  drag.current ||
-                  (event.pointerType !== "mouse" && !moving)
-                )
-                  return;
-                event.currentTarget.focus({ preventScroll: true });
-                event.currentTarget.setPointerCapture(event.pointerId);
-                drag.current = { id: event.pointerId, x: event.clientX, y: event.clientY };
-              }}
-              onPointerMove={pointerMove}
-              onPointerUp={(event) => {
-                if (drag.current?.id === event.pointerId) {
-                  drag.current = null;
-                  event.currentTarget.releasePointerCapture(event.pointerId);
+            <div className={styles.surface + " rounded-lg border-3 border-black"}>
+              <canvas
+                ref={preview}
+                width={SIZE}
+                height={SIZE}
+                tabIndex={0}
+                aria-label={"Meme preview. Move " + selectedLabel + " with arrow keys."}
+                aria-describedby={id + "-movement"}
+                className={
+                  styles.canvas +
+                  " " +
+                  (moving ? styles.moving : "") +
+                  " rounded-lg bg-obsidian-950 focus-visible:outline focus-visible:outline-2 focus-visible:outline-gold"
                 }
-              }}
-              onPointerCancel={() => {
-                drag.current = null;
-              }}
-              onLostPointerCapture={() => {
-                drag.current = null;
-              }}
-              onKeyDown={keyMove}
-            >
-              Live 1080-square meme preview: your backdrop, up to two white text blocks, and the
-              fixed Devil. Use the labeled controls to edit and export.
-            </canvas>
+                onPointerDown={(event) => {
+                  if (target?.type === "background" && (event.pointerType === "mouse" || moving))
+                    startDrag(event, target);
+                }}
+                onPointerMove={pointerMove}
+                onPointerUp={endDrag}
+                onPointerCancel={endDrag}
+                onLostPointerCapture={endDrag}
+                onKeyDown={keyMove}
+              >
+                Live 1080-square meme preview: your backdrop, up to two white text blocks, and the
+                fixed Devil. Use the labeled controls to edit and export.
+              </canvas>
+              {hit && (
+                <div
+                  role="button"
+                  tabIndex={0}
+                  aria-label={"Drag " + selectedLabel}
+                  className={styles.textTarget + (mode === "TEXT" ? " " + styles.selectedText : "")}
+                  style={{
+                    left: (hit.x / SIZE) * 100 + "%",
+                    top: (hit.y / SIZE) * 100 + "%",
+                    width: (hit.width / SIZE) * 100 + "%",
+                    height: (hit.height / SIZE) * 100 + "%",
+                  }}
+                  onPointerDown={(event) => startDrag(event, target)}
+                  onPointerMove={pointerMove}
+                  onPointerUp={endDrag}
+                  onPointerCancel={endDrag}
+                  onLostPointerCapture={endDrag}
+                  onKeyDown={keyMove}
+                />
+              )}
+            </div>
           </div>
           <div className="flex w-full shrink-0 items-center justify-center gap-3">
-            <button
-              className={button + (moving ? " border-gold text-gold" : "")}
-              aria-pressed={moving}
-              disabled={!canMove || !ready}
-              onClick={() => setMoving((value) => !value)}
-            >
-              {moving ? "DONE MOVING" : "MOVE " + selectedLabel.toUpperCase()}
-            </button>
+            {mode === "IMAGE" && (
+              <button
+                className={button + (moving ? " border-gold text-gold" : "")}
+                aria-pressed={moving}
+                disabled={!scene.background || !ready}
+                onClick={() => setMoving((value) => !value)}
+              >
+                {moving ? "DONE MOVING" : "MOVE IMAGE"}
+              </button>
+            )}
             <p id={id + "-movement"} className="max-w-40 text-xs text-lava-100/70">
-              {moving
-                ? "Drag in any direction. Done restores scrolling."
-                : "Swipe to scroll. Use Move to reposition."}
+              {target?.type === "text"
+                ? "Drag the selected text. Swipe elsewhere to scroll."
+                : moving
+                  ? "Drag in any direction. Done restores scrolling."
+                  : mode === "IMAGE"
+                    ? "Swipe to scroll. Use Move to reposition."
+                    : "Swipe to scroll."}
             </p>
           </div>
         </div>
