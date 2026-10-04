@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useLayoutEffect, useMemo, useState } from "react";
 import { cn } from "@/lib/utils";
 import { lockBodyScroll, unlockBodyScroll } from "@/lib/bodyScrollLock";
 import { AlertTriangle } from "lucide-react";
@@ -13,7 +13,7 @@ interface PaperHandsProps {
 type Phase = "idle" | "heaven" | "burning" | "reality";
 
 export const PaperHandsOverlay = ({ isActive, onClose }: PaperHandsProps) => {
-  const [phase, setPhase] = useState<Phase>("idle");
+  const [phase, setPhase] = useState<Phase>(isActive ? "heaven" : "idle");
   const [progress, setProgress] = useState(0);
   const reduceMotion = useReducedMotion();
   const [isSmallScreen, setIsSmallScreen] = useState(false);
@@ -38,7 +38,7 @@ export const PaperHandsOverlay = ({ isActive, onClose }: PaperHandsProps) => {
     }));
   }, [flameCount]);
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     const shouldLock = isActive || phase === "heaven" || phase === "burning";
 
     if (shouldLock) {
@@ -100,7 +100,7 @@ export const PaperHandsOverlay = ({ isActive, onClose }: PaperHandsProps) => {
       <AnimatePresence>
         {(phase === "heaven" || phase === "burning") && (
           <motion.div
-            initial={{ opacity: 0 }}
+            initial={false}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             role="dialog"
@@ -115,7 +115,9 @@ export const PaperHandsOverlay = ({ isActive, onClose }: PaperHandsProps) => {
               <motion.div
                 key="heaven-content"
                 exit={
-                  reduceMotion ? { opacity: 0 } : { opacity: 0, scale: 1.5, filter: "blur(1.25rem)" }
+                  reduceMotion
+                    ? { opacity: 0 }
+                    : { opacity: 0, scale: 1.5, filter: "blur(1.25rem)" }
                 }
                 transition={{ duration: reduceMotion ? 0.01 : 0.5 }}
                 className="relative z-20 flex w-full max-w-lg flex-col items-center"

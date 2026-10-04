@@ -473,25 +473,29 @@ export function ForgeEditor({
               ))}
             </div>
           </div>
-          <div className="flex w-full shrink-0 items-center justify-center gap-3">
-            {mode === "IMAGE" && (
+          <div className={styles.interactionRail}>
+            {mode === "IMAGE" && !!scene.background && (
               <button
                 className={button + (moving ? " border-gold text-gold" : "")}
                 aria-pressed={moving}
-                disabled={!scene.background || !ready}
+                disabled={!ready}
                 onClick={() => setMoving((value) => !value)}
               >
                 {moving ? "DONE MOVING" : "MOVE IMAGE"}
               </button>
             )}
-            <p id={id + "-movement"} className="max-w-40 text-xs text-lava-100/70">
+            <p id={id + "-movement"} className="max-w-40 text-xs leading-4 text-lava-100/70">
               {target?.type === "text"
                 ? "Drag a text block. Swipe elsewhere to scroll."
                 : moving
                   ? "Drag in any direction. Done restores scrolling."
                   : mode === "IMAGE"
-                    ? "Swipe to scroll. Use Move to reposition."
-                    : "Swipe to scroll."}
+                    ? scene.background
+                      ? "Swipe to scroll. Use Move to reposition."
+                      : "Swipe to scroll. Add an image to move it."
+                    : mode === "EXPORT"
+                      ? "Drag text for a final adjustment."
+                      : "Swipe to scroll."}
             </p>
           </div>
         </div>
@@ -517,7 +521,9 @@ export function ForgeEditor({
                 aria-controls={id + "-panel"}
                 tabIndex={mode === item ? 0 : -1}
                 className={
-                  "min-h-12 px-2 font-heading text-xl " +
+                  "min-h-12 px-2 font-heading text-xl" +
+                  (index < 2 ? " border-r-3 border-black" : "") +
+                  " " +
                   (mode === item ? "hellfire-bg text-white" : "bg-obsidian-900 text-lava-100/60")
                 }
                 onClick={() => selectMode(item)}

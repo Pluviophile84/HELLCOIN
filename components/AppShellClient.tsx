@@ -11,7 +11,10 @@ import { ScrollProgress } from "@/components/ui/ScrollProgress";
 // Lazy load PaperHandsOverlay - only needed when user triggers it
 const PaperHandsOverlay = dynamic(
   () => import("@/components/ui/PaperHandsOverlay").then((m) => m.PaperHandsOverlay),
-  { ssr: false }
+  {
+    ssr: false,
+    loading: () => <div aria-hidden="true" className="fixed inset-0 z-[100] bg-pink-100" />,
+  }
 );
 
 export function AppShellClient({ children }: { children: ReactNode }) {
