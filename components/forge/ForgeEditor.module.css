@@ -1,0 +1,110 @@
+.workspace {
+  --forge-nav: 0px;
+  width: 100%;
+  max-width: 68rem;
+  margin-inline: auto;
+  scroll-margin-top: calc(var(--forge-nav) + 0.5rem);
+  height: min(
+    48rem,
+    calc(
+      var(--forge-vh, 100svh) - var(--forge-space, var(--forge-nav)) - 1rem -
+        env(safe-area-inset-bottom)
+    )
+  );
+  min-height: 12rem;
+  display: grid;
+  grid-template-rows: auto minmax(0, 1fr);
+}
+.embedded {
+  --forge-nav: var(--nav-h);
+}
+.body {
+  display: grid;
+  grid-template-rows: minmax(6rem, 0.48fr) minmax(8rem, 0.52fr);
+  min-height: 0;
+}
+.preview {
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.375rem;
+  padding: 0.5rem;
+}
+.square {
+  container-type: size;
+  min-height: 0;
+  flex: 1;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.canvas {
+  width: min(100cqw, 100cqh);
+  height: min(100cqw, 100cqh);
+  max-width: 100%;
+  aspect-ratio: 1;
+  object-fit: contain;
+  touch-action: pan-y;
+}
+.moving {
+  touch-action: none;
+}
+.tray {
+  min-height: 0;
+  display: grid;
+  grid-template-rows: auto minmax(0, 1fr);
+}
+.panel {
+  overflow-y: auto;
+  min-height: 0;
+  overscroll-behavior-y: auto;
+  scrollbar-gutter: stable;
+  padding: 1rem;
+  padding-bottom: max(1rem, env(safe-area-inset-bottom));
+}
+.workspace[data-compact="true"] .body {
+  grid-template-columns: minmax(0, 0.85fr) minmax(0, 1.15fr);
+  grid-template-rows: minmax(0, 1fr);
+}
+@media (max-height: 500px) {
+  .body {
+    grid-template-columns: minmax(0, 0.85fr) minmax(0, 1.15fr);
+    grid-template-rows: minmax(0, 1fr);
+  }
+  .preview {
+    padding: 0.375rem;
+  }
+  .panel {
+    padding: 0.75rem;
+  }
+}
+@media (min-width: 1024px) and (min-height: 600px) {
+  .workspace {
+    height: auto;
+    min-height: 0;
+  }
+  .body {
+    grid-template-columns: minmax(0, 1.15fr) minmax(20rem, 1fr);
+    grid-template-rows: auto;
+  }
+  .preview {
+    position: sticky;
+    top: calc(var(--forge-nav) + 0.5rem);
+    align-self: start;
+    padding: 1rem;
+  }
+  .square {
+    aspect-ratio: 1;
+    display: block;
+  }
+  .canvas {
+    width: 100%;
+    height: auto;
+  }
+  .tray {
+    max-height: 40rem;
+    min-height: 31rem;
+  }
+}

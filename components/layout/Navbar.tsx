@@ -10,6 +10,7 @@ import { NavbarActions } from "./navbar/NavbarActions";
 
 const NAV_LINKS_DATA: NavItem[] = [
   { name: "GENESIS", short: "GENESIS", href: "#genesis" },
+  { name: "MEME FORGE", short: "FORGE", href: "#forge" },
   { name: "COMMANDMENTS", short: "LAW", href: "#commandments" },
   { name: "NINE TYPES", short: "TYPES", href: "#nine-types" },
   { name: "MATH", short: "MATH", href: "#math" },

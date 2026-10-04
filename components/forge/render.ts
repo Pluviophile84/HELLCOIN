@@ -1,3 +1,4 @@
+import type { WorkingImage } from "./media";
 export const SIZE = 1080;
 export const FONT_WEIGHT = 700;
 export const MARGIN = 36;
@@ -12,7 +13,7 @@ export type TextBlock = {
   contrast: "Auto" | "On" | "Off";
 };
 export type Background = {
-  image: HTMLImageElement;
+  image: WorkingImage;
   baseScale: number;
   zoom: number;
   x: number;
@@ -32,18 +33,18 @@ export function clampBackground(bg: Background): Background {
   const scale = bg.baseScale * bg.zoom;
   return {
     ...bg,
-    x: clamp(bg.x, SIZE - bg.image.naturalWidth * scale, 0),
-    y: clamp(bg.y, SIZE - bg.image.naturalHeight * scale, 0),
+    x: clamp(bg.x, SIZE - bg.image.width * scale, 0),
+    y: clamp(bg.y, SIZE - bg.image.height * scale, 0),
   };
 }
-export function centerBackground(image: HTMLImageElement): Background {
-  const baseScale = Math.max(SIZE / image.naturalWidth, SIZE / image.naturalHeight);
+export function centerBackground(image: WorkingImage): Background {
+  const baseScale = Math.max(SIZE / image.width, SIZE / image.height);
   return {
     image,
     baseScale,
     zoom: 1,
-    x: (SIZE - image.naturalWidth * baseScale) / 2,
-    y: (SIZE - image.naturalHeight * baseScale) / 2,
+    x: (SIZE - image.width * baseScale) / 2,
+    y: (SIZE - image.height * baseScale) / 2,
   };
 }
 export function zoomBackground(bg: Background, zoom: number): Background {
@@ -101,18 +102,18 @@ export function textLayout(
   }
   return { lines, width, height, x, y, lineHeight };
 }
-export function drawBackground(ctx: CanvasRenderingContext2D, bg: Background | null) {
-  ctx.fillStyle = "#0D0A08";
+export const BACKDROPS = { OBSIDIAN: "#0D0A08", ASH: "#2D2420", HELLFIRE: "#991F0A" } as const;
+export type Backdrop = keyof typeof BACKDROPS;
+export function drawBackground(
+  ctx: CanvasRenderingContext2D,
+  bg: Background | null,
+  backdrop: Backdrop = "OBSIDIAN"
+) {
+  ctx.fillStyle = BACKDROPS[backdrop];
   ctx.fillRect(0, 0, SIZE, SIZE);
   if (bg) {
     const scale = bg.baseScale * bg.zoom;
-    ctx.drawImage(
-      bg.image,
-      bg.x,
-      bg.y,
-      bg.image.naturalWidth * scale,
-      bg.image.naturalHeight * scale
-    );
+    ctx.drawImage(bg.image.source, bg.x, bg.y, bg.image.width * scale, bg.image.height * scale);
   }
 }
 function needsContrast(sample: CanvasRenderingContext2D, bgCanvas: HTMLCanvasElement, box: Layout) {
@@ -143,7 +144,7 @@ export function renderMeme(
   overlay: HTMLImageElement,
   family: string
 ) {
-  const ctx = canvas.getContext("2d");
+  const ctx = canvas.getContext("2d", { alpha: false, colorSpace: "srgb" });
   if (!ctx) throw new Error("Canvas is unavailable in this browser.");
   ctx.clearRect(0, 0, SIZE, SIZE);
   ctx.drawImage(backgroundCanvas, 0, 0);

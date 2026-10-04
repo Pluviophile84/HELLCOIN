@@ -1,222 +1,189 @@
 "use client";
-
-import { useCallback, useEffect, useRef, useState } from "react";
-import type { PointerEvent, KeyboardEvent } from "react";
+import { useEffect, useId, useRef, useState } from "react";
+import type { KeyboardEvent, PointerEvent } from "react";
 import {
+  BACKDROPS,
   SIZE,
-  FONT_WEIGHT,
-  centerBackground,
   clampBackground,
-  zoomBackground,
+  centerBackground,
   textLayout,
-  drawBackground,
-  renderMeme,
+  zoomBackground,
 } from "./render";
-import type { Background, TextBlock } from "./render";
+import type { TextBlock } from "./render";
+import { useForge } from "./useForge";
+import styles from "./ForgeEditor.module.css";
 
 const button =
-  "rounded-lg border-3 border-black bg-obsidian-800 px-4 py-3 font-bold text-lava-50 shadow-brutal-sm hover:text-gold focus-visible:ring-2 focus-visible:ring-gold disabled:cursor-not-allowed disabled:opacity-40";
+  "min-h-11 rounded-lg border-3 border-black bg-obsidian-800 px-3 py-2 text-sm font-bold text-lava-50 shadow-brutal-sm hover:text-gold focus-visible:ring-2 focus-visible:ring-gold disabled:cursor-not-allowed disabled:opacity-40";
 const field =
-  "w-full min-w-0 rounded-lg border-3 border-black bg-obsidian-950 p-3 text-lava-50 focus-visible:ring-2 focus-visible:ring-gold";
-
-export function ForgeEditor({ fontFamily }: { fontFamily: string }) {
-  const preview = useRef<HTMLCanvasElement>(null);
-  const resources = useRef<{
-    background: HTMLCanvasElement;
-    sample: CanvasRenderingContext2D;
-    overlay: HTMLImageElement;
-  } | null>(null);
-  const [ready, setReady] = useState(false);
-  const [background, setBackground] = useState<Background | null>(null);
-  const [blocks, setBlocks] = useState<TextBlock[]>([]);
-  const [selected, setSelected] = useState<number | "background">("background");
-  const [message, setMessage] = useState("Your images stay in this browser.");
-  const [png, setPng] = useState<File | null>(null);
+  "w-full min-w-0 rounded-lg border-3 border-black bg-obsidian-950 px-3 py-2 text-base text-lava-50 focus-visible:ring-2 focus-visible:ring-gold";
+const modes = ["IMAGE", "TEXT", "EXPORT"] as const;
+type Mode = (typeof modes)[number];
+export function ForgeEditor({
+  fontFamily,
+  active = true,
+  embedded = false,
+  onClose,
+}: {
+  fontFamily: string;
+  active?: boolean;
+  embedded?: boolean;
+  onClose?: () => void;
+}) {
+  const [mode, setMode] = useState<Mode>("IMAGE");
+  const [selected, setSelected] = useState<number | null>(null);
+  const [moving, setMoving] = useState(false);
   const [busy, setBusy] = useState(false);
   const [copySupported, setCopySupported] = useState(false);
-  const [shareSupported, setShareSupported] = useState(false);
-  const [loading, setLoading] = useState(false);
-  const objectUrls = useRef(new Set<string>());
-  const loadVersion = useRef(0);
-  const renderVersion = useRef(0);
+  const workspace = useRef<HTMLDivElement>(null);
+  const tabs = useRef<(HTMLButtonElement | null)[]>([]);
   const nextId = useRef(1);
   const drag = useRef<{ id: number; x: number; y: number } | null>(null);
+  const id = useId();
+  const engine = useForge(fontFamily, active, mode === "EXPORT");
+  const {
+    preview,
+    scene,
+    current,
+    change,
+    ready,
+    loading,
+    encoding,
+    files,
+    generated,
+    revision,
+    message,
+    setMessage,
+    loadImage,
+    prepare,
+    font,
+  } = engine;
+  const selectedBlock = scene.blocks.find((b) => b.id === selected);
+  const selectedIndex = scene.blocks.findIndex((b) => b.id === selected);
+  const selectedLabel = mode === "TEXT" && selectedBlock ? "Text " + (selectedIndex + 1) : "image";
 
   useEffect(() => {
-    let active = true;
-    const pendingLoads = loadVersion;
-    const pendingRenders = renderVersion;
     setCopySupported(
-      !!navigator.clipboard?.write &&
+      window.isSecureContext &&
+        !!navigator.clipboard?.write &&
         typeof ClipboardItem !== "undefined" &&
         (!ClipboardItem.supports || ClipboardItem.supports("image/png"))
     );
-    setShareSupported(!!navigator.share && !!navigator.canShare);
-    const overlay = new Image();
-    overlay.src = "/forge/hellcoin-devil-overlay-master.png";
-    void Promise.all([overlay.decode(), document.fonts.load(FONT_WEIGHT + " 64px " + fontFamily)])
-      .then(async ([, faces]) => {
-        await document.fonts.ready;
-        if (!active) return;
-        if (!faces.length) throw new Error("The meme font could not load. Reload to try again.");
-        const bg = document.createElement("canvas");
-        bg.width = bg.height = SIZE;
-        const sampleCanvas = document.createElement("canvas");
-        sampleCanvas.width = sampleCanvas.height = 16;
-        const sample = sampleCanvas.getContext("2d", { willReadFrequently: true });
-        if (!sample) throw new Error("Canvas is unavailable in this browser.");
-        resources.current = { background: bg, sample, overlay };
-        setReady(true);
-      })
-      .catch(() => {
-        if (active) setMessage("The Devil or Inter could not load. Reload the page to try again.");
-      });
-    const urls = objectUrls.current;
-    return () => {
-      active = false;
-      pendingLoads.current++;
-      pendingRenders.current++;
-      urls.forEach((url) => URL.revokeObjectURL(url));
-      urls.clear();
-      resources.current = null;
-    };
-  }, [fontFamily]);
-
-  const loadImage = useCallback(async (file: File) => {
-    const version = ++loadVersion.current;
-    if (!/^image\/(png|jpeg|webp|gif|avif)$/.test(file.type) || file.size > 15 * 1024 * 1024) {
-      setLoading(false);
-      setMessage("Choose a PNG, JPEG, WebP, GIF, or AVIF image up to 15 MB.");
+  }, []);
+  useEffect(() => {
+    if (!active) {
+      setMoving(false);
       return;
     }
-    setLoading(true);
-    const url = URL.createObjectURL(file);
-    objectUrls.current.add(url);
-    try {
-      let image = new Image();
-      image.src = url;
-      await image.decode();
-      if (version !== loadVersion.current) return;
-      if (!image.naturalWidth || image.naturalWidth * image.naturalHeight > 40_000_000)
-        throw new Error("Image dimensions are too large. Use an image under 40 megapixels.");
-      // Freeze the decoded frame, including animated raster uploads.
-      const snapshot = document.createElement("canvas");
-      snapshot.width = image.naturalWidth;
-      snapshot.height = image.naturalHeight;
-      const snapshotContext = snapshot.getContext("2d");
-      if (!snapshotContext) throw new Error("Canvas is unavailable.");
-      snapshotContext.drawImage(image, 0, 0);
-      const frozenBlob = await new Promise<Blob>((resolve, reject) =>
-        snapshot.toBlob(
-          (blob) => (blob ? resolve(blob) : reject(new Error("This image could not be decoded."))),
-          "image/png"
-        )
-      );
-      const frozenUrl = URL.createObjectURL(frozenBlob);
-      objectUrls.current.add(frozenUrl);
-      try {
-        image = new Image();
-        image.src = frozenUrl;
-        await image.decode();
-      } finally {
-        URL.revokeObjectURL(frozenUrl);
-        objectUrls.current.delete(frozenUrl);
-      }
-      if (version !== loadVersion.current) return;
-      setPng(null);
-      setBackground(centerBackground(image));
-      setSelected("background");
-      setMessage("Image loaded. Drag the background or choose a text layer.");
-    } catch (error) {
-      if (version === loadVersion.current)
-        setMessage(
-          error instanceof Error
-            ? error.message
-            : "This image could not be decoded. Try another file."
-        );
-    } finally {
-      // The decoded image owns its pixels; no object URL needs to remain live.
-      URL.revokeObjectURL(url);
-      objectUrls.current.delete(url);
-      if (version === loadVersion.current) setLoading(false);
-    }
-  }, []);
-
-  useEffect(() => {
-    const paste = (event: ClipboardEvent) => {
-      const file = Array.from(event.clipboardData?.items ?? [])
-        .find((item) => item.kind === "file" && item.type.startsWith("image/"))
-        ?.getAsFile();
-      if (file) {
-        event.preventDefault();
-        void loadImage(file);
-      }
+    const element = workspace.current;
+    if (!element) return;
+    const navHeight = () =>
+      embedded
+        ? parseFloat(getComputedStyle(document.documentElement).getPropertyValue("--nav-h")) || 0
+        : 0;
+    // Account for the fixed navbar once; document scroll-padding also affects scrollIntoView.
+    const align = () =>
+      window.scrollTo({
+        top: Math.max(
+          0,
+          window.scrollY +
+            element.getBoundingClientRect().top -
+            navHeight() -
+            8 -
+            (window.visualViewport?.offsetTop ?? 0)
+        ),
+        behavior: "instant",
+      });
+    let frame = 0;
+    const resize = () => {
+      const viewport = window.visualViewport;
+      const height = viewport?.height ?? window.innerHeight;
+      element.style.setProperty("--forge-vh", height + "px");
+      element.dataset.compact = String(height < 500);
+      if (element.contains(document.activeElement)) align();
+      cancelAnimationFrame(frame);
+      frame = requestAnimationFrame(() => {
+        const nav = embedded
+          ? parseFloat(getComputedStyle(document.documentElement).getPropertyValue("--nav-h")) || 0
+          : 0;
+        const top = Math.max(nav, element.getBoundingClientRect().top - (viewport?.offsetTop ?? 0));
+        element.style.setProperty("--forge-space", Math.min(top, height / 3) + "px");
+        const panel = element.querySelector<HTMLElement>('[role="tabpanel"]');
+        const focused = document.activeElement as HTMLElement | null;
+        if (panel && focused && panel.contains(focused)) {
+          const field = focused.getBoundingClientRect(),
+            tray = panel.getBoundingClientRect();
+          if (field.bottom > tray.bottom) panel.scrollTop += field.bottom - tray.bottom + 8;
+          else if (field.top < tray.top) panel.scrollTop -= tray.top - field.top + 8;
+        }
+      });
     };
-    window.addEventListener("paste", paste);
-    return () => window.removeEventListener("paste", paste);
-  }, [loadImage]);
-
-  useEffect(() => {
-    const pendingRenders = renderVersion;
-    const version = ++pendingRenders.current;
-    setPng(null);
-    if (!ready) return;
-    const frame = requestAnimationFrame(() => {
-      const canvas = preview.current;
-      const r = resources.current;
-      if (!canvas || !r) return;
-      try {
-        const bgContext = r.background.getContext("2d");
-        if (!bgContext) throw new Error("Canvas is unavailable.");
-        drawBackground(bgContext, background);
-        renderMeme(canvas, r.background, r.sample, blocks, r.overlay, fontFamily);
-        if (!background) return;
-        // Separate native-size final canvas; CSS size and device pixel ratio never enter export.
-        const final = document.createElement("canvas");
-        final.width = final.height = SIZE;
-        renderMeme(final, r.background, r.sample, blocks, r.overlay, fontFamily);
-        final.toBlob((blob) => {
-          if (version !== renderVersion.current) return;
-          if (blob)
-            setPng(
-              new File([blob], "hellcoin-forged-" + Date.now() + ".png", { type: "image/png" })
-            );
-          else setMessage("PNG generation failed. Try a smaller image.");
-        }, "image/png");
-      } catch (error) {
-        setMessage(error instanceof Error ? error.message : "The preview could not render.");
-      }
-    });
+    resize();
+    align();
+    element
+      .querySelector<HTMLElement>('[role="tab"][aria-selected="true"]')
+      ?.focus({ preventScroll: true });
+    window.visualViewport?.addEventListener("resize", resize);
+    window.addEventListener("resize", resize);
     return () => {
       cancelAnimationFrame(frame);
-      pendingRenders.current++;
+      window.visualViewport?.removeEventListener("resize", resize);
+      window.removeEventListener("resize", resize);
     };
-  }, [ready, background, blocks, fontFamily]);
+  }, [active, embedded]);
 
-  function updateBlock(id: number, patch: Partial<TextBlock>) {
+  function selectMode(next: Mode) {
+    setMode(next);
+    setMoving(false);
+    if (next === "TEXT" && selected === null && scene.blocks.length)
+      setSelected(scene.blocks[0].id);
+  }
+  function tabKey(event: KeyboardEvent, index: number) {
+    let next = index;
+    if (event.key === "ArrowRight") next = (index + 1) % 3;
+    else if (event.key === "ArrowLeft") next = (index + 2) % 3;
+    else if (event.key === "Home") next = 0;
+    else if (event.key === "End") next = 2;
+    else return;
+    event.preventDefault();
+    selectMode(modes[next]);
+    tabs.current[next]?.focus();
+  }
+  function updateBlock(blockId: number, patch: Partial<TextBlock>) {
     const ctx = preview.current?.getContext("2d");
     if (!ctx) return;
     try {
-      const next = blocks.map((block) => {
-        if (block.id !== id) return block;
-        const changed = { ...block, ...patch };
-        const box = textLayout(ctx, changed, fontFamily);
-        return { ...changed, x: box.x, y: box.y };
-      });
-      setPng(null);
-      setBlocks(next);
+      change((old) => ({
+        ...old,
+        blocks: old.blocks.map((block) => {
+          if (block.id !== blockId) return block;
+          const next = { ...block, ...patch };
+          const box = textLayout(ctx, next, font);
+          return { ...next, x: box.x, y: box.y };
+        }),
+      }));
     } catch (error) {
-      setMessage(error instanceof Error ? error.message : "Text does not fit.");
+      setMessage(error instanceof Error ? error.message : "That text does not fit.");
     }
   }
   function move(dx: number, dy: number) {
-    setPng(null);
-    if (selected === "background")
-      setBackground((bg) => (bg ? clampBackground({ ...bg, x: bg.x + dx, y: bg.y + dy }) : bg));
-    else {
-      const block = blocks.find((item) => item.id === selected);
-      if (block) updateBlock(selected, { x: block.x + dx, y: block.y + dy });
-    }
+    if (mode === "EXPORT") return;
+    if (mode === "TEXT") {
+      const block = current.current.blocks.find((b) => b.id === selected);
+      if (block) updateBlock(block.id, { x: block.x + dx, y: block.y + dy });
+    } else
+      change((old) =>
+        old.background
+          ? {
+              ...old,
+              background: clampBackground({
+                ...old.background,
+                x: old.background.x + dx,
+                y: old.background.y + dy,
+              }),
+            }
+          : old
+      );
   }
   function pointerMove(event: PointerEvent<HTMLCanvasElement>) {
     if (!drag.current || event.pointerId !== drag.current.id) return;
@@ -228,6 +195,10 @@ export function ForgeEditor({ fontFamily }: { fontFamily: string }) {
     drag.current = { id: event.pointerId, x: event.clientX, y: event.clientY };
   }
   function keyMove(event: KeyboardEvent<HTMLCanvasElement>) {
+    if (event.key === "Escape") {
+      setMoving(false);
+      return;
+    }
     const step = event.shiftKey ? 20 : 4;
     const delta: Record<string, [number, number]> = {
       ArrowLeft: [-step, 0],
@@ -240,56 +211,95 @@ export function ForgeEditor({ fontFamily }: { fontFamily: string }) {
       move(...delta[event.key]);
     }
   }
-  async function output(action: "download" | "copy" | "share") {
-    if (!png || busy || loading) return;
+  const canShare = (file: File | undefined) => {
+    try {
+      return (
+        !!file &&
+        typeof navigator !== "undefined" &&
+        !!navigator.share &&
+        !!navigator.canShare?.({ files: [file] })
+      );
+    } catch {
+      return false;
+    }
+  };
+  async function output(action: "jpg" | "png" | "copy" | "share") {
+    if (busy || loading || !ready) return;
     setBusy(true);
     try {
-      if (action === "download") {
-        const url = URL.createObjectURL(png);
-        objectUrls.current.add(url);
+      // Share/copy use files prepared on Export entry to preserve user activation.
+      const asset =
+        generated.current?.revision === revision.current
+          ? generated.current
+          : action === "share" || action === "copy"
+            ? null
+            : await prepare();
+      if (!asset || asset.revision !== revision.current) {
+        setMessage("Generating the latest image. Try the action again when ready.");
+        return;
+      }
+      if (action === "share") {
+        if (!canShare(asset.jpg)) {
+          setMessage("Sharing unavailable here. Download JPG or open the image to save it.");
+          return;
+        }
+        await navigator.share({ files: [asset.jpg] });
+        setMessage("Meme shared.");
+      } else if (action === "copy") {
+        await navigator.clipboard.write([new ClipboardItem({ "image/png": asset.png })]);
+        setMessage("Image copied. Paste it into any supported app.");
+      } else {
         const a = document.createElement("a");
-        a.href = url;
-        a.download = png.name;
+        a.href = action === "jpg" ? asset.jpgUrl : asset.pngUrl;
+        if ("download" in HTMLAnchorElement.prototype) a.download = asset[action].name;
+        else {
+          a.target = "_blank";
+          a.rel = "noopener";
+        }
         document.body.appendChild(a);
         a.click();
         a.remove();
-        setTimeout(() => {
-          URL.revokeObjectURL(url);
-          objectUrls.current.delete(url);
-        }, 1000);
-        setMessage("PNG downloaded. Regret travels well.");
-      } else if (action === "copy") {
-        await navigator.clipboard.write([new ClipboardItem({ "image/png": png })]);
-        setMessage("Image copied. Open X and paste it into your post.");
-      } else {
-        if (!navigator.canShare?.({ files: [png] })) {
-          setMessage("File sharing is unavailable here. Download PNG still works.");
-          return;
-        }
-        await navigator.share({ files: [png] });
-        setMessage("Meme shared.");
+        setMessage(
+          "File ready. If it did not save, use Open image below, then Save Image / Save to Files."
+        );
       }
     } catch (error) {
       setMessage(
         error instanceof DOMException && error.name === "AbortError"
           ? "Sharing cancelled. Your meme is still here."
-          : "That action was unavailable or denied. Try Download PNG."
+          : "This browser blocked that action. Try Download or Open image to save."
       );
     } finally {
       setBusy(false);
     }
   }
-
-  const selectedLabel =
-    selected === "background"
-      ? "Background"
-      : "Text " + (blocks.findIndex((block) => block.id === selected) + 1);
-  const canExport = !!png && !busy && !loading;
+  const canExport = ready && !!files && !loading && !encoding && !busy;
+  const shareSupported = canShare(files?.jpg);
+  const canMove = mode === "TEXT" ? !!selectedBlock : mode === "IMAGE" && !!scene.background;
   return (
-    <div className="grid min-w-0 gap-8 lg:grid-cols-[minmax(0,1.3fr)_minmax(20rem,1fr)] lg:items-start">
-      <section aria-label="Meme preview" className="min-w-0">
+    <div
+      ref={workspace}
+      className={
+        styles.workspace +
+        " " +
+        (embedded ? styles.embedded : "") +
+        " overflow-hidden rounded-xl border-3 border-black bg-obsidian-900 shadow-brutal"
+      }
+      aria-label="Meme Forge workspace"
+    >
+      <div className="flex min-h-12 items-center justify-between gap-3 border-b-3 border-black px-3 py-1">
+        <span className="font-heading text-xl text-hellfire-orange">THE FORGE</span>
+        {onClose ? (
+          <button className="min-h-11 rounded px-2 text-sm font-bold text-gold" onClick={onClose}>
+            CLOSE FORGE
+          </button>
+        ) : (
+          <span className="text-xs text-lava-100/60">1080 × 1080 · LOCAL ONLY</span>
+        )}
+      </div>
+      <div className={styles.body}>
         <div
-          className="overflow-hidden rounded-xl border-3 border-black bg-obsidian-900 shadow-brutal"
+          className={styles.preview}
           onDragOver={(event) => {
             event.preventDefault();
             event.dataTransfer.dropEffect = "copy";
@@ -300,259 +310,395 @@ export function ForgeEditor({ fontFamily }: { fontFamily: string }) {
             if (file) void loadImage(file);
           }}
         >
-          <canvas
-            ref={preview}
-            width={SIZE}
-            height={SIZE}
-            tabIndex={0}
-            aria-label={"Meme canvas. Selected layer: " + selectedLabel}
-            aria-describedby="forge-movement"
-            className="block aspect-square w-full cursor-move touch-none focus-visible:ring-4 focus-visible:ring-inset focus-visible:ring-gold"
-            onPointerDown={(event) => {
-              if (!ready || event.button !== 0 || drag.current) return;
-              event.currentTarget.focus();
-              event.currentTarget.setPointerCapture(event.pointerId);
-              drag.current = { id: event.pointerId, x: event.clientX, y: event.clientY };
-            }}
-            onPointerMove={pointerMove}
-            onPointerUp={(event) => {
-              if (drag.current?.id === event.pointerId) {
-                drag.current = null;
-                event.currentTarget.releasePointerCapture(event.pointerId);
+          <div className={styles.square}>
+            <canvas
+              ref={preview}
+              width={SIZE}
+              height={SIZE}
+              tabIndex={0}
+              aria-label={"Meme preview. Move " + selectedLabel + " with arrow keys."}
+              aria-describedby={id + "-movement"}
+              className={
+                styles.canvas +
+                " " +
+                (moving ? styles.moving : "") +
+                " rounded-lg border-3 border-black bg-obsidian-950 focus-visible:outline focus-visible:outline-2 focus-visible:outline-gold"
               }
-            }}
-            onPointerCancel={() => {
-              drag.current = null;
-            }}
-            onLostPointerCapture={() => {
-              drag.current = null;
-            }}
-            onKeyDown={keyMove}
-          >
-            Your browser needs Canvas support to use the Forge.
-          </canvas>
-        </div>
-        <p id="forge-movement" className="mt-4 text-sm leading-relaxed text-lava-100/70">
-          Moving: <strong className="text-gold">{selectedLabel}</strong>. Drag the preview, or focus
-          it and use arrow keys. Hold Shift for larger steps. The Devil is fixed.
-        </p>
-        {!background && (
-          <p className="mt-3 text-gold">
-            Upload an image to begin. PNG export is always 1080 × 1080.
-          </p>
-        )}
-      </section>
-      <div className="min-w-0 space-y-6">
-        <section
-          className="space-y-4 rounded-xl border-3 border-black bg-obsidian-900 p-5 shadow-brutal"
-          aria-labelledby="background-heading"
-        >
-          <h2 id="background-heading" className="text-2xl text-hellfire-orange">
-            THE BACKGROUND
-          </h2>
-          <label className="block text-sm font-bold">
-            Upload image
-            <input
-              type="file"
-              accept="image/png,image/jpeg,image/webp,image/gif,image/avif"
-              disabled={!ready}
-              className="mt-2 block w-full min-w-0 text-sm file:mr-3 file:rounded file:border-0 file:bg-gold file:px-3 file:py-3 file:font-bold file:text-black"
-              onChange={(event) => {
-                const file = event.target.files?.[0];
-                if (file) void loadImage(file);
-                event.target.value = "";
-              }}
-            />
-          </label>
-          <p className="text-xs text-lava-100/60">
-            Up to 15 MB / 40 megapixels. Animated images use a still frame. You can also drop onto
-            the preview or paste an image.
-          </p>
-          <label className="block text-sm font-bold">
-            Zoom {background ? background.zoom.toFixed(2) : "1.00"}×
-            <input
-              aria-label="Background zoom"
-              type="range"
-              min="1"
-              max="3"
-              step="0.01"
-              value={background?.zoom ?? 1}
-              disabled={!background}
-              className="mt-3 w-full accent-gold"
-              onChange={(event) => {
-                const zoom = Number(event.target.value);
-                setPng(null);
-                setBackground((bg) => (bg ? zoomBackground(bg, zoom) : bg));
-              }}
-            />
-          </label>
-          <button
-            className={button}
-            disabled={!background}
-            onClick={() => {
-              setPng(null);
-              setBackground((bg) => (bg ? centerBackground(bg.image) : bg));
-              setSelected("background");
-            }}
-          >
-            RESET BACKGROUND
-          </button>
-        </section>
-        <section
-          aria-labelledby="text-heading"
-          className="space-y-4 rounded-xl border-3 border-black bg-obsidian-900 p-5 shadow-brutal"
-        >
-          <h2 id="text-heading" className="text-2xl text-hellfire-orange">
-            LAST WORDS
-          </h2>
-          <label className="block text-sm font-bold">
-            Movable layer
-            <select
-              className={field + " mt-2"}
-              value={selected}
-              onChange={(event) =>
-                setSelected(
-                  event.target.value === "background" ? "background" : Number(event.target.value)
+              onPointerDown={(event) => {
+                if (
+                  !ready ||
+                  !canMove ||
+                  event.button !== 0 ||
+                  drag.current ||
+                  (event.pointerType !== "mouse" && !moving)
                 )
-              }
+                  return;
+                event.currentTarget.focus({ preventScroll: true });
+                event.currentTarget.setPointerCapture(event.pointerId);
+                drag.current = { id: event.pointerId, x: event.clientX, y: event.clientY };
+              }}
+              onPointerMove={pointerMove}
+              onPointerUp={(event) => {
+                if (drag.current?.id === event.pointerId) {
+                  drag.current = null;
+                  event.currentTarget.releasePointerCapture(event.pointerId);
+                }
+              }}
+              onPointerCancel={() => {
+                drag.current = null;
+              }}
+              onLostPointerCapture={() => {
+                drag.current = null;
+              }}
+              onKeyDown={keyMove}
             >
-              <option value="background">Background</option>
-              {blocks.map((block, index) => (
-                <option key={block.id} value={block.id}>
-                  Text {index + 1}
-                </option>
-              ))}
-            </select>
-          </label>
-          {blocks.map((block, index) => (
-            <fieldset key={block.id} className="min-w-0 space-y-3 border-t border-lava-100/20 pt-4">
-              <legend className="px-1 text-sm font-bold text-gold">
-                Text {index + 1}
-                {selected === block.id ? " · SELECTED" : ""}
-              </legend>
-              <label className="block text-sm">
-                Words
-                <textarea
-                  aria-label={"Text " + (index + 1) + " words"}
-                  className={field + " mt-2 resize-y"}
-                  rows={3}
-                  maxLength={500}
-                  value={block.text}
-                  onFocus={() => setSelected(block.id)}
-                  onChange={(event) => updateBlock(block.id, { text: event.target.value })}
-                />
-              </label>
-              <label className="block text-sm">
-                Font size: {block.size} px
-                <input
-                  aria-label={"Text " + (index + 1) + " font size"}
-                  type="range"
-                  min="32"
-                  max="96"
-                  value={block.size}
-                  className="mt-2 w-full accent-gold"
-                  onChange={(event) => updateBlock(block.id, { size: Number(event.target.value) })}
-                />
-              </label>
-              <label className="block text-sm">
-                Contrast background
-                <select
-                  aria-label={"Text " + (index + 1) + " contrast"}
-                  className={field + " mt-2"}
-                  value={block.contrast}
-                  onChange={(event) =>
-                    updateBlock(block.id, { contrast: event.target.value as TextBlock["contrast"] })
-                  }
-                >
-                  <option>Auto</option>
-                  <option>On</option>
-                  <option>Off</option>
-                </select>
-              </label>
-              <button
-                className={button}
-                onClick={() => {
-                  setPng(null);
-                  setBlocks((items) => items.filter((item) => item.id !== block.id));
-                  if (selected === block.id) setSelected("background");
-                }}
-              >
-                REMOVE TEXT {index + 1}
-              </button>
-            </fieldset>
-          ))}
-          <button
-            className={button}
-            disabled={!ready || blocks.length >= 2}
-            onClick={() => {
-              if (blocks.length >= 2) return;
-              const id = nextId.current++;
-              setPng(null);
-              setBlocks([
-                ...blocks,
-                { id, text: "", size: 64, x: 100, y: blocks.length ? 300 : 80, contrast: "Auto" },
-              ]);
-              setSelected(id);
-            }}
-          >
-            ADD TEXT ({blocks.length}/2)
-          </button>
-          <p className="text-xs text-lava-100/60">
-            Inter Bold. White letters. Up to two blocks; none is fine. Text stays clear of the
-            Devil.
-          </p>
-        </section>
-        <section aria-label="Export meme" className="space-y-4">
-          <div className="flex flex-wrap gap-3">
-            <button
-              className={button + " hellfire-bg"}
-              disabled={!canExport}
-              onClick={() => void output("download")}
-            >
-              DOWNLOAD PNG
-            </button>
-            <button
-              className={button}
-              disabled={!canExport || !copySupported}
-              onClick={() => void output("copy")}
-            >
-              COPY IMAGE
-            </button>
-            <button
-              className={button}
-              disabled={
-                !canExport || !shareSupported || !png || !navigator.canShare?.({ files: [png] })
-              }
-              onClick={() => void output("share")}
-            >
-              SHARE MEME
-            </button>
+              Live 1080-square meme preview: your backdrop, up to two white text blocks, and the
+              fixed Devil. Use the labeled controls to edit and export.
+            </canvas>
           </div>
-          {!copySupported && (
-            <p className="text-xs text-lava-100/70">
-              Image clipboard writing is unavailable here. Download PNG still works.
+          <div className="flex w-full shrink-0 items-center justify-center gap-3">
+            <button
+              className={button + (moving ? " border-gold text-gold" : "")}
+              aria-pressed={moving}
+              disabled={!canMove || !ready}
+              onClick={() => setMoving((value) => !value)}
+            >
+              {moving ? "DONE MOVING" : "MOVE " + selectedLabel.toUpperCase()}
+            </button>
+            <p id={id + "-movement"} className="max-w-40 text-xs text-lava-100/70">
+              {moving
+                ? "Drag in any direction. Done restores scrolling."
+                : "Swipe to scroll. Use Move to reposition."}
             </p>
-          )}
-          {(!shareSupported || (png && !navigator.canShare?.({ files: [png] }))) && (
-            <p className="text-xs text-lava-100/70">
-              File sharing is unavailable here. Download PNG and attach it manually.
-            </p>
-          )}
-          <p className="text-sm text-lava-100/70">
-            Copy Image → open X → paste. Image attachment is up to you.
-          </p>
-          <p
-            role="status"
-            aria-live="polite"
-            className="rounded-lg border-3 border-black bg-obsidian-800 p-4 text-sm text-gold"
+          </div>
+        </div>
+        <div
+          className={
+            styles.tray + " border-t-3 border-black bg-obsidian-800 lg:border-l-3 lg:border-t-0"
+          }
+        >
+          <div
+            role="tablist"
+            aria-label="Forge controls"
+            className="grid grid-cols-3 border-b-3 border-black"
           >
-            {loading
-              ? "Loading your image…"
-              : !ready
-                ? "Loading the Devil and Inter… " + message
-                : message}
-          </p>
-        </section>
+            {modes.map((item, index) => (
+              <button
+                key={item}
+                ref={(element) => {
+                  tabs.current[index] = element;
+                }}
+                id={id + "-" + item}
+                role="tab"
+                aria-selected={mode === item}
+                aria-controls={id + "-panel"}
+                tabIndex={mode === item ? 0 : -1}
+                className={
+                  "min-h-12 px-2 font-heading text-xl " +
+                  (mode === item ? "hellfire-bg text-white" : "bg-obsidian-900 text-lava-100/60")
+                }
+                onClick={() => selectMode(item)}
+                onKeyDown={(event) => tabKey(event, index)}
+              >
+                {item}
+              </button>
+            ))}
+          </div>
+          <div
+            id={id + "-panel"}
+            role="tabpanel"
+            aria-labelledby={id + "-" + mode}
+            tabIndex={0}
+            className={styles.panel + " space-y-4"}
+          >
+            {mode === "IMAGE" && (
+              <>
+                <fieldset>
+                  <legend className="mb-2 text-sm font-bold text-gold">HELLCOIN backdrop</legend>
+                  <div className="grid grid-cols-3 gap-2">
+                    {Object.keys(BACKDROPS).map((name) => (
+                      <button
+                        key={name}
+                        className={button + " px-1 text-xs"}
+                        aria-pressed={scene.backdrop === name}
+                        onClick={() =>
+                          change((old) => ({ ...old, backdrop: name as keyof typeof BACKDROPS }))
+                        }
+                      >
+                        {scene.backdrop === name ? "✓ " : ""}
+                        {name}
+                      </button>
+                    ))}
+                  </div>
+                </fieldset>
+                <label className="block text-sm font-bold">
+                  {scene.background ? "Replace image" : "Upload image (optional)"}
+                  <input
+                    type="file"
+                    accept="image/*"
+                    disabled={!ready}
+                    className="mt-2 block w-full min-w-0 text-sm file:mr-2 file:min-h-11 file:rounded file:border-0 file:bg-gold file:px-3 file:font-bold file:text-black"
+                    onChange={(event) => {
+                      const file = event.target.files?.[0];
+                      if (file) void loadImage(file);
+                      event.target.value = "";
+                    }}
+                  />
+                </label>
+                <p className="text-xs text-lava-100/70">
+                  Drop or paste a photo. Up to 25 MB. Nothing leaves your browser.
+                </p>
+                {scene.background && (
+                  <>
+                    <label className="block text-sm font-bold">
+                      Zoom {scene.background.zoom.toFixed(2)}×
+                      <input
+                        aria-label="Image zoom"
+                        type="range"
+                        min="1"
+                        max="3"
+                        step="0.01"
+                        value={scene.background.zoom}
+                        className="block min-h-11 w-full accent-gold"
+                        onChange={(event) => {
+                          const zoom = Number(event.target.value);
+                          change((old) =>
+                            old.background
+                              ? { ...old, background: zoomBackground(old.background, zoom) }
+                              : old
+                          );
+                        }}
+                      />
+                    </label>
+                    <div className="flex flex-wrap gap-2">
+                      <button
+                        className={button}
+                        onClick={() =>
+                          change((old) =>
+                            old.background
+                              ? { ...old, background: centerBackground(old.background.image) }
+                              : old
+                          )
+                        }
+                      >
+                        RESET CROP
+                      </button>
+                      <button
+                        className={button}
+                        onClick={() => change((old) => ({ ...old, background: null }))}
+                      >
+                        REMOVE IMAGE
+                      </button>
+                    </div>
+                    <p className="text-xs text-lava-100/60">High zoom may soften the image.</p>
+                  </>
+                )}
+              </>
+            )}
+            {mode === "TEXT" && (
+              <>
+                <div className="flex flex-wrap gap-2" role="group" aria-label="Text blocks">
+                  {scene.blocks.map((block, index) => (
+                    <button
+                      key={block.id}
+                      aria-pressed={selected === block.id}
+                      className={button + (selected === block.id ? " border-gold text-gold" : "")}
+                      onClick={() => setSelected(block.id)}
+                    >
+                      TEXT {index + 1}
+                    </button>
+                  ))}
+                  {scene.blocks.length < 2 && (
+                    <button
+                      className={button}
+                      disabled={!ready}
+                      onClick={() => {
+                        const blockId = nextId.current++;
+                        change((old) =>
+                          old.blocks.length < 2
+                            ? {
+                                ...old,
+                                blocks: [
+                                  ...old.blocks,
+                                  {
+                                    id: blockId,
+                                    text: "",
+                                    size: 64,
+                                    x: 80,
+                                    y: old.blocks.length ? 300 : 80,
+                                    contrast: "Auto",
+                                  },
+                                ],
+                              }
+                            : old
+                        );
+                        setSelected(blockId);
+                      }}
+                    >
+                      ADD {scene.blocks.length ? "SECOND TEXT" : "TEXT"}
+                    </button>
+                  )}
+                </div>
+                {selectedBlock ? (
+                  <>
+                    <label className="block text-sm font-bold" htmlFor={id + "-words"}>
+                      Text {selectedIndex + 1} words
+                    </label>
+                    <textarea
+                      id={id + "-words"}
+                      rows={2}
+                      maxLength={500}
+                      className={field + " resize-none"}
+                      value={selectedBlock.text}
+                      onChange={(event) =>
+                        updateBlock(selectedBlock.id, { text: event.target.value })
+                      }
+                    />
+                    <label className="block text-sm font-bold">
+                      Size: {selectedBlock.size} px
+                      <input
+                        aria-label="Text size"
+                        className="block min-h-11 w-full accent-gold"
+                        type="range"
+                        min="32"
+                        max="96"
+                        value={selectedBlock.size}
+                        onChange={(event) =>
+                          updateBlock(selectedBlock.id, { size: Number(event.target.value) })
+                        }
+                      />
+                    </label>
+                    <label className="block text-sm font-bold">
+                      Contrast background
+                      <select
+                        aria-label="Contrast background"
+                        className={field + " mt-2 min-h-11"}
+                        value={selectedBlock.contrast}
+                        onChange={(event) =>
+                          updateBlock(selectedBlock.id, {
+                            contrast: event.target.value as TextBlock["contrast"],
+                          })
+                        }
+                      >
+                        <option>Auto</option>
+                        <option>On</option>
+                        <option>Off</option>
+                      </select>
+                    </label>
+                    <button
+                      className={button}
+                      onClick={() => {
+                        const next = scene.blocks.filter((b) => b.id !== selectedBlock.id);
+                        change((old) => ({ ...old, blocks: next }));
+                        setSelected(next[0]?.id ?? null);
+                        setMoving(false);
+                      }}
+                    >
+                      REMOVE TEXT {selectedIndex + 1}
+                    </button>
+                  </>
+                ) : (
+                  <p className="text-sm text-lava-100/70">
+                    Add your words, or let the Devil speak for himself.
+                  </p>
+                )}
+                <p className="text-xs text-lava-100/60">
+                  White Inter Bold. Two blocks maximum. The Devil stays clear.
+                </p>
+              </>
+            )}
+            {mode === "EXPORT" && (
+              <>
+                <p className="text-sm text-lava-100/80">Your meme. Ready to leave hell.</p>
+                {(encoding || !files) && (
+                  <p className="text-sm text-gold">
+                    {ready ? "Preparing JPG + PNG…" : "Loading Inter and the Devil…"}
+                  </p>
+                )}
+                {shareSupported && (
+                  <button
+                    className={button + " hellfire-bg w-full"}
+                    disabled={!canExport}
+                    onClick={() => void output("share")}
+                  >
+                    SHARE MEME
+                  </button>
+                )}
+                <div className="grid gap-2 sm:grid-cols-2">
+                  <button
+                    className={button + (!shareSupported ? " hellfire-bg" : "")}
+                    disabled={!canExport}
+                    onClick={() => void output("jpg")}
+                  >
+                    DOWNLOAD JPG
+                  </button>
+                  <button
+                    className={button}
+                    disabled={!canExport}
+                    onClick={() => void output("png")}
+                  >
+                    DOWNLOAD PNG
+                  </button>
+                </div>
+                <p className="text-xs text-lava-100/70">
+                  JPG for social apps. PNG for lossless quality. Both opaque, 1080 × 1080.
+                </p>
+                {copySupported ? (
+                  <button
+                    className={button + " w-full"}
+                    disabled={!canExport}
+                    onClick={() => void output("copy")}
+                  >
+                    COPY IMAGE
+                  </button>
+                ) : (
+                  <p className="text-xs text-lava-100/70">
+                    Image copying unavailable. Use Download{shareSupported ? " or Share" : ""}.
+                  </p>
+                )}
+                {!shareSupported && files && (
+                  <p className="text-xs text-lava-100/70">
+                    No file sharing here. Download and attach in your app.
+                  </p>
+                )}
+                {files && (
+                  <div className="border-t border-lava-100/20 pt-3 text-xs text-lava-100/70">
+                    <p>Download did not save? Open the image, then Save Image / Save to Files.</p>
+                    <div className="mt-2 flex gap-4">
+                      <a
+                        href={files.jpgUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="inline-flex min-h-11 items-center text-gold underline"
+                      >
+                        OPEN JPG
+                      </a>
+                      <a
+                        href={files.pngUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="inline-flex min-h-11 items-center text-gold underline"
+                      >
+                        OPEN PNG
+                      </a>
+                    </div>
+                  </div>
+                )}
+              </>
+            )}
+            <p
+              role="status"
+              aria-live="polite"
+              className="border-t border-lava-100/20 pt-3 text-xs leading-relaxed text-gold"
+            >
+              {loading
+                ? "Opening image…"
+                : !ready
+                  ? "Loading the Devil and Inter… " + message
+                  : message}
+            </p>
+          </div>
+        </div>
       </div>
     </div>
   );

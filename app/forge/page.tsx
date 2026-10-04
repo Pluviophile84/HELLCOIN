@@ -1,11 +1,8 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { Inter } from "next/font/google";
-import { SectionKicker } from "@/components/ui/SectionKicker";
-import { ForgeEditor } from "@/components/forge/ForgeEditor";
+import { ForgeEntry } from "@/components/forge/ForgeEntry";
 import { SITE_URL } from "@/lib/constants";
 
-const memeFont = Inter({ subsets: ["latin"], weight: "700", display: "swap" });
 const title = "The Forge | HELLCOIN";
 const description =
   "Make something regrettable. A local HELLCOIN meme forge. Your image, your words. The Devil stays.";
@@ -28,24 +25,18 @@ export default function ForgePage() {
   return (
     <main
       id="main"
-      className="mx-auto min-h-screen max-w-screen-2xl px-4 py-8 text-lava-50 md:px-8 md:py-12"
+      className="min-h-[100svh] bg-obsidian-950 px-2 py-3 text-lava-50 md:px-6 md:py-6"
     >
-      <Link
-        href="/#hellmap"
-        className="inline-block rounded text-sm font-bold tracking-wide text-gold"
-      >
-        ← BACK TO HELL
-      </Link>
-      <header className="mb-10 mt-10 space-y-4">
-        <SectionKicker>COMMUNITY TOOL</SectionKicker>
-        <h1 className="text-5xl md:text-7xl">
-          THE <span className="hellfire-text-pure">FORGE</span>
-        </h1>
-        <p className="text-xl text-gold">Make something regrettable.</p>
-        <p className="text-lava-100/70">Drop, paste, or upload an image. The Devil stays.</p>
+      <header className="mx-auto mb-3 flex max-w-5xl items-center justify-between gap-4 px-2">
+        <Link
+          href="/#forge"
+          className="inline-flex min-h-11 items-center rounded text-sm font-bold text-gold"
+        >
+          ← BACK TO HELLCOIN
+        </Link>
+        <h1 className="font-heading text-2xl text-lava-50">MEME FORGE</h1>
       </header>
-      <ForgeEditor fontFamily={memeFont.style.fontFamily.split(",")[0]} />
-      <p className="mt-12 text-center text-sm text-lava-100/60">Afterlife of every bag.</p>
+      <ForgeEntry />
     </main>
   );
 }

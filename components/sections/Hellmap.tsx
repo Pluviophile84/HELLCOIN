@@ -1,7 +1,6 @@
 "use client";
 
 import { Fragment } from "react";
-import Link from "next/link";
 import Image from "next/image";
 import { motion, useReducedMotion } from "framer-motion";
 import { SectionKicker } from "@/components/ui/SectionKicker";
@@ -182,13 +181,6 @@ export const Hellmap = () => {
                         <p className="mb-6 mt-3 italic text-lava-100/70">
                           &ldquo;Still here.&rdquo;
                         </p>
-                        <Link
-                          href="/forge"
-                          prefetch={false}
-                          className="hellfire-bg inline-block rounded-xl border-3 border-black px-6 py-3 font-heading text-xl text-white shadow-brutal focus-visible:ring-2 focus-visible:ring-gold focus-visible:ring-offset-2 focus-visible:ring-offset-obsidian-800"
-                        >
-                          ENTER THE FORGE
-                        </Link>
                       </div>
                     </div>
                   </article>
