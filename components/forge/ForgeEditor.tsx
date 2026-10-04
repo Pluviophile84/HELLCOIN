@@ -119,6 +119,7 @@ export function ForgeEditor({
   useEffect(() => {
     if (!active) {
       setMoving(false);
+      if (workspace.current) workspace.current.dataset.keyboard = "false";
       return;
     }
     const element = workspace.current;
@@ -162,7 +163,9 @@ export function ForgeEditor({
         !!focused &&
         element.contains(focused) &&
         focused.matches("textarea, input:not([type=range])");
-      const occluded = !!viewport && fieldFocused && window.innerHeight - viewport.height > 150;
+      const keyboardVisible = !!viewport && window.innerHeight - viewport.height > 150;
+      // Keep the tray raised through a tap that blurs the field; the viewport resize ends it.
+      const occluded = keyboardVisible && (fieldFocused || element.dataset.keyboard === "true");
       if (fullScreen()) {
         element.dataset.keyboard = String(occluded);
         if (occluded && viewport) {
@@ -195,7 +198,7 @@ export function ForgeEditor({
     layout();
     const observer = new ResizeObserver(layout);
     observer.observe(element);
-    if (!fullScreen()) align();
+    if (!embedded) align();
     element
       .querySelector<HTMLElement>('[role="tab"][aria-selected="true"]')
       ?.focus({ preventScroll: true });

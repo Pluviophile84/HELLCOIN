@@ -8,21 +8,52 @@ import { Navbar } from "@/components/layout/Navbar";
 import { HellLoader } from "@/components/ui/HellLoader";
 import { ScrollProgress } from "@/components/ui/ScrollProgress";
 
-// Lazy load PaperHandsOverlay - only needed when user triggers it
-const PaperHandsOverlay = dynamic(
-  () => import("@/components/ui/PaperHandsOverlay").then((m) => m.PaperHandsOverlay),
-  {
-    ssr: false,
-    loading: () => <div aria-hidden="true" className="fixed inset-0 z-[100] bg-pink-100" />,
-  }
-);
+// Keep Heaven code split, but cache its module after the initial page settles.
+let paperHandsModule: Promise<typeof import("@/components/ui/PaperHandsOverlay")> | null = null;
+const loadPaperHandsOverlay = () =>
+  (paperHandsModule ??= import("@/components/ui/PaperHandsOverlay").catch((error) => {
+    paperHandsModule = null;
+    throw error;
+  }));
+const PaperHandsOverlay = dynamic(() => loadPaperHandsOverlay().then((m) => m.PaperHandsOverlay), {
+  ssr: false,
+  loading: () => <div aria-hidden="true" className="fixed inset-0 z-[100] bg-pink-100" />,
+});
 
 export function AppShellClient({ children }: { children: ReactNode }) {
   const [paperHands, setPaperHands] = useState(false);
+  const [warmedOverlay, setWarmedOverlay] = useState<
+    typeof import("@/components/ui/PaperHandsOverlay").PaperHandsOverlay | null
+  >(null);
+  const [activeOverlay, setActiveOverlay] = useState<
+    typeof import("@/components/ui/PaperHandsOverlay").PaperHandsOverlay | null
+  >(null);
   const [heavenModeCooldown, setHeavenModeCooldown] = useState(false);
   const cooldownTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
-  // Cleanup timer on unmount
+  useEffect(() => {
+    let live = true;
+    let idleId: number | null = null;
+    const prewarm = () => {
+      void loadPaperHandsOverlay()
+        .then((module) => {
+          if (live) setWarmedOverlay(() => module.PaperHandsOverlay);
+        })
+        .catch(() => {});
+    };
+    const timer = window.setTimeout(() => {
+      if (typeof window.requestIdleCallback === "function") {
+        idleId = window.requestIdleCallback(prewarm, { timeout: 2000 });
+      } else prewarm();
+    }, 1200);
+    return () => {
+      live = false;
+      window.clearTimeout(timer);
+      if (idleId !== null) window.cancelIdleCallback(idleId);
+    };
+  }, []);
+
+  // Cleanup cooldown timer on unmount
   useEffect(() => {
     return () => {
       if (cooldownTimerRef.current) clearTimeout(cooldownTimerRef.current);
@@ -31,9 +62,10 @@ export function AppShellClient({ children }: { children: ReactNode }) {
 
   const triggerHeavenMode = useCallback(() => {
     if (heavenModeCooldown) return;
+    setActiveOverlay(() => warmedOverlay);
     setPaperHands(true);
     setHeavenModeCooldown(true);
-  }, [heavenModeCooldown]);
+  }, [heavenModeCooldown, warmedOverlay]);
 
   const closeHeavenMode = useCallback(() => {
     setPaperHands(false);
@@ -45,6 +77,8 @@ export function AppShellClient({ children }: { children: ReactNode }) {
       setHeavenModeCooldown(false);
     }, 4000);
   }, []);
+
+  const ActivePaperHandsOverlay = activeOverlay ?? PaperHandsOverlay;
 
   return (
     <>
@@ -61,7 +95,7 @@ export function AppShellClient({ children }: { children: ReactNode }) {
       </main>
       {/* Only render when activated to save memory */}
       {(paperHands || heavenModeCooldown) && (
-        <PaperHandsOverlay isActive={paperHands} onClose={closeHeavenMode} />
+        <ActivePaperHandsOverlay isActive={paperHands} onClose={closeHeavenMode} />
       )}
     </>
   );

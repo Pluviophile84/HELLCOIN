@@ -1,3 +1,6 @@
+.entryFallback {
+  min-height: 52rem;
+}
 .workspace {
   --forge-nav: 0px;
   width: 100%;
@@ -16,6 +19,8 @@
   min-height: 0;
 }
 .preview {
+  position: relative;
+  z-index: 0;
   min-height: 0;
   display: flex;
   flex-direction: column;
@@ -45,6 +50,8 @@
 }
 .surface {
   position: relative;
+  isolation: isolate;
+  overflow: hidden;
   width: 100%;
   height: 100%;
 }
@@ -77,6 +84,8 @@
   border-color: #e8a020;
 }
 .tray {
+  position: relative;
+  z-index: 10;
   min-height: 0;
   height: clamp(15rem, calc(var(--forge-layout-height, 100svh) - 27rem - var(--forge-nav)), 24rem);
   display: grid;
@@ -101,6 +110,9 @@
   height: max(12rem, calc(var(--forge-layout-height) - 9rem));
 }
 @media (min-width: 1024px) {
+  .entryFallback {
+    min-height: 43rem;
+  }
   .body {
     grid-template-columns: minmax(0, 1.15fr) minmax(20rem, 1fr);
     grid-template-rows: auto;
@@ -130,6 +142,13 @@
     overflow: hidden;
     background: #0d0a08;
   }
+  .homeContainer[data-open="true"] .entryFallback {
+    height: 100%;
+    min-height: 0;
+    border: 0;
+    border-radius: 0;
+    box-shadow: none;
+  }
   .homeContainer[data-open="true"] .workspace {
     width: 100%;
     max-width: none;
@@ -158,7 +177,6 @@
   }
   .homeContainer[data-open="true"] .workspace[data-keyboard="true"] .tray {
     position: fixed;
-    z-index: 1;
     right: 0;
     bottom: var(--forge-keyboard-bottom, 0px);
     left: 0;

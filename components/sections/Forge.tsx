@@ -4,7 +4,7 @@ import { lockBodyScroll, unlockBodyScroll } from "@/lib/bodyScrollLock";
 import styles from "@/components/forge/ForgeEditor.module.css";
 import Image from "next/image";
 import { SectionKicker } from "@/components/ui/SectionKicker";
-import { ForgeEntry } from "@/components/forge/ForgeEntry";
+import { ForgeEntry, prewarmForgeWorkspace } from "@/components/forge/ForgeEntry";
 
 export const Forge = () => {
   const [opened, setOpened] = useState(false);
@@ -13,6 +13,7 @@ export const Forge = () => {
   const returnScroll = useRef(0);
   const openedOnPhone = useRef(false);
   const trigger = useRef<HTMLButtonElement>(null);
+  const section = useRef<HTMLElement>(null);
   useEffect(() => {
     const media = window.matchMedia(
       "(max-width: 767px), (max-height: 500px) and (pointer: coarse)"
@@ -21,6 +22,21 @@ export const Forge = () => {
     update();
     media.addEventListener("change", update);
     return () => media.removeEventListener("change", update);
+  }, []);
+  useEffect(() => {
+    const element = section.current;
+    if (!element || typeof IntersectionObserver === "undefined") return;
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (entries.some((entry) => entry.isIntersecting)) {
+          prewarmForgeWorkspace();
+          observer.disconnect();
+        }
+      },
+      { rootMargin: "400px 0px" }
+    );
+    observer.observe(element);
+    return () => observer.disconnect();
   }, []);
   useEffect(() => {
     if (!opened || !phone) return;
@@ -34,16 +50,17 @@ export const Forge = () => {
       if (openedOnPhone.current) {
         window.scrollTo({ top: returnScroll.current, behavior: "instant" });
         openedOnPhone.current = false;
-      } else trigger.current?.scrollIntoView({ block: "center", behavior: "instant" });
+      } else window.scrollTo({ top: returnScroll.current, behavior: "instant" });
       trigger.current?.focus({ preventScroll: true });
     });
   }
   return (
-    <section id="forge" className={styles.foundrySection + " relative px-4 py-20 md:py-28"}>
-      <div
-        hidden={opened}
-        className={(opened ? "hidden" : "block") + " mx-auto max-w-5xl 3xl:max-w-6xl"}
-      >
+    <section
+      ref={section}
+      id="forge"
+      className={styles.foundrySection + " relative px-4 py-20 md:py-28"}
+    >
+      <div className="mx-auto max-w-5xl 3xl:max-w-6xl">
         <div className="mb-9 flex flex-col items-center gap-3 text-center md:mb-12">
           <SectionKicker>COMMUNITY MEME MAKER</SectionKicker>
           <h2 className="font-heading text-5xl font-black text-lava-50 md:text-6xl 3xl:text-7xl">
@@ -56,7 +73,13 @@ export const Forge = () => {
             Turn bad decisions into content.
           </p>
         </div>
-        <div className="grid items-center gap-8 rounded-xl border-3 border-black bg-obsidian-900 p-5 shadow-brutal md:grid-cols-2 md:gap-10 md:p-8">
+        <div
+          hidden={opened}
+          className={
+            (opened ? "hidden" : "grid") +
+            " items-center gap-8 rounded-xl border-3 border-black bg-obsidian-900 p-5 shadow-brutal md:grid-cols-2 md:gap-10 md:p-8"
+          }
+        >
           <div className="flex flex-col items-center gap-5 text-center md:items-start md:text-left">
             <p className="font-body text-lg text-lava-100/80">
               Upload an image. Add your words. The Devil stays.
@@ -65,6 +88,9 @@ export const Forge = () => {
               ref={trigger}
               aria-expanded={opened}
               aria-controls="homepage-forge-workspace"
+              onPointerEnter={prewarmForgeWorkspace}
+              onPointerDown={prewarmForgeWorkspace}
+              onFocus={prewarmForgeWorkspace}
               className="hellfire-bg min-h-12 rounded-xl border-3 border-black px-8 py-3 font-heading text-2xl text-white shadow-brutal focus-visible:ring-2 focus-visible:ring-gold focus-visible:ring-offset-2 focus-visible:ring-offset-obsidian-950"
               onClick={() => {
                 openedOnPhone.current = window.matchMedia(
