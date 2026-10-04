@@ -151,7 +151,15 @@ export function useForge(primaryFont: string, active: boolean, exporting: boolea
       if (!ctx) throw new Error("Canvas is unavailable.");
       const s = current.current;
       drawBackground(ctx, s.background, s.backdrop);
-      renderMeme(target, r.background, r.sample, s.blocks, r.overlay, font);
+      renderMeme(
+        target,
+        r.background,
+        r.sample,
+        s.blocks,
+        r.overlay,
+        font,
+        !s.background && s.backdrop === "WHITE"
+      );
     },
     [font]
   );

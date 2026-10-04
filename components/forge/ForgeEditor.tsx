@@ -16,6 +16,8 @@ import styles from "./ForgeEditor.module.css";
 
 const button =
   "min-h-11 rounded-lg border-3 border-black bg-obsidian-800 px-3 py-2 text-sm font-bold text-lava-50 shadow-brutal-sm hover:text-gold focus-visible:ring-2 focus-visible:ring-gold disabled:cursor-not-allowed disabled:opacity-40";
+const primaryButton =
+  "hellfire-bg min-h-11 rounded-lg border-3 border-black px-3 py-2 text-sm font-bold text-white shadow-brutal-sm hover:text-white focus-visible:text-white focus-visible:ring-2 focus-visible:ring-gold active:text-black disabled:cursor-not-allowed disabled:opacity-60";
 const field =
   "w-full min-w-0 rounded-lg border-3 border-black bg-obsidian-950 px-3 py-2 text-base text-lava-50 focus-visible:ring-2 focus-visible:ring-gold";
 const modes = ["IMAGE", "TEXT", "EXPORT"] as const;
@@ -39,6 +41,7 @@ export function ForgeEditor({
   const [previewWidth, setPreviewWidth] = useState(0);
   const [busy, setBusy] = useState(false);
   const [copySupported, setCopySupported] = useState(false);
+  const [shareAvailable, setShareAvailable] = useState(false);
   const workspace = useRef<HTMLDivElement>(null);
   const tabs = useRef<(HTMLButtonElement | null)[]>([]);
   const nextId = useRef(1);
@@ -74,30 +77,29 @@ export function ForgeEditor({
         : null;
   const selectedLabel = target?.type === "text" ? "Text " + (selectedIndex + 1) : "image";
   const ctx = ready ? preview.current?.getContext("2d") : null;
-  const box =
-    ctx && target?.type === "text" && selectedBlock?.text.trim()
-      ? textLayout(ctx, selectedBlock, font)
-      : null;
   const scale = previewWidth / SIZE;
-  const hit =
-    box && scale
-      ? {
-          x: Math.max(0, box.x - Math.max(0, (44 / scale - box.width) / 2)),
-          y: Math.max(0, box.y - Math.max(0, (44 / scale - box.height) / 2)),
-          width: Math.max(box.width, 44 / scale),
-          height: Math.max(box.height, 44 / scale),
-        }
-      : null;
-  if (hit) {
-    hit.width = Math.min(hit.width, SIZE - hit.x);
-    hit.height = Math.min(hit.height, SIZE - hit.y);
-    if (hit.x < DEVIL.right && hit.y + hit.height > DEVIL.top) {
-      if (box!.x >= DEVIL.right) {
-        hit.width -= DEVIL.right - hit.x;
-        hit.x = DEVIL.right;
-      } else hit.height = DEVIL.top - hit.y;
-    }
-  }
+  const hits =
+    ctx && scale && mode !== "IMAGE"
+      ? scene.blocks.flatMap((block, index) => {
+          if (!block.text.trim()) return [];
+          const box = textLayout(ctx, block, font);
+          const hit = {
+            x: Math.max(0, box.x - Math.max(0, (44 / scale - box.width) / 2)),
+            y: Math.max(0, box.y - Math.max(0, (44 / scale - box.height) / 2)),
+            width: Math.max(box.width, 44 / scale),
+            height: Math.max(box.height, 44 / scale),
+          };
+          hit.width = Math.min(hit.width, SIZE - hit.x);
+          hit.height = Math.min(hit.height, SIZE - hit.y);
+          if (hit.x < DEVIL.right && hit.y + hit.height > DEVIL.top) {
+            if (box.x >= DEVIL.right) {
+              hit.width -= DEVIL.right - hit.x;
+              hit.x = DEVIL.right;
+            } else hit.height = DEVIL.top - hit.y;
+          }
+          return hit.width > 0 && hit.height > 0 ? [{ block, index, hit }] : [];
+        })
+      : [];
   useEffect(() => {
     const canvas = preview.current;
     if (!canvas) return;
@@ -125,6 +127,9 @@ export function ForgeEditor({
       embedded
         ? parseFloat(getComputedStyle(document.documentElement).getPropertyValue("--nav-h")) || 0
         : 0;
+    const fullScreen = () =>
+      embedded &&
+      window.matchMedia("(max-width: 767px), (max-height: 500px) and (pointer: coarse)").matches;
     // Account for the fixed navbar once; document scroll-padding also affects scrollIntoView.
     const align = () =>
       window.scrollTo({
@@ -153,15 +158,25 @@ export function ForgeEditor({
     const keyboard = () => {
       const viewport = window.visualViewport;
       const focused = document.activeElement as HTMLElement | null;
-      if (
-        !viewport ||
-        !focused ||
-        !element.contains(focused) ||
-        !focused.matches("textarea, input:not([type=range])")
-      )
-        return;
-      // Only assist genuine keyboard occlusion. Browser toolbar resizing never changes geometry.
-      if (window.innerHeight - viewport.height < 150) return;
+      const fieldFocused =
+        !!focused &&
+        element.contains(focused) &&
+        focused.matches("textarea, input:not([type=range])");
+      const occluded = !!viewport && fieldFocused && window.innerHeight - viewport.height > 150;
+      if (fullScreen()) {
+        element.dataset.keyboard = String(occluded);
+        if (occluded && viewport) {
+          element.style.setProperty(
+            "--forge-keyboard-bottom",
+            Math.max(0, window.innerHeight - viewport.offsetTop - viewport.height) + "px"
+          );
+          element.style.setProperty(
+            "--forge-keyboard-visible",
+            Math.max(12 * 16, viewport.height - 60) + "px"
+          );
+        }
+      }
+      if (!occluded || !viewport || !focused) return;
       cancelAnimationFrame(frame);
       frame = requestAnimationFrame(() => {
         const panel = element.querySelector<HTMLElement>('[role="tabpanel"]');
@@ -170,22 +185,28 @@ export function ForgeEditor({
             0,
             focused.getBoundingClientRect().bottom - panel.getBoundingClientRect().bottom + 8
           );
-        const bottom = viewport.offsetTop + viewport.height - 12;
-        const overflow = focused.getBoundingClientRect().bottom - bottom;
-        if (overflow > 0) window.scrollBy({ top: overflow, behavior: "instant" });
+        if (!fullScreen()) {
+          const overflow =
+            focused.getBoundingClientRect().bottom - viewport.offsetTop - viewport.height + 12;
+          if (overflow > 0) window.scrollBy({ top: overflow, behavior: "instant" });
+        }
       });
     };
     layout();
     const observer = new ResizeObserver(layout);
     observer.observe(element);
-    align();
+    if (!fullScreen()) align();
     element
       .querySelector<HTMLElement>('[role="tab"][aria-selected="true"]')
       ?.focus({ preventScroll: true });
+    element.addEventListener("focusin", keyboard);
+    element.addEventListener("focusout", keyboard);
     window.visualViewport?.addEventListener("resize", keyboard);
     return () => {
       cancelAnimationFrame(frame);
       observer.disconnect();
+      element.removeEventListener("focusin", keyboard);
+      element.removeEventListener("focusout", keyboard);
       window.visualViewport?.removeEventListener("resize", keyboard);
     };
   }, [active, embedded]);
@@ -253,7 +274,7 @@ export function ForgeEditor({
     );
     drag.current = { ...drag.current, x: event.clientX, y: event.clientY };
   }
-  function keyMove(event: KeyboardEvent<HTMLElement>) {
+  function keyMove(event: KeyboardEvent<HTMLElement>, manipulation: Target = target) {
     if (event.key === "Escape") {
       setMoving(false);
       return;
@@ -267,11 +288,12 @@ export function ForgeEditor({
     };
     if (delta[event.key]) {
       event.preventDefault();
-      move(...delta[event.key]);
+      move(...delta[event.key], manipulation);
     }
   }
   function startDrag(event: PointerEvent<HTMLElement>, manipulation: Target) {
     if (!ready || !manipulation || event.button !== 0 || drag.current) return;
+    if (manipulation.type === "text") setSelected(manipulation.id);
     event.currentTarget.focus({ preventScroll: true });
     event.currentTarget.setPointerCapture(event.pointerId);
     drag.current = {
@@ -351,8 +373,11 @@ export function ForgeEditor({
       setBusy(false);
     }
   }
+  useEffect(() => {
+    if (files) setShareAvailable(canShare(files.jpg));
+  }, [files]);
   const canExport = ready && !!files && !loading && !encoding && !busy && !dragging;
-  const shareSupported = canShare(files?.jpg);
+  const shareSupported = files ? canShare(files.jpg) : shareAvailable;
 
   return (
     <div
@@ -365,7 +390,12 @@ export function ForgeEditor({
       }
       aria-label="Meme Forge workspace"
     >
-      <div className="flex min-h-12 items-center justify-between gap-3 border-b-3 border-black px-3 py-1">
+      <div
+        className={
+          styles.forgeHeader +
+          " flex min-h-12 items-center justify-between gap-3 border-b-3 border-black px-3 py-1"
+        }
+      >
         <span className="font-heading text-xl text-hellfire-orange">THE FORGE</span>
         {onClose ? (
           <button className="min-h-11 rounded px-2 text-sm font-bold text-gold" onClick={onClose}>
@@ -413,29 +443,34 @@ export function ForgeEditor({
                 onLostPointerCapture={endDrag}
                 onKeyDown={keyMove}
               >
-                Live 1080-square meme preview: your backdrop, up to two white text blocks, and the
-                fixed Devil. Use the labeled controls to edit and export.
+                Live 1080-square meme preview: your backdrop, up to two high-contrast text blocks,
+                and the fixed Devil. Use the labeled controls to edit and export.
               </canvas>
-              {hit && (
+              {hits.map(({ block, index, hit }) => (
                 <div
+                  key={block.id}
                   role="button"
                   tabIndex={0}
-                  aria-label={"Drag " + selectedLabel}
-                  className={styles.textTarget + (mode === "TEXT" ? " " + styles.selectedText : "")}
+                  aria-label={"Drag Text " + (index + 1)}
+                  className={
+                    styles.textTarget +
+                    (mode === "TEXT" && selected === block.id ? " " + styles.selectedText : "")
+                  }
                   style={{
                     left: (hit.x / SIZE) * 100 + "%",
                     top: (hit.y / SIZE) * 100 + "%",
                     width: (hit.width / SIZE) * 100 + "%",
                     height: (hit.height / SIZE) * 100 + "%",
+                    zIndex: selected === block.id ? 3 : index + 1,
                   }}
-                  onPointerDown={(event) => startDrag(event, target)}
+                  onPointerDown={(event) => startDrag(event, { type: "text", id: block.id })}
                   onPointerMove={pointerMove}
                   onPointerUp={endDrag}
                   onPointerCancel={endDrag}
                   onLostPointerCapture={endDrag}
-                  onKeyDown={keyMove}
+                  onKeyDown={(event) => keyMove(event, { type: "text", id: block.id })}
                 />
-              )}
+              ))}
             </div>
           </div>
           <div className="flex w-full shrink-0 items-center justify-center gap-3">
@@ -451,7 +486,7 @@ export function ForgeEditor({
             )}
             <p id={id + "-movement"} className="max-w-40 text-xs text-lava-100/70">
               {target?.type === "text"
-                ? "Drag the selected text. Swipe elsewhere to scroll."
+                ? "Drag a text block. Swipe elsewhere to scroll."
                 : moving
                   ? "Drag in any direction. Done restores scrolling."
                   : mode === "IMAGE"
@@ -507,13 +542,16 @@ export function ForgeEditor({
                     {Object.keys(BACKDROPS).map((name) => (
                       <button
                         key={name}
-                        className={button + " px-1 text-xs"}
+                        className={
+                          button +
+                          " px-1 text-xs" +
+                          (scene.backdrop === name ? " border-gold text-gold" : "")
+                        }
                         aria-pressed={scene.backdrop === name}
                         onClick={() =>
                           change((old) => ({ ...old, backdrop: name as keyof typeof BACKDROPS }))
                         }
                       >
-                        {scene.backdrop === name ? "✓ " : ""}
                         {name}
                       </button>
                     ))}
@@ -656,23 +694,27 @@ export function ForgeEditor({
                         }
                       />
                     </label>
-                    <label className="block text-sm font-bold">
-                      Contrast background
-                      <select
-                        aria-label="Contrast background"
-                        className={field + " mt-2 min-h-11"}
-                        value={selectedBlock.contrast}
-                        onChange={(event) =>
-                          updateBlock(selectedBlock.id, {
-                            contrast: event.target.value as TextBlock["contrast"],
-                          })
-                        }
-                      >
-                        <option>Auto</option>
-                        <option>On</option>
-                        <option>Off</option>
-                      </select>
-                    </label>
+                    {!(scene.backdrop === "WHITE" && !scene.background) ? (
+                      <label className="block text-sm font-bold">
+                        Contrast background
+                        <select
+                          aria-label="Contrast background"
+                          className={field + " mt-2 min-h-11"}
+                          value={selectedBlock.contrast}
+                          onChange={(event) =>
+                            updateBlock(selectedBlock.id, {
+                              contrast: event.target.value as TextBlock["contrast"],
+                            })
+                          }
+                        >
+                          <option>Auto</option>
+                          <option>On</option>
+                          <option>Off</option>
+                        </select>
+                      </label>
+                    ) : (
+                      <p className="text-xs text-lava-100/70">Black text on White is automatic.</p>
+                    )}
                     <button
                       className={button}
                       onClick={() => {
@@ -691,7 +733,7 @@ export function ForgeEditor({
                   </p>
                 )}
                 <p className="text-xs text-lava-100/60">
-                  White Inter Bold. Two blocks maximum. The Devil stays clear.
+                  Inter Bold. Color is automatic. Two blocks maximum. The Devil stays clear.
                 </p>
               </>
             )}
@@ -705,7 +747,7 @@ export function ForgeEditor({
                 )}
                 {shareSupported && (
                   <button
-                    className={button + " hellfire-bg w-full"}
+                    className={primaryButton + " w-full"}
                     disabled={!canExport}
                     onClick={() => void output("share")}
                   >
@@ -714,7 +756,7 @@ export function ForgeEditor({
                 )}
                 <div className="grid gap-2 sm:grid-cols-2">
                   <button
-                    className={button + (!shareSupported ? " hellfire-bg" : "")}
+                    className={shareSupported ? button : primaryButton}
                     disabled={!canExport}
                     onClick={() => void output("jpg")}
                   >

@@ -102,7 +102,7 @@ export function textLayout(
   }
   return { lines, width, height, x, y, lineHeight };
 }
-export const BACKDROPS = { OBSIDIAN: "#0D0A08", ASH: "#2D2420", HELLFIRE: "#991F0A" } as const;
+export const BACKDROPS = { OBSIDIAN: "#0D0A08", HELLFIRE: "#991F0A", WHITE: "#FFFFFF" } as const;
 export type Backdrop = keyof typeof BACKDROPS;
 export function drawBackground(
   ctx: CanvasRenderingContext2D,
@@ -142,7 +142,8 @@ export function renderMeme(
   sample: CanvasRenderingContext2D,
   blocks: TextBlock[],
   overlay: HTMLImageElement,
-  family: string
+  family: string,
+  blackOnWhite = false
 ) {
   const ctx = canvas.getContext("2d", { alpha: false, colorSpace: "srgb" });
   if (!ctx) throw new Error("Canvas is unavailable in this browser.");
@@ -150,7 +151,7 @@ export function renderMeme(
   ctx.drawImage(backgroundCanvas, 0, 0);
   const layouts = blocks.map((block) => ({ block, box: textLayout(ctx, block, family) }));
   for (const { block, box } of layouts) {
-    if (!block.text.trim()) continue;
+    if (!block.text.trim() || blackOnWhite) continue;
     if (
       block.contrast === "On" ||
       (block.contrast === "Auto" && needsContrast(sample, backgroundCanvas, box))
@@ -159,7 +160,7 @@ export function renderMeme(
       ctx.fillRect(box.x, box.y, box.width, box.height);
     }
   }
-  ctx.fillStyle = "#FFFFFF";
+  ctx.fillStyle = blackOnWhite ? "#000000" : "#FFFFFF";
   ctx.textAlign = "center";
   ctx.textBaseline = "middle";
   for (const { block, box } of layouts) {

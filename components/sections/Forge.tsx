@@ -1,5 +1,7 @@
 "use client";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
+import { lockBodyScroll, unlockBodyScroll } from "@/lib/bodyScrollLock";
+import styles from "@/components/forge/ForgeEditor.module.css";
 import Image from "next/image";
 import { SectionKicker } from "@/components/ui/SectionKicker";
 import { ForgeEntry } from "@/components/forge/ForgeEntry";
@@ -7,12 +9,33 @@ import { ForgeEntry } from "@/components/forge/ForgeEntry";
 export const Forge = () => {
   const [opened, setOpened] = useState(false);
   const [activated, setActivated] = useState(false);
+  const [phone, setPhone] = useState(false);
+  const returnScroll = useRef(0);
+  const openedOnPhone = useRef(false);
   const trigger = useRef<HTMLButtonElement>(null);
+  useEffect(() => {
+    const media = window.matchMedia(
+      "(max-width: 767px), (max-height: 500px) and (pointer: coarse)"
+    );
+    const update = () => setPhone(media.matches);
+    update();
+    media.addEventListener("change", update);
+    return () => media.removeEventListener("change", update);
+  }, []);
+  useEffect(() => {
+    if (!opened || !phone) return;
+    lockBodyScroll("forge:homepage");
+    return () => unlockBodyScroll("forge:homepage");
+  }, [opened, phone]);
   function close() {
+    if (document.activeElement instanceof HTMLElement) document.activeElement.blur();
     setOpened(false);
     requestAnimationFrame(() => {
+      if (openedOnPhone.current) {
+        window.scrollTo({ top: returnScroll.current, behavior: "instant" });
+        openedOnPhone.current = false;
+      } else trigger.current?.scrollIntoView({ block: "center", behavior: "instant" });
       trigger.current?.focus({ preventScroll: true });
-      trigger.current?.scrollIntoView({ block: "center", behavior: "instant" });
     });
   }
   return (
@@ -41,6 +64,10 @@ export const Forge = () => {
             aria-controls="homepage-forge-workspace"
             className="hellfire-bg min-h-12 rounded-xl border-3 border-black px-8 py-3 font-heading text-2xl text-white shadow-brutal focus-visible:ring-2 focus-visible:ring-gold focus-visible:ring-offset-2 focus-visible:ring-offset-obsidian-950"
             onClick={() => {
+              openedOnPhone.current = window.matchMedia(
+                "(max-width: 767px), (max-height: 500px) and (pointer: coarse)"
+              ).matches;
+              returnScroll.current = window.scrollY;
               setActivated(true);
               setOpened(true);
             }}
@@ -69,7 +96,13 @@ export const Forge = () => {
           </figcaption>
         </figure>
       </div>
-      <div id="homepage-forge-workspace" hidden={!opened}>
+      <div
+        id="homepage-forge-workspace"
+        hidden={!opened}
+        data-phone={phone}
+        data-open={opened}
+        className={styles.homeContainer}
+      >
         {activated && <ForgeEntry active={opened} embedded onClose={close} />}
       </div>
     </section>
