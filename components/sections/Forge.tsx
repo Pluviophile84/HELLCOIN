@@ -61,16 +61,13 @@ export const Forge = () => {
       className={styles.foundrySection + " relative px-4 py-20 md:py-28"}
     >
       <div className="mx-auto max-w-5xl 3xl:max-w-6xl">
-        <div className="mb-9 flex flex-col items-center gap-3 text-center md:mb-12">
-          <SectionKicker>COMMUNITY MEME MAKER</SectionKicker>
+        <div className="mb-16 flex flex-col items-center gap-4 text-center">
+          <SectionKicker>UNPAID EVANGELISM</SectionKicker>
           <h2 className="font-heading text-5xl font-black text-lava-50 md:text-6xl 3xl:text-7xl">
             THE <span className="hellfire-text-pure pr-1">FORGE</span>
           </h2>
-          <p className="font-body text-xl text-lava-100 md:text-2xl">
-            Make your own HELLCOIN meme.
-          </p>
-          <p className="font-body text-base font-bold text-gold md:text-lg">
-            Turn bad decisions into content.
+          <p className="max-w-lg font-body text-lg text-lava-100/60">
+            Hell has no marketing budget. Only you.
           </p>
         </div>
         <div
@@ -81,9 +78,10 @@ export const Forge = () => {
           }
         >
           <div className="flex flex-col items-center gap-5 text-center md:items-start md:text-left">
-            <p className="font-body text-lg text-lava-100/80">
-              Upload an image. Add your words. The Devil stays.
+            <p className="font-body text-lg font-bold text-gold">
+              Bring an image. Leave with a meme.
             </p>
+            <p className="font-body text-base text-lava-100/80">Add your words. The Devil stays.</p>
             <button
               ref={trigger}
               aria-expanded={opened}
@@ -101,12 +99,10 @@ export const Forge = () => {
                 setOpened(true);
               }}
             >
-              MAKE A MEME
+              FORGE A MEME
             </button>
             <p className="font-body text-sm text-lava-100/60">
-              No account. Nothing uploaded.
-              <br />
-              Your image stays in your browser.
+              Your image never leaves your device. Hell already has your soul.
             </p>
           </div>
           <figure className="mx-auto w-full max-w-72 md:order-first md:max-w-sm">
