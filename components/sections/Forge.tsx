@@ -89,7 +89,7 @@ export const Forge = () => {
               onPointerEnter={prewarmForgeWorkspace}
               onPointerDown={prewarmForgeWorkspace}
               onFocus={prewarmForgeWorkspace}
-              className="hellfire-bg min-h-12 rounded-xl border-3 border-black px-8 py-3 font-heading text-2xl text-white shadow-brutal focus-visible:ring-2 focus-visible:ring-gold focus-visible:ring-offset-2 focus-visible:ring-offset-obsidian-950"
+              className="action-feedback hellfire-bg min-h-12 rounded-xl border-3 border-black px-8 py-3 font-heading text-2xl text-white shadow-brutal transition-[transform,box-shadow] duration-200 focus-visible:ring-2 focus-visible:ring-gold focus-visible:ring-offset-2 focus-visible:ring-offset-obsidian-950 active:translate-x-0.5 active:translate-y-0.5 active:shadow-[0_0_1.875rem_rgba(255,85,0,0.7)] can-hover:hover:translate-x-0.5 can-hover:hover:translate-y-0.5 can-hover:hover:shadow-[0_0_1.875rem_rgba(255,85,0,0.7)]"
               onClick={() => {
                 openedOnPhone.current = window.matchMedia(
                   "(max-width: 767px), (max-height: 500px) and (pointer: coarse)"

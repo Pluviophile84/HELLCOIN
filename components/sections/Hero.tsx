@@ -22,89 +22,89 @@ export const Hero = () => {
   const rafRef = useRef<number | null>(null);
   const [scrollProgress, setScrollProgress] = useState(0);
   const [reduceMotion, setReduceMotion] = useState(false);
-    const [isVisible, setIsVisible] = useState(true);
-    const [isMobile, setIsMobile] = useState(false);
-    const [isShort, setIsShort] = useState(false);
-  
-    // Initialize and set up scroll handling
-    useEffect(() => {
-      const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-      const updateDimensions = () => {
-        setIsMobile(window.innerWidth < 768);
-        setIsShort(window.innerHeight < 600);
-      };
-  
-      setReduceMotion(prefersReducedMotion);
-      updateDimensions();
-  
-      if (prefersReducedMotion) return;
-  
-      const updateScrollProgress = () => {
-        if (!sectionRef.current) return;
-  
-        const rect = sectionRef.current.getBoundingClientRect();
-        const sectionHeight = rect.height;
-  
-        // Calculate how much of the section has scrolled past
-        // 0 = at top, 1 = fully scrolled past
-        const scrolled = -rect.top;
-        const progress = Math.max(0, Math.min(1, scrolled / (sectionHeight * 0.8)));
-  
-        setScrollProgress(progress);
-        setIsVisible(rect.bottom > 0);
-      };
-  
-      const handleScroll = () => {
-        if (rafRef.current) cancelAnimationFrame(rafRef.current);
-        rafRef.current = requestAnimationFrame(updateScrollProgress);
-      };
-  
-      window.addEventListener("scroll", handleScroll, { passive: true });
-      window.addEventListener("resize", updateDimensions);
-      updateScrollProgress();
-  
-      return () => {
-        window.removeEventListener("scroll", handleScroll);
-        window.removeEventListener("resize", updateDimensions);
-        if (rafRef.current) cancelAnimationFrame(rafRef.current);
-      };
-    }, []);
-  
-    const handleAbandonHope = useCallback(() => {
-      const genesisSection = document.getElementById("genesis");
-      if (genesisSection) {
-        genesisSection.scrollIntoView({ behavior: "smooth" });
-      }
-    }, []);
-  
-    // Parallax calculations with easing
-    const shouldAnimate = !reduceMotion && isVisible;
-  
-    // Eased progress for smoother falloff
-    const easedProgress = scrollProgress * scrollProgress; // Quadratic ease
-  
-    // Mobile gets 60% of desktop parallax intensity, Short gets even less (30%)
-    const intensity = isShort ? 0.3 : (isMobile ? 0.6 : 1);
-    
-    // Fade out slower on short screens to keep elements visible longer
-    const fadeFactor = isShort ? 0.8 : 1.5;
-  
-    // Content parallax (moves faster - 50% of scroll, fades out)
-    const contentY = shouldAnimate ? scrollProgress * 200 * intensity : 0;
-    const contentOpacity = shouldAnimate ? Math.max(0, 1 - easedProgress * fadeFactor) : 1;
-  
-    // Individual element stagger (each element moves at different rate)
-    const titleY = shouldAnimate ? scrollProgress * 180 * intensity : 0;
-    const titleOpacity = shouldAnimate ? Math.max(0, 1 - easedProgress * (fadeFactor * 0.85)) : 1;
-  
-    const subtitleY = shouldAnimate ? scrollProgress * 220 * intensity : 0;
-    const subtitleOpacity = shouldAnimate ? Math.max(0, 1 - easedProgress * fadeFactor) : 1;
-  
-    const taglineY = shouldAnimate ? scrollProgress * 260 * intensity : 0;
-    const taglineOpacity = shouldAnimate ? Math.max(0, 1 - easedProgress * (fadeFactor * 1.1)) : 1;
-  
-    const ctaY = shouldAnimate ? scrollProgress * 300 * intensity : 0;
-    const ctaOpacity = shouldAnimate ? Math.max(0, 1 - easedProgress * (fadeFactor * 1.25)) : 1;
+  const [isVisible, setIsVisible] = useState(true);
+  const [isMobile, setIsMobile] = useState(false);
+  const [isShort, setIsShort] = useState(false);
+
+  // Initialize and set up scroll handling
+  useEffect(() => {
+    const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const updateDimensions = () => {
+      setIsMobile(window.innerWidth < 768);
+      setIsShort(window.innerHeight < 600);
+    };
+
+    setReduceMotion(prefersReducedMotion);
+    updateDimensions();
+
+    if (prefersReducedMotion) return;
+
+    const updateScrollProgress = () => {
+      if (!sectionRef.current) return;
+
+      const rect = sectionRef.current.getBoundingClientRect();
+      const sectionHeight = rect.height;
+
+      // Calculate how much of the section has scrolled past
+      // 0 = at top, 1 = fully scrolled past
+      const scrolled = -rect.top;
+      const progress = Math.max(0, Math.min(1, scrolled / (sectionHeight * 0.8)));
+
+      setScrollProgress(progress);
+      setIsVisible(rect.bottom > 0);
+    };
+
+    const handleScroll = () => {
+      if (rafRef.current) cancelAnimationFrame(rafRef.current);
+      rafRef.current = requestAnimationFrame(updateScrollProgress);
+    };
+
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    window.addEventListener("resize", updateDimensions);
+    updateScrollProgress();
+
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+      window.removeEventListener("resize", updateDimensions);
+      if (rafRef.current) cancelAnimationFrame(rafRef.current);
+    };
+  }, []);
+
+  const handleAbandonHope = useCallback(() => {
+    const genesisSection = document.getElementById("genesis");
+    if (genesisSection) {
+      genesisSection.scrollIntoView({ behavior: "smooth" });
+    }
+  }, []);
+
+  // Parallax calculations with easing
+  const shouldAnimate = !reduceMotion && isVisible;
+
+  // Eased progress for smoother falloff
+  const easedProgress = scrollProgress * scrollProgress; // Quadratic ease
+
+  // Mobile gets 60% of desktop parallax intensity, Short gets even less (30%)
+  const intensity = isShort ? 0.3 : isMobile ? 0.6 : 1;
+
+  // Fade out slower on short screens to keep elements visible longer
+  const fadeFactor = isShort ? 0.8 : 1.5;
+
+  // Content parallax (moves faster - 50% of scroll, fades out)
+  const contentY = shouldAnimate ? scrollProgress * 200 * intensity : 0;
+  const contentOpacity = shouldAnimate ? Math.max(0, 1 - easedProgress * fadeFactor) : 1;
+
+  // Individual element stagger (each element moves at different rate)
+  const titleY = shouldAnimate ? scrollProgress * 180 * intensity : 0;
+  const titleOpacity = shouldAnimate ? Math.max(0, 1 - easedProgress * (fadeFactor * 0.85)) : 1;
+
+  const subtitleY = shouldAnimate ? scrollProgress * 220 * intensity : 0;
+  const subtitleOpacity = shouldAnimate ? Math.max(0, 1 - easedProgress * fadeFactor) : 1;
+
+  const taglineY = shouldAnimate ? scrollProgress * 260 * intensity : 0;
+  const taglineOpacity = shouldAnimate ? Math.max(0, 1 - easedProgress * (fadeFactor * 1.1)) : 1;
+
+  const ctaY = shouldAnimate ? scrollProgress * 300 * intensity : 0;
+  const ctaOpacity = shouldAnimate ? Math.max(0, 1 - easedProgress * (fadeFactor * 1.25)) : 1;
 
   // Shared transition style for smooth interpolation
   const smoothTransition = "transform 0.15s cubic-bezier(0.33, 1, 0.68, 1), opacity 0.15s ease-out";
@@ -134,7 +134,7 @@ export const Hero = () => {
       </div>
 
       {/* Main content wrapper - outer handles 2K/4K positioning */}
-      <div className="relative z-10 mx-auto flex w-full max-w-[100rem] flex-col items-center px-4 pt-8 text-center short-landscape:pb-8 short-landscape:pt-20 md:items-end md:px-12 md:pt-0 md:text-right 3xl:max-w-[133rem] 3xl:pr-[8%] 4xl:max-w-[200rem] 4xl:pr-[10%]">
+      <div className="relative z-10 mx-auto flex w-full max-w-[100rem] flex-col items-center px-4 pt-8 text-center md:items-end md:px-12 md:pt-0 md:text-right short-landscape:pb-8 short-landscape:pt-20 3xl:max-w-[133rem] 3xl:pr-[8%] 4xl:max-w-[200rem] 4xl:pr-[10%]">
         {/* Inner wrapper handles parallax transforms */}
         <div
           className="flex w-full flex-col items-center md:items-end"
@@ -149,94 +149,95 @@ export const Hero = () => {
               : undefined
           }
         >
-        {/* Title - fastest fade, moderate movement */}
-        <h1
-          className="mb-6 font-hero text-4xl leading-[0.9] text-lava-50 motion-safe:animate-hero-slide-up short-landscape:mb-2 short-landscape:text-2xl sm:text-5xl md:max-w-6xl md:text-6xl 3xl:text-7xl 4xl:text-8xl"
-          style={
-            shouldAnimate
-              ? {
-                  transform: `translateY(${titleY - contentY}px)`,
-                  opacity: titleOpacity,
-                  transition: smoothTransition,
-                }
-              : undefined
-          }
-        >
-          BORN IN THE <span className="hellfire-text-pure">RED.</span>
-          <br />
-          FORGED BY <span className="text-gold">REGRET.</span>
-        </h1>
+          {/* Title - fastest fade, moderate movement */}
+          <h1
+            className="mb-6 font-hero text-4xl leading-[0.9] text-lava-50 motion-safe:animate-hero-slide-up sm:text-5xl md:max-w-6xl md:text-6xl short-landscape:mb-2 short-landscape:text-2xl 3xl:text-7xl 4xl:text-8xl"
+            style={
+              shouldAnimate
+                ? {
+                    transform: `translateY(${titleY - contentY}px)`,
+                    opacity: titleOpacity,
+                    transition: smoothTransition,
+                  }
+                : undefined
+            }
+          >
+            BORN IN THE <span className="hellfire-text-pure">RED.</span>
+            <br />
+            FORGED BY <span className="text-gold">REGRET.</span>
+          </h1>
 
-        {/* Subtitle - medium fade */}
-        <div
-          className="mx-auto max-w-4xl space-y-0.5 font-body text-hero-sub text-lava-100 motion-safe:animate-hero-slide-up-delayed short-landscape:space-y-0 md:mx-0 md:max-w-5xl md:space-y-0 3xl:text-2xl"
-          style={
-            shouldAnimate
-              ? {
-                  transform: `translateY(${subtitleY - contentY}px)`,
-                  opacity: subtitleOpacity,
-                  transition: smoothTransition,
-                }
-              : undefined
-          }
-        >
-        <p className="leading-relaxed short-landscape:text-sm 3xl:text-3xl 4xl:text-4xl">
-            Powered by{" "}
-            <span className="my-1 block text-hero-sub-em font-bold text-gold md:my-0 md:inline md:font-normal 3xl:text-3xl">
-              Proof-of-Suffering
-            </span>
+          {/* Subtitle - medium fade */}
+          <div
+            className="mx-auto max-w-4xl space-y-0.5 font-body text-hero-sub text-lava-100 motion-safe:animate-hero-slide-up-delayed md:mx-0 md:max-w-5xl md:space-y-0 short-landscape:space-y-0 3xl:text-2xl"
+            style={
+              shouldAnimate
+                ? {
+                    transform: `translateY(${subtitleY - contentY}px)`,
+                    opacity: subtitleOpacity,
+                    transition: smoothTransition,
+                  }
+                : undefined
+            }
+          >
+            <p className="leading-relaxed short-landscape:text-sm 3xl:text-3xl 4xl:text-4xl">
+              Powered by{" "}
+              <span className="my-1 block text-hero-sub-em font-bold text-gold md:my-0 md:inline md:font-normal 3xl:text-3xl">
+                Proof-of-Suffering
+              </span>
+            </p>
+            <p className="text-lava-100 short-landscape:text-sm 3xl:text-3xl 4xl:text-4xl">
+              the only consensus mechanism traders truly understand.
+            </p>
+          </div>
+
+          {/* Tagline - slower fade */}
+          <p
+            className="hellfire-text-pure mt-8 animate-pulse font-body text-base font-bold uppercase tracking-widest md:max-w-5xl md:text-lg short-landscape:mt-2 short-landscape:text-xs 3xl:text-2xl 4xl:text-3xl"
+            style={
+              shouldAnimate
+                ? {
+                    transform: `translateY(${taglineY - contentY}px)`,
+                    opacity: taglineOpacity,
+                    transition: smoothTransition,
+                  }
+                : undefined
+            }
+          >
+            WHEN MARKETS BURN, <span className="block md:inline">WE TREND</span>
           </p>
-          <p className="text-lava-100 short-landscape:text-sm 3xl:text-3xl 4xl:text-4xl">the only consensus mechanism traders truly understand.</p>
-        </div>
 
-        {/* Tagline - slower fade */}
-        <p
-          className="hellfire-text-pure mt-8 animate-pulse font-body text-base font-bold uppercase tracking-widest short-landscape:mt-2 short-landscape:text-xs md:max-w-5xl md:text-lg 3xl:text-2xl 4xl:text-3xl"
-          style={
-            shouldAnimate
-              ? {
-                  transform: `translateY(${taglineY - contentY}px)`,
-                  opacity: taglineOpacity,
-                  transition: smoothTransition,
-                }
-              : undefined
-          }
-        >
-            WHEN MARKETS BURN,{" "}
-            <span className="block md:inline">WE TREND</span>
-        </p>
-
-        {/* CTA - slowest fade, most movement */}
-        <div
-          className="mt-12 flex w-full flex-col items-center justify-center gap-8 motion-safe:animate-hero-slide-up-delayed-3 short-landscape:mt-4 short-landscape:flex-row short-landscape:gap-4 md:max-w-5xl md:flex-row md:justify-end"
-          style={
-            shouldAnimate
-              ? {
-                  transform: `translateY(${ctaY - contentY}px)`,
-                  opacity: ctaOpacity,
-                  transition: smoothTransition,
-                }
-              : undefined
-          }
-        >
-          <button
-            type="button"
-            onClick={handleAbandonHope}
-            className="group order-1 flex items-center gap-2 font-body text-xl font-bold text-lava-100/50 transition-colors duration-200 hover:text-gold short-landscape:text-sm md:order-none md:text-2xl 3xl:text-3xl"
+          {/* CTA - slowest fade, most movement */}
+          <div
+            className="mt-12 flex w-full flex-col items-center justify-center gap-8 motion-safe:animate-hero-slide-up-delayed-3 md:max-w-5xl md:flex-row md:justify-end short-landscape:mt-4 short-landscape:flex-row short-landscape:gap-4"
+            style={
+              shouldAnimate
+                ? {
+                    transform: `translateY(${ctaY - contentY}px)`,
+                    opacity: ctaOpacity,
+                    transition: smoothTransition,
+                  }
+                : undefined
+            }
           >
-            [ ABANDON HOPE ]
-            <TrendingDown className="h-5 w-5 transition-transform duration-200 group-hover:translate-y-1" />
-          </button>
+            <button
+              type="button"
+              onClick={handleAbandonHope}
+              className="action-feedback group order-1 flex items-center gap-2 font-body text-xl font-bold text-lava-100/50 transition-colors duration-200 active:text-gold md:order-none md:text-2xl short-landscape:text-sm can-hover:hover:text-gold 3xl:text-3xl"
+            >
+              [ ABANDON HOPE ]
+              <TrendingDown className="action-feedback-child h-5 w-5 transition-transform duration-200 group-active:translate-y-1 can-hover:group-hover:translate-y-1" />
+            </button>
 
-          <a
-            href={BUY_LINK}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="hellfire-bg group relative order-2 flex cursor-pointer items-center gap-2 overflow-hidden rounded-xl hc-border-3 border-black px-8 py-4 font-heading text-xl uppercase text-white shadow-brutal transition-all duration-200 hover:translate-x-1 hover:translate-y-1 hover:shadow-[0_0_1.875rem_rgba(255,85,0,0.7)] short-landscape:px-4 short-landscape:py-2 short-landscape:text-sm md:order-none md:text-2xl 3xl:text-3xl"
-          >
-            <span className="relative z-10 flex items-center gap-2">ACQUIRE $666</span>
-          </a>
-        </div>
+            <a
+              href={BUY_LINK}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="action-feedback hellfire-bg hc-border-3 group relative order-2 flex cursor-pointer items-center gap-2 overflow-hidden rounded-xl border-black px-8 py-4 font-heading text-xl uppercase text-white shadow-brutal transition-all duration-200 active:translate-x-1 active:translate-y-1 active:shadow-[0_0_1.875rem_rgba(255,85,0,0.7)] md:order-none md:text-2xl short-landscape:px-4 short-landscape:py-2 short-landscape:text-sm can-hover:hover:translate-x-1 can-hover:hover:translate-y-1 can-hover:hover:shadow-[0_0_1.875rem_rgba(255,85,0,0.7)] 3xl:text-3xl"
+            >
+              <span className="relative z-10 flex items-center gap-2">ACQUIRE $666</span>
+            </a>
+          </div>
         </div>
       </div>
 

@@ -119,7 +119,7 @@ export const Footer = () => {
                 href={X_LINK}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="flex h-12 w-12 items-center justify-center rounded-lg border-3 border-black bg-obsidian-800 text-lava-100 shadow-brutal-sm transition-colors hover:text-gold"
+                className="action-feedback flex h-12 w-12 items-center justify-center rounded-lg border-3 border-black bg-obsidian-800 text-lava-100 shadow-brutal-sm transition-colors active:text-gold can-hover:hover:text-gold"
                 aria-label="Follow on X (Twitter)"
               >
                 <svg viewBox="0 0 24 24" className="h-5 w-5 fill-current">
@@ -138,25 +138,25 @@ export const Footer = () => {
               </span>
               <a
                 href="#genesis"
-                className="text-lava-100/70 transition-colors hover:text-hellfire-orange"
+                className="action-feedback text-lava-100/70 transition-colors active:text-hellfire-orange can-hover:hover:text-hellfire-orange"
               >
                 GENESIS
               </a>
               <a
                 href="#commandments"
-                className="text-lava-100/70 transition-colors hover:text-hellfire-orange"
+                className="action-feedback text-lava-100/70 transition-colors active:text-hellfire-orange can-hover:hover:text-hellfire-orange"
               >
                 COMMANDMENTS
               </a>
               <a
                 href="#nine-types"
-                className="text-lava-100/70 transition-colors hover:text-hellfire-orange"
+                className="action-feedback text-lava-100/70 transition-colors active:text-hellfire-orange can-hover:hover:text-hellfire-orange"
               >
                 NINE TYPES
               </a>
               <a
                 href="#hall-of-pain"
-                className="text-lava-100/70 transition-colors hover:text-hellfire-orange"
+                className="action-feedback text-lava-100/70 transition-colors active:text-hellfire-orange can-hover:hover:text-hellfire-orange"
               >
                 HALL OF PAIN
               </a>
@@ -171,7 +171,7 @@ export const Footer = () => {
                 href={X_LINK}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-lava-100/70 transition-colors hover:text-hellfire-orange"
+                className="action-feedback text-lava-100/70 transition-colors active:text-hellfire-orange can-hover:hover:text-hellfire-orange"
               >
                 TWITTER (X)
               </a>
@@ -179,19 +179,19 @@ export const Footer = () => {
                 href={DEXSCREENER_LINK}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-lava-100/70 transition-colors hover:text-hellfire-orange"
+                className="action-feedback text-lava-100/70 transition-colors active:text-hellfire-orange can-hover:hover:text-hellfire-orange"
               >
                 DEXSCREENER
               </a>
               <a
                 href="#ritual"
-                className="text-lava-100/70 transition-colors hover:text-hellfire-orange"
+                className="action-feedback text-lava-100/70 transition-colors active:text-hellfire-orange can-hover:hover:text-hellfire-orange"
               >
                 CONTRACT
               </a>
               <a
                 href="#the-pit"
-                className="text-lava-100/70 transition-colors hover:text-hellfire-orange"
+                className="action-feedback text-lava-100/70 transition-colors active:text-hellfire-orange can-hover:hover:text-hellfire-orange"
               >
                 THE PIT
               </a>

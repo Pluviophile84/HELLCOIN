@@ -63,7 +63,7 @@ export const ThePit = () => {
                 href={X_LINK}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="hellfire-bg group relative inline-flex w-full items-center justify-center gap-3 rounded-xl hc-border-3 border-black px-6 py-3 font-heading text-xl text-white shadow-brutal transition-all duration-300 hover:translate-x-1 hover:translate-y-1 hover:shadow-[0_0_1.875rem_rgba(255,85,0,0.7)] active:scale-95 md:w-auto md:px-12 md:py-4 md:text-3xl"
+                className="action-feedback hellfire-bg hc-border-3 group relative inline-flex w-full items-center justify-center gap-3 rounded-xl border-black px-6 py-3 font-heading text-xl text-white shadow-brutal transition-all duration-300 active:translate-x-1 active:translate-y-1 active:scale-95 active:shadow-[0_0_1.875rem_rgba(255,85,0,0.7)] md:w-auto md:px-12 md:py-4 md:text-3xl can-hover:hover:translate-x-1 can-hover:hover:translate-y-1 can-hover:hover:shadow-[0_0_1.875rem_rgba(255,85,0,0.7)]"
               >
                 <svg viewBox="0 0 24 24" className="h-5 w-5 shrink-0 fill-current md:h-6 md:w-6">
                   <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" />

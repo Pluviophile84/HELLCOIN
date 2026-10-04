@@ -15,9 +15,9 @@ import { useForge } from "./useForge";
 import styles from "./ForgeEditor.module.css";
 
 const button =
-  "min-h-11 rounded-lg border-3 border-black bg-obsidian-800 px-3 py-2 text-sm font-bold text-lava-50 shadow-brutal-sm hover:text-gold focus-visible:ring-2 focus-visible:ring-gold disabled:cursor-not-allowed disabled:opacity-40";
+  "action-feedback min-h-11 rounded-lg border-3 border-black bg-obsidian-800 px-3 py-2 text-sm font-bold text-lava-50 shadow-brutal-sm enabled:can-hover:hover:text-gold enabled:active:text-gold focus-visible:ring-2 focus-visible:ring-gold disabled:cursor-not-allowed disabled:opacity-40";
 const primaryButton =
-  "hellfire-bg min-h-11 rounded-lg border-3 border-black px-3 py-2 text-sm font-bold text-white shadow-brutal-sm hover:text-white focus-visible:text-white focus-visible:ring-2 focus-visible:ring-gold active:text-black disabled:cursor-not-allowed disabled:opacity-60";
+  "hellfire-bg min-h-11 rounded-lg border-3 border-black px-3 py-2 text-sm font-bold text-white shadow-brutal-sm enabled:can-hover:hover:text-white focus-visible:text-white focus-visible:ring-2 focus-visible:ring-gold enabled:active:text-black disabled:cursor-not-allowed disabled:opacity-60";
 const field =
   "w-full min-w-0 rounded-lg border-3 border-black bg-obsidian-950 px-3 py-2 text-base text-lava-50 focus-visible:ring-2 focus-visible:ring-gold";
 const modes = ["IMAGE", "TEXT", "EXPORT"] as const;
