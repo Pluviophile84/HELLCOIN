@@ -13,6 +13,11 @@ const GenesisLazy = dynamic(() => import("@/components/sections/Genesis").then((
   ssr: true,
 });
 
+const ForgeLazy = dynamic(() => import("@/components/sections/Forge").then((m) => m.Forge), {
+  loading: () => null,
+  ssr: true,
+});
+
 const RevelationLazy = dynamic(
   () => import("@/components/sections/Revelation").then((m) => m.Revelation),
   { loading: () => null, ssr: true }
@@ -63,6 +68,7 @@ export default function Page() {
     <AppShellClient>
       <Hero />
       <GenesisLazy />
+      <ForgeLazy />
       <CommandmentsLazy />
       <NineTypesLazy />
       <DevilsMathLazy />

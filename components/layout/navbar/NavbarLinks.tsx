@@ -20,10 +20,10 @@ const MORE_BUTTON_ID = "navbar-more-button";
 const MORE_MENU_ID = "navbar-more-menu";
 
 const linkStyles =
-  "group relative font-body text-[0.9375rem] font-semibold uppercase tracking-wider text-lava-100 transition-colors hover:text-gold focus-visible:text-gold focus-visible:outline-none";
+  "action-feedback group relative font-body text-[0.9375rem] font-semibold uppercase tracking-wider text-lava-100 transition-colors can-hover:hover:text-gold active:text-gold focus-visible:text-gold focus-visible:outline-none";
 
 const linkUnderline =
-  "absolute -bottom-1 left-0 h-[0.1875rem] w-0 bg-gradient-to-r from-hellfire-orange to-lava-500 transition-all duration-200 group-hover:w-full group-focus-visible:w-full";
+  "action-feedback-child absolute -bottom-1 left-0 h-[0.1875rem] w-0 bg-gradient-to-r from-hellfire-orange to-lava-500 transition-all duration-200 can-hover:group-hover:w-full group-active:w-full group-focus-visible:w-full";
 
 export const NavbarLinks = ({ links, onNavClick }: NavbarLinksProps) => {
   const [moreMenuOpen, setMoreMenuOpen] = useState(false);
@@ -201,7 +201,7 @@ export const NavbarLinks = ({ links, onNavClick }: NavbarLinksProps) => {
             onKeyDown={handleMoreKeyDown}
             className={cn(
               linkStyles,
-              "flex items-center gap-1 border-none pl-0 pr-0 !text-lava-100 hover:!text-gold focus-visible:!text-gold"
+              "flex items-center gap-1 border-none pl-0 pr-0 !text-lava-100 focus-visible:!text-gold active:!text-gold can-hover:hover:!text-gold"
             )}
           >
             <span>MORE</span>

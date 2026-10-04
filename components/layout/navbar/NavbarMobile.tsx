@@ -15,10 +15,10 @@ type NavbarMobileProps = {
 };
 
 const linkStyles =
-  "group relative font-body text-sm font-semibold uppercase tracking-wider text-lava-100 transition-colors hover:text-gold focus-visible:text-gold focus-visible:outline-none";
+  "action-feedback group relative font-body text-sm font-semibold uppercase tracking-wider text-lava-100 transition-colors can-hover:hover:text-gold active:text-gold focus-visible:text-gold focus-visible:outline-none";
 
 const linkUnderline =
-  "absolute -bottom-1 left-0 h-[0.1875rem] w-0 bg-gradient-to-r from-hellfire-orange to-lava-500 transition-all duration-200 group-hover:w-full group-focus-visible:w-full";
+  "action-feedback-child absolute -bottom-1 left-0 h-[0.1875rem] w-0 bg-gradient-to-r from-hellfire-orange to-lava-500 transition-all duration-200 can-hover:group-hover:w-full group-active:w-full group-focus-visible:w-full";
 
 export const NavbarMobile = ({ isOpen, onClose, links, onNavClick }: NavbarMobileProps) => {
   const panelRef = useRef<HTMLDivElement | null>(null);
@@ -61,7 +61,7 @@ export const NavbarMobile = ({ isOpen, onClose, links, onNavClick }: NavbarMobil
     if (!isOpen || !panelRef.current) return;
 
     const panel = panelRef.current;
-    
+
     // Get all focusable elements within the dialog
     const getFocusableElements = (): HTMLElement[] => {
       const focusableSelectors = 'a[href], button:not([disabled]), [tabindex]:not([tabindex="-1"])';
@@ -154,7 +154,7 @@ export const NavbarMobile = ({ isOpen, onClose, links, onNavClick }: NavbarMobil
             href={BUY_LINK}
             target="_blank"
             rel="noopener noreferrer"
-            className="hellfire-bg rounded-xl hc-border-3 border-black px-8 py-3 font-heading text-2xl text-white shadow-brutal transition-all hover:shadow-[0_0_1.875rem_rgba(255,85,0,0.7)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold focus-visible:ring-offset-2 focus-visible:ring-offset-[#1C1612]"
+            className="action-feedback hellfire-bg hc-border-3 rounded-xl border-black px-8 py-3 font-heading text-2xl text-white shadow-brutal transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold focus-visible:ring-offset-2 focus-visible:ring-offset-[#1C1612] active:shadow-[0_0_1.875rem_rgba(255,85,0,0.7)] can-hover:hover:shadow-[0_0_1.875rem_rgba(255,85,0,0.7)]"
           >
             ACQUIRE $666
           </a>

@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useLayoutEffect, useMemo, useState } from "react";
 import { cn } from "@/lib/utils";
 import { lockBodyScroll, unlockBodyScroll } from "@/lib/bodyScrollLock";
 import { AlertTriangle } from "lucide-react";
@@ -12,9 +12,13 @@ interface PaperHandsProps {
 
 type Phase = "idle" | "heaven" | "burning" | "reality";
 
+const HEAVEN_DURATION_MS = 5000;
+
 export const PaperHandsOverlay = ({ isActive, onClose }: PaperHandsProps) => {
-  const [phase, setPhase] = useState<Phase>("idle");
+  const [phase, setPhase] = useState<Phase>(isActive ? "heaven" : "idle");
   const [progress, setProgress] = useState(0);
+  const [progressDuration, setProgressDuration] = useState(HEAVEN_DURATION_MS);
+  const [secondsRemaining, setSecondsRemaining] = useState(5);
   const reduceMotion = useReducedMotion();
   const [isSmallScreen, setIsSmallScreen] = useState(false);
 
@@ -38,7 +42,7 @@ export const PaperHandsOverlay = ({ isActive, onClose }: PaperHandsProps) => {
     }));
   }, [flameCount]);
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     const shouldLock = isActive || phase === "heaven" || phase === "burning";
 
     if (shouldLock) {
@@ -55,14 +59,25 @@ export const PaperHandsOverlay = ({ isActive, onClose }: PaperHandsProps) => {
   useEffect(() => {
     if (!isActive) return;
 
+    const startedAt = performance.now();
     setPhase("heaven");
     setProgress(0);
+    setSecondsRemaining(5);
 
-    const progressTimer = setTimeout(() => setProgress(100), 50);
+    const progressFrame = requestAnimationFrame(() => {
+      setProgressDuration(Math.max(0, HEAVEN_DURATION_MS - (performance.now() - startedAt)));
+      setProgress(100);
+    });
+
+    const countdownTimer = setInterval(() => {
+      const remaining = Math.ceil((HEAVEN_DURATION_MS - (performance.now() - startedAt)) / 1000);
+      setSecondsRemaining(Math.max(1, Math.min(5, remaining)));
+    }, 100);
 
     const timer1 = setTimeout(() => {
+      clearInterval(countdownTimer);
       setPhase("burning");
-    }, 5000);
+    }, HEAVEN_DURATION_MS);
 
     const timer2 = setTimeout(() => {
       setPhase("reality");
@@ -70,7 +85,8 @@ export const PaperHandsOverlay = ({ isActive, onClose }: PaperHandsProps) => {
     }, 9000);
 
     return () => {
-      clearTimeout(progressTimer);
+      cancelAnimationFrame(progressFrame);
+      clearInterval(countdownTimer);
       clearTimeout(timer1);
       clearTimeout(timer2);
     };
@@ -100,7 +116,7 @@ export const PaperHandsOverlay = ({ isActive, onClose }: PaperHandsProps) => {
       <AnimatePresence>
         {(phase === "heaven" || phase === "burning") && (
           <motion.div
-            initial={{ opacity: 0 }}
+            initial={false}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             role="dialog"
@@ -115,7 +131,9 @@ export const PaperHandsOverlay = ({ isActive, onClose }: PaperHandsProps) => {
               <motion.div
                 key="heaven-content"
                 exit={
-                  reduceMotion ? { opacity: 0 } : { opacity: 0, scale: 1.5, filter: "blur(1.25rem)" }
+                  reduceMotion
+                    ? { opacity: 0 }
+                    : { opacity: 0, scale: 1.5, filter: "blur(1.25rem)" }
                 }
                 transition={{ duration: reduceMotion ? 0.01 : 0.5 }}
                 className="relative z-20 flex w-full max-w-lg flex-col items-center"
@@ -138,12 +156,12 @@ export const PaperHandsOverlay = ({ isActive, onClose }: PaperHandsProps) => {
                     className="h-full bg-gradient-to-r from-pink-400 to-pink-500 transition-all ease-linear"
                     style={{
                       width: `${progress}%`,
-                      transitionDuration: progress === 0 ? "0ms" : "5000ms",
+                      transitionDuration: progress === 0 ? "0ms" : `${progressDuration}ms`,
                     }}
                   ></div>
                 </div>
-                <p className="font-body text-sm font-bold text-pink-300">
-                  Ignoring reality in 5...
+                <p className="font-body text-sm font-bold text-pink-700">
+                  Ignoring reality in {secondsRemaining}...
                 </p>
               </motion.div>
             )}

@@ -1,0 +1,192 @@
+.entryFallback {
+  min-height: 52rem;
+}
+.workspace {
+  --forge-nav: 0px;
+  width: 100%;
+  max-width: 68rem;
+  margin-inline: auto;
+  scroll-margin-top: calc(var(--forge-nav) + 0.5rem);
+  display: grid;
+  grid-template-rows: auto auto;
+}
+.embedded {
+  --forge-nav: var(--nav-h);
+}
+.body {
+  display: grid;
+  grid-template-rows: auto minmax(12rem, 1fr);
+  min-height: 0;
+}
+.preview {
+  position: relative;
+  z-index: 0;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.375rem;
+  padding: 0.5rem;
+}
+.interactionRail {
+  width: 100%;
+  height: 3.75rem;
+  flex: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+}
+.foundrySection {
+  background:
+    radial-gradient(ellipse 60% 55% at 50% 70%, rgba(153, 31, 10, 0.24), transparent 80%),
+    radial-gradient(ellipse 36% 35% at 12% 12%, rgba(232, 160, 32, 0.06), transparent 85%),
+    linear-gradient(rgba(153, 31, 10, 0.1), rgba(153, 31, 10, 0.1)), #0d0a08;
+}
+.square {
+  width: min(100%, 18rem);
+  aspect-ratio: 1;
+  flex: none;
+}
+.surface {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  width: 100%;
+  height: 100%;
+}
+.canvas {
+  display: block;
+  width: 100%;
+  height: 100%;
+  aspect-ratio: 1;
+  object-fit: contain;
+  touch-action: pan-y;
+}
+.moving {
+  touch-action: none;
+}
+.textTarget {
+  position: absolute;
+  touch-action: none;
+  cursor: grab;
+  border: 1px solid transparent;
+  border-radius: 0.25rem;
+}
+.textTarget:active {
+  cursor: grabbing;
+}
+.textTarget:focus-visible {
+  outline: 2px solid #e8a020;
+  outline-offset: 2px;
+}
+.selectedText {
+  border-color: #e8a020;
+}
+.tray {
+  position: relative;
+  z-index: 10;
+  min-height: 0;
+  height: clamp(15rem, calc(var(--forge-layout-height, 100svh) - 27rem - var(--forge-nav)), 24rem);
+  display: grid;
+  grid-template-rows: auto minmax(0, 1fr);
+}
+.panel {
+  overflow-y: auto;
+  min-height: 0;
+  overscroll-behavior-y: auto;
+  scrollbar-gutter: stable;
+  padding: 1rem;
+  padding-bottom: max(1rem, env(safe-area-inset-bottom));
+}
+.workspace[data-landscape="true"] .body {
+  grid-template-columns: minmax(0, 0.85fr) minmax(0, 1.15fr);
+  grid-template-rows: auto;
+}
+.workspace[data-landscape="true"] .square {
+  width: min(100%, max(6rem, calc(var(--forge-layout-height) - 13rem)));
+}
+.workspace[data-landscape="true"] .tray {
+  height: max(12rem, calc(var(--forge-layout-height) - 9rem));
+}
+@media (min-width: 1024px) {
+  .entryFallback {
+    min-height: 43rem;
+  }
+  .body {
+    grid-template-columns: minmax(0, 1.15fr) minmax(20rem, 1fr);
+    grid-template-rows: auto;
+  }
+  .preview {
+    position: sticky;
+    top: calc(var(--forge-nav) + 0.5rem);
+    align-self: start;
+    padding: 1rem;
+  }
+  .square {
+    width: 100%;
+  }
+  .tray {
+    height: auto;
+    max-height: 40rem;
+    min-height: 31rem;
+  }
+}
+
+@media (max-width: 767px), (max-height: 500px) and (pointer: coarse) {
+  .homeContainer[data-open="true"] {
+    position: fixed;
+    inset: 0;
+    z-index: 110;
+    height: 100dvh;
+    overflow: hidden;
+    background: #0d0a08;
+  }
+  .homeContainer[data-open="true"] .entryFallback {
+    height: 100%;
+    min-height: 0;
+    border: 0;
+    border-radius: 0;
+    box-shadow: none;
+  }
+  .homeContainer[data-open="true"] .workspace {
+    width: 100%;
+    max-width: none;
+    height: 100%;
+    grid-template-rows: auto minmax(0, 1fr);
+    border: 0;
+    border-radius: 0;
+    box-shadow: none;
+  }
+  .homeContainer[data-open="true"] .forgeHeader {
+    padding-top: env(safe-area-inset-top);
+  }
+  .homeContainer[data-open="true"] .body {
+    grid-template-rows: auto minmax(0, 1fr);
+    min-height: 0;
+  }
+  .homeContainer[data-open="true"] .square {
+    width: min(100%, 19rem);
+  }
+  .homeContainer[data-open="true"] .tray {
+    height: auto;
+    min-height: 0;
+  }
+  .homeContainer[data-open="true"] .panel {
+    padding-bottom: max(1rem, env(safe-area-inset-bottom));
+  }
+  .homeContainer[data-open="true"] .workspace[data-keyboard="true"] .tray {
+    position: fixed;
+    right: 0;
+    bottom: var(--forge-keyboard-bottom, 0px);
+    left: 0;
+    height: min(19rem, var(--forge-keyboard-visible, 19rem));
+    border-top-width: 3px;
+  }
+  .homeContainer[data-open="true"] .workspace[data-landscape="true"] .body {
+    grid-template-rows: minmax(0, 1fr);
+  }
+  .homeContainer[data-open="true"] .workspace[data-landscape="true"] .square {
+    width: min(100%, max(6rem, calc(var(--forge-layout-height) - 13rem)));
+  }
+}

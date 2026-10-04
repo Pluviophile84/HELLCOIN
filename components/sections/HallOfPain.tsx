@@ -235,20 +235,20 @@ export const HallOfPain = () => {
         <div className="mb-6 flex flex-wrap justify-center gap-3 sm:justify-end">
           <button
             onClick={() => setFilter("latest")}
-            className={`flex items-center gap-2 rounded-lg border-3 border-black px-4 py-2 font-body text-sm font-bold shadow-brutal-sm transition-all hover:translate-x-0.5 hover:translate-y-0.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold focus-visible:ring-offset-2 focus-visible:ring-offset-obsidian-900 ${
+            className={`action-feedback flex items-center gap-2 rounded-lg border-3 border-black px-4 py-2 font-body text-sm font-bold shadow-brutal-sm transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold focus-visible:ring-offset-2 focus-visible:ring-offset-obsidian-900 active:translate-x-0.5 active:translate-y-0.5 can-hover:hover:translate-x-0.5 can-hover:hover:translate-y-0.5 ${
               filter === "latest"
                 ? "hellfire-bg text-white"
-                : "bg-obsidian-800 text-lava-100/50 hover:text-lava-100 hover:shadow-[0_0_1.25rem_rgba(255,85,0,0.5)]"
+                : "bg-obsidian-800 text-lava-100/50 active:text-lava-100 active:shadow-[0_0_1.25rem_rgba(255,85,0,0.5)] can-hover:hover:text-lava-100 can-hover:hover:shadow-[0_0_1.25rem_rgba(255,85,0,0.5)]"
             }`}
           >
             <ArrowUpDown size={16} /> LATEST
           </button>
           <button
             onClick={() => setFilter("top")}
-            className={`flex items-center gap-2 rounded-lg border-3 border-black px-4 py-2 font-body text-sm font-bold shadow-brutal-sm transition-all hover:translate-x-0.5 hover:translate-y-0.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold focus-visible:ring-offset-2 focus-visible:ring-offset-obsidian-900 ${
+            className={`action-feedback flex items-center gap-2 rounded-lg border-3 border-black px-4 py-2 font-body text-sm font-bold shadow-brutal-sm transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold focus-visible:ring-offset-2 focus-visible:ring-offset-obsidian-900 active:translate-x-0.5 active:translate-y-0.5 can-hover:hover:translate-x-0.5 can-hover:hover:translate-y-0.5 ${
               filter === "top"
                 ? "hellfire-bg text-white"
-                : "bg-obsidian-800 text-lava-100/50 hover:text-lava-100 hover:shadow-[0_0_1.25rem_rgba(255,85,0,0.5)]"
+                : "bg-obsidian-800 text-lava-100/50 active:text-lava-100 active:shadow-[0_0_1.25rem_rgba(255,85,0,0.5)] can-hover:hover:text-lava-100 can-hover:hover:shadow-[0_0_1.25rem_rgba(255,85,0,0.5)]"
             }`}
           >
             <Filter size={16} /> MOST RESPECTS
@@ -256,7 +256,7 @@ export const HallOfPain = () => {
         </div>
 
         {/* Main Container */}
-        <div className="overflow-hidden rounded-xl hc-border-3 border-black bg-obsidian-800 shadow-brutal transition-all duration-300 hover:shadow-[0_0_2.5rem_rgba(255,85,0,0.4)]">
+        <div className="hc-border-3 overflow-hidden rounded-xl border-black bg-obsidian-800 shadow-brutal transition-all duration-300 hover:shadow-[0_0_2.5rem_rgba(255,85,0,0.4)]">
           {/* Table Header - Desktop */}
           <div className="hidden border-b-3 border-black bg-obsidian-950 px-6 py-4 sm:grid sm:grid-cols-12 sm:gap-4">
             <div className="col-span-2 font-body text-xs font-bold uppercase tracking-widest text-gold">
@@ -305,8 +305,10 @@ export const HallOfPain = () => {
               return (
                 <div
                   key={sinner.id}
-                  className={`border-b border-obsidian-900/50 transition-colors duration-200 ${
-                    isOpen ? "bg-lava-500/10" : "hover:bg-obsidian-900/30"
+                  className={`action-feedback border-b border-obsidian-900/50 transition-colors duration-200 ${
+                    isOpen
+                      ? "bg-lava-500/10"
+                      : "active:bg-obsidian-900/30 can-hover:hover:bg-obsidian-900/30"
                   }`}
                 >
                   {/* Row - Clickable Header */}
@@ -314,7 +316,7 @@ export const HallOfPain = () => {
                     onClick={() => toggleRow(sinner.id)}
                     className="group w-full text-left focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-gold"
                     aria-expanded={isOpen}
-                    aria-label={`${isOpen ? 'Collapse' : 'Expand'} details for ${sinner.name}`}
+                    aria-label={`${isOpen ? "Collapse" : "Expand"} details for ${sinner.name}`}
                   >
                     {/* Desktop Layout */}
                     <div className="hidden sm:grid sm:grid-cols-12 sm:items-center sm:gap-4 sm:px-6 sm:py-4">
@@ -326,7 +328,7 @@ export const HallOfPain = () => {
                           {sinner.id}
                         </span>
                       </div>
-                      <div className="col-span-6 font-body text-xl font-bold text-lava-50 transition-colors group-hover:text-white">
+                      <div className="col-span-6 font-body text-xl font-bold text-lava-50 transition-colors group-active:text-white can-hover:group-hover:text-white">
                         {sinner.name}
                       </div>
                       <div className="col-span-2">
@@ -410,10 +412,10 @@ export const HallOfPain = () => {
                                   handlePayRespect(sinner.id);
                                 }}
                                 disabled={isPaid}
-                                className={`flex w-full items-center justify-center gap-2 rounded-lg border-3 border-black px-6 py-2.5 font-body text-sm font-bold shadow-brutal-sm transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold focus-visible:ring-offset-2 focus-visible:ring-offset-obsidian-950 sm:w-auto ${
+                                className={`action-feedback flex w-full items-center justify-center gap-2 rounded-lg border-3 border-black px-6 py-2.5 font-body text-sm font-bold shadow-brutal-sm transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold focus-visible:ring-offset-2 focus-visible:ring-offset-obsidian-950 sm:w-auto ${
                                   isPaid
                                     ? "cursor-default border-hellfire-orange/30 bg-lava-500/20 text-hellfire-orange"
-                                    : "bg-gold text-black hover:translate-x-0.5 hover:translate-y-0.5 hover:shadow-none active:scale-95"
+                                    : "bg-gold text-black active:translate-x-0.5 active:translate-y-0.5 active:scale-95 active:shadow-none can-hover:hover:translate-x-0.5 can-hover:hover:translate-y-0.5 can-hover:hover:shadow-none"
                                 }`}
                               >
                                 {isPaid ? (
@@ -451,10 +453,10 @@ export const HallOfPain = () => {
         <button
           onClick={handleConfess}
           disabled={!!prankError}
-          className={`hover:hellfire-bg group relative inline-flex items-center gap-2 rounded-xl hc-border-3 border-black bg-obsidian-800 px-8 py-3 font-heading text-xl text-hellfire-orange shadow-brutal transition-all hover:translate-x-1 hover:translate-y-1 hover:text-white hover:shadow-[0_0_1.875rem_rgba(255,85,0,0.7)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold focus-visible:ring-offset-2 focus-visible:ring-offset-obsidian-900 active:scale-95 sm:text-2xl ${
+          className={`action-feedback hc-border-3 group relative inline-flex items-center gap-2 rounded-xl border-black bg-obsidian-800 px-8 py-3 font-heading text-xl text-hellfire-orange shadow-brutal transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold focus-visible:ring-offset-2 focus-visible:ring-offset-obsidian-900 sm:text-2xl ${
             prankError
-              ? "cursor-not-allowed opacity-50 hover:translate-x-0 hover:translate-y-0 hover:bg-obsidian-800 hover:text-hellfire-orange hover:shadow-brutal"
-              : ""
+              ? "cursor-not-allowed opacity-50"
+              : "active:translate-x-1 active:translate-y-1 active:scale-95 active:bg-hellfire-gradient active:text-white active:shadow-[0_0_1.875rem_rgba(255,85,0,0.7)] can-hover:hover:translate-x-1 can-hover:hover:translate-y-1 can-hover:hover:bg-hellfire-gradient can-hover:hover:text-white can-hover:hover:shadow-[0_0_1.875rem_rgba(255,85,0,0.7)]"
           }`}
         >
           <AlertTriangle size={24} />

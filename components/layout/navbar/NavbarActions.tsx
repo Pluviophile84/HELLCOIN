@@ -4,6 +4,7 @@ import type { RefObject } from "react";
 import { Menu, X } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { BUY_LINK } from "@/lib/constants";
+import styles from "./NavbarActions.module.css";
 
 type NavbarActionsProps = {
   isScrolled: boolean;
@@ -36,10 +37,11 @@ export const NavbarActions = ({
         onClick={onTriggerPaperHands}
         disabled={isHeavenModeActive}
         className={cn(
-          "flex items-center gap-2 whitespace-nowrap rounded-lg hc-border-3 border-black bg-gradient-to-b from-pink-300 to-pink-400 font-body text-xs font-bold text-black shadow-brutal-sm transition-[padding,transform,box-shadow] duration-300 ease-out hover:translate-x-0.5 hover:translate-y-0.5 hover:shadow-[0_0_1.875rem_rgba(244,114,182,0.7)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-pink-400 focus-visible:ring-offset-2 focus-visible:ring-offset-obsidian-950 md:text-sm",
+          "hc-border-3 flex items-center gap-2 whitespace-nowrap rounded-lg border-black bg-gradient-to-b from-pink-300 to-pink-400 font-body text-xs font-bold text-black shadow-brutal-sm transition-[padding,transform,box-shadow] duration-300 ease-out focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-pink-400 focus-visible:ring-offset-2 focus-visible:ring-offset-obsidian-950 md:text-sm",
+          styles.heavenHover,
+          "action-feedback",
           isScrolled ? heavenCompact : heavenExpanded,
-          isHeavenModeActive &&
-            "cursor-not-allowed opacity-50 hover:translate-x-0 hover:translate-y-0 hover:shadow-brutal-sm"
+          isHeavenModeActive && "cursor-not-allowed opacity-50"
         )}
       >
         <span
@@ -58,7 +60,7 @@ export const NavbarActions = ({
         target="_blank"
         rel="noopener noreferrer"
         className={cn(
-          "hellfire-bg hidden whitespace-nowrap rounded-lg hc-border-3 border-black text-center font-heading text-white shadow-brutal transition-[padding,transform,box-shadow,font-size] duration-300 ease-out hover:translate-x-0.5 hover:translate-y-0.5 hover:shadow-[0_0_1.875rem_rgba(255,85,0,0.7)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold focus-visible:ring-offset-2 focus-visible:ring-offset-obsidian-950 xl:block",
+          "action-feedback hellfire-bg hc-border-3 hidden whitespace-nowrap rounded-lg border-black text-center font-heading text-white shadow-brutal transition-[padding,transform,box-shadow,font-size] duration-300 ease-out focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold focus-visible:ring-offset-2 focus-visible:ring-offset-obsidian-950 active:translate-x-0.5 active:translate-y-0.5 active:shadow-[0_0_1.875rem_rgba(255,85,0,0.7)] xl:block can-hover:hover:translate-x-0.5 can-hover:hover:translate-y-0.5 can-hover:hover:shadow-[0_0_1.875rem_rgba(255,85,0,0.7)]",
           isScrolled ? acquireCompact : acquireExpanded
         )}
       >
@@ -69,7 +71,7 @@ export const NavbarActions = ({
       <button
         ref={hamburgerRef}
         type="button"
-        className="ml-3 rounded-md pl-1 text-lava-100 transition-colors hover:text-gold focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold focus-visible:ring-offset-2 focus-visible:ring-offset-obsidian-950 xl:hidden"
+        className="action-feedback ml-3 rounded-md pl-1 text-lava-100 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold focus-visible:ring-offset-2 focus-visible:ring-offset-obsidian-950 active:text-gold xl:hidden can-hover:hover:text-gold"
         onClick={onToggleMobile}
         aria-label="Toggle navigation"
         aria-expanded={mobileMenuOpen}

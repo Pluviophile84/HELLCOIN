@@ -124,11 +124,12 @@ module.exports = {
           "100%": { opacity: "1", transform: "translateY(0)" },
         },
       },
-        screens: {
-          "short-landscape": { raw: "(orientation: landscape) and (max-height: 600px)" },
-          "3xl": "2560px",
-          "4xl": "3840px",
-        },
+      screens: {
+        "short-landscape": { raw: "(orientation: landscape) and (max-height: 600px)" },
+        "can-hover": { raw: "(hover: hover) and (pointer: fine)" },
+        "3xl": "2560px",
+        "4xl": "3840px",
+      },
       backgroundImage: {
         "hellfire-gradient": "linear-gradient(to top, #FF6B1A, #DC2626)",
         "hellfire-gradient-b": "linear-gradient(to bottom, #FF6B1A, #DC2626)",

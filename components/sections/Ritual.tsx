@@ -129,7 +129,7 @@ export const Ritual = () => {
               key={i}
               variants={getVariants(fadeInUp, reduceMotion)}
               whileHover={getHover(cardHover, reduceMotion)}
-              className="group relative overflow-hidden rounded-xl hc-border-3 border-black bg-obsidian-800 shadow-brutal transition-shadow duration-200 hover:shadow-[0_0_1.875rem_rgba(255,85,0,0.5)]"
+              className="hc-border-3 group relative overflow-hidden rounded-xl border-black bg-obsidian-800 shadow-brutal transition-shadow duration-200 hover:shadow-[0_0_1.875rem_rgba(255,85,0,0.5)]"
             >
               {/* Background silhouette icon */}
               <step.icon
@@ -178,7 +178,7 @@ export const Ritual = () => {
           </div>
 
           {/* Contract box */}
-          <div className="rounded-xl hc-border-3 border-black bg-obsidian-800 p-4 shadow-brutal transition-all duration-200 hover:shadow-[0_0_1.875rem_rgba(255,85,0,0.7)] md:p-6">
+          <div className="hc-border-3 rounded-xl border-black bg-obsidian-800 p-4 shadow-brutal transition-all duration-200 hover:shadow-[0_0_1.875rem_rgba(255,85,0,0.7)] md:p-6">
             <div className="flex flex-col items-stretch gap-4 md:flex-row md:items-center">
               {/* Address */}
               <div className="flex-1 break-all rounded-lg border-3 border-black bg-obsidian-950 p-4 text-center font-mono text-sm text-lava-100 md:text-left md:text-base">
@@ -189,12 +189,12 @@ export const Ritual = () => {
               <button
                 onClick={handleCopy}
                 aria-live="polite"
-                className={`flex w-full min-w-[10rem] items-center justify-center gap-2 rounded-lg border-3 border-black px-6 py-4 font-heading text-lg font-bold text-white shadow-brutal transition-all duration-200 hover:translate-x-0.5 hover:translate-y-0.5 active:scale-95 md:w-auto ${
+                className={`action-feedback flex w-full min-w-[10rem] items-center justify-center gap-2 rounded-lg border-3 border-black px-6 py-4 font-heading text-lg font-bold text-white shadow-brutal transition-all duration-200 active:translate-x-0.5 active:translate-y-0.5 active:scale-95 md:w-auto can-hover:hover:translate-x-0.5 can-hover:hover:translate-y-0.5 ${
                   copied
                     ? "bg-green-500"
                     : copyError
                       ? "bg-red-500"
-                      : "hellfire-bg hover:shadow-[0_0_1.875rem_rgba(255,85,0,0.7)]"
+                      : "hellfire-bg active:shadow-[0_0_1.875rem_rgba(255,85,0,0.7)] can-hover:hover:shadow-[0_0_1.875rem_rgba(255,85,0,0.7)]"
                 }`}
               >
                 {copied ? <Check size={20} /> : <Copy size={20} />}

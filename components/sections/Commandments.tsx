@@ -145,26 +145,26 @@ export const Commandments = () => {
 
         <div className="lg:hidden">
           <div className="mx-auto max-w-3xl">
-            <div className="relative overflow-hidden rounded-xl hc-border-3 border-black bg-obsidian-800 shadow-brutal transition-all hover:shadow-[0_0_1.875rem_rgba(255,85,0,0.7)]">
-                <div className="relative flex items-center border-b-3 border-black bg-obsidian-900 px-6 py-4 md:px-10">
-                  <div className="flex items-center">
-                    <span className="text-cartoon-sm hellfire-text font-heading text-4xl md:text-5xl">
+            <div className="hc-border-3 relative overflow-hidden rounded-xl border-black bg-obsidian-800 shadow-brutal transition-all hover:shadow-[0_0_1.875rem_rgba(255,85,0,0.7)]">
+              <div className="relative flex items-center border-b-3 border-black bg-obsidian-900 px-6 py-4 md:px-10">
+                <div className="flex items-center">
+                  <span className="text-cartoon-sm hellfire-text font-heading text-4xl md:text-5xl">
+                    {current.id}
+                  </span>
+                </div>
+
+                <div className="absolute left-1/2 -translate-x-1/2">
+                  <span className="whitespace-nowrap font-body text-sm font-bold uppercase tracking-widest text-gold md:text-base">
+                    <span className="inline-block w-[5ch] text-center tabular-nums">
                       {current.id}
                     </span>
-                  </div>
-
-                  <div className="absolute left-1/2 -translate-x-1/2">
-                    <span className="whitespace-nowrap font-body text-sm font-bold uppercase tracking-widest text-gold md:text-base">
-                      <span className="inline-block w-[5ch] text-center tabular-nums">
-                        {current.id}
-                      </span>
-                      <span className="inline-block w-[3ch] text-center">/</span>
-                      <span className="inline-block w-[5ch] text-center tabular-nums">
-                        {TOTAL_ROMAN}
-                      </span>
+                    <span className="inline-block w-[3ch] text-center">/</span>
+                    <span className="inline-block w-[5ch] text-center tabular-nums">
+                      {TOTAL_ROMAN}
                     </span>
-                  </div>
+                  </span>
                 </div>
+              </div>
 
               <div
                 ref={frameRef}
@@ -224,41 +224,41 @@ export const Commandments = () => {
                   SWIPE LEFT / RIGHT — OR DO IT ANYWAY.
                 </div>
 
-                <div className="mt-8 flex items-center justify-between gap-2 w-full max-w-4xl mx-auto px-1 sm:px-2">
-                    <button
-                      type="button"
-                      onClick={() => paginate(-1)}
-                      className="rounded-lg border-3 border-black bg-obsidian-800 p-2.5 sm:px-4 sm:py-3 text-lava-100 shadow-brutal-sm transition-all hover:translate-x-0.5 hover:translate-y-0.5 hover:text-gold hover:shadow-none flex-shrink-0 active:scale-95"
-                      aria-label="Previous commandment"
-                    >
-                      <ChevronLeft className="w-5 h-5 sm:w-6 sm:h-6" />
-                    </button>
+                <div className="mx-auto mt-8 flex w-full max-w-4xl items-center justify-between gap-2 px-1 sm:px-2">
+                  <button
+                    type="button"
+                    onClick={() => paginate(-1)}
+                    className="action-feedback flex-shrink-0 rounded-lg border-3 border-black bg-obsidian-800 p-2.5 text-lava-100 shadow-brutal-sm transition-all active:translate-x-0.5 active:translate-y-0.5 active:scale-95 active:text-gold active:shadow-none sm:px-4 sm:py-3 can-hover:hover:translate-x-0.5 can-hover:hover:translate-y-0.5 can-hover:hover:text-gold can-hover:hover:shadow-none"
+                    aria-label="Previous commandment"
+                  >
+                    <ChevronLeft className="h-5 w-5 sm:h-6 sm:w-6" />
+                  </button>
 
-                    <div className="flex flex-1 items-center justify-center gap-[clamp(0.25rem,3.5vw,2.5rem)] min-w-0 mx-2">
-                      {commandments.map((c, i) => (
-                        <button
-                          key={c.id}
-                          type="button"
-                          aria-label={`Go to commandment ${c.id}`}
-                          onClick={() => setIdx(([curr]) => [i, i > curr ? 1 : -1])}
-                          className={[
-                            "rounded-sm border-2 border-black transition-all duration-300 flex-shrink-0",
-                            i === idx 
-                              ? "hellfire-bg scale-125 w-2.5 h-2.5 sm:w-3.5 sm:h-3.5" 
-                              : "bg-obsidian-800 hover:bg-obsidian-700 w-2 h-2 sm:w-3 sm:h-3",
-                          ].join(" ")}
-                        />
-                      ))}
-                    </div>
+                  <div className="mx-2 flex min-w-0 flex-1 items-center justify-center gap-[clamp(0.25rem,3.5vw,2.5rem)]">
+                    {commandments.map((c, i) => (
+                      <button
+                        key={c.id}
+                        type="button"
+                        aria-label={`Go to commandment ${c.id}`}
+                        onClick={() => setIdx(([curr]) => [i, i > curr ? 1 : -1])}
+                        className={[
+                          "flex-shrink-0 rounded-sm border-2 border-black transition-all duration-300",
+                          i === idx
+                            ? "hellfire-bg h-2.5 w-2.5 scale-125 sm:h-3.5 sm:w-3.5"
+                            : "action-feedback can-hover:hover:bg-obsidian-700 active:bg-obsidian-700 h-2 w-2 bg-obsidian-800 sm:h-3 sm:w-3",
+                        ].join(" ")}
+                      />
+                    ))}
+                  </div>
 
-                    <button
-                      type="button"
-                      onClick={() => paginate(1)}
-                      className="rounded-lg border-3 border-black bg-obsidian-800 p-2.5 sm:px-4 sm:py-3 text-lava-100 shadow-brutal-sm transition-all hover:translate-x-0.5 hover:translate-y-0.5 hover:text-gold hover:shadow-none flex-shrink-0 active:scale-95"
-                      aria-label="Next commandment"
-                    >
-                      <ChevronRight className="w-5 h-5 sm:w-6 sm:h-6" />
-                    </button>
+                  <button
+                    type="button"
+                    onClick={() => paginate(1)}
+                    className="action-feedback flex-shrink-0 rounded-lg border-3 border-black bg-obsidian-800 p-2.5 text-lava-100 shadow-brutal-sm transition-all active:translate-x-0.5 active:translate-y-0.5 active:scale-95 active:text-gold active:shadow-none sm:px-4 sm:py-3 can-hover:hover:translate-x-0.5 can-hover:hover:translate-y-0.5 can-hover:hover:text-gold can-hover:hover:shadow-none"
+                    aria-label="Next commandment"
+                  >
+                    <ChevronRight className="h-5 w-5 sm:h-6 sm:w-6" />
+                  </button>
                 </div>
               </div>
             </div>
@@ -272,20 +272,20 @@ export const Commandments = () => {
           viewport={{ once: true, amount: 0.05, margin }}
           className="hidden grid-cols-1 gap-6 md:grid-cols-2 lg:grid lg:grid-cols-3 xl:grid-cols-4 3xl:grid-cols-5 3xl:gap-8"
         >
-            {commandments.map((c, i) => (
-              <motion.div
-                key={c.id}
-                variants={getVariants(fadeInUp, reduceMotion)}
-                whileHover={getHover(cardHover, reduceMotion)}
-                className={`group relative overflow-visible rounded-xl hc-border-3 border-black bg-obsidian-800 p-6 shadow-brutal transition-shadow duration-200 hover:bg-obsidian-900 hover:shadow-[0_0_2.5rem_rgba(255,85,0,0.5)] ${i === 0 || i === 9 ? "md:col-span-2 3xl:col-span-1" : ""}`}
-              >
-                <div className="text-cartoon-sm hellfire-text absolute right-4 top-3 font-heading text-3xl">
-                  {c.id}
-                </div>
+          {commandments.map((c, i) => (
+            <motion.div
+              key={c.id}
+              variants={getVariants(fadeInUp, reduceMotion)}
+              whileHover={getHover(cardHover, reduceMotion)}
+              className={`hc-border-3 group relative overflow-visible rounded-xl border-black bg-obsidian-800 p-6 shadow-brutal transition-shadow duration-200 hover:bg-obsidian-900 hover:shadow-[0_0_2.5rem_rgba(255,85,0,0.5)] ${i === 0 || i === 9 ? "md:col-span-2 3xl:col-span-1" : ""}`}
+            >
+              <div className="text-cartoon-sm hellfire-text absolute right-4 top-3 font-heading text-3xl">
+                {c.id}
+              </div>
 
-                <h3 className="mb-3 pr-10 font-body text-xl font-bold uppercase text-gold transition-colors duration-150 group-hover:text-lava-300">
-                  {c.title}
-                </h3>
+              <h3 className="mb-3 pr-10 font-body text-xl font-bold uppercase text-gold transition-colors duration-150 group-hover:text-lava-300">
+                {c.title}
+              </h3>
 
               <p className="font-body text-lg text-lava-100/70 transition-colors duration-150 group-hover:text-lava-100">
                 {c.text}
