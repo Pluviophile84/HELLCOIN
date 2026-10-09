@@ -10,6 +10,10 @@
   display: grid;
   grid-template-rows: auto auto;
 }
+.workspace[data-drop-active="true"] {
+  outline: 3px dashed #e8a020;
+  outline-offset: -6px;
+}
 .embedded {
   --forge-nav: var(--nav-h);
 }
@@ -65,6 +69,12 @@
 }
 .moving {
   touch-action: none;
+}
+.imageDraggable {
+  cursor: grab;
+}
+.dragging {
+  cursor: grabbing;
 }
 .textTarget {
   position: absolute;

@@ -110,7 +110,7 @@ export function useForge(primaryFont: string, active: boolean, exporting: boolea
       setMessage("Opening image…");
       try {
         const image = await decodeImage(file, controller.signal);
-        if (controller.signal.aborted || !alive.current) {
+        if (controller.signal.aborted || decoder.current !== controller || !alive.current) {
           image.dispose();
           return;
         }
@@ -124,8 +124,22 @@ export function useForge(primaryFont: string, active: boolean, exporting: boolea
               : "This image could not be opened. Try JPEG or PNG."
           );
       } finally {
-        if (!controller.signal.aborted && alive.current) setLoading(false);
+        if (decoder.current === controller && alive.current) {
+          decoder.current = null;
+          setLoading(false);
+        }
       }
+    },
+    [change]
+  );
+
+  const removeImage = useCallback(
+    (backdrop?: Backdrop) => {
+      decoder.current?.abort();
+      decoder.current = null;
+      setLoading(false);
+      change((old) => ({ ...old, background: null, backdrop: backdrop ?? old.backdrop }));
+      setMessage("Backdrop ready. Your words and the Devil stay.");
     },
     [change]
   );
@@ -133,7 +147,18 @@ export function useForge(primaryFont: string, active: boolean, exporting: boolea
   useEffect(() => {
     if (!active) return;
     const paste = (event: ClipboardEvent) => {
-      const file = Array.from(event.clipboardData?.files ?? [])[0];
+      // Caption fields retain ordinary paste behavior; canvas/workspace paste opens an image.
+      if (
+        event.target instanceof Element &&
+        event.target.closest("textarea, input, [contenteditable]")
+      )
+        return;
+      const data = event.clipboardData;
+      const file =
+        Array.from(data?.files ?? [])[0] ??
+        Array.from(data?.items ?? [])
+          .find((item) => item.kind === "file")
+          ?.getAsFile();
       if (file) {
         event.preventDefault();
         void loadImage(file);
@@ -248,6 +273,7 @@ export function useForge(primaryFont: string, active: boolean, exporting: boolea
     message,
     setMessage,
     loadImage,
+    removeImage,
     prepare,
     font,
   };

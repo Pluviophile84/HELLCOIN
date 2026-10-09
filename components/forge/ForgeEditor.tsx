@@ -1,6 +1,6 @@
 "use client";
-import { useEffect, useId, useRef, useState } from "react";
-import type { KeyboardEvent, PointerEvent } from "react";
+import { useCallback, useEffect, useId, useRef, useState } from "react";
+import type { DragEvent, KeyboardEvent, PointerEvent } from "react";
 import {
   BACKDROPS,
   SIZE,
@@ -38,6 +38,8 @@ export function ForgeEditor({
   const [selected, setSelected] = useState<number | null>(null);
   const [moving, setMoving] = useState(false);
   const [dragging, setDragging] = useState(false);
+  const [touchInput, setTouchInput] = useState(false);
+  const [dropActive, setDropActive] = useState(false);
   const [previewWidth, setPreviewWidth] = useState(0);
   const [busy, setBusy] = useState(false);
   const [copySupported, setCopySupported] = useState(false);
@@ -45,7 +47,14 @@ export function ForgeEditor({
   const workspace = useRef<HTMLDivElement>(null);
   const tabs = useRef<(HTMLButtonElement | null)[]>([]);
   const nextId = useRef(1);
-  const drag = useRef<{ id: number; x: number; y: number; target: Target } | null>(null);
+  const drag = useRef<{
+    id: number;
+    x: number;
+    y: number;
+    target: Target;
+    element: HTMLElement;
+  } | null>(null);
+  const dropDepth = useRef(0);
   const id = useId();
   const engine = useForge(fontFamily, active, mode === "EXPORT" && !dragging);
   const {
@@ -62,6 +71,7 @@ export function ForgeEditor({
     message,
     setMessage,
     loadImage,
+    removeImage,
     prepare,
     font,
   } = engine;
@@ -72,14 +82,14 @@ export function ForgeEditor({
       ? scene.background
         ? { type: "background" }
         : null
-      : selectedBlock
+      : mode === "TEXT" && selectedBlock
         ? { type: "text", id: selectedBlock.id }
         : null;
   const selectedLabel = target?.type === "text" ? "Text " + (selectedIndex + 1) : "image";
   const ctx = ready ? preview.current?.getContext("2d") : null;
   const scale = previewWidth / SIZE;
   const hits =
-    ctx && scale && mode !== "IMAGE"
+    ctx && scale && mode === "TEXT"
       ? scene.blocks.flatMap((block, index) => {
           if (!block.text.trim()) return [];
           const box = textLayout(ctx, block, font);
@@ -100,6 +110,55 @@ export function ForgeEditor({
           return hit.width > 0 && hit.height > 0 ? [{ block, index, hit }] : [];
         })
       : [];
+  const stopDrag = useCallback(() => {
+    const previous = drag.current;
+    drag.current = null;
+    setDragging(false);
+    if (previous?.element.hasPointerCapture(previous.id))
+      previous.element.releasePointerCapture(previous.id);
+  }, []);
+  useEffect(() => {
+    stopDrag();
+    setMoving(false);
+    return stopDrag;
+  }, [active, mode, scene.background?.image, stopDrag]);
+
+  useEffect(() => {
+    const coarse = window.matchMedia("(any-pointer: coarse)");
+    const update = () => setTouchInput(coarse.matches || navigator.maxTouchPoints > 0);
+    update();
+    coarse.addEventListener("change", update);
+    return () => coarse.removeEventListener("change", update);
+  }, []);
+
+  useEffect(() => {
+    const reset = () => {
+      dropDepth.current = 0;
+      setDropActive(false);
+    };
+    reset();
+    if (!active) return;
+    const preventNavigation = (event: globalThis.DragEvent) => {
+      if (Array.from(event.dataTransfer?.types ?? []).includes("Files")) event.preventDefault();
+    };
+    const cancel = (event: globalThis.KeyboardEvent) => {
+      if (event.key === "Escape") reset();
+    };
+    window.addEventListener("dragover", preventNavigation);
+    window.addEventListener("drop", preventNavigation);
+    window.addEventListener("drop", reset);
+    window.addEventListener("dragend", reset);
+    window.addEventListener("blur", reset);
+    window.addEventListener("keydown", cancel);
+    return () => {
+      window.removeEventListener("dragover", preventNavigation);
+      window.removeEventListener("drop", preventNavigation);
+      window.removeEventListener("drop", reset);
+      window.removeEventListener("dragend", reset);
+      window.removeEventListener("blur", reset);
+      window.removeEventListener("keydown", cancel);
+    };
+  }, [active]);
   useEffect(() => {
     const canvas = preview.current;
     if (!canvas) return;
@@ -215,10 +274,19 @@ export function ForgeEditor({
   }, [active, embedded]);
 
   function selectMode(next: Mode) {
+    stopDrag();
     setMode(next);
     setMoving(false);
     if (next === "TEXT" && selected === null && scene.blocks.length)
       setSelected(scene.blocks[0].id);
+  }
+  function selectBlock(blockId: number) {
+    setSelected(blockId);
+    // Expose the selected controls without focusing a field or opening the touch keyboard.
+    workspace.current?.querySelector<HTMLElement>('[role="tabpanel"]')?.scrollTo({ top: 0 });
+  }
+  function isFileDrag(event: DragEvent) {
+    return Array.from(event.dataTransfer.types).includes("Files");
   }
   function tabKey(event: KeyboardEvent, index: number) {
     let next = index;
@@ -249,7 +317,12 @@ export function ForgeEditor({
     }
   }
   function move(dx: number, dy: number, manipulation: Target = target) {
-    if (!manipulation) return;
+    if (
+      !manipulation ||
+      (manipulation.type === "background" && mode !== "IMAGE") ||
+      (manipulation.type === "text" && mode !== "TEXT")
+    )
+      return;
     if (manipulation.type === "text") {
       const block = current.current.blocks.find((b) => b.id === manipulation.id);
       if (block) updateBlock(block.id, { x: block.x + dx, y: block.y + dy });
@@ -278,7 +351,9 @@ export function ForgeEditor({
     drag.current = { ...drag.current, x: event.clientX, y: event.clientY };
   }
   function keyMove(event: KeyboardEvent<HTMLElement>, manipulation: Target = target) {
+    if (mode === "EXPORT") return;
     if (event.key === "Escape") {
+      stopDrag();
       setMoving(false);
       return;
     }
@@ -295,8 +370,16 @@ export function ForgeEditor({
     }
   }
   function startDrag(event: PointerEvent<HTMLElement>, manipulation: Target) {
-    if (!ready || !manipulation || event.button !== 0 || drag.current) return;
-    if (manipulation.type === "text") setSelected(manipulation.id);
+    if (
+      !ready ||
+      !manipulation ||
+      event.button !== 0 ||
+      drag.current ||
+      (manipulation.type === "background" && mode !== "IMAGE") ||
+      (manipulation.type === "text" && mode !== "TEXT")
+    )
+      return;
+    if (manipulation.type === "text") selectBlock(manipulation.id);
     event.currentTarget.focus({ preventScroll: true });
     event.currentTarget.setPointerCapture(event.pointerId);
     drag.current = {
@@ -304,15 +387,13 @@ export function ForgeEditor({
       x: event.clientX,
       y: event.clientY,
       target: manipulation,
+      element: event.currentTarget,
     };
     setDragging(true);
   }
   function endDrag(event: PointerEvent<HTMLElement>) {
     if (drag.current?.id !== event.pointerId) return;
-    drag.current = null;
-    setDragging(false);
-    if (event.currentTarget.hasPointerCapture(event.pointerId))
-      event.currentTarget.releasePointerCapture(event.pointerId);
+    stopDrag();
   }
   const canShare = (file: File | undefined) => {
     try {
@@ -392,6 +473,30 @@ export function ForgeEditor({
         " overflow-hidden rounded-xl border-3 border-black bg-obsidian-900 shadow-brutal"
       }
       aria-label="Meme Forge workspace"
+      data-drop-active={dropActive}
+      onDragEnter={(event) => {
+        if (!isFileDrag(event)) return;
+        event.preventDefault();
+        dropDepth.current++;
+        setDropActive(true);
+      }}
+      onDragOver={(event) => {
+        if (!isFileDrag(event)) return;
+        event.preventDefault();
+        event.dataTransfer.dropEffect = "copy";
+      }}
+      onDragLeave={() => {
+        dropDepth.current = Math.max(0, dropDepth.current - 1);
+        if (!dropDepth.current) setDropActive(false);
+      }}
+      onDrop={(event) => {
+        if (!isFileDrag(event)) return;
+        event.preventDefault();
+        dropDepth.current = 0;
+        setDropActive(false);
+        const file = event.dataTransfer.files[0];
+        if (file) void loadImage(file);
+      }}
     >
       <div
         className={
@@ -409,18 +514,7 @@ export function ForgeEditor({
         )}
       </div>
       <div className={styles.body}>
-        <div
-          className={styles.preview}
-          onDragOver={(event) => {
-            event.preventDefault();
-            event.dataTransfer.dropEffect = "copy";
-          }}
-          onDrop={(event) => {
-            event.preventDefault();
-            const file = event.dataTransfer.files[0];
-            if (file) void loadImage(file);
-          }}
-        >
+        <div className={styles.preview}>
           <div className={styles.square}>
             <div className={styles.surface + " rounded-lg border-3 border-black"}>
               <canvas
@@ -428,12 +522,18 @@ export function ForgeEditor({
                 width={SIZE}
                 height={SIZE}
                 tabIndex={0}
-                aria-label={"Meme preview. Move " + selectedLabel + " with arrow keys."}
-                aria-describedby={id + "-movement"}
+                aria-label={
+                  mode === "EXPORT"
+                    ? "Meme preview. Return to Image or Text to adjust."
+                    : "Meme preview. Move " + selectedLabel + " with arrow keys."
+                }
+                aria-describedby={mode === "EXPORT" ? undefined : id + "-movement"}
                 className={
                   styles.canvas +
                   " " +
                   (moving ? styles.moving : "") +
+                  (mode === "IMAGE" && scene.background ? " " + styles.imageDraggable : "") +
+                  (dragging ? " " + styles.dragging : "") +
                   " rounded-lg bg-obsidian-950 focus-visible:outline focus-visible:outline-2 focus-visible:outline-gold"
                 }
                 onPointerDown={(event) => {
@@ -455,6 +555,8 @@ export function ForgeEditor({
                   role="button"
                   tabIndex={0}
                   aria-label={"Drag Text " + (index + 1)}
+                  aria-pressed={selected === block.id}
+                  aria-controls={id + "-words"}
                   className={
                     styles.textTarget +
                     (mode === "TEXT" && selected === block.id ? " " + styles.selectedText : "")
@@ -471,35 +573,47 @@ export function ForgeEditor({
                   onPointerUp={endDrag}
                   onPointerCancel={endDrag}
                   onLostPointerCapture={endDrag}
-                  onKeyDown={(event) => keyMove(event, { type: "text", id: block.id })}
+                  onFocus={() => selectBlock(block.id)}
+                  onClick={() => selectBlock(block.id)}
+                  onKeyDown={(event) => {
+                    if (event.key === "Enter" || event.key === " ") {
+                      event.preventDefault();
+                      selectBlock(block.id);
+                    } else keyMove(event, { type: "text", id: block.id });
+                  }}
                 />
               ))}
             </div>
           </div>
           <div className={styles.interactionRail}>
-            {mode === "IMAGE" && !!scene.background && (
+            {mode === "IMAGE" && !!scene.background && touchInput && (
               <button
                 className={button + (moving ? " border-gold text-gold" : "")}
                 aria-pressed={moving}
                 disabled={!ready}
-                onClick={() => setMoving((value) => !value)}
+                onClick={() => {
+                  stopDrag();
+                  setMoving((value) => !value);
+                }}
               >
                 {moving ? "DONE MOVING" : "MOVE IMAGE"}
               </button>
             )}
-            <p id={id + "-movement"} className="max-w-40 text-xs leading-4 text-lava-100/70">
-              {target?.type === "text"
-                ? "Drag a text block. Swipe elsewhere to scroll."
-                : moving
-                  ? "Drag in any direction. Done restores scrolling."
-                  : mode === "IMAGE"
-                    ? scene.background
-                      ? "Swipe to scroll. Use Move to reposition."
-                      : "Swipe to scroll. Add an image to move it."
-                    : mode === "EXPORT"
-                      ? "Drag text for a final adjustment."
-                      : "Swipe to scroll."}
-            </p>
+            {mode !== "EXPORT" && (
+              <p id={id + "-movement"} className="max-w-40 text-xs leading-4 text-lava-100/70">
+                {target?.type === "text"
+                  ? "Drag a text block. Swipe elsewhere to scroll."
+                  : moving
+                    ? "Drag in any direction. Done restores scrolling."
+                    : mode === "IMAGE"
+                      ? scene.background
+                        ? touchInput
+                          ? "Drag with mouse. Use Move for touch."
+                          : "Drag the image to reposition."
+                        : "Swipe to scroll. Add an image to move it."
+                      : "Tap a text block to select it. Drag to position."}
+              </p>
+            )}
           </div>
         </div>
         <div
@@ -554,12 +668,12 @@ export function ForgeEditor({
                         className={
                           button +
                           " px-1 text-xs" +
-                          (scene.backdrop === name ? " border-gold text-gold" : "")
+                          (!scene.background && scene.backdrop === name
+                            ? " border-gold text-gold"
+                            : "")
                         }
-                        aria-pressed={scene.backdrop === name}
-                        onClick={() =>
-                          change((old) => ({ ...old, backdrop: name as keyof typeof BACKDROPS }))
-                        }
+                        aria-pressed={!scene.background && scene.backdrop === name}
+                        onClick={() => removeImage(name as keyof typeof BACKDROPS)}
                       >
                         {name}
                       </button>
@@ -618,10 +732,7 @@ export function ForgeEditor({
                       >
                         RESET CROP
                       </button>
-                      <button
-                        className={button}
-                        onClick={() => change((old) => ({ ...old, background: null }))}
-                      >
+                      <button className={button} onClick={() => removeImage()}>
                         REMOVE IMAGE
                       </button>
                     </div>
@@ -638,7 +749,7 @@ export function ForgeEditor({
                       key={block.id}
                       aria-pressed={selected === block.id}
                       className={button + (selected === block.id ? " border-gold text-gold" : "")}
-                      onClick={() => setSelected(block.id)}
+                      onClick={() => selectBlock(block.id)}
                     >
                       TEXT {index + 1}
                     </button>
@@ -830,11 +941,13 @@ export function ForgeEditor({
               aria-live="polite"
               className="border-t border-lava-100/20 pt-3 text-xs leading-relaxed text-gold"
             >
-              {loading
-                ? "Opening image…"
-                : !ready
-                  ? "Loading the Devil and Inter… " + message
-                  : message}
+              {dropActive
+                ? "Drop an image to replace the background."
+                : loading
+                  ? "Opening image…"
+                  : !ready
+                    ? "Loading the Devil and Inter… " + message
+                    : message}
             </p>
           </div>
         </div>
