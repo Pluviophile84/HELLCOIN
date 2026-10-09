@@ -23,6 +23,7 @@ export function useForge(primaryFont: string, active: boolean, exporting: boolea
   const [ready, setReady] = useState(false);
   const [loading, setLoading] = useState(false);
   const [encoding, setEncoding] = useState(false);
+  const [exportError, setExportError] = useState(false);
   const [message, setMessage] = useState("Ready for your words. No upload needed.");
   const [files, setFiles] = useState<Files | null>(null);
   const revision = useRef(0);
@@ -52,6 +53,7 @@ export function useForge(primaryFont: string, active: boolean, exporting: boolea
       revision.current++;
       releaseFiles();
       setFiles(null);
+      setExportError(false);
       current.current = next;
       setScene(next);
       if (previous.background?.image !== next.background?.image)
@@ -209,6 +211,7 @@ export function useForge(primaryFont: string, active: boolean, exporting: boolea
     if (pending.current?.revision === rev) return pending.current.promise;
     if (!resources.current) return Promise.resolve(null);
     setEncoding(true);
+    setExportError(false);
     const promise = (async () => {
       const canvas = document.createElement("canvas");
       canvas.width = canvas.height = SIZE;
@@ -241,8 +244,10 @@ export function useForge(primaryFont: string, active: boolean, exporting: boolea
         setFiles(next);
         return next;
       } catch (error) {
-        if (alive.current && rev === revision.current)
+        if (alive.current && rev === revision.current) {
+          setExportError(true);
           setMessage(error instanceof Error ? error.message : "Export failed. Try again.");
+        }
         return null;
       } finally {
         canvas.width = canvas.height = 1;
@@ -267,6 +272,7 @@ export function useForge(primaryFont: string, active: boolean, exporting: boolea
     ready,
     loading,
     encoding,
+    exportError,
     files,
     generated,
     revision,

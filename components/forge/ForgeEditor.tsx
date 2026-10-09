@@ -22,6 +22,25 @@ const field =
   "w-full min-w-0 rounded-lg border-3 border-black bg-obsidian-950 px-3 py-2 text-base text-lava-50 focus-visible:ring-2 focus-visible:ring-gold";
 const modes = ["IMAGE", "TEXT", "EXPORT"] as const;
 type Mode = (typeof modes)[number];
+type OutputAction = "jpg" | "png" | "copy" | "share";
+const outputProgress: Record<OutputAction, string> = {
+  jpg: "Saving JPG…",
+  png: "Saving PNG…",
+  copy: "Copying image…",
+  share: "Opening share sheet…",
+};
+const canShare = (file: File | undefined) => {
+  try {
+    return (
+      !!file &&
+      typeof navigator !== "undefined" &&
+      !!navigator.share &&
+      !!navigator.canShare?.({ files: [file] })
+    );
+  } catch {
+    return false;
+  }
+};
 type Target = { type: "background" } | { type: "text"; id: number } | null;
 export function ForgeEditor({
   fontFamily,
@@ -41,7 +60,8 @@ export function ForgeEditor({
   const [touchInput, setTouchInput] = useState(false);
   const [dropActive, setDropActive] = useState(false);
   const [previewWidth, setPreviewWidth] = useState(0);
-  const [busy, setBusy] = useState(false);
+  const [busy, setBusy] = useState<OutputAction | null>(null);
+  const outputLock = useRef(false);
   const [copySupported, setCopySupported] = useState(false);
   const [shareAvailable, setShareAvailable] = useState(false);
   const workspace = useRef<HTMLDivElement>(null);
@@ -65,6 +85,7 @@ export function ForgeEditor({
     ready,
     loading,
     encoding,
+    exportError,
     files,
     generated,
     revision,
@@ -168,6 +189,8 @@ export function ForgeEditor({
   }, [preview]);
 
   useEffect(() => {
+    // Probe file-type capability only; no pixels are rendered or encoded before Export.
+    setShareAvailable(canShare(new File([], "hellcoin-meme.jpg", { type: "image/jpeg" })));
     setCopySupported(
       window.isSecureContext &&
         !!navigator.clipboard?.write &&
@@ -395,21 +418,11 @@ export function ForgeEditor({
     if (drag.current?.id !== event.pointerId) return;
     stopDrag();
   }
-  const canShare = (file: File | undefined) => {
-    try {
-      return (
-        !!file &&
-        typeof navigator !== "undefined" &&
-        !!navigator.share &&
-        !!navigator.canShare?.({ files: [file] })
-      );
-    } catch {
-      return false;
-    }
-  };
-  async function output(action: "jpg" | "png" | "copy" | "share") {
-    if (busy || loading || !ready || drag.current) return;
-    setBusy(true);
+  async function output(action: OutputAction) {
+    if (outputLock.current || loading || !ready || drag.current) return;
+    // Synchronous lock also rejects duplicate events before React commits busy state.
+    outputLock.current = true;
+    setBusy(action);
     try {
       // Share/copy use files prepared on Export entry to preserve user activation.
       const asset =
@@ -454,14 +467,13 @@ export function ForgeEditor({
           : "This browser blocked that action. Try Download or Open image to save."
       );
     } finally {
-      setBusy(false);
+      outputLock.current = false;
+      setBusy(null);
     }
   }
-  useEffect(() => {
-    if (files) setShareAvailable(canShare(files.jpg));
-  }, [files]);
-  const canExport = ready && !!files && !loading && !encoding && !busy && !dragging;
-  const shareSupported = files ? canShare(files.jpg) : shareAvailable;
+  const exportReady = ready && !!files && !loading && !encoding && !dragging;
+  const shareSupported = shareAvailable;
+  const shareReady = exportReady && canShare(files?.jpg);
 
   return (
     <div
@@ -655,6 +667,7 @@ export function ForgeEditor({
             role="tabpanel"
             aria-labelledby={id + "-" + mode}
             tabIndex={0}
+            data-mode={mode}
             className={styles.panel + " space-y-4"}
           >
             {mode === "IMAGE" && (
@@ -860,15 +873,23 @@ export function ForgeEditor({
             {mode === "EXPORT" && (
               <>
                 <p className="text-sm text-lava-100/80">Your meme. Ready to leave hell.</p>
-                {(encoding || !files) && (
-                  <p className="text-sm text-gold">
-                    {ready ? "Preparing JPG + PNG…" : "Loading Inter and the Devil…"}
-                  </p>
-                )}
+                <p className={styles.exportPreparation + " text-sm text-gold"}>
+                  {!ready
+                    ? "Loading Inter and the Devil…"
+                    : loading
+                      ? "Opening image…"
+                      : exportError
+                        ? "Preparation failed. Re-enter Export to retry."
+                        : encoding || !files
+                          ? "Preparing JPG + PNG…"
+                          : "JPG + PNG ready."}
+                </p>
                 {shareSupported && (
                   <button
                     className={primaryButton + " w-full"}
-                    disabled={!canExport}
+                    disabled={!shareReady}
+                    aria-disabled={!shareReady || !!busy}
+                    aria-busy={busy === "share"}
                     onClick={() => void output("share")}
                   >
                     SHARE MEME
@@ -877,14 +898,18 @@ export function ForgeEditor({
                 <div className="grid gap-2 sm:grid-cols-2">
                   <button
                     className={shareSupported ? button : primaryButton}
-                    disabled={!canExport}
+                    disabled={!exportReady}
+                    aria-disabled={!exportReady || !!busy}
+                    aria-busy={busy === "jpg"}
                     onClick={() => void output("jpg")}
                   >
                     DOWNLOAD JPG
                   </button>
                   <button
                     className={button}
-                    disabled={!canExport}
+                    disabled={!exportReady}
+                    aria-disabled={!exportReady || !!busy}
+                    aria-busy={busy === "png"}
                     onClick={() => void output("png")}
                   >
                     DOWNLOAD PNG
@@ -896,7 +921,9 @@ export function ForgeEditor({
                 {copySupported ? (
                   <button
                     className={button + " w-full"}
-                    disabled={!canExport}
+                    disabled={!exportReady}
+                    aria-disabled={!exportReady || !!busy}
+                    aria-busy={busy === "copy"}
                     onClick={() => void output("copy")}
                   >
                     COPY IMAGE
@@ -906,34 +933,36 @@ export function ForgeEditor({
                     Image copying unavailable. Use Download{shareSupported ? " or Share" : ""}.
                   </p>
                 )}
-                {!shareSupported && files && (
+                {!shareSupported && (
                   <p className="text-xs text-lava-100/70">
                     No file sharing here. Download and attach in your app.
                   </p>
                 )}
-                {files && (
-                  <div className="border-t border-lava-100/20 pt-3 text-xs text-lava-100/70">
-                    <p>Download did not save? Open the image, then Save Image / Save to Files.</p>
-                    <div className="mt-2 flex gap-4">
-                      <a
-                        href={files.jpgUrl}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="inline-flex min-h-11 items-center text-gold underline"
-                      >
-                        OPEN JPG
-                      </a>
-                      <a
-                        href={files.pngUrl}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="inline-flex min-h-11 items-center text-gold underline"
-                      >
-                        OPEN PNG
-                      </a>
-                    </div>
+                <div className="border-t border-lava-100/20 pt-3 text-xs text-lava-100/70">
+                  <p>Download did not save? Open the image, then Save Image / Save to Files.</p>
+                  <div className="mt-2 flex gap-4">
+                    <a
+                      href={exportReady ? files?.jpgUrl : undefined}
+                      aria-disabled={!exportReady}
+                      tabIndex={exportReady ? 0 : -1}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex min-h-11 items-center text-gold underline"
+                    >
+                      OPEN JPG
+                    </a>
+                    <a
+                      href={exportReady ? files?.pngUrl : undefined}
+                      aria-disabled={!exportReady}
+                      tabIndex={exportReady ? 0 : -1}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex min-h-11 items-center text-gold underline"
+                    >
+                      OPEN PNG
+                    </a>
                   </div>
-                )}
+                </div>
               </>
             )}
             <p
@@ -941,13 +970,15 @@ export function ForgeEditor({
               aria-live="polite"
               className="border-t border-lava-100/20 pt-3 text-xs leading-relaxed text-gold"
             >
-              {dropActive
-                ? "Drop an image to replace the background."
-                : loading
-                  ? "Opening image…"
-                  : !ready
-                    ? "Loading the Devil and Inter… " + message
-                    : message}
+              {mode === "EXPORT" && busy
+                ? outputProgress[busy]
+                : dropActive
+                  ? "Drop an image to replace the background."
+                  : loading
+                    ? "Opening image…"
+                    : !ready
+                      ? "Loading the Devil and Inter… " + message
+                      : message}
             </p>
           </div>
         </div>
