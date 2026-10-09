@@ -1,6 +1,6 @@
 "use client";
-import { useEffect, useId, useRef, useState } from "react";
-import type { KeyboardEvent, PointerEvent } from "react";
+import { useCallback, useEffect, useId, useRef, useState } from "react";
+import type { DragEvent, KeyboardEvent, PointerEvent } from "react";
 import {
   BACKDROPS,
   SIZE,
@@ -22,6 +22,25 @@ const field =
   "w-full min-w-0 rounded-lg border-3 border-black bg-obsidian-950 px-3 py-2 text-base text-lava-50 focus-visible:ring-2 focus-visible:ring-gold";
 const modes = ["IMAGE", "TEXT", "EXPORT"] as const;
 type Mode = (typeof modes)[number];
+type OutputAction = "jpg" | "png" | "copy" | "share";
+const outputProgress: Record<OutputAction, string> = {
+  jpg: "Saving JPG…",
+  png: "Saving PNG…",
+  copy: "Copying image…",
+  share: "Opening share sheet…",
+};
+const canShare = (file: File | undefined) => {
+  try {
+    return (
+      !!file &&
+      typeof navigator !== "undefined" &&
+      !!navigator.share &&
+      !!navigator.canShare?.({ files: [file] })
+    );
+  } catch {
+    return false;
+  }
+};
 type Target = { type: "background" } | { type: "text"; id: number } | null;
 export function ForgeEditor({
   fontFamily,
@@ -38,14 +57,24 @@ export function ForgeEditor({
   const [selected, setSelected] = useState<number | null>(null);
   const [moving, setMoving] = useState(false);
   const [dragging, setDragging] = useState(false);
+  const [touchInput, setTouchInput] = useState(false);
+  const [dropActive, setDropActive] = useState(false);
   const [previewWidth, setPreviewWidth] = useState(0);
-  const [busy, setBusy] = useState(false);
+  const [busy, setBusy] = useState<OutputAction | null>(null);
+  const outputLock = useRef(false);
   const [copySupported, setCopySupported] = useState(false);
   const [shareAvailable, setShareAvailable] = useState(false);
   const workspace = useRef<HTMLDivElement>(null);
   const tabs = useRef<(HTMLButtonElement | null)[]>([]);
   const nextId = useRef(1);
-  const drag = useRef<{ id: number; x: number; y: number; target: Target } | null>(null);
+  const drag = useRef<{
+    id: number;
+    x: number;
+    y: number;
+    target: Target;
+    element: HTMLElement;
+  } | null>(null);
+  const dropDepth = useRef(0);
   const id = useId();
   const engine = useForge(fontFamily, active, mode === "EXPORT" && !dragging);
   const {
@@ -56,12 +85,14 @@ export function ForgeEditor({
     ready,
     loading,
     encoding,
+    exportError,
     files,
     generated,
     revision,
     message,
     setMessage,
     loadImage,
+    removeImage,
     prepare,
     font,
   } = engine;
@@ -72,14 +103,14 @@ export function ForgeEditor({
       ? scene.background
         ? { type: "background" }
         : null
-      : selectedBlock
+      : mode === "TEXT" && selectedBlock
         ? { type: "text", id: selectedBlock.id }
         : null;
   const selectedLabel = target?.type === "text" ? "Text " + (selectedIndex + 1) : "image";
   const ctx = ready ? preview.current?.getContext("2d") : null;
   const scale = previewWidth / SIZE;
   const hits =
-    ctx && scale && mode !== "IMAGE"
+    ctx && scale && mode === "TEXT"
       ? scene.blocks.flatMap((block, index) => {
           if (!block.text.trim()) return [];
           const box = textLayout(ctx, block, font);
@@ -100,6 +131,55 @@ export function ForgeEditor({
           return hit.width > 0 && hit.height > 0 ? [{ block, index, hit }] : [];
         })
       : [];
+  const stopDrag = useCallback(() => {
+    const previous = drag.current;
+    drag.current = null;
+    setDragging(false);
+    if (previous?.element.hasPointerCapture(previous.id))
+      previous.element.releasePointerCapture(previous.id);
+  }, []);
+  useEffect(() => {
+    stopDrag();
+    setMoving(false);
+    return stopDrag;
+  }, [active, mode, scene.background?.image, stopDrag]);
+
+  useEffect(() => {
+    const coarse = window.matchMedia("(any-pointer: coarse)");
+    const update = () => setTouchInput(coarse.matches || navigator.maxTouchPoints > 0);
+    update();
+    coarse.addEventListener("change", update);
+    return () => coarse.removeEventListener("change", update);
+  }, []);
+
+  useEffect(() => {
+    const reset = () => {
+      dropDepth.current = 0;
+      setDropActive(false);
+    };
+    reset();
+    if (!active) return;
+    const preventNavigation = (event: globalThis.DragEvent) => {
+      if (Array.from(event.dataTransfer?.types ?? []).includes("Files")) event.preventDefault();
+    };
+    const cancel = (event: globalThis.KeyboardEvent) => {
+      if (event.key === "Escape") reset();
+    };
+    window.addEventListener("dragover", preventNavigation);
+    window.addEventListener("drop", preventNavigation);
+    window.addEventListener("drop", reset);
+    window.addEventListener("dragend", reset);
+    window.addEventListener("blur", reset);
+    window.addEventListener("keydown", cancel);
+    return () => {
+      window.removeEventListener("dragover", preventNavigation);
+      window.removeEventListener("drop", preventNavigation);
+      window.removeEventListener("drop", reset);
+      window.removeEventListener("dragend", reset);
+      window.removeEventListener("blur", reset);
+      window.removeEventListener("keydown", cancel);
+    };
+  }, [active]);
   useEffect(() => {
     const canvas = preview.current;
     if (!canvas) return;
@@ -109,6 +189,8 @@ export function ForgeEditor({
   }, [preview]);
 
   useEffect(() => {
+    // Probe file-type capability only; no pixels are rendered or encoded before Export.
+    setShareAvailable(canShare(new File([], "hellcoin-meme.jpg", { type: "image/jpeg" })));
     setCopySupported(
       window.isSecureContext &&
         !!navigator.clipboard?.write &&
@@ -215,10 +297,19 @@ export function ForgeEditor({
   }, [active, embedded]);
 
   function selectMode(next: Mode) {
+    stopDrag();
     setMode(next);
     setMoving(false);
     if (next === "TEXT" && selected === null && scene.blocks.length)
       setSelected(scene.blocks[0].id);
+  }
+  function selectBlock(blockId: number) {
+    setSelected(blockId);
+    // Expose the selected controls without focusing a field or opening the touch keyboard.
+    workspace.current?.querySelector<HTMLElement>('[role="tabpanel"]')?.scrollTo({ top: 0 });
+  }
+  function isFileDrag(event: DragEvent) {
+    return Array.from(event.dataTransfer.types).includes("Files");
   }
   function tabKey(event: KeyboardEvent, index: number) {
     let next = index;
@@ -249,7 +340,12 @@ export function ForgeEditor({
     }
   }
   function move(dx: number, dy: number, manipulation: Target = target) {
-    if (!manipulation) return;
+    if (
+      !manipulation ||
+      (manipulation.type === "background" && mode !== "IMAGE") ||
+      (manipulation.type === "text" && mode !== "TEXT")
+    )
+      return;
     if (manipulation.type === "text") {
       const block = current.current.blocks.find((b) => b.id === manipulation.id);
       if (block) updateBlock(block.id, { x: block.x + dx, y: block.y + dy });
@@ -278,7 +374,9 @@ export function ForgeEditor({
     drag.current = { ...drag.current, x: event.clientX, y: event.clientY };
   }
   function keyMove(event: KeyboardEvent<HTMLElement>, manipulation: Target = target) {
+    if (mode === "EXPORT") return;
     if (event.key === "Escape") {
+      stopDrag();
       setMoving(false);
       return;
     }
@@ -295,8 +393,16 @@ export function ForgeEditor({
     }
   }
   function startDrag(event: PointerEvent<HTMLElement>, manipulation: Target) {
-    if (!ready || !manipulation || event.button !== 0 || drag.current) return;
-    if (manipulation.type === "text") setSelected(manipulation.id);
+    if (
+      !ready ||
+      !manipulation ||
+      event.button !== 0 ||
+      drag.current ||
+      (manipulation.type === "background" && mode !== "IMAGE") ||
+      (manipulation.type === "text" && mode !== "TEXT")
+    )
+      return;
+    if (manipulation.type === "text") selectBlock(manipulation.id);
     event.currentTarget.focus({ preventScroll: true });
     event.currentTarget.setPointerCapture(event.pointerId);
     drag.current = {
@@ -304,31 +410,19 @@ export function ForgeEditor({
       x: event.clientX,
       y: event.clientY,
       target: manipulation,
+      element: event.currentTarget,
     };
     setDragging(true);
   }
   function endDrag(event: PointerEvent<HTMLElement>) {
     if (drag.current?.id !== event.pointerId) return;
-    drag.current = null;
-    setDragging(false);
-    if (event.currentTarget.hasPointerCapture(event.pointerId))
-      event.currentTarget.releasePointerCapture(event.pointerId);
+    stopDrag();
   }
-  const canShare = (file: File | undefined) => {
-    try {
-      return (
-        !!file &&
-        typeof navigator !== "undefined" &&
-        !!navigator.share &&
-        !!navigator.canShare?.({ files: [file] })
-      );
-    } catch {
-      return false;
-    }
-  };
-  async function output(action: "jpg" | "png" | "copy" | "share") {
-    if (busy || loading || !ready || drag.current) return;
-    setBusy(true);
+  async function output(action: OutputAction) {
+    if (outputLock.current || loading || !ready || drag.current) return;
+    // Synchronous lock also rejects duplicate events before React commits busy state.
+    outputLock.current = true;
+    setBusy(action);
     try {
       // Share/copy use files prepared on Export entry to preserve user activation.
       const asset =
@@ -373,14 +467,13 @@ export function ForgeEditor({
           : "This browser blocked that action. Try Download or Open image to save."
       );
     } finally {
-      setBusy(false);
+      outputLock.current = false;
+      setBusy(null);
     }
   }
-  useEffect(() => {
-    if (files) setShareAvailable(canShare(files.jpg));
-  }, [files]);
-  const canExport = ready && !!files && !loading && !encoding && !busy && !dragging;
-  const shareSupported = files ? canShare(files.jpg) : shareAvailable;
+  const exportReady = ready && !!files && !loading && !encoding && !dragging;
+  const shareSupported = shareAvailable;
+  const shareReady = exportReady && canShare(files?.jpg);
 
   return (
     <div
@@ -392,6 +485,30 @@ export function ForgeEditor({
         " overflow-hidden rounded-xl border-3 border-black bg-obsidian-900 shadow-brutal"
       }
       aria-label="Meme Forge workspace"
+      data-drop-active={dropActive}
+      onDragEnter={(event) => {
+        if (!isFileDrag(event)) return;
+        event.preventDefault();
+        dropDepth.current++;
+        setDropActive(true);
+      }}
+      onDragOver={(event) => {
+        if (!isFileDrag(event)) return;
+        event.preventDefault();
+        event.dataTransfer.dropEffect = "copy";
+      }}
+      onDragLeave={() => {
+        dropDepth.current = Math.max(0, dropDepth.current - 1);
+        if (!dropDepth.current) setDropActive(false);
+      }}
+      onDrop={(event) => {
+        if (!isFileDrag(event)) return;
+        event.preventDefault();
+        dropDepth.current = 0;
+        setDropActive(false);
+        const file = event.dataTransfer.files[0];
+        if (file) void loadImage(file);
+      }}
     >
       <div
         className={
@@ -409,18 +526,7 @@ export function ForgeEditor({
         )}
       </div>
       <div className={styles.body}>
-        <div
-          className={styles.preview}
-          onDragOver={(event) => {
-            event.preventDefault();
-            event.dataTransfer.dropEffect = "copy";
-          }}
-          onDrop={(event) => {
-            event.preventDefault();
-            const file = event.dataTransfer.files[0];
-            if (file) void loadImage(file);
-          }}
-        >
+        <div className={styles.preview}>
           <div className={styles.square}>
             <div className={styles.surface + " rounded-lg border-3 border-black"}>
               <canvas
@@ -428,12 +534,18 @@ export function ForgeEditor({
                 width={SIZE}
                 height={SIZE}
                 tabIndex={0}
-                aria-label={"Meme preview. Move " + selectedLabel + " with arrow keys."}
-                aria-describedby={id + "-movement"}
+                aria-label={
+                  mode === "EXPORT"
+                    ? "Meme preview. Return to Image or Text to adjust."
+                    : "Meme preview. Move " + selectedLabel + " with arrow keys."
+                }
+                aria-describedby={mode === "EXPORT" ? undefined : id + "-movement"}
                 className={
                   styles.canvas +
                   " " +
                   (moving ? styles.moving : "") +
+                  (mode === "IMAGE" && scene.background ? " " + styles.imageDraggable : "") +
+                  (dragging ? " " + styles.dragging : "") +
                   " rounded-lg bg-obsidian-950 focus-visible:outline focus-visible:outline-2 focus-visible:outline-gold"
                 }
                 onPointerDown={(event) => {
@@ -455,6 +567,8 @@ export function ForgeEditor({
                   role="button"
                   tabIndex={0}
                   aria-label={"Drag Text " + (index + 1)}
+                  aria-pressed={selected === block.id}
+                  aria-controls={id + "-words"}
                   className={
                     styles.textTarget +
                     (mode === "TEXT" && selected === block.id ? " " + styles.selectedText : "")
@@ -471,35 +585,47 @@ export function ForgeEditor({
                   onPointerUp={endDrag}
                   onPointerCancel={endDrag}
                   onLostPointerCapture={endDrag}
-                  onKeyDown={(event) => keyMove(event, { type: "text", id: block.id })}
+                  onFocus={() => selectBlock(block.id)}
+                  onClick={() => selectBlock(block.id)}
+                  onKeyDown={(event) => {
+                    if (event.key === "Enter" || event.key === " ") {
+                      event.preventDefault();
+                      selectBlock(block.id);
+                    } else keyMove(event, { type: "text", id: block.id });
+                  }}
                 />
               ))}
             </div>
           </div>
           <div className={styles.interactionRail}>
-            {mode === "IMAGE" && !!scene.background && (
+            {mode === "IMAGE" && !!scene.background && touchInput && (
               <button
                 className={button + (moving ? " border-gold text-gold" : "")}
                 aria-pressed={moving}
                 disabled={!ready}
-                onClick={() => setMoving((value) => !value)}
+                onClick={() => {
+                  stopDrag();
+                  setMoving((value) => !value);
+                }}
               >
                 {moving ? "DONE MOVING" : "MOVE IMAGE"}
               </button>
             )}
-            <p id={id + "-movement"} className="max-w-40 text-xs leading-4 text-lava-100/70">
-              {target?.type === "text"
-                ? "Drag a text block. Swipe elsewhere to scroll."
-                : moving
-                  ? "Drag in any direction. Done restores scrolling."
-                  : mode === "IMAGE"
-                    ? scene.background
-                      ? "Swipe to scroll. Use Move to reposition."
-                      : "Swipe to scroll. Add an image to move it."
-                    : mode === "EXPORT"
-                      ? "Drag text for a final adjustment."
-                      : "Swipe to scroll."}
-            </p>
+            {mode !== "EXPORT" && (
+              <p id={id + "-movement"} className="max-w-40 text-xs leading-4 text-lava-100/70">
+                {target?.type === "text"
+                  ? "Drag a text block. Swipe elsewhere to scroll."
+                  : moving
+                    ? "Drag in any direction. Done restores scrolling."
+                    : mode === "IMAGE"
+                      ? scene.background
+                        ? touchInput
+                          ? "Drag with mouse. Use Move for touch."
+                          : "Drag the image to reposition."
+                        : "Swipe to scroll. Add an image to move it."
+                      : "Tap a text block to select it. Drag to position."}
+              </p>
+            )}
           </div>
         </div>
         <div
@@ -541,6 +667,7 @@ export function ForgeEditor({
             role="tabpanel"
             aria-labelledby={id + "-" + mode}
             tabIndex={0}
+            data-mode={mode}
             className={styles.panel + " space-y-4"}
           >
             {mode === "IMAGE" && (
@@ -554,12 +681,12 @@ export function ForgeEditor({
                         className={
                           button +
                           " px-1 text-xs" +
-                          (scene.backdrop === name ? " border-gold text-gold" : "")
+                          (!scene.background && scene.backdrop === name
+                            ? " border-gold text-gold"
+                            : "")
                         }
-                        aria-pressed={scene.backdrop === name}
-                        onClick={() =>
-                          change((old) => ({ ...old, backdrop: name as keyof typeof BACKDROPS }))
-                        }
+                        aria-pressed={!scene.background && scene.backdrop === name}
+                        onClick={() => removeImage(name as keyof typeof BACKDROPS)}
                       >
                         {name}
                       </button>
@@ -618,10 +745,7 @@ export function ForgeEditor({
                       >
                         RESET CROP
                       </button>
-                      <button
-                        className={button}
-                        onClick={() => change((old) => ({ ...old, background: null }))}
-                      >
+                      <button className={button} onClick={() => removeImage()}>
                         REMOVE IMAGE
                       </button>
                     </div>
@@ -638,7 +762,7 @@ export function ForgeEditor({
                       key={block.id}
                       aria-pressed={selected === block.id}
                       className={button + (selected === block.id ? " border-gold text-gold" : "")}
-                      onClick={() => setSelected(block.id)}
+                      onClick={() => selectBlock(block.id)}
                     >
                       TEXT {index + 1}
                     </button>
@@ -749,15 +873,23 @@ export function ForgeEditor({
             {mode === "EXPORT" && (
               <>
                 <p className="text-sm text-lava-100/80">Your meme. Ready to leave hell.</p>
-                {(encoding || !files) && (
-                  <p className="text-sm text-gold">
-                    {ready ? "Preparing JPG + PNG…" : "Loading Inter and the Devil…"}
-                  </p>
-                )}
+                <p className={styles.exportPreparation + " text-sm text-gold"}>
+                  {!ready
+                    ? "Loading Inter and the Devil…"
+                    : loading
+                      ? "Opening image…"
+                      : exportError
+                        ? "Preparation failed. Re-enter Export to retry."
+                        : encoding || !files
+                          ? "Preparing JPG + PNG…"
+                          : "JPG + PNG ready."}
+                </p>
                 {shareSupported && (
                   <button
                     className={primaryButton + " w-full"}
-                    disabled={!canExport}
+                    disabled={!shareReady}
+                    aria-disabled={!shareReady || !!busy}
+                    aria-busy={busy === "share"}
                     onClick={() => void output("share")}
                   >
                     SHARE MEME
@@ -766,14 +898,18 @@ export function ForgeEditor({
                 <div className="grid gap-2 sm:grid-cols-2">
                   <button
                     className={shareSupported ? button : primaryButton}
-                    disabled={!canExport}
+                    disabled={!exportReady}
+                    aria-disabled={!exportReady || !!busy}
+                    aria-busy={busy === "jpg"}
                     onClick={() => void output("jpg")}
                   >
                     DOWNLOAD JPG
                   </button>
                   <button
                     className={button}
-                    disabled={!canExport}
+                    disabled={!exportReady}
+                    aria-disabled={!exportReady || !!busy}
+                    aria-busy={busy === "png"}
                     onClick={() => void output("png")}
                   >
                     DOWNLOAD PNG
@@ -785,7 +921,9 @@ export function ForgeEditor({
                 {copySupported ? (
                   <button
                     className={button + " w-full"}
-                    disabled={!canExport}
+                    disabled={!exportReady}
+                    aria-disabled={!exportReady || !!busy}
+                    aria-busy={busy === "copy"}
                     onClick={() => void output("copy")}
                   >
                     COPY IMAGE
@@ -795,34 +933,36 @@ export function ForgeEditor({
                     Image copying unavailable. Use Download{shareSupported ? " or Share" : ""}.
                   </p>
                 )}
-                {!shareSupported && files && (
+                {!shareSupported && (
                   <p className="text-xs text-lava-100/70">
                     No file sharing here. Download and attach in your app.
                   </p>
                 )}
-                {files && (
-                  <div className="border-t border-lava-100/20 pt-3 text-xs text-lava-100/70">
-                    <p>Download did not save? Open the image, then Save Image / Save to Files.</p>
-                    <div className="mt-2 flex gap-4">
-                      <a
-                        href={files.jpgUrl}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="inline-flex min-h-11 items-center text-gold underline"
-                      >
-                        OPEN JPG
-                      </a>
-                      <a
-                        href={files.pngUrl}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="inline-flex min-h-11 items-center text-gold underline"
-                      >
-                        OPEN PNG
-                      </a>
-                    </div>
+                <div className="border-t border-lava-100/20 pt-3 text-xs text-lava-100/70">
+                  <p>Download did not save? Open the image, then Save Image / Save to Files.</p>
+                  <div className="mt-2 flex gap-4">
+                    <a
+                      href={exportReady ? files?.jpgUrl : undefined}
+                      aria-disabled={!exportReady}
+                      tabIndex={exportReady ? 0 : -1}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex min-h-11 items-center text-gold underline"
+                    >
+                      OPEN JPG
+                    </a>
+                    <a
+                      href={exportReady ? files?.pngUrl : undefined}
+                      aria-disabled={!exportReady}
+                      tabIndex={exportReady ? 0 : -1}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex min-h-11 items-center text-gold underline"
+                    >
+                      OPEN PNG
+                    </a>
                   </div>
-                )}
+                </div>
               </>
             )}
             <p
@@ -830,11 +970,15 @@ export function ForgeEditor({
               aria-live="polite"
               className="border-t border-lava-100/20 pt-3 text-xs leading-relaxed text-gold"
             >
-              {loading
-                ? "Opening image…"
-                : !ready
-                  ? "Loading the Devil and Inter… " + message
-                  : message}
+              {mode === "EXPORT" && busy
+                ? outputProgress[busy]
+                : dropActive
+                  ? "Drop an image to replace the background."
+                  : loading
+                    ? "Opening image…"
+                    : !ready
+                      ? "Loading the Devil and Inter… " + message
+                      : message}
             </p>
           </div>
         </div>

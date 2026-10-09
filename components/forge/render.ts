@@ -2,7 +2,6 @@ import type { WorkingImage } from "./media";
 export const SIZE = 1080;
 export const FONT_WEIGHT = 700;
 export const MARGIN = 36;
-export const PADDING = 16;
 export const DEVIL = { right: 434, top: 587 };
 export type TextBlock = {
   id: number;
@@ -26,6 +25,8 @@ export type Layout = {
   x: number;
   y: number;
   lineHeight: number;
+  textX: number;
+  baseline: number;
 };
 const clamp = (n: number, min: number, max: number) => Math.max(min, Math.min(max, n));
 
@@ -62,13 +63,24 @@ export function textLayout(
   family: string
 ): Layout {
   ctx.font = FONT_WEIGHT + " " + block.size + "px " + family;
-  const maxWidth = SIZE - 2 * (MARGIN + PADDING);
+  ctx.textAlign = "center";
+  ctx.textBaseline = "alphabetic";
+  const padding = block.size / 4;
+  const maxWidth = SIZE - 2 * (MARGIN + padding);
+  const measureWidth = (text: string) => {
+    const metrics = ctx.measureText(text);
+    return Math.max(
+      metrics.width,
+      (metrics.actualBoundingBoxLeft ?? metrics.width / 2) +
+        (metrics.actualBoundingBoxRight ?? metrics.width / 2)
+    );
+  };
   const lines: string[] = [];
   for (const paragraph of block.text.split("\n")) {
     let line = "";
     for (const word of paragraph.split(/\s+/)) {
       const candidate = line ? line + " " + word : word;
-      if (ctx.measureText(candidate).width <= maxWidth) {
+      if (measureWidth(candidate) <= maxWidth) {
         line = candidate;
         continue;
       }
@@ -77,7 +89,7 @@ export function textLayout(
         line = "";
       }
       for (const char of Array.from(word)) {
-        if (ctx.measureText(line + char).width > maxWidth && line) {
+        if (measureWidth(line + char) > maxWidth && line) {
           lines.push(line);
           line = "";
         }
@@ -87,8 +99,24 @@ export function textLayout(
     lines.push(line);
   }
   const lineHeight = block.size * 1.25;
-  const width = Math.max(1, ...lines.map((line) => ctx.measureText(line).width)) + PADDING * 2;
-  const height = lines.length * lineHeight + PADDING * 2;
+  const metrics = lines.map((line) => ctx.measureText(line));
+  const verticalMetrics = lines.map((line, i) => (line ? metrics[i] : ctx.measureText("Mg")));
+  // Bound the actual ink across all baselines, preserving the established line spacing.
+  // Empty lines use font ink bounds so deliberate blank lines keep their space.
+  const left = Math.min(...metrics.map((m) => -(m.actualBoundingBoxLeft ?? m.width / 2)));
+  const right = Math.max(...metrics.map((m) => m.actualBoundingBoxRight ?? m.width / 2));
+  const top = Math.min(
+    ...verticalMetrics.map(
+      (m, i) => i * lineHeight - (m.actualBoundingBoxAscent ?? block.size * 0.8)
+    )
+  );
+  const bottom = Math.max(
+    ...verticalMetrics.map(
+      (m, i) => i * lineHeight + (m.actualBoundingBoxDescent ?? block.size * 0.2)
+    )
+  );
+  const width = Math.max(1, right - left) + padding * 2;
+  const height = Math.max(1, bottom - top) + padding * 2;
   // Any accepted block must fit above the observer. Never silently clip or shrink text.
   if (height > DEVIL.top - MARGIN)
     throw new Error("Too many lines at this size. Shorten the text or reduce its size.");
@@ -100,7 +128,7 @@ export function textLayout(
     if (canGoRight && DEVIL.right - x < y - above) x = DEVIL.right;
     else y = above;
   }
-  return { lines, width, height, x, y, lineHeight };
+  return { lines, width, height, x, y, lineHeight, textX: padding - left, baseline: padding - top };
 }
 export const BACKDROPS = { OBSIDIAN: "#0D0A08", HELLFIRE: "#991F0A", WHITE: "#FFFFFF" } as const;
 export type Backdrop = keyof typeof BACKDROPS;
@@ -162,11 +190,11 @@ export function renderMeme(
   }
   ctx.fillStyle = blackOnWhite ? "#000000" : "#FFFFFF";
   ctx.textAlign = "center";
-  ctx.textBaseline = "middle";
+  ctx.textBaseline = "alphabetic";
   for (const { block, box } of layouts) {
     ctx.font = FONT_WEIGHT + " " + block.size + "px " + family;
     box.lines.forEach((line, i) =>
-      ctx.fillText(line, box.x + box.width / 2, box.y + PADDING + (i + 0.5) * box.lineHeight)
+      ctx.fillText(line, box.x + box.textX, box.y + box.baseline + i * box.lineHeight)
     );
   }
   ctx.drawImage(overlay, 0, 0, SIZE, SIZE);

@@ -10,6 +10,10 @@
   display: grid;
   grid-template-rows: auto auto;
 }
+.workspace[data-drop-active="true"] {
+  outline: 3px dashed #e8a020;
+  outline-offset: -6px;
+}
 .embedded {
   --forge-nav: var(--nav-h);
 }
@@ -66,6 +70,12 @@
 .moving {
   touch-action: none;
 }
+.imageDraggable {
+  cursor: grab;
+}
+.dragging {
+  cursor: grabbing;
+}
 .textTarget {
   position: absolute;
   touch-action: none;
@@ -98,6 +108,18 @@
   scrollbar-gutter: stable;
   padding: 1rem;
   padding-bottom: max(1rem, env(safe-area-inset-bottom));
+}
+.exportPreparation {
+  /* Two lines cover loading, ready and retry feedback without moving controls. */
+  min-height: 2.5rem;
+}
+.panel[data-mode="EXPORT"] [role="status"] {
+  /* Reserve three feedback lines, including the existing mobile save guidance. */
+  min-height: 4.5rem;
+}
+.panel[data-mode="EXPORT"] a[aria-disabled="true"] {
+  opacity: 0.4;
+  cursor: not-allowed;
 }
 .workspace[data-landscape="true"] .body {
   grid-template-columns: minmax(0, 0.85fr) minmax(0, 1.15fr);
